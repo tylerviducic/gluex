@@ -11,7 +11,7 @@ void DSelector_mc_pipkmks_flat::Init(TTree *locTree)
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_crossfeed_fall.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_tree_flat_mass.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.

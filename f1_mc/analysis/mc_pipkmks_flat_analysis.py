@@ -5,7 +5,7 @@ import time
 
 start_time = time.time()
 
-filename = '/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_bestX2_spring.root'
+filename = '/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_tree_flat_mass.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
 
 df = ROOT.RDataFrame(treename, filename)
@@ -98,6 +98,14 @@ f1_kstar_plus_cut = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut', 'f1_
 f1_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut', 'f1_kstar_zero_cut', 50, 1.0, 1.7), 'pipkmks_m')
 f1_kstar_all_cut = df.Filter(kstar_all_cut).Histo1D(('f1_kstar_all_cut', 'f1_kstar_all_cut', 50, 1.0, 1.7), 'pipkmks_m')
 
+# # print(f1_nocut.type())
+# print(f1_kstar_all_cut.type())
+
+efficiency = ROOT.TH1D('efficiency', 'efficiency', 50, 1.0, 1.7)
+efficiency.Divide(f1_kstar_all_cut.Clone(), f1_nocut.Clone())
+# efficiency = ROOT.TEfficiency(f1_kstar_all_cut, f1_nocut)
+efficiency.Draw()
+
 f1_nocut.SetLineColor(1)
 f1_kstar_plus_cut.SetLineColor(2)
 f1_kstar_zero_cut.SetLineColor(6)
@@ -144,7 +152,7 @@ for i in range(len(beam_df_array)):
 # print(len(histo_array_low))
 print("histos done in {} seconds".format(time.time() - start_time))
 
-target_file = ROOT.TFile("/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_result_2018_spring.root", 'RECREATE')
+target_file = ROOT.TFile("/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_result_flat_mass.root", 'RECREATE')
 for histo in histo_array_low:
     histo.Write()
 for histo in histo_array_med:
@@ -155,6 +163,7 @@ f1_kstar_all_cut.Write()
 f1_kstar_plus_cut.Write()
 f1_kstar_zero_cut.Write()
 f1_nocut.Write()
+efficiency.Write()
 
 target_file.Close()
     
