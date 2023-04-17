@@ -139,6 +139,31 @@ void DSelector_pipkmks_flat_bestchi2::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E"); //fundamental = char, int, float, double, etc.
+
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_pz_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_E_measured"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_px_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_py_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_pz_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_E_measured"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_px_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_py_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_pz_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_E_measured"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_px_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_py_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_pz_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_E_measured"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_px_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz_measured"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_measured"); //fundamental = char, int, float, double, etc.
 	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pathlength_sig"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cos_colin"); //fundamental = char, int, float, double, etc.
@@ -622,6 +647,31 @@ Bool_t DSelector_pipkmks_flat_bestchi2::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_py", locProtonP4.Py()); 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_pz", locProtonP4.Pz()); 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E", locProtonP4.E()); 
+
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px_measured", locPiPlus1P4_Measured.Px());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_py_measured", locPiPlus1P4_Measured.Py());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_pz_measured", locPiPlus1P4_Measured.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_E_measured", locPiPlus1P4_Measured.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_px_measured", locPiPlus2P4_Measured.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_py_measured", locPiPlus2P4_Measured.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_pz_measured", locPiPlus2P4_Measured.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_E_measured", locPiPlus2P4_Measured.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_px_measured", locPiMinusP4_Measured.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_py_measured", locPiMinusP4_Measured.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_pz_measured", locPiMinusP4_Measured.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_E_measured", locPiMinusP4_Measured.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_px_measured", locKMinusP4_Measured.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_py_measured", locKMinusP4_Measured.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_pz_measured", locKMinusP4_Measured.Pz());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_E_measured", locKMinusP4_Measured.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_px_measured", locProtonP4_Measured.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_py_measured", locProtonP4_Measured.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_pz_measured", locProtonP4_Measured.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E_measured", locProtonP4_Measured.E()); 
 	
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pathlength_sig", locPathLengthSignificanceKs); 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("cos_colin", cos_theta_col);
