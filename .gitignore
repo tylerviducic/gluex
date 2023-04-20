@@ -1,0 +1,7 @@
+*.root
+*.gif 
+*.hddm
+*.dat
+*.ascii
+f1_mc/log
+hd_utilities
