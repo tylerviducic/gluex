@@ -5,3 +5,4 @@
 *.ascii
 f1_mc/log
 hd_utilities
+.gitignore
