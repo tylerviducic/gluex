@@ -21,6 +21,7 @@ df = ROOT.RDataFrame(treename, filename)
 
 # print(df.GetColumnNames())
 
+
 df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
 
 df = df.Define('ks_px', "pip2_px + pim_px")
@@ -189,13 +190,15 @@ df = df.Define('kmks_m', 'sqrt(kmks_E*kmks_E - kmks_px*kmks_px - kmks_py*kmks_py
 # azero = df.Filter(f1_region).Histo1D(('azero', 'azero', 60, 0.6, 1.2), 'kmks_m')
 # azero.Draw()
 
+data_mc_comparison_df = df.Filter(f1_region)
+data_mc_comparison_df.Snapshot(f'pipkmks_signal_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_signal_filtered_{run_period_dict[run_period]}.root')
+
 beam_df_array = []
 
 histo_array_low = []
 histo_array_med = []
 histo_array_high = []
 
-tslope = df.Histo1D(('tslope', 'tslope', 100, 0.0, 2.0), 'mand_t')
 
 for beam_value in range(5, 11):
     beam_low = beam_value - 0.5
@@ -218,18 +221,24 @@ t_med = ['0.65', '0.9']
 t_high = ['1.4', '1.9']#, '1.7', '1.9']
 
 pt_diff_array = []
+tslope_array = []
 
 for cut in f1_cut_list:
-    print(cut)
-    print(kstar_cut_dict[cut])
+    # print(cut)
+    # print(kstar_cut_dict[cut])
     if(cut == 'no_cut'):
         pt_diff_array.append(df.Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
+        tslope_array.append(df.Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
     else:
         pt_diff_array.append(df.Filter(cut).Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
+        tslope_array.append(df.Filter(cut).Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+    
     histo_name = kstar_cut_dict[cut]
     # cut_df = df.Filter(cut)
 
     for i in range(len(beam_df_array)):
+
+        #TODO refactor this to filter on beam value instead of adding an entire array of dataframes
         beam = i + 5
 
         if(cut == "no_cut"):
@@ -278,6 +287,10 @@ f1_kstar_zero_cut_narrow.Write()
 f1_kstar_zero_cut_medium.Write()
 f1_kstar_zero_cut_wide.Write()
 ks_m.Write()
+
+for slope in tslope_array:
+    slope.Write()
+
 
 print("histos written in {} seconds".format(time.time() - start_time))
 
