@@ -7,20 +7,33 @@ ROOT.gStyle.SetOptStat(0)
 
 start_time = time.time()
 
-filename = '/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_bestX2_2018_spring.root'
+run_period_dict = {
+    'spring': '2018_spring',
+    'fall': '2018_fall',
+    '2017': '2017',
+}
+
+run_period = 'fall'
+filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
 treename = 'pipkmks__B4_M16'
 
 df = ROOT.RDataFrame(treename, filename)
 
 # print(df.GetColumnNames())
 
-df = df.Define('p_pt', 'sqrt(p_px*p_px + p_py*p_py)')
+df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
 
 df = df.Define('ks_px', "pip2_px + pim_px")
 df = df.Define('ks_py', "pip2_py + pim_py")
 df = df.Define('ks_pz', "pip2_pz + pim_pz")
 df = df.Define('ks_E', "pip2_E + pim_E")
 df = df.Define('ks_m', "sqrt(ks_E*ks_E - ks_px*ks_px - ks_py*ks_py - ks_pz*ks_pz)")
+
+df = df.Define('ks_px_measured', "pip2_px_measured + pim_px_measured")
+df = df.Define('ks_py_measured', "pip2_py_measured + pim_py_measured")
+df = df.Define('ks_pz_measured', "pip2_pz_measured + pim_pz_measured")
+df = df.Define('ks_E_measured', "pip2_E_measured + pim_E_measured")
+df = df.Define('ks_m_measured', "sqrt(ks_E_measured*ks_E_measured - ks_px_measured*ks_px_measured - ks_py_measured*ks_py_measured - ks_pz_measured*ks_pz_measured)")
 
 ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'
@@ -94,7 +107,11 @@ df = df.Define('pipkmks_px', 'pip1_px + km_px + ks_px')
 df = df.Define('pipkmks_py', 'pip1_py + km_py + ks_py')
 df = df.Define('pipkmks_pz', 'pip1_pz + km_pz + ks_pz')
 df = df.Define('pipkmks_E', 'pip1_E + km_E + ks_E')
-df = df.Define('pipkmks_pt', 'sqrt(pipkmks_px*pipkmks_px + pipkmks_py*pipkmks_py)')
+
+df = df.Define('pipkmks_px_measured', "pip1_px_measured + km_px_measured + ks_px_measured")
+df = df.Define('pipkmks_py_measured', "pip1_py_measured + km_py_measured + ks_py_measured")
+df = df.Define('pipkmks_pz_measured', "pip1_pz_measured + km_pz_measured + ks_pz_measured")
+df = df.Define('pipkmks_pt', 'sqrt(pipkmks_px_measured*pipkmks_px_measured + pipkmks_py_measured*pipkmks_py_measured)')
 
 df = df.Define('pipkmks_p_pt_diff', 'pipkmks_pt - p_pt')
 
@@ -178,6 +195,8 @@ histo_array_low = []
 histo_array_med = []
 histo_array_high = []
 
+tslope = df.Histo1D(('tslope', 'tslope', 100, 0.0, 2.0), 'mand_t')
+
 for beam_value in range(5, 11):
     beam_low = beam_value - 0.5
     beam_high = beam_value + 0.5
@@ -237,7 +256,7 @@ for cut in f1_cut_list:
 # print(len(histo_array_low))
 print("histos done in {} seconds".format(time.time() - start_time))
 
-target_file = ROOT.TFile("/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_result_2018_spring.root", 'RECREATE')
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
 for histo in histo_array_low:
     histo.Write()
 for histo in histo_array_med:
@@ -262,17 +281,17 @@ ks_m.Write()
 
 print("histos written in {} seconds".format(time.time() - start_time))
 
-c1 = ROOT.TCanvas("c1", "c1", 800, 600)
-c1.Divide(2, 2)
+# c1 = ROOT.TCanvas("c1", "c1", 800, 600)
+# c1.Divide(2, 2)
 
-for pt_hist in pt_diff_array:
-    c1.cd(pt_diff_array.index(pt_hist) + 1)
-    pt_hist.Draw()
+# for pt_hist in pt_diff_array:
+#     c1.cd(pt_diff_array.index(pt_hist) + 1)
+#     pt_hist.Draw()
 
-print("closing file")
-target_file.Close()
+# print("closing file")
+# target_file.Close()
 
-c1.Update()
+# c1.Update()
     
 
 
