@@ -13,7 +13,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'fall'
+run_period = 'spring'
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
 treename = 'pipkmks__B4_M16'
 
@@ -192,6 +192,7 @@ df = df.Define('kmks_m', 'sqrt(kmks_E*kmks_E - kmks_px*kmks_px - kmks_py*kmks_py
 
 data_mc_comparison_df = df.Filter(f1_region)
 data_mc_comparison_df.Snapshot(f'pipkmks_signal_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_signal_filtered_{run_period_dict[run_period]}.root')
+print('cut file written in {} seconds'.format(time.time() - start_time))
 
 beam_df_array = []
 
@@ -268,10 +269,13 @@ print("histos done in {} seconds".format(time.time() - start_time))
 target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
 for histo in histo_array_low:
     histo.Write()
+print("low t histos written in {} seconds".format(time.time() - start_time))
 for histo in histo_array_med:
     histo.Write()
+print("med t histos written in {} seconds".format(time.time() - start_time))
 for histo in histo_array_high:
     histo.Write()
+print("high t histos written in {} seconds".format(time.time() - start_time))
 
 f1_nocut.Write()
 f1_kstar_plus_cut.Write()
