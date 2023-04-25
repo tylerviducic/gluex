@@ -2,6 +2,7 @@
 # f1 region cut has already been applied
 
 import ROOT
+import math
 
 run_period = 'spring'
 run_dict = {
@@ -30,28 +31,32 @@ kinematic_variables = ['e_beam',
 
 
 
-data_df = data_df.Define("pip1_theta", "atan2( sqrt(pip1_px*pip1_px + pip1_py*pip1_py), pip1_pz)")
-data_df = data_df.Define("pip2_theta", "atan2( sqrt(pip2_px*pip2_px + pip2_py*pip2_py), pip2_pz)")
-data_df = data_df.Define("pim_theta", "atan2( sqrt(pim_px*pim_px + pim_py*pim_py), pim_pz)")
-data_df = data_df.Define("km_theta", "atan2( sqrt(km_px*km_px + km_py*km_py), km_pz)")
-data_df = data_df.Define("p_theta", "atan2( sqrt(p_px*p_px + p_py*p_py), p_pz)")
-data_df = data_df.Define("pip1_phi", "atan2(pip1_py, pip1_px)")
-data_df = data_df.Define("pip2_phi", "atan2(pip2_py, pip2_px)")
-data_df = data_df.Define("pim_phi", "atan2(pim_py, pim_px)")
-data_df = data_df.Define("km_phi", "atan2(km_py, km_px)")
-data_df = data_df.Define("p_phi", "atan2(p_py, p_px)")
+data_df = data_df.Define("pip1_theta", "atan2( sqrt(pip1_px*pip1_px + pip1_py*pip1_py), pip1_pz)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("pip2_theta", "atan2( sqrt(pip2_px*pip2_px + pip2_py*pip2_py), pip2_pz)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("pim_theta", "atan2( sqrt(pim_px*pim_px + pim_py*pim_py), pim_pz)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("km_theta", "atan2( sqrt(km_px*km_px + km_py*km_py), km_pz)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("p_theta", "atan2( sqrt(p_px*p_px + p_py*p_py), p_pz)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("pip1_phi", "atan2(pip1_py, pip1_px)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("pip2_phi", "atan2(pip2_py, pip2_px)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("pim_phi", "atan2(pim_py, pim_px)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("km_phi", "atan2(km_py, km_px)*(180.0/3.141592653589793238463)")
+data_df = data_df.Define("p_phi", "atan2(p_py, p_px)*(180.0/3.141592653589793238463)")
 data_df = data_df.Define("p_p", "sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)")
 
-mc_df = mc_df.Define("pip1_theta", "atan2( sqrt(pip1_px*pip1_px + pip1_py*pip1_py), pip1_pz)")
-mc_df = mc_df.Define("pip2_theta", "atan2( sqrt(pip2_px*pip2_px + pip2_py*pip2_py), pip2_pz)")
-mc_df = mc_df.Define("pim_theta", "atan2( sqrt(pim_px*pim_px + pim_py*pim_py), pim_pz)")
-mc_df = mc_df.Define("km_theta", "atan2( sqrt(km_px*km_px + km_py*km_py), km_pz)")
-mc_df = mc_df.Define("p_theta", "atan2( sqrt(p_px*p_px + p_py*p_py), p_pz)")
-mc_df = mc_df.Define("pip1_phi", "atan2(pip1_py, pip1_px)")
-mc_df = mc_df.Define("pip2_phi", "atan2(pip2_py, pip2_px)")
-mc_df = mc_df.Define("pim_phi", "atan2(pim_py, pim_px)")
-mc_df = mc_df.Define("km_phi", "atan2(km_py, km_px)")
-mc_df = mc_df.Define("p_phi", "atan2(p_py, p_px)")
+mc_df = mc_df.Define("pip1_theta", "atan2( sqrt(pip1_px*pip1_px + pip1_py*pip1_py), pip1_pz)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("pip2_theta", "atan2( sqrt(pip2_px*pip2_px + pip2_py*pip2_py), pip2_pz)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("pim_theta", "atan2( sqrt(pim_px*pim_px + pim_py*pim_py), pim_pz)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("km_theta", "atan2( sqrt(km_px*km_px + km_py*km_py), km_pz)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("p_theta", "atan2( sqrt(p_px*p_px + p_py*p_py), p_pz)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("pip1_phi", "atan2(pip1_py, pip1_px)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("pip2_phi", "atan2(pip2_py, pip2_px)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("pim_phi", "atan2(pim_py, pim_px)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("km_phi", "atan2(km_py, km_px)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("p_phi", "atan2(p_py, p_px)*(180.0/3.141592653589793238463)")
+mc_df = mc_df.Define("p_p", "sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)")
+
+data_df = data_df.Filter("p_p > 0.4")
+mc_df = mc_df.Filter("p_p > 0.4")
 
 angular_variables = ['pip1_theta', 'pip2_theta', 'pim_theta', 'km_theta', 'p_theta', 
                      'pip1_phi', 'pip2_phi', 'pim_phi', 'km_phi', 'p_phi']
