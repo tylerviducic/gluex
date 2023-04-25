@@ -18,10 +18,10 @@ treename = 'pipkmks__ks_pippim__B4_M16'
 
 df = ROOT.RDataFrame(treename, filename)
 
-# print(df.GetColumnNames())
+print(df.GetColumnNames())
 
 
-df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
+# df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
 
 df = df.Define('ks_px', "pip2_px + pim_px")
 df = df.Define('ks_py', "pip2_py + pim_py")
@@ -29,11 +29,11 @@ df = df.Define('ks_pz', "pip2_pz + pim_pz")
 df = df.Define('ks_E', "pip2_E + pim_E")
 df = df.Define('ks_m', "sqrt(ks_E*ks_E - ks_px*ks_px - ks_py*ks_py - ks_pz*ks_pz)")
 
-df = df.Define('ks_px_measured', "pip2_px_measured + pim_px_measured")
-df = df.Define('ks_py_measured', "pip2_py_measured + pim_py_measured")
-df = df.Define('ks_pz_measured', "pip2_pz_measured + pim_pz_measured")
-df = df.Define('ks_E_measured', "pip2_E_measured + pim_E_measured")
-df = df.Define('ks_m_measured', "sqrt(ks_E_measured*ks_E_measured - ks_px_measured*ks_px_measured - ks_py_measured*ks_py_measured - ks_pz_measured*ks_pz_measured)")
+# df = df.Define('ks_px_measured', "pip2_px_measured + pim_px_measured")
+# df = df.Define('ks_py_measured', "pip2_py_measured + pim_py_measured")
+# df = df.Define('ks_pz_measured', "pip2_pz_measured + pim_pz_measured")
+# df = df.Define('ks_E_measured', "pip2_E_measured + pim_E_measured")
+# df = df.Define('ks_m_measured', "sqrt(ks_E_measured*ks_E_measured - ks_px_measured*ks_px_measured - ks_py_measured*ks_py_measured - ks_pz_measured*ks_pz_measured)")
 
 ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'
@@ -108,12 +108,12 @@ df = df.Define('pipkmks_py', 'pip1_py + km_py + ks_py')
 df = df.Define('pipkmks_pz', 'pip1_pz + km_pz + ks_pz')
 df = df.Define('pipkmks_E', 'pip1_E + km_E + ks_E')
 
-df = df.Define('pipkmks_px_measured', "pip1_px_measured + km_px_measured + ks_px_measured")
-df = df.Define('pipkmks_py_measured', "pip1_py_measured + km_py_measured + ks_py_measured")
-df = df.Define('pipkmks_pz_measured', "pip1_pz_measured + km_pz_measured + ks_pz_measured")
-df = df.Define('pipkmks_pt', 'sqrt(pipkmks_px_measured*pipkmks_px_measured + pipkmks_py_measured*pipkmks_py_measured)')
+# df = df.Define('pipkmks_px_measured', "pip1_px_measured + km_px_measured + ks_px_measured")
+# df = df.Define('pipkmks_py_measured', "pip1_py_measured + km_py_measured + ks_py_measured")
+# df = df.Define('pipkmks_pz_measured', "pip1_pz_measured + km_pz_measured + ks_pz_measured")
+# df = df.Define('pipkmks_pt', 'sqrt(pipkmks_px_measured*pipkmks_px_measured + pipkmks_py_measured*pipkmks_py_measured)')
 
-df = df.Define('pipkmks_p_pt_diff', 'pipkmks_pt - p_pt')
+# df = df.Define('pipkmks_p_pt_diff', 'pipkmks_pt - p_pt')
 
 df = df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
 
@@ -220,17 +220,17 @@ t_low =  ['0.1', '0.2', '0.3', '0.4'] # ['0.1', '0.15',
 t_med = ['0.65', '0.9']
 t_high = ['1.4', '1.9']#, '1.7', '1.9']
 
-pt_diff_array = []
+# pt_diff_array = []
 tslope_array = []
 
 for cut in f1_cut_list:
     # print(cut)
     # print(kstar_cut_dict[cut])
     if(cut == 'no_cut'):
-        pt_diff_array.append(df.Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
+        # pt_diff_array.append(df.Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
         tslope_array.append(df.Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
     else:
-        pt_diff_array.append(df.Filter(cut).Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
+        # pt_diff_array.append(df.Filter(cut).Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
         tslope_array.append(df.Filter(cut).Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
     
     histo_name = kstar_cut_dict[cut]
