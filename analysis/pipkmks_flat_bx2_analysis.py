@@ -23,6 +23,13 @@ histo_array_low = []
 histo_array_med = []
 histo_array_high = []
 
+t_low =  ['0.1', '0.2', '0.3', '0.4'] # ['0.1', '0.15',
+t_med = ['0.65', '0.9']
+t_high = ['1.4', '1.9']#, '1.7', '1.9']
+
+pt_diff_array = []
+tslope_array = []
+
 ## DEFINE CUTS ##
 #TODO cuts to not be just-in-time compiled
 
@@ -175,10 +182,10 @@ f1_kstar_all_cut.SetLineColor(4)
 # UNCOMMENT FOR SIGNAL REGION FILTER 
 # data_mc_comparison_df = df.Filter(f1_region)
 # data_mc_comparison_df.Snapshot(f'pipkmks_signal_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_signal_filtered_{run_period_dict[run_period]}.root')
-# print('cut file written in {} seconds'.format(time.time() - start_time))
 
 # UNCOMMENT FOR FULL MASS SPECTRUM FILTERED DATA 
 df.Snapshot(f'pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_period_dict[run_period]}.root')
+
 print('cut file written in {} seconds'.format(time.time() - start_time))
 
 ## LOOP OVER ENERGY AND T BINS ## 
@@ -191,13 +198,6 @@ for beam_value in range(5, 11):
 
 
 print("beam cuts done in {} seconds".format(time.time() - start_time))
-
-t_low =  ['0.1', '0.2', '0.3', '0.4'] # ['0.1', '0.15',
-t_med = ['0.65', '0.9']
-t_high = ['1.4', '1.9']#, '1.7', '1.9']
-
-pt_diff_array = []
-tslope_array = []
 
 for cut in f1_cut_list:
     # print(cut)
