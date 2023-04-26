@@ -1,5 +1,6 @@
 # compare data and MC with cuts applied post analysis script running
-# f1 region cut has already been applied
+# need to apply f1_region cut 
+#TODO re-run analysis script with f1_region cut AND not applied
 
 import ROOT
 import math
@@ -13,11 +14,11 @@ run_dict = {
 
 ROOT.gROOT.SetBatch(True) # run ROOT in batch mode to create canvas without drawing to screen
 
-data_filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_signal_filtered_{run_dict[run_period]}.root'
-mc_filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_signal_filtered_{run_dict[run_period]}.root'
+data_filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_dict[run_period]}.root'
+mc_filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_filtered_{run_dict[run_period]}.root'
 
-data_tree_name = 'pipkmks_signal_filtered_2018_spring'
-mc_tree_name = 'mc_pipkmks_signal_filtered_2018_spring'
+data_tree_name = 'pipkmks_filtered_2018_spring'
+mc_tree_name = 'mc_pipkmks_filtered_2018_spring'
 
 data_df = ROOT.RDataFrame(data_tree_name, data_filename)
 mc_df = ROOT.RDataFrame(mc_tree_name, mc_filename)
@@ -55,8 +56,11 @@ mc_df = mc_df.Define("km_phi", "atan2(km_py, km_px)*(180.0/3.1415926535897932384
 mc_df = mc_df.Define("p_phi", "atan2(p_py, p_px)*(180.0/3.141592653589793238463)")
 mc_df = mc_df.Define("p_p", "sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)")
 
-data_df = data_df.Filter("p_p > 0.4")
-mc_df = mc_df.Filter("p_p > 0.4")
+pp_cut = "p_p > 0.4"
+f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
+
+data_df = data_df.Filter(pp_cut).Filter(f1_region)
+mc_df = mc_df.Filter(pp_cut).Filter(f1_region)
 
 angular_variables = ['pip1_theta', 'pip2_theta', 'pim_theta', 'km_theta', 'p_theta', 
                      'pip1_phi', 'pip2_phi', 'pim_phi', 'km_phi', 'p_phi']
@@ -67,6 +71,12 @@ target_file_name = f'/work/halld/home/viducic/plots/data_mc_compare/data_mc_comp
 target_file = ROOT.TFile(target_file_name, 'RECREATE')
 
 canvas_array = []
+
+pdf_filename = '/w/halld-scshelf2101/home/viducic/plots/data_mc_compare/mc_data_pipkmks_comparison.pdf'
+
+c1 = ROOT.TCanvas("c1", "c1", 1200, 900)
+c1.Print(pdf_filename + "[")
+c1.Clear();
 
 for variable in all_variables:
     # print(variable)
@@ -82,6 +92,18 @@ for variable in all_variables:
     mc_hist.Draw("HIST SAME")
     c.Update()
     c.Write()
+
+    c1.cd()
+    data_hist.Draw("HIST")
+    mc_hist.Draw("HIST SAME")
+    c1.Update()
+    if(variable != all_variables[-1]):
+        c1.Print(pdf_filename)
+        c1.Clear()
+    else:
+        c1.Print(pdf_filename+']')
+    
+
     # canvas_array.append(c)
     # del(c)
 
