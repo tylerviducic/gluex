@@ -2,6 +2,9 @@
 
 import ROOT
 import time
+import os
+
+# os.nice(18)
 
 ROOT.gStyle.SetOptStat(0)
 ROOT.EnableImplicitMT()
@@ -54,7 +57,6 @@ kstar_cut_dict = {
 }
 
 f1_cut_list = [kstar_no_cut, kstar_plus_cut, kstar_zero_cut, kstar_all_cut]
-
 
 df = ROOT.RDataFrame(treename, filename)
 

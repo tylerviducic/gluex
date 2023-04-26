@@ -2,6 +2,9 @@
 
 import ROOT
 import time
+import os 
+
+# os.nice(18)
 
 ROOT.gStyle.SetOptStat(0)
 ROOT.EnableImplicitMT()
@@ -14,7 +17,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'spring'
+run_period = 'fall'
 
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_bestX2_{run_period}.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
