@@ -3,6 +3,9 @@
 import ROOT
 import time
 
+ROOT.gStyle.SetOptStat(0)
+ROOT.EnableImplicitMT()
+
 start_time = time.time()
 
 run_period_dict = {
