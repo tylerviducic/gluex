@@ -14,7 +14,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'fall'
+run_period = 'spring'
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
 treename = 'pipkmks__B4_M16'
 
@@ -139,6 +139,7 @@ print("cut 4 done in {} seconds".format(time.time() - start_time))
 ## MAKE HISTOGRAMS ##
 
 ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
+
 f1_nocut = df.Histo1D(('f1_nocut', 'f1_nocut', 50, 1.0, 1.7), 'pipkmks_m')
 f1_kstar_plus_cut = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut', 'f1_kstar_plus_cut', 50, 1.0, 1.7), 'pipkmks_m')
 f1_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut', 'f1_kstar_zero_cut', 50, 1.0, 1.7), 'pipkmks_m')
@@ -160,7 +161,6 @@ f1_kstar_plus_cut_wide = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut_w
 f1_kstar_zero_cut_narrow = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_narrow', 'f1_kstar_zero_cut_narrow', 50, 1.0, 1.7), 'pipkmks_m')
 f1_kstar_zero_cut_medium = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_medium', 'f1_kstar_zero_cut_medium', 100, 1.0, 2.5), 'pipkmks_m')
 f1_kstar_zero_cut_wide = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_wide', 'f1_kstar_zero_cut_wide', 200, 1.0, 3.8), 'pipkmks_m')
-
 
 f1_mass_range_all.SetLineColor(1)
 f1_mass_range_none.SetLineColor(2)
