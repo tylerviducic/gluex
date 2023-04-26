@@ -76,11 +76,6 @@ df = df.Define('ppip_pz', 'pip1_pz + p_pz')
 df = df.Define('ppip_E', 'pip1_E + p_E')
 df = df.Define('ppip_m', 'sqrt(ppip_E*ppip_E - ppip_px*ppip_px - ppip_py*ppip_py - ppip_pz*ppip_pz)')
 
-df = df.Define('ppip_px', 'pip1_px + p_px')
-df = df.Define('ppip_py', 'pip1_py + p_py')
-df = df.Define('ppip_pz', 'pip1_pz + p_pz')
-df = df.Define('ppip_E', 'pip1_E + p_E')
-df = df.Define('ppip_m', 'sqrt(ppip_E*ppip_E - ppip_px*ppip_px - ppip_py*ppip_py - ppip_pz*ppip_pz)')
 
 df = df.Define('missing_px', '-p_px - pip1_px - ks_px - km_px')
 df = df.Define('missing_py', '-p_py - pip1_py - ks_py - km_py')
