@@ -5,6 +5,12 @@
 import ROOT
 import math
 
+def get_taller_hist(hist1, hist2):
+    if hist1.GetMaximum() > hist2.GetMaximum():
+        return (hist1, hist2)
+    else:
+        return (hist2, hist1)
+
 run_period = 'spring'
 run_dict = {
     'spring': '2018_spring',
@@ -30,6 +36,20 @@ kinematic_variables = ['e_beam',
                        'km_px', 'km_py', 'km_pz', 'km_E', 
                        'p_px', 'p_py', 'p_pz', 'p_E', 'vertex_distance', 'mand_t', 'w', 's']
 
+angular_variables = ['pip1_theta', 'pip2_theta', 'pim_theta', 'km_theta', 'p_theta', 
+                     'pip1_phi', 'pip2_phi', 'pim_phi', 'km_phi', 'p_phi']
+
+hist_range_dict = {
+                       'e_beam': [4.0, 12.0], 
+                       'pip1_px': [-0.6, 0.6], 'pip1_py': [-0.6, 0.6], 'pip1_pz': [0.0, 7.0], 'pip1_E': [0.0, 7.0], 
+                       'pip2_px': [-0.6, 0.6], 'pip2_py': [-0.6, 0.6], 'pip2_pz': [0.0, 7.0], 'pip2_E': [0.0, 7.0], 
+                       'pim_px': [-0.6, 0.6], 'pim_py': [-0.6, 0.6], 'pim_pz': [0.0, 7.0], 'pim_E': [0.0, 7.0], 
+                       'km_px': [-0.6, 0.6], 'km_py': [-0.6, 0.6], 'km_pz': [0.0, 7.0], 'km_E': [0.0, 7.0], 
+                       'p_px': [-1.5, 1.5], 'p_py': [-1.5, 1.5], 'p_pz': [0.0, 3.0], 'p_E': [0.0, 3.0], 
+                       'vertex_distance': [0.0, 150.0], 'mand_t': [0.0, 4.0], 'w': [3.0, 5.0], 's': [5.0, 25.0],
+                       'pip1_theta': [0.0, 60.0], 'pip2_theta': [0.0, 60.0], 'pim_theta': [0.0, 80.0], 'km_theta': [0.0, 40.0], 'p_theta': [0.0, 70.0], 
+                       'pip1_phi': [0.0, 180.0], 'pip2_phi': [0.0, 180.0], 'pim_phi': [0.0, 180.0], 'km_phi': [0.0, 180.0], 'p_phi': [0.0, 180.0]
+                    }
 
 
 data_df = data_df.Define("pip1_theta", "atan2( sqrt(pip1_px*pip1_px + pip1_py*pip1_py), pip1_pz)*(180.0/3.141592653589793238463)")
@@ -62,8 +82,6 @@ f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
 data_df = data_df.Filter(pp_cut).Filter(f1_region)
 mc_df = mc_df.Filter(pp_cut).Filter(f1_region)
 
-angular_variables = ['pip1_theta', 'pip2_theta', 'pim_theta', 'km_theta', 'p_theta', 
-                     'pip1_phi', 'pip2_phi', 'pim_phi', 'km_phi', 'p_phi']
 
 all_variables = kinematic_variables + angular_variables
 
@@ -80,32 +98,46 @@ c1.Clear();
 
 for variable in all_variables:
     # print(variable)
-    c = ROOT.TCanvas(variable, variable, 1200, 900)
-    c.cd()
-    data_hist = data_df.Histo1D(variable)
-    mc_hist = mc_df.Histo1D(variable)
-    data_hist.Scale(1.0/data_hist.Integral())
-    mc_hist.Scale(1.0/mc_hist.Integral())
-    data_hist.SetLineColor(ROOT.kBlue)
-    mc_hist.SetLineColor(ROOT.kRed)
-    data_hist.Draw("HIST")
-    mc_hist.Draw("HIST SAME")
-    c.Update()
-    c.Write()
+    if (variable in angular_variables):
+        n_bins = 50
+    else:
+        n_bins = 100
 
     c1.cd()
-    data_hist.Draw("HIST")
-    mc_hist.Draw("HIST SAME")
-    c1.Update()
-    if(variable != all_variables[-1]):
-        c1.Print(pdf_filename)
-        c1.Clear()
-    else:
-        c1.Print(pdf_filename+']')
-    
 
-    # canvas_array.append(c)
-    # del(c)
+    if variable.split("_")[0] == ('pip2' or 'pim'):
+        print(variable.split("_")[0])
+        print(variable.split("_")[0] == ('pip2' or 'pim'))
+        hist_name = "ks_" + variable
+    else:
+        hist_name = variable
+
+    data_hist = data_df.Histo1D((hist_name, hist_name, n_bins, hist_range_dict[variable][0], hist_range_dict[variable][1]), variable)
+    mc_hist = mc_df.Histo1D((hist_name, hist_name, n_bins, hist_range_dict[variable][0], hist_range_dict[variable][1]), variable)
+    data_hist.Scale(1.0/data_hist.Integral())
+    mc_hist.Scale(1.0/mc_hist.Integral())
+
+    if variable in kinematic_variables:
+        print(variable)
+        c1.SetLogy()
+    else:
+        c1.SetLogy(0)
+
+    hists_by_size = get_taller_hist(data_hist, mc_hist) 
+
+    data_hist.SetLineColor(ROOT.kBlue)
+    mc_hist.SetLineColor(ROOT.kRed)
+
+
+    hists_by_size[0].Draw("HIST")
+    hists_by_size[1].Draw("HIST SAME")
+    c1.Update()
+    c1.Write()
+    c1.Print(pdf_filename)
+    c1.Clear()
+
+c1.Print(pdf_filename+']')
+target_file.Close()
 
 
 
