@@ -4,12 +4,11 @@ import ROOT
 filename = "/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_thrown_fall.root"
 treename = "pipkmks_thrown"
 
-
-target_file = ROOT.TFile(f'pipkmks_t_binned_thrown_0_2_{beam}_fall.root', 'RECREATE')
-
 df = ROOT.RDataFrame(treename, filename)
-
+# some code here
 print(df.GetColumnNames())
+
+#some more code here
 
 ##############################
 ## OLD AND DEPRECIATED CODE ##
