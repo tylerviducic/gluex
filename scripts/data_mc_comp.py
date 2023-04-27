@@ -106,8 +106,6 @@ for variable in all_variables:
     c1.cd()
 
     if variable.split("_")[0] == ('pip2' or 'pim'):
-        print(variable.split("_")[0])
-        print(variable.split("_")[0] == ('pip2' or 'pim'))
         hist_name = "ks_" + variable
     else:
         hist_name = variable
