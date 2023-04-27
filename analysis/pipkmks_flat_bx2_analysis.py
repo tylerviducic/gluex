@@ -3,13 +3,15 @@
 import ROOT
 import time
 import os
+import pdb
 
 # os.nice(18)
 
 ROOT.gStyle.SetOptStat(0)
-ROOT.EnableImplicitMT()
+# ROOT.EnableImplicitMT()
 
 start_time = time.time()
+
 
 run_period_dict = {
     'spring': '2018_spring',
@@ -43,6 +45,8 @@ ks_mass_cut = 'ks_m > 0.45 && ks_m < 0.55'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
+beam_range = 'e_beam > 6.50000000000 && e_beam <= 10.5'
+t_range = 't <= 1.9'
 
 kstar_no_cut = "no_cut"
 kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
@@ -57,6 +61,25 @@ kstar_cut_dict = {
 }
 
 f1_cut_list = [kstar_no_cut, kstar_plus_cut, kstar_zero_cut, kstar_all_cut]
+
+t_bin_filter = """
+int get_t_bin_index(double t) {
+    if (t < 0.4) {
+        return static_cast<int>((t-0.1)/0.1)+1;
+    }
+    else if (t > 0.4 && t <= 0.65) {
+        return static_cast<int>((t-0.4)/0.25)+5;
+    }
+    else if (t > 0.9 && t <= 1.9) {
+        return static_cast<int>((t-0.9)/0.5)+7;
+    }
+    else {
+        return -1;
+    }
+}
+"""
+
+ROOT.gInterpreter.Declare(t_bin_filter)
 
 df = ROOT.RDataFrame(treename, filename)
 
@@ -134,6 +157,12 @@ df = df.Define('kmks_pz', 'km_pz + ks_pz')
 df = df.Define('kmks_E', 'km_E + ks_E')
 df = df.Define('kmks_m', 'sqrt(kmks_E*kmks_E - kmks_px*kmks_px - kmks_py*kmks_py - kmks_pz*kmks_pz)')
 
+df = df.Define('e_bin', 'int(e_beam-6.5) +1')
+df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
+# df.Display(['e_beam', 'e_bin'], 100).Print()
+
+pdb.set_trace()
+
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
 df = df.Filter(ks_pathlength_cut)
@@ -144,6 +173,7 @@ df = df.Filter(ppim_mass_cut)
 print("cut 3 done in {} seconds".format(time.time() - start_time))
 df = df.Filter(kmp_mass_cut)
 print("cut 4 done in {} seconds".format(time.time() - start_time))
+df = df.Filter(beam_range).Filter(t_range)
 
 ## MAKE HISTOGRAMS ##
 
