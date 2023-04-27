@@ -5,6 +5,7 @@ filename = "/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkm
 treename = "pipkmks_thrown"
 
 df = ROOT.RDataFrame(treename, filename)
+
 # some code here
 print(df.GetColumnNames())
 
@@ -15,6 +16,9 @@ print(df.GetColumnNames())
 ##############################
 
 # beam = 10 
+
+
+# target_file = ROOT.TFile(f'pipkmks_t_binned_thrown_0_2_{beam}_fall.root', 'RECREATE')
 
 # df = df.Define("f1_px", "PiPlus1_px + KMinus_px + Ks_px")
 # df = df.Define("f1_py", "PiPlus1_py + KMinus_py + Ks_py")
