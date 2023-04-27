@@ -6,7 +6,11 @@ treename = "pipkmks_thrown"
 
 df = ROOT.RDataFrame(treename, filename)
 
-print(df.GetColumnNames())
+# print(df.GetColumnNames())
+
+n_total = df.Count().GetValue()
+n_gen = df.Filter('Beam_E >= 8.0 && Beam_E <= 10.0').Count().GetValue()
+print(f'Between beam energy 8.0 to 10.0 GeV [Inclusive], {n_gen} events were generated ({n_gen/n_total*100}% of total events)')
 
 ##############################
 ## OLD AND DEPRECIATED CODE ##
