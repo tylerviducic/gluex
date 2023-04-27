@@ -11,7 +11,7 @@ void DSelector_mc_pipkmks_phasespace_flat::Init(TTree *locTree)
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "mc_pimkpks_phasespace_flat_bestX2_fall.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "mc_pipkmks_phasespace_flat_bestX2_spring.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.
