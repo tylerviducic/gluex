@@ -20,8 +20,8 @@ run_period_dict = {
 }
 
 run_period = 'spring'
-filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
-treename = 'pipkmks__ks_pippim__B4_M16'
+filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_phasespace_flat_bestX2_{run_period}.root'
+treename = 'pipkmks__ks_pippim__M16'
 
 histo_array = []
 

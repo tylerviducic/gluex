@@ -4,12 +4,14 @@ import ROOT
 import time
 import os
 
-# os.nice(18)
 
-ROOT.gStyle.SetOptStat(0)
+os.nice(18)
 ROOT.EnableImplicitMT()
 
+ROOT.gStyle.SetOptStat(0)
+
 start_time = time.time()
+
 
 run_period_dict = {
     'spring': '2018_spring',
@@ -21,17 +23,20 @@ run_period = 'spring'
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
 treename = 'pipkmks__B4_M16'
 
-beam_df_array = []
-histo_array_low = []
-histo_array_med = []
-histo_array_high = []
+histo_array = []
 
-t_low =  ['0.1', '0.2', '0.3', '0.4'] # ['0.1', '0.15',
+t_low =  ['0.1', '0.2', '0.3', '0.4']
 t_med = ['0.65', '0.9']
-t_high = ['1.4', '1.9']#, '1.7', '1.9']
+t_high = ['1.4', '1.9']
 
-pt_diff_array = []
-tslope_array = []
+t_dict = {
+    1: (0.0, 0.1), 2: (0.1, 0.2), 3: (0.2, 0.3), 4: (0.3, 0.4), 
+    5: (0.4, 0.65), 6: (0.65, 0.9), 7: (0.9, 1.4), 8: (1.4, 1.9)
+}
+
+beam_dict = {
+    1: (6.5, 7.5), 2: (7.5, 8.5), 3: (8.5, 9.5), 4: (9.5, 10.5)
+}
 
 ## DEFINE CUTS ##
 #TODO cuts to not be just-in-time compiled
@@ -43,14 +48,16 @@ ks_mass_cut = 'ks_m > 0.45 && ks_m < 0.55'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
+beam_range = 'e_beam > 6.50000000000 && e_beam <= 10.5'
+t_range = 'mand_t <= 1.9'
 
-kstar_no_cut = "no_cut"
+kstar_no_cut = 'kspip_m > 0.0'
 kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
 kstar_zero_cut = 'kmpip_m < 0.8 || kmpip_m > 1.0'
 kstar_all_cut = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
 
 kstar_cut_dict = {
-    'no_cut': 'kstar_no_cut',
+    'kspip_m > 0.0': 'kstar_no_cut',
     'kspip_m < 0.8 || kspip_m > 1.0': 'kstar_plus_cut',
     'kmpip_m < 0.8 || kmpip_m > 1.0': 'kstar_zero_cut',
     '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)': 'kstar_all_cut'
@@ -58,10 +65,28 @@ kstar_cut_dict = {
 
 f1_cut_list = [kstar_no_cut, kstar_plus_cut, kstar_zero_cut, kstar_all_cut]
 
+t_bin_filter = """
+int get_t_bin_index(double t) {
+    if (t <= 0.4) {
+        return static_cast<int>(t/0.1)+1;
+    }
+    else if (t > 0.4 && t <= 0.9) {
+        return static_cast<int>((t-0.4)/0.25)+5;
+    }
+    else if (t > 0.9 && t <= 1.9) {
+        return static_cast<int>((t-0.9)/0.5)+7;
+    }
+    else {
+        return -1;
+    }
+}
+"""
+
+ROOT.gInterpreter.Declare(t_bin_filter)
+
+## LOAD IN DATA ##
+
 df = ROOT.RDataFrame(treename, filename)
-
-# print(df.GetColumnNames())
-
 
 ## DEFINE ALL NECESSARY COLUMNS ##
 
@@ -134,6 +159,10 @@ df = df.Define('kmks_pz', 'km_pz + ks_pz')
 df = df.Define('kmks_E', 'km_E + ks_E')
 df = df.Define('kmks_m', 'sqrt(kmks_E*kmks_E - kmks_px*kmks_px - kmks_py*kmks_py - kmks_pz*kmks_pz)')
 
+df = df.Define('e_bin', 'int(e_beam-6.5) +1')
+df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
+
+
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
 df = df.Filter(ks_pathlength_cut)
@@ -145,97 +174,52 @@ print("cut 3 done in {} seconds".format(time.time() - start_time))
 df = df.Filter(kmp_mass_cut)
 print("cut 4 done in {} seconds".format(time.time() - start_time))
 
+
 ## MAKE HISTOGRAMS ##
 
 ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
-f1_nocut = df.Histo1D(('f1_nocut', 'f1_nocut', 50, 1.0, 1.7), 'pipkmks_m')
-f1_kstar_plus_cut = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut', 'f1_kstar_plus_cut', 50, 1.0, 1.7), 'pipkmks_m')
-f1_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut', 'f1_kstar_zero_cut', 50, 1.0, 1.7), 'pipkmks_m')
-f1_kstar_all_cut = df.Filter(kstar_all_cut).Histo1D(('f1_kstar_all_cut', 'f1_kstar_all_cut', 50, 1.0, 1.7), 'pipkmks_m')
+## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
+## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
+# df.Snapshot(f'pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_period_dict[run_period]}.root')
 
-f1_mass_range_all = df.Filter(kstar_all_cut).Histo1D(('massrange_all', 'massrange_all', 200, 1.0, 4.0), 'pipkmks_m')
-f1_mass_range_none = df.Histo1D(('massrange_none', 'massrange_none', 200, 1.0, 4.0), 'pipkmks_m')
-f1_mass_range_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('massrange_kstar_zero_cut', 'massrange_kstar_zero_cut', 200, 1.0, 4.0), 'pipkmks_m')
-f1_mass_range_kstar_plus_cut = df.Filter(kstar_plus_cut).Histo1D(('massrange_kstar_plus_cut', 'massrange_kstar_plus_cut', 200, 1.0, 4.0), 'pipkmks_m')
 
-f1_nocut_narrow = df.Histo1D(('f1_nocut_narrow', 'f1_nocut_narrow', 50, 1.0, 1.7), 'pipkmks_m')
-f1_nocut_medium = df.Histo1D(('f1_nocut_medium', 'f1_nocut_medium', 100, 1.0, 2.5), 'pipkmks_m')
-f1_nocut_wide = df.Histo1D(('f1_nocut_wide', 'f1_nocut_wide', 200, 1.0, 3.8), 'pipkmks_m')
-
-f1_kstar_plus_cut_narrow = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut_narrow', 'f1_kstar_plus_cut_narrow', 50, 1.0, 1.7), 'pipkmks_m')
-f1_kstar_plus_cut_medium = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut_medium', 'f1_kstar_plus_cut_medium', 100, 1.0, 2.5), 'pipkmks_m')
-f1_kstar_plus_cut_wide = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut_wide', 'f1_kstar_plus_cut_wide', 200, 1.0, 3.8), 'pipkmks_m')
-
-f1_kstar_zero_cut_narrow = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_narrow', 'f1_kstar_zero_cut_narrow', 50, 1.0, 1.7), 'pipkmks_m')
-f1_kstar_zero_cut_medium = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_medium', 'f1_kstar_zero_cut_medium', 100, 1.0, 2.5), 'pipkmks_m')
-f1_kstar_zero_cut_wide = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_wide', 'f1_kstar_zero_cut_wide', 200, 1.0, 3.8), 'pipkmks_m')
-
-f1_mass_range_all.SetLineColor(1)
-f1_mass_range_none.SetLineColor(2)
-f1_mass_range_kstar_zero_cut.SetLineColor(6)
-f1_mass_range_kstar_plus_cut.SetLineColor(4)
-
-f1_nocut.SetLineColor(1)
-f1_kstar_plus_cut.SetLineColor(2)
-f1_kstar_zero_cut.SetLineColor(6)
-f1_kstar_all_cut.SetLineColor(4)
-
-# UNCOMMENT FOR SIGNAL REGION FILTER 
-# data_mc_comparison_df = df.Filter(f1_region)
-# data_mc_comparison_df.Snapshot(f'pipkmks_signal_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_signal_filtered_{run_period_dict[run_period]}.root')
-
-# UNCOMMENT FOR FULL MASS SPECTRUM FILTERED DATA 
-df.Snapshot(f'pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_period_dict[run_period]}.root')
+## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
+df = df.Filter(beam_range).Filter(t_range)
 
 print('cut file written in {} seconds'.format(time.time() - start_time))
 
-## LOOP OVER ENERGY AND T BINS ## 
-#TODO - refactor beam cuts to be columns in the df
+## DEFINE FUNCTION TO LOOP OVER ENERGY AND T BINS ##
 
-for beam_value in range(5, 11):
-    beam_low = beam_value - 0.5
-    beam_high = beam_value + 0.5
-    beam_df_array.append(df.Filter('e_beam > {} && e_beam <= {}'.format(beam_low, beam_high)))
+def fill_and_store_histograms(hlist, filtered_df, n_e_bins, n_t_bins, cut):
+        cut_name = kstar_cut_dict[cut]
+        
+        hlist.append(filtered_df.Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+
+        for energy_index in range(1, n_e_bins+1):
+            beam_low = beam_dict[energy_index][0]
+            beam_high = beam_dict[energy_index][1]
+            hlist.append(filtered_df.Filter(f'e_bin == {energy_index}').Histo1D(('tslope_{}_beam_{}-{}'.format(kstar_cut_dict[cut], beam_low, beam_high), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+            hlist.append(filtered_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_narrow'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_narrow'.format(beam_low, beam_high, cut_name), 50, 1.0, 1.7), 'pipkmks_m'))
+            hlist.append(filtered_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_medium'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_medium'.format(beam_low, beam_high, cut_name), 100, 1.0, 2.5), 'pipkmks_m'))
+            hlist.append(filtered_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_wide'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_wide'.format(beam_low, beam_high, cut_name), 200, 1.0, 3.8), 'pipkmks_m'))
 
 
-print("beam cuts done in {} seconds".format(time.time() - start_time))
+            for t_index in range(1, n_t_bins+1):
+                t_low = t_dict[t_index][0]
+                t_high = t_dict[t_index][1]
+                histo_array.append(filtered_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
+                histo_array.append(filtered_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 100, 1.0, 2.5), 'pipkmks_m'))
+                histo_array.append(filtered_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 200, 1.0, 3.8), 'pipkmks_m'))
+
+        return hlist
+
+## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
 
 for cut in f1_cut_list:
-    # print(cut)
-    # print(kstar_cut_dict[cut])
-    if(cut == 'no_cut'):
-        pt_diff_array.append(df.Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
-        tslope_array.append(df.Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
-    else:
-        pt_diff_array.append(df.Filter(cut).Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
-        tslope_array.append(df.Filter(cut).Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+    histo_array = fill_and_store_histograms(histo_array, df.Filter(cut), 4, 8, cut=cut)
+         
     
-    histo_name = kstar_cut_dict[cut]
-
-    for i in range(len(beam_df_array)):
-
-        #TODO refactor this to filter on beam value instead of adding an entire array of dataframes
-        beam = i + 5
-
-        if(cut == "no_cut"):
-            cut_df = beam_df_array[i]
-        else:
-            cut_df = beam_df_array[i].Filter(cut)
-            
-        for t in t_low:
-            histo_array_low.append(cut_df.Filter('mand_t > ({} - 0.1) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, histo_name), 50, 1.0, 1.7), 'pipkmks_m'))
-            histo_array_low.append(cut_df.Filter('mand_t > ({} - 0.1) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, histo_name), 100, 1.0, 2.5), 'pipkmks_m'))
-            histo_array_low.append(cut_df.Filter('mand_t > ({} - 0.1) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, histo_name), 200, 1.0, 3.8), 'pipkmks_m'))
-        for t in t_med:
-            histo_array_med.append(cut_df.Filter('mand_t > ({} - 0.25) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, histo_name), 50, 1.0, 1.7), 'pipkmks_m'))
-            histo_array_med.append(cut_df.Filter('mand_t > ({} - 0.25) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, histo_name), 100, 1.0, 2.5), 'pipkmks_m'))
-            histo_array_med.append(cut_df.Filter('mand_t > ({} - 0.25) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, histo_name), 200, 1.0, 3.8), 'pipkmks_m'))
-        for t in t_high:
-            histo_array_high.append(cut_df.Filter('mand_t > ({} - 0.5) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, histo_name), 50, 1.0, 1.7), 'pipkmks_m'))
-            histo_array_high.append(cut_df.Filter('mand_t > ({} - 0.5) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, histo_name), 100, 1.0, 2.5), 'pipkmks_m'))
-            histo_array_high.append(cut_df.Filter('mand_t > ({} - 0.5) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, histo_name), 'pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, histo_name), 200, 1.0, 3.8), 'pipkmks_m'))
-
 print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
@@ -243,33 +227,11 @@ print("histos done in {} seconds".format(time.time() - start_time))
 target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
-for histo in histo_array_low:
-    histo.Write()
-print("low t histos written in {} seconds".format(time.time() - start_time))
-for histo in histo_array_med:
-    histo.Write()
-print("med t histos written in {} seconds".format(time.time() - start_time))
-for histo in histo_array_high:
-    histo.Write()
-print("high t histos written in {} seconds".format(time.time() - start_time))
 
-f1_nocut.Write()
-f1_kstar_plus_cut.Write()
-f1_kstar_zero_cut.Write()
-f1_kstar_all_cut.Write()
-f1_nocut_narrow.Write()
-f1_nocut_medium.Write()
-f1_nocut_wide.Write()
-f1_kstar_plus_cut_narrow.Write()
-f1_kstar_plus_cut_medium.Write()
-f1_kstar_plus_cut_wide.Write()
-f1_kstar_zero_cut_narrow.Write()
-f1_kstar_zero_cut_medium.Write()
-f1_kstar_zero_cut_wide.Write()
 ks_m.Write()
 
-for slope in tslope_array:
-    slope.Write()
+for histo in histo_array:
+    histo.Write()
 
 
 print("histos written in {} seconds".format(time.time() - start_time))
@@ -342,3 +304,109 @@ target_file.Close()
 # target_file.Close()
 
 # c1.Update()
+
+    # for i in range(len(beam_df_array)):
+
+    #     beam = i + 5
+
+    #     if(cut == "no_cut"):
+    #         cut_df = beam_df_array[i]
+    #     else:
+    #         cut_df = beam_df_array[i].Filter(cut)
+            
+    #     for t in t_low:
+    #         histo_array_low.append(cut_df.Filter('mand_t > ({} - 0.1) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, cut_name), 50, 1.0, 1.7), 'pipkmks_m'))
+    #         histo_array_low.append(cut_df.Filter('mand_t > ({} - 0.1) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, cut_name), 100, 1.0, 2.5), 'pipkmks_m'))
+    #         histo_array_low.append(cut_df.Filter('mand_t > ({} - 0.1) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, cut_name), 200, 1.0, 3.8), 'pipkmks_m'))
+    #     for t in t_med:
+    #         histo_array_med.append(cut_df.Filter('mand_t > ({} - 0.25) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, cut_name), 50, 1.0, 1.7), 'pipkmks_m'))
+    #         histo_array_med.append(cut_df.Filter('mand_t > ({} - 0.25) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, cut_name), 100, 1.0, 2.5), 'pipkmks_m'))
+    #         histo_array_med.append(cut_df.Filter('mand_t > ({} - 0.25) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, cut_name), 200, 1.0, 3.8), 'pipkmks_m'))
+    #     for t in t_high:
+    #         histo_array_high.append(cut_df.Filter('mand_t > ({} - 0.5) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_narrow'.format(beam, t, cut_name), 50, 1.0, 1.7), 'pipkmks_m'))
+    #         histo_array_high.append(cut_df.Filter('mand_t > ({} - 0.5) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_medium'.format(beam, t, cut_name), 100, 1.0, 2.5), 'pipkmks_m'))
+    #         histo_array_high.append(cut_df.Filter('mand_t > ({} - 0.5) && mand_t <= {}'.format(t, t)).Histo1D(('pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, cut_name), 'pipkmks_beam_{}_t_{}_{}_wide'.format(beam, t, cut_name), 200, 1.0, 3.8), 'pipkmks_m'))
+
+# for histo in histo_array_low:
+#     histo.Write()
+# print("low t histos written in {} seconds".format(time.time() - start_time))
+# for histo in histo_array_med:
+#     histo.Write()
+# print("med t histos written in {} seconds".format(time.time() - start_time))
+# for histo in histo_array_high:
+#     histo.Write()
+# print("high t histos written in {} seconds".format(time.time() - start_time))
+
+# f1_nocut = df.Histo1D(('f1_nocut', 'f1_nocut', 50, 1.0, 1.7), 'pipkmks_m')
+# f1_kstar_plus_cut = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut', 'f1_kstar_plus_cut', 50, 1.0, 1.7), 'pipkmks_m')
+# f1_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut', 'f1_kstar_zero_cut', 50, 1.0, 1.7), 'pipkmks_m')
+# f1_kstar_all_cut = df.Filter(kstar_all_cut).Histo1D(('f1_kstar_all_cut', 'f1_kstar_all_cut', 50, 1.0, 1.7), 'pipkmks_m')
+
+# f1_mass_range_all = df.Filter(kstar_all_cut).Histo1D(('massrange_all', 'massrange_all', 200, 1.0, 4.0), 'pipkmks_m')
+# f1_mass_range_none = df.Histo1D(('massrange_none', 'massrange_none', 200, 1.0, 4.0), 'pipkmks_m')
+# f1_mass_range_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('massrange_kstar_zero_cut', 'massrange_kstar_zero_cut', 200, 1.0, 4.0), 'pipkmks_m')
+# f1_mass_range_kstar_plus_cut = df.Filter(kstar_plus_cut).Histo1D(('massrange_kstar_plus_cut', 'massrange_kstar_plus_cut', 200, 1.0, 4.0), 'pipkmks_m')
+
+# f1_nocut_narrow = df.Histo1D(('f1_nocut_narrow', 'f1_nocut_narrow', 50, 1.0, 1.7), 'pipkmks_m')
+# f1_nocut_medium = df.Histo1D(('f1_nocut_medium', 'f1_nocut_medium', 100, 1.0, 2.5), 'pipkmks_m')
+# f1_nocut_wide = df.Histo1D(('f1_nocut_wide', 'f1_nocut_wide', 200, 1.0, 3.8), 'pipkmks_m')
+
+# f1_kstar_plus_cut_narrow = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut_narrow', 'f1_kstar_plus_cut_narrow', 50, 1.0, 1.7), 'pipkmks_m')
+# f1_kstar_plus_cut_medium = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut_medium', 'f1_kstar_plus_cut_medium', 100, 1.0, 2.5), 'pipkmks_m')
+# f1_kstar_plus_cut_wide = df.Filter(kstar_plus_cut).Histo1D(('f1_kstar_plus_cut_wide', 'f1_kstar_plus_cut_wide', 200, 1.0, 3.8), 'pipkmks_m')
+
+# f1_kstar_zero_cut_narrow = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_narrow', 'f1_kstar_zero_cut_narrow', 50, 1.0, 1.7), 'pipkmks_m')
+# f1_kstar_zero_cut_medium = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_medium', 'f1_kstar_zero_cut_medium', 100, 1.0, 2.5), 'pipkmks_m')
+# f1_kstar_zero_cut_wide = df.Filter(kstar_zero_cut).Histo1D(('f1_kstar_zero_cut_wide', 'f1_kstar_zero_cut_wide', 200, 1.0, 3.8), 'pipkmks_m')
+
+# f1_mass_range_all.SetLineColor(1)
+# f1_mass_range_none.SetLineColor(2)
+# f1_mass_range_kstar_zero_cut.SetLineColor(6)
+# f1_mass_range_kstar_plus_cut.SetLineColor(4)
+
+# f1_nocut.SetLineColor(1)
+# f1_kstar_plus_cut.SetLineColor(2)
+# f1_kstar_zero_cut.SetLineColor(6)
+# f1_kstar_all_cut.SetLineColor(4)
+
+# f1_nocut.Write()
+# f1_kstar_plus_cut.Write()
+# f1_kstar_zero_cut.Write()
+# f1_kstar_all_cut.Write()
+# f1_nocut_narrow.Write()
+# f1_nocut_medium.Write()
+# f1_nocut_wide.Write()
+# f1_kstar_plus_cut_narrow.Write()
+# f1_kstar_plus_cut_medium.Write()
+# f1_kstar_plus_cut_wide.Write()
+# f1_kstar_zero_cut_narrow.Write()
+# f1_kstar_zero_cut_medium.Write()
+# f1_kstar_zero_cut_wide.Write()
+
+    # if(cut == 'no_cut'):
+    #     pt_diff_array.append(df.Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
+    #     tslope_array.append(df.Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+
+    # else:
+    #     pt_diff_array.append(df.Filter(cut).Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
+    #     tslope_array.append(df.Filter(cut).Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+
+        # beam_low = beam_dict[beam_index][0]
+        # beam_high = beam_dict[beam_index][1]
+        # histo_array.append(df.Filter(f'e_bin == {beam_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_narrow'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_narrow'.format(beam_low, beam_high, cut_name), 50, 1.0, 1.7), 'pipkmks_m'))
+        # histo_array.append(df.Filter(f'e_bin == {beam_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_medium'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_medium'.format(beam_low, beam_high, cut_name), 100, 1.0, 2.5), 'pipkmks_m'))
+        # histo_array.append(df.Filter(f'e_bin == {beam_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_wide'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_wide'.format(beam_low, beam_high, cut_name), 200, 1.0, 3.8), 'pipkmks_m'))
+
+                # for t_index in range(1, 9):
+        #     t_low = t_dict[t_index][0]
+        #     t_high = t_dict[t_index][1]
+        #     cut_df = cut_df.Filter(f't_bin == {t_index}')
+        #     histo_array.append(cut_df.Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
+        #     histo_array.append(cut_df.Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 100, 1.0, 2.5), 'pipkmks_m'))
+        #     histo_array.append(cut_df.Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 200, 1.0, 3.8), 'pipkmks_m'))
+
+# pt_diff_array = []
+# tslope_array = []
+
+#for slope in tslope_array:
+    # slope.Write()
