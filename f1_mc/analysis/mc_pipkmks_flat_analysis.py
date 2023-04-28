@@ -161,7 +161,7 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-df.Snapshot(f'mc_pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_filtered_{run_period_dict[run_period]}.root')
+# df.Snapshot(f'mc_pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_filtered_{run_period_dict[run_period]}.root')
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
 df = df.Filter(beam_range).Filter(t_range)
