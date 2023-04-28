@@ -3,12 +3,12 @@
 import ROOT
 import time
 import os
-import pdb
+
 
 os.nice(18)
+ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
-ROOT.EnableImplicitMT()
 
 start_time = time.time()
 
@@ -25,9 +25,9 @@ treename = 'pipkmks__B4_M16'
 
 histo_array = []
 
-t_low =  ['0.1', '0.2', '0.3', '0.4'] # ['0.1', '0.15',
+t_low =  ['0.1', '0.2', '0.3', '0.4']
 t_med = ['0.65', '0.9']
-t_high = ['1.4', '1.9']#, '1.7', '1.9']
+t_high = ['1.4', '1.9']
 
 t_dict = {
     1: (0.0, 0.1), 2: (0.1, 0.2), 3: (0.2, 0.3), 4: (0.3, 0.4), 
@@ -37,9 +37,6 @@ t_dict = {
 beam_dict = {
     1: (6.5, 7.5), 2: (7.5, 8.5), 3: (8.5, 9.5), 4: (9.5, 10.5)
 }
-
-pt_diff_array = []
-tslope_array = []
 
 ## DEFINE CUTS ##
 #TODO cuts to not be just-in-time compiled
@@ -54,13 +51,13 @@ f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
 beam_range = 'e_beam > 6.50000000000 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
 
-kstar_no_cut = "no_cut"
+kstar_no_cut = 'kspip_m > 0.0'
 kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
 kstar_zero_cut = 'kmpip_m < 0.8 || kmpip_m > 1.0'
 kstar_all_cut = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
 
 kstar_cut_dict = {
-    'no_cut': 'kstar_no_cut',
+    'kspip_m > 0.0': 'kstar_no_cut',
     'kspip_m < 0.8 || kspip_m > 1.0': 'kstar_plus_cut',
     'kmpip_m < 0.8 || kmpip_m > 1.0': 'kstar_zero_cut',
     '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)': 'kstar_all_cut'
@@ -70,10 +67,10 @@ f1_cut_list = [kstar_no_cut, kstar_plus_cut, kstar_zero_cut, kstar_all_cut]
 
 t_bin_filter = """
 int get_t_bin_index(double t) {
-    if (t < 0.4) {
-        return static_cast<int>((t-0.1)/0.1)+1;
+    if (t <= 0.4) {
+        return static_cast<int>(t/0.1)+1;
     }
-    else if (t > 0.4 && t <= 0.65) {
+    else if (t > 0.4 && t <= 0.9) {
         return static_cast<int>((t-0.4)/0.25)+5;
     }
     else if (t > 0.9 && t <= 1.9) {
@@ -88,9 +85,6 @@ int get_t_bin_index(double t) {
 ROOT.gInterpreter.Declare(t_bin_filter)
 
 df = ROOT.RDataFrame(treename, filename)
-
-# print(df.GetColumnNames())
-
 
 ## DEFINE ALL NECESSARY COLUMNS ##
 
@@ -178,63 +172,50 @@ print("cut 3 done in {} seconds".format(time.time() - start_time))
 df = df.Filter(kmp_mass_cut)
 print("cut 4 done in {} seconds".format(time.time() - start_time))
 
-## MAKE DF TO BE USED IN E, T, AND CUT LOOP ##
-# i do not know if this is the most efficient way of doing this
 
 ## MAKE HISTOGRAMS ##
 
 ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
-
-# UNCOMMENT FOR SIGNAL REGION FILTER 
-# data_mc_comparison_df = df.Filter(f1_region)
-# data_mc_comparison_df.Snapshot(f'pipkmks_signal_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_signal_filtered_{run_period_dict[run_period]}.root')
-
-# UNCOMMENT FOR FULL MASS SPECTRUM FILTERED DATA 
+## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
+## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
 # df.Snapshot(f'pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_period_dict[run_period]}.root')
 
 df = df.Filter(beam_range).Filter(t_range)
 
 print('cut file written in {} seconds'.format(time.time() - start_time))
 
-## LOOP OVER K* CUTS, ENERGY BINS, AND T BINS ## 
+## DEFINE FUNCTION TO LOOP OVER ENERGY AND T BINS ##
 
-def add_mass_and_slope_to_list(hlist, rdf, n_e_bins, n_t_bins, cut='no_cut'):
+def fill_and_store_histograms(hlist, filtered_df, n_e_bins, n_t_bins, cut):
         cut_name = kstar_cut_dict[cut]
-        if(cut == 'no_cut'):
-            temp_df = rdf
-        else:
-            temp_df = rdf.Filter(cut)
         
-        hlist.append(temp_df.Histo1D(('pt_diff_{}'.format(kstar_cut_dict[cut]), 'pt_diff_{}'.format(kstar_cut_dict[cut]), 100, -0.5, 0.5), 'pipkmks_p_pt_diff'))
-        hlist.append(temp_df.Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+        hlist.append(filtered_df.Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
 
         for energy_index in range(1, n_e_bins+1):
             beam_low = beam_dict[energy_index][0]
             beam_high = beam_dict[energy_index][1]
-            hlist.append(temp_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_narrow'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_narrow'.format(beam_low, beam_high, cut_name), 50, 1.0, 1.7), 'pipkmks_m'))
-            hlist.append(temp_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_medium'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_medium'.format(beam_low, beam_high, cut_name), 100, 1.0, 2.5), 'pipkmks_m'))
-            hlist.append(temp_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_wide'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_wide'.format(beam_low, beam_high, cut_name), 200, 1.0, 3.8), 'pipkmks_m'))
+            hlist.append(filtered_df.Filter(f'e_bin == {energy_index}').Histo1D(('tslope_{}_beam_{}-{}'.format(kstar_cut_dict[cut], beam_low, beam_high), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+            hlist.append(filtered_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_narrow'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_narrow'.format(beam_low, beam_high, cut_name), 50, 1.0, 1.7), 'pipkmks_m'))
+            hlist.append(filtered_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_medium'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_medium'.format(beam_low, beam_high, cut_name), 100, 1.0, 2.5), 'pipkmks_m'))
+            hlist.append(filtered_df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_full_t_wide'.format(beam_low, beam_high, cut_name), 'pipkmks_beam_{}-{}_cut_{}_full_t_wide'.format(beam_low, beam_high, cut_name), 200, 1.0, 3.8), 'pipkmks_m'))
+
 
             for t_index in range(1, n_t_bins+1):
                 t_low = t_dict[t_index][0]
                 t_high = t_dict[t_index][1]
-                histo_array.append(temp_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
-                histo_array.append(temp_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 100, 1.0, 2.5), 'pipkmks_m'))
-                histo_array.append(temp_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 200, 1.0, 3.8), 'pipkmks_m'))
+                histo_array.append(filtered_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
+                histo_array.append(filtered_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 100, 1.0, 2.5), 'pipkmks_m'))
+                histo_array.append(filtered_df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 200, 1.0, 3.8), 'pipkmks_m'))
 
         return hlist
 
-
-
-    
+## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
 
 for cut in f1_cut_list:
-    # print(cut)
-    histo_array = add_mass_and_slope_to_list(histo_array, df, 4, 8, cut=cut)
+    histo_array = fill_and_store_histograms(histo_array, df.Filter(cut), 4, 8, cut=cut)
          
-        
-
+    
 print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
@@ -248,9 +229,6 @@ ks_m.Write()
 
 for histo in histo_array:
     histo.Write()
-
-for slope in tslope_array:
-    slope.Write()
 
 
 print("histos written in {} seconds".format(time.time() - start_time))
@@ -423,3 +401,9 @@ target_file.Close()
         #     histo_array.append(cut_df.Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
         #     histo_array.append(cut_df.Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 100, 1.0, 2.5), 'pipkmks_m'))
         #     histo_array.append(cut_df.Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 200, 1.0, 3.8), 'pipkmks_m'))
+
+# pt_diff_array = []
+# tslope_array = []
+
+#for slope in tslope_array:
+    # slope.Write()

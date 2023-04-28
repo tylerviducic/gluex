@@ -1,6 +1,7 @@
 # compare data and MC with cuts applied post analysis script running
-# need to apply f1_region cut 
-#TODO re-run analysis script with f1_region cut AND not applied
+
+#### REMEMBER TO APPLY F1 SIGNAL REGION CUT ####
+
 
 import ROOT
 import math
