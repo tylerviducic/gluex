@@ -178,6 +178,9 @@ for cut in f1_cut_list:
     cut_name = kstar_cut_dict[cut]
         
     histo_array.append(df.Filter(cut).Histo1D(('tslope_{}'.format(kstar_cut_dict[cut]), 'tslope_{}'.format(kstar_cut_dict[cut]), 100, 0.0, 2.0), 'mand_t'))
+    histo_array.append(df.Filter(cut).Histo1D(('pipkmks_fullbeam_cut_{}_full_t_narrow'.format(cut_name), 'pipkmks_fullbeam_cut_{}_full_t_narrow'.format(cut_name), 50, 1.0, 1.7), 'pipkmks_m'))
+    histo_array.append(df.Filter(cut).Histo1D(('pipkmks_fullbeam_cut_{}_full_t_medium'.format(cut_name), 'pipkmks_fullbeam_cut_{}_full_t_medium'.format(cut_name), 100, 1.0, 2.5), 'pipkmks_m'))
+    histo_array.append(df.Filter(cut).Histo1D(('pipkmks_fullbeam_cut_{}_full_t_narrow_measured'.format(cut_name), 'pipkmks_fullbeam_cut_{}_full_t_narrow_measured'.format(cut_name), 200, 1.0, 3.8), 'pipkmks_m'))
 
     for energy_index in range(1, n_e_bins+1):
         beam_low = beam_dict[energy_index][0]
@@ -194,6 +197,15 @@ for cut in f1_cut_list:
             histo_array.append(df.Filter(cut).Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_narrow'.format(beam_low, beam_high, cut_name, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
             histo_array.append(df.Filter(cut).Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_medium'.format(beam_low, beam_high, cut_name, t_low, t_high), 100, 1.0, 2.5), 'pipkmks_m'))
             histo_array.append(df.Filter(cut).Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 'pipkmks_beam_{}-{}_cut_{}_t_{}-{}_wide'.format(beam_low, beam_high, cut_name, t_low, t_high), 200, 1.0, 3.8), 'pipkmks_m'))
+    
+    for t_index in range(1, n_t_bins+1):
+        t_low = t_dict[t_index][0]
+        t_high = t_dict[t_index][1]
+        histo_array.append(df.Filter(cut).Filter(f't_bin == {t_index}').Histo1D(('pipkmks_fullbeam_cut_{}_t_{}-{}_narrow'.format(cut_name, t_low, t_high), 'pipkmks_fullbeam_cut_{}_t_{}-{}_narrow'.format(cut_name, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
+        histo_array.append(df.Filter(cut).Filter(f't_bin == {t_index}').Histo1D(('pipkmks_fullbeam_cut_{}_t_{}-{}_medium'.format(cut_name, t_low, t_high), 'pipkmks_fullbeam_cut_{}_t_{}-{}_medium'.format(cut_name, t_low, t_high), 100, 1.0, 2.5), 'pipkmks_m'))
+        histo_array.append(df.Filter(cut).Filter(f't_bin == {t_index}').Histo1D(('pipkmks_fullbeam_cut_{}_t_{}-{}_wide'.format(cut_name, t_low, t_high), 'pipkmks_fullbeam_cut_{}_t_{}-{}_wide'.format(cut_name, t_low, t_high), 200, 1.0, 3.8), 'pipkmks_m'))
+
+        
 
 print("histos done in {} seconds".format(time.time() - start_time))
 
