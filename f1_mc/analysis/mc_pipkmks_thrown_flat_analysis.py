@@ -1,16 +1,137 @@
 # thrown mc analysis with root dataframe
 import ROOT
+import time
+import os
 
-filename = "/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_thrown_fall.root"
+os.nice(18)
+ROOT.EnableImplicitMT()
+
+ROOT.gStyle.SetOptStat(0)
+
+start_time = time.time()
+
+run_period_dict = {
+    'spring': '2018_spring',
+    'fall': '2018_fall',
+    '2017': '2017',
+}
+
+run_period = 'spring'
+
+filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_thrown_{run_period}.root"
 treename = "pipkmks_thrown"
+
+histo_array = []
+
+beam_range = 'e_beam > 6.50000000000 && e_beam <= 10.5'
+t_range = 'mand_t <= 1.9'
+
+kstar_no_cut = 'kspip_m > 0.0'
+kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
+kstar_zero_cut = 'kmpip_m < 0.8 || kmpip_m > 1.0'
+kstar_all_cut = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
+
+t_dict = {
+    1: (0.0, 0.1), 2: (0.1, 0.2), 3: (0.2, 0.3), 4: (0.3, 0.4), 
+    5: (0.4, 0.65), 6: (0.65, 0.9), 7: (0.9, 1.4), 8: (1.4, 1.9)
+}
+
+beam_dict = {
+    1: (6.5, 7.5), 2: (7.5, 8.5), 3: (8.5, 9.5), 4: (9.5, 10.5)
+}
+
+kstar_cut_dict = {
+    'kspip_m > 0.0': 'kstar_no_cut',
+    'kspip_m < 0.8 || kspip_m > 1.0': 'kstar_plus_cut',
+    'kmpip_m < 0.8 || kmpip_m > 1.0': 'kstar_zero_cut',
+    '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)': 'kstar_all_cut'
+}
+
+t_bin_filter = """
+int get_t_bin_index(double t) {
+    if (t <= 0.4) {
+        return static_cast<int>(t/0.1)+1;
+    }
+    else if (t > 0.4 && t <= 0.9) {
+        return static_cast<int>((t-0.4)/0.25)+5;
+    }
+    else if (t > 0.9 && t <= 1.9) {
+        return static_cast<int>((t-0.9)/0.5)+7;
+    }
+    else {
+        return -1;
+    }
+}
+"""
+
+ROOT.gInterpreter.Declare(t_bin_filter)
 
 df = ROOT.RDataFrame(treename, filename)
 
-# print(df.GetColumnNames())
 
-n_total = df.Count().GetValue()
-n_gen = df.Filter('Beam_E >= 8.0 && Beam_E <= 10.0').Count().GetValue()
-print(f'Between beam energy 8.0 to 10.0 GeV [Inclusive], {n_gen} events were generated ({n_gen/n_total*100}% of total events)')
+# columns = ["nParticles", "nThrown", "Beam_px", "Beam_py", "Beam_pz", "Beam_E", 
+#            "Target_px", "Target_py", "Target_pz", "Target_E", 
+#            "PiPlus1_px", "PiPlus1_py", "PiPlus1_pz", "PiPlus1_E", 
+#            "PiPlus2_px", "PiPlus2_py", "PiPlus2_pz", "PiPlus2_E", 
+#            "PiMinus_px", "PiMinus_py", "PiMinus_pz", "PiMinus_E", 
+#            "KMinus_px", "KMinus_py", "KMinus_pz", "KMinus_E", 
+#            "Proton_px", "Proton_py", "Proton_pz", "Proton_E", 
+#            "Ks_px", "Ks_py", "Ks_pz", "Ks_E", 
+#            "theta_p", "mom_p", "phi_p", 
+#            "theta_km", "mom_km", "phi_km", 
+#            "theta_pip1", "mom_pip1", "phi_pip1",
+#            "theta_pip2", "mom_pip2", "phi_pip2", 
+#            "theta_pim", "mom_pim", "phi_pim", 
+#            "theta_f1", "mom_f1", "phi_f1", "mass_f1", 
+#            "mpippim", "mppip1", "mKsKm", 
+#            "men_s", "men_t", "cosTheta_f1_cm", "phi_f1_cm", "cosTheta_Ks_cm", "phi_Ks_cm"]
+
+df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + PiPlus2_px + PiMinus_px')
+df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + PiPlus2_py + PiMinus_py')
+df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + PiPlus2_pz + PiMinus_pz')
+df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + PiPlus2_E + PiMinus_E')
+df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
+
+
+df = df.Filter(beam_range).Filter(t_range)
+
+        
+histo_array.append(df.Histo1D(('tslope', 'tslope'), 100, 0.0, 2.0), 'mand_t')
+histo_array.append(df.Histo1D(('pipkmks', 'pipkmks'), 50, 1.0, 1.7), 'pipkmks_m')
+
+n_e_bins = 4
+n_t_bins = 8
+
+for energy_index in range(1, n_e_bins+1):
+    beam_low = beam_dict[energy_index][0]
+    beam_high = beam_dict[energy_index][1]
+    histo_array.append(df.Filter(f'e_bin == {energy_index}').Histo1D(('tslope_beam_{}-{}'.format(beam_low, beam_high), 'tslope'), 100, 0.0, 2.0), 'mand_t')
+    histo_array.append(df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_full_t_narrow'.format(beam_low, beam_high), 'pipkmks_beam_{}-{}_full_t_narrow'.format(beam_low, beam_high), 50, 1.0, 1.7), 'pipkmks_m'))
+
+
+    for t_index in range(1, n_t_bins+1):
+        t_low = t_dict[t_index][0]
+        t_high = t_dict[t_index][1]
+        histo_array.append(df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_t_{}-{}_narrow'.format(beam_low, beam_high, t_low, t_high), 'pipkmks_beam_{}-{}_t_{}-{}_narrow'.format(beam_low, beam_high, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
+
+
+for t_index in range(1, n_t_bins+1):
+        t_low = t_dict[t_index][0]
+        t_high = t_dict[t_index][1]
+        histo_array.append(df.Filter(f't_bin == {t_index}').Histo1D(('pipkmks_fullbeam_t_{}-{}_narrow'.format(t_low, t_high), 'pipkmks_fullbeam_t_{}-{}_narrow'.format(t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
+
+print("histos done in {} seconds".format(time.time() - start_time))
+
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_thrown_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
+print('file created in {} seconds'.format(time.time() - start_time))
+
+for histo in histo_array:
+    histo.Write()
+
+
+print("histos written in {} seconds".format(time.time() - start_time))
+target_file.Close() 
+
 
 ##############################
 ## OLD AND DEPRECIATED CODE ##
