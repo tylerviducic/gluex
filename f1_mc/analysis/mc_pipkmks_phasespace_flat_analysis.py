@@ -19,7 +19,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'fall'
+run_period = 'spring'
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_phasespace_flat_bestX2_{run_period}.root'
 treename = 'pipkmks__ks_pippim__M16'
 
@@ -208,7 +208,7 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/MC_pipkmks_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks__phasespace_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 ks_m.Write()

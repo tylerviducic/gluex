@@ -23,8 +23,8 @@ treename = "pipkmks_thrown"
 
 histo_array = []
 
-beam_range = 'e_beam > 6.50000000000 && e_beam <= 10.5'
-t_range = 'mand_t <= 1.9'
+beam_range = 'Beam_E > 6.50000000000 && Beam_E <= 10.5'
+t_range = 'men_t <= 1.9'
 
 kstar_no_cut = 'kspip_m > 0.0'
 kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
@@ -86,18 +86,20 @@ df = ROOT.RDataFrame(treename, filename)
 #            "mpippim", "mppip1", "mKsKm", 
 #            "men_s", "men_t", "cosTheta_f1_cm", "phi_f1_cm", "cosTheta_Ks_cm", "phi_Ks_cm"]
 
-df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + PiPlus2_px + PiMinus_px')
-df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + PiPlus2_py + PiMinus_py')
-df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + PiPlus2_pz + PiMinus_pz')
-df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + PiPlus2_E + PiMinus_E')
-df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
+df = df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + PiPlus2_px + PiMinus_px')
+df = df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + PiPlus2_py + PiMinus_py')
+df = df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + PiPlus2_pz + PiMinus_pz')
+df = df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + PiPlus2_E + PiMinus_E')
+df = df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
+df = df.Define('e_bin', 'int(Beam_E-6.5) +1')
+df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 
 
 df = df.Filter(beam_range).Filter(t_range)
 
         
-histo_array.append(df.Histo1D(('tslope', 'tslope'), 100, 0.0, 2.0), 'mand_t')
-histo_array.append(df.Histo1D(('pipkmks', 'pipkmks'), 50, 1.0, 1.7), 'pipkmks_m')
+histo_array.append(df.Histo1D(('tslope', 'tslope', 100, 0.0, 2.0), 'men_t'))
+histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 50, 1.0, 1.7), 'pipkmks_m'))
 
 n_e_bins = 4
 n_t_bins = 8
@@ -105,7 +107,7 @@ n_t_bins = 8
 for energy_index in range(1, n_e_bins+1):
     beam_low = beam_dict[energy_index][0]
     beam_high = beam_dict[energy_index][1]
-    histo_array.append(df.Filter(f'e_bin == {energy_index}').Histo1D(('tslope_beam_{}-{}'.format(beam_low, beam_high), 'tslope'), 100, 0.0, 2.0), 'mand_t')
+    histo_array.append(df.Filter(f'e_bin == {energy_index}').Histo1D(('tslope_beam_{}-{}'.format(beam_low, beam_high), 'tslope_beam_{}-{}'.format(beam_low, beam_high), 100, 0.0, 2.0), 'men_t'))
     histo_array.append(df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_full_t_narrow'.format(beam_low, beam_high), 'pipkmks_beam_{}-{}_full_t_narrow'.format(beam_low, beam_high), 50, 1.0, 1.7), 'pipkmks_m'))
 
 
