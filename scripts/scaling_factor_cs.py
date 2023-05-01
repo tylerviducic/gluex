@@ -16,23 +16,26 @@ flux_dict = {
     'spring': '40856_42559'
 }
 
-kstar_no_cut = "no_cut"
+kstar_no_cut = 'kspip_m > 0.0'
 kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
 kstar_zero_cut = 'kmpip_m < 0.8 || kmpip_m > 1.0'
 kstar_all_cut = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
 
 kstar_cut_dict = {
-    'no_cut': 'kstar_no_cut',
+    'kspip_m > 0.0': 'kstar_no_cut',
     'kspip_m < 0.8 || kspip_m > 1.0': 'kstar_plus_cut',
     'kmpip_m < 0.8 || kmpip_m > 1.0': 'kstar_zero_cut',
     '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)': 'kstar_all_cut'
 }
 
+beam_range = 'e_beam >= 8.0 && e_beam <= 10.0'
+t_range = 'mand_t >= 0.1 && mand_t <= 1.9'
+
 br_kkpi = 0.091
 br_kspipi = 0.692
 
 # scale_factor = 0.0215 # beam = 6.5-10.5 GeV, 0.5 < mand_t < 1.9 GeV^2
-scale_factor = 0.019 # beam = 8-10 GeV, 0.5 < mand_t < 1.9 GeV^2
+scale_factor = 0.006 # beam = 8-10 GeV, 0.1 < mand_t < 1.9 GeV^2
 
 
 cut_data_filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_dict[run_period]}.root'
@@ -46,8 +49,8 @@ lumi = lumi_hist.GetEntries()
 data_df = ROOT.RDataFrame(f'pipkmks_filtered_{run_dict[run_period]}', cut_data_filename)
 mc_df = ROOT.RDataFrame(f'mc_pipkmks_filtered_{run_dict[run_period]}', cut_mc_filename)
 
-data_df = data_df.Filter('e_beam >= 8.0 && e_beam <= 10.0').Filter('mand_t >= 0.5 && mand_t <= 1.9').Filter(kstar_zero_cut)
-mc_df = mc_df.Filter('e_beam >= 8.0 && e_beam <= 10.0').Filter('mand_t >= 0.5 && mand_t <= 1.9').Filter(kstar_zero_cut)
+data_df = data_df.Filter(beam_range).Filter(t_range).Filter(kstar_plus_cut)
+mc_df = mc_df.Filter(beam_range).Filter(t_range).Filter(kstar_plus_cut)
 
 data_hist = data_df.Histo1D(('data_pipkmks_m', 'data_pipkmks_m', 100, 1.0, 1.7), 'pipkmks_m')
 mc_hist = mc_df.Histo1D(('mc_pipkmks_m', 'mc_pipkmks_m', 100, 1.0, 1.7), 'pipkmks_m')
@@ -56,7 +59,7 @@ mc_hist.Scale(scale_factor)
 data_hist.SetLineColor(ROOT.kBlue)
 mc_hist.SetLineColor(ROOT.kRed)
 
-n_generated = 51238104
+n_generated =  33430402
 
 sfcs = (scale_factor * 6 * n_generated) / (lumi * br_kkpi * br_kspipi)
 

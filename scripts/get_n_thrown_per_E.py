@@ -8,9 +8,14 @@ df = ROOT.RDataFrame(treename, filename)
 
 # print(df.GetColumnNames())
 
+beam_cut = 'Beam_E >= 8.0 && Beam_E <= 10.5'
+t_cut = 'men_t >= 0.1 && men_t <= 1.9'
+
 n_total = df.Count().GetValue()
-n_gen = df.Filter('Beam_E >= 8.0 && Beam_E <= 10.0').Count().GetValue()
-print(f'Between beam energy 8.0 to 10.0 GeV [Inclusive], {n_gen} events were generated ({n_gen/n_total*100}% of total events)')
+# n_gen = df.Filter(beam_cut).Count().GetValue()
+# print(f'Between beam energy 8.0 to 10.0 GeV [Inclusive], {n_gen} events were generated ({n_gen/n_total*100}% of total events)')
+n_gen = df.Filter(beam_cut).Filter(t_cut).Count().GetValue()
+print(f'Between beam energy 8.0 to 10.0 GeV [Inclusive] and mandelstam-t 0.1 to 1.9 GeV^2 [Inclusive], {n_gen} events were generated ({n_gen/n_total*100}% of total events)')
 
 ##############################
 ## OLD AND DEPRECIATED CODE ##
