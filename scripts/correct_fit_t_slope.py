@@ -18,6 +18,7 @@ mc_treename = 'mc_pipkmks_filtered_2018_fall'
 # define filters
 beam_range = 'e_beam > 6.50000000000 && e_beam <= 10.5'
 t_range = 'mand_t >= 0.2 && mand_t <= 1.9'
+f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
 
 thrown_file = ROOT.TFile(thrown_filename, 'READ')
 
@@ -28,14 +29,16 @@ thrown_file = ROOT.TFile(thrown_filename, 'READ')
 # t range is t < 1.9
 # data and recon MC is not filtered for t or beam energy. 
 # fit from 0.2-1.9
+# must cut on signal region
+
 
 #TODO add t and beam energy cuts to data and recon MC wrt inclusivity 
 
 data_rdf = ROOT.RDataFrame(data_treename, data_filename)
 mc_rdf = ROOT.RDataFrame(mc_treename, mc_filename)
 
-mc_hist = mc_rdf.Filter(beam_range).Filter(t_range).Histo1D(('mc_t', 'mc_t', 100, 0.0, 2.0), 'mand_t')
-data_hist = data_rdf.Filter(beam_range).Filter(t_range).Histo1D(('data_t', 'data_t', 100, 0.0, 2.0), 'mand_t')
+mc_hist = mc_rdf.Filter(beam_range).Filter(t_range).Filter(f1_region).Histo1D(('mc_t', 'mc_t', 100, 0.0, 2.0), 'mand_t')
+data_hist = data_rdf.Filter(beam_range).Filter(t_range).Filter(f1_region).Histo1D(('data_t', 'data_t', 100, 0.0, 2.0), 'mand_t')
 thrown_hist = thrown_file.Get('tslope')
 
 acceptance_hist = mc_hist.Clone()
@@ -48,11 +51,10 @@ data_hist.Divide(acceptance_hist)
 corrected_data = data_hist.Clone()
 corrected_data.Sumw2()
 
-#TODO fit corrected data
 
 t = ROOT.RooRealVar('t', 't', 0.2, 1.8)
 b = ROOT.RooRealVar('b', 'b', -3.0, -4.0, -1.0)
-b.setConstant(True)
+# b.setConstant(True)
 
 data_rdh = ROOT.RooDataHist("data_rdh", "data_rdh", ROOT.RooArgList(t), corrected_data)
 
