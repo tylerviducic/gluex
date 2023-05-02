@@ -44,7 +44,7 @@ flux_filename = f'/w/halld-scshelf2101/home/viducic/selector_output/flux/flux_{f
 
 flux_file = ROOT.TFile.Open(flux_filename, "READ")
 lumi_hist = flux_file.Get('tagged_lumi')
-lumi = lumi_hist.GetEntries()
+lumi = lumi_hist.Integral(lumi_hist.FindBin(8.0), lumi_hist.FindBin(10.0))
 
 data_df = ROOT.RDataFrame(f'pipkmks_filtered_{run_dict[run_period]}', cut_data_filename)
 mc_df = ROOT.RDataFrame(f'mc_pipkmks_filtered_{run_dict[run_period]}', cut_mc_filename)
