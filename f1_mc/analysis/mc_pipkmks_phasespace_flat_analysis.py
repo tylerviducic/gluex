@@ -19,7 +19,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'spring'
+run_period = 'fall'
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_phasespace_flat_bestX2_{run_period}.root'
 treename = 'pipkmks__ks_pippim__M16'
 
@@ -51,6 +51,7 @@ kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
 beam_range = 'e_beam > 6.50000000000 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
+p_p_cut = 'p_p > 0.4'
 
 kstar_no_cut = 'kspip_m > 0.0'
 kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
@@ -91,6 +92,8 @@ df = ROOT.RDataFrame(treename, filename)
 
 
 ## DEFINE ALL NECESSARY COLUMNS ##
+
+df = df.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
 
 df = df.Define('ks_px', "pip2_px + pim_px")
 df = df.Define('ks_py', "pip2_py + pim_py")
@@ -151,7 +154,7 @@ df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-df = df.Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut)
+df = df.Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut)
 print('cuts done in {} seconds'.format(time.time() - start_time))
 
 

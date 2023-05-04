@@ -19,10 +19,20 @@ run_period_dict = {
     'fall': '2018_fall',
     '2017': '2017',
 }
-
 run_period = 'spring'
-filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_period_dict[run_period]}.root'
-treename = f'pipkmks_filtered_{run_period_dict[run_period]}'
+data_type = 'phasespace'
+charge_channel = 'pipkmks'
+
+file_path = '/work/halld/home/viducic/selector_output/f1_flat/'
+
+data_type_dict = {'data': f'{charge_channel}_filtered_{run_period_dict[run_period]}',
+                  'signal_mc': f'mc_{charge_channel}_filtered_{run_period_dict[run_period]}',
+                  'phasespace': f'mc_{charge_channel}__phasespace_filtered_{run_period_dict[run_period]}'
+                  }
+
+
+filename = file_path + data_type_dict[data_type] + '.root'
+treename = data_type_dict[data_type]
 
 
 t_low =  ['0.1', '0.2', '0.3', '0.4'] # ['0.1', '0.15',

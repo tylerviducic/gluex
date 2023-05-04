@@ -16,7 +16,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'spring'
+run_period = 'fall'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_thrown_{run_period}.root"
 treename = "pipkmks_thrown"

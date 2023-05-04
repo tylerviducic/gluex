@@ -12,7 +12,7 @@ void DSelector_f1_analysis::Init(TTree *locTree)
 	dOutputFileName = "f1_pipkmks.root"; //"" for none
 	//dOutputFileName = "/work/halld/home/viducic/selector_output/f1_pipkmks_debug.root"; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "flat_f1_pipkmks.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "flat_combo_loop_f1_pipkmks.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 
@@ -386,20 +386,33 @@ void DSelector_f1_analysis::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("w");  
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("tmin");  
 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_px"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_py"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_pz");
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_pz");
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_px"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_py"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_pz");
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_px"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_py"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_pz");
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pathlength_sig"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cos_colin"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("vertex_distance"); //fundamental = char, int, float, double, etc.
+
 
 
 	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("ks_e"); 
 	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("ks_px"); 
 	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("ks_py"); 
 	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("ks_pz"); 
-	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_e"); 
-	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_px"); 
-	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_py"); 
-	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_pz");
-	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip_e"); 
-	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip_px"); 
-	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip_py"); 
-	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip_pz");
+
 
 
 	/************************************* ADVANCED EXAMPLE: CHOOSE BRANCHES TO READ ************************************/
@@ -861,17 +874,17 @@ Bool_t DSelector_f1_analysis::Process(Long64_t locEntry)
 
 		vertex_distance_Ks = (locDOCAVertex_K_s - locDOCAVertex_proton).Mag();
 
-		if(vertex_distance_Ks < 2.0){
-			dComboWrapper->Set_IsComboCut(true);
+		// if(vertex_distance_Ks < 2.0){
+		// 	dComboWrapper->Set_IsComboCut(true);
 
-			continue;
-		}
+		// 	continue;
+		// }
 
-		if(cos_theta_col < 0.98){
-			dComboWrapper->Set_IsComboCut(true);
+		// if(cos_theta_col < 0.98){
+		// 	dComboWrapper->Set_IsComboCut(true);
 
-			continue;
-		}
+		// 	continue;
+		// }
 
 		/********************************************************************************************************/
 
@@ -1288,6 +1301,34 @@ Bool_t DSelector_f1_analysis::Process(Long64_t locEntry)
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_py", locProtonP4.Py()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_pz", locProtonP4.Pz()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("w", w);  
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px", locPiPlus1P4.Px());
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_py", locPiPlus1P4.Py());
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_pz", locPiPlus1P4.Pz()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_E", locPiPlus1P4.E()); 
+		
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_px", locPiPlus2P4.Px()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_py", locPiPlus2P4.Py()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_pz", locPiPlus2P4.Pz()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_E", locPiPlus2P4.E()); 
+		
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_px", locPiMinusP4.Px()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_py", locPiMinusP4.Py()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_pz", locPiMinusP4.Pz()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_E", locPiMinusP4.E()); 
+		
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("km_px", locKMinusP4.Px()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("km_py", locKMinusP4.Py()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("km_pz", locKMinusP4.Pz());
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("km_E", locKMinusP4.E()); 
+		
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_px", locProtonP4.Px()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_py", locProtonP4.Py()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_pz", locProtonP4.Pz()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E", locProtonP4.E()); 
+
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pathlength_sig", locPathLengthSignificanceKs); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("cos_colin", cos_theta_col);
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("vertex_distance", vertex_distance_Ks);
 
 		// if(im_kskmpip < 1.5){
 		// 	dComboWrapper->Set_IsComboCut(true);
