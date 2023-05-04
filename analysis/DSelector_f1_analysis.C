@@ -372,13 +372,13 @@ void DSelector_f1_analysis::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("accidental_weight"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("minus_t"); 
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pipkmks_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pipkmks_E"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pipkmks_px"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pipkmks_py"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pipkmks_pz"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pipkmks_phi"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pipkmks_theta"); 
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_px"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz");  
@@ -386,19 +386,19 @@ void DSelector_f1_analysis::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("w");  
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("tmin");  
 
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_E"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_px"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_py"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_pz");
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_E"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_pz");
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_E"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_px"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_py"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_pz");
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_e"); 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_E"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_px"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_py"); 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_pz");
@@ -1290,13 +1290,13 @@ Bool_t DSelector_f1_analysis::Process(Long64_t locEntry)
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("tmin", tmin); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("accidental_weight", locHistAccidWeightFactor); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("kstar_m", im_kmpip);  
-		dFlatTreeInterface->Fill_Fundamental<Double_t>("pipkmks_e", locKsKmPip.E()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("pipkmks_E", locKsKmPip.E()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("pipkmks_px", locKsKmPip.Px()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("pipkmks_py", locKsKmPip.Py()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("pipkmks_pz", locKsKmPip.Pz()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("pipkmks_phi", f1_phi); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("pipkmks_theta", f1_theta); 
-		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_e", locProtonP4.E()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E", locProtonP4.E()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_px", locProtonP4.Px()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_py", locProtonP4.Py()); 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_pz", locProtonP4.Pz()); 
