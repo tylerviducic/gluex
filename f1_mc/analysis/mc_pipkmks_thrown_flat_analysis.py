@@ -4,7 +4,7 @@ import time
 import os
 
 os.nice(18)
-ROOT.EnableImplicitMT()
+ROOT.EnableImplicitMT(5)
 
 ROOT.gStyle.SetOptStat(0)
 
@@ -16,14 +16,14 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'fall'
+run_period = 'spring'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_thrown_{run_period}.root"
 treename = "pipkmks_thrown"
 
 histo_array = []
 
-beam_range = 'Beam_E > 6.50000000000 && Beam_E <= 10.5'
+beam_range = 'Beam_E >= 6.50000000000 && Beam_E <= 10.5'
 t_range = 'men_t <= 1.9'
 
 kstar_no_cut = 'kspip_m > 0.0'
@@ -47,6 +47,12 @@ kstar_cut_dict = {
     '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)': 'kstar_all_cut'
 }
 
+beam_bin_filter = """
+int get_beam_bin_index(double e_beam) {
+        return static_cast<int>(e_beam-6.5) + 1;
+}
+"""
+
 t_bin_filter = """
 int get_t_bin_index(double t) {
     if (t <= 0.4) {
@@ -65,6 +71,7 @@ int get_t_bin_index(double t) {
 """
 
 ROOT.gInterpreter.Declare(t_bin_filter)
+ROOT.gInterpreter.Declare(beam_bin_filter)
 
 df = ROOT.RDataFrame(treename, filename)
 
@@ -91,11 +98,16 @@ df = df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + PiPlus2_py + PiMinus_py')
 df = df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + PiPlus2_pz + PiMinus_pz')
 df = df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + PiPlus2_E + PiMinus_E')
 df = df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
-df = df.Define('e_bin', 'int(Beam_E-6.5) +1')
+df = df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
 df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 
 
-df = df.Filter(beam_range).Filter(t_range)
+# df = df.Filter(beam_range).Filter(t_range)
+# for i in range(int(df.Min('e_bin').GetValue()), int(df.Max('e_bin').GetValue())+1):
+#     print(f"number of events in E Bin({i}) = {df.Filter(f'e_bin == {i}').Count().GetValue()}")
+
+#     for j in range(int(df.Min('t_bin').GetValue()), int(df.Max('t_bin').GetValue())+1):
+#         print(f"number of events in E Bin({i}) and t Bin({j}) = {df.Filter(f'e_bin == {i}').Filter(f't_bin == {j}').Count().GetValue()}")
 
         
 histo_array.append(df.Histo1D(('tslope', 'tslope', 100, 0.0, 2.0), 'men_t'))
@@ -133,6 +145,8 @@ for histo in histo_array:
 
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
+
+# ROOT.RDF.SaveGraph(df, f"mc_pipkmks_thrown_graph_{run_period_dict[run_period]}.dot")
 
 
 ##############################

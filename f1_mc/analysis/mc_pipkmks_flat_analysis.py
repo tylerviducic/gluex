@@ -234,4 +234,4 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
-ROOT.RDF.SaveGraph(df, f"mc_pipkmks_graph_{run_period_dict[run_period]}.dot")
+# ROOT.RDF.SaveGraph(df, f"mc_pipkmks_graph_{run_period_dict[run_period]}.dot")

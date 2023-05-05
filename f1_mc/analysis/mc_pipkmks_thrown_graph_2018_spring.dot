@@ -1,0 +1,28 @@
+digraph {
+	10 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	2 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	3 [label="Define
+t_bin", style="filled", fillcolor="#60aef3", shape="oval"];
+	4 [label="Define
+e_bin", style="filled", fillcolor="#60aef3", shape="oval"];
+	5 [label="Define
+pipkmks_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	6 [label="Define
+pipkmks_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	7 [label="Define
+pipkmks_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	8 [label="Define
+pipkmks_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	9 [label="Define
+pipkmks_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	0 [label="pipkmks_thrown", style="filled", fillcolor="#e8f8fc", shape="oval"];
+	2 -> 10;
+	3 -> 2;
+	4 -> 3;
+	5 -> 4;
+	6 -> 5;
+	7 -> 6;
+	8 -> 7;
+	9 -> 8;
+	0 -> 9;
+}
