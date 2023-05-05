@@ -1,0 +1,146 @@
+digraph {
+	51 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	50 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	49 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	48 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	47 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	46 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	2 [label="Filter", style="filled", fillcolor="#c4cfd4", shape="diamond"];
+	3 [label="Define
+t_bin", style="filled", fillcolor="#60aef3", shape="oval"];
+	4 [label="Define
+e_bin", style="filled", fillcolor="#60aef3", shape="oval"];
+	5 [label="Define
+kmks_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	6 [label="Define
+kmks_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	7 [label="Define
+kmks_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	8 [label="Define
+kmks_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	9 [label="Define
+kmks_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	10 [label="Define
+pipkmks_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	11 [label="Define
+pipkmks_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	12 [label="Define
+pipkmks_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	13 [label="Define
+pipkmks_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	14 [label="Define
+pipkmks_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	15 [label="Define
+kmpip_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	16 [label="Define
+kmpip_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	17 [label="Define
+kmpip_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	18 [label="Define
+kmpip_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	19 [label="Define
+kmpip_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	20 [label="Define
+kspip_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	21 [label="Define
+kspip_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	22 [label="Define
+kspip_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	23 [label="Define
+kspip_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	24 [label="Define
+kspip_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	25 [label="Define
+missing_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	26 [label="Define
+kmp_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	27 [label="Define
+kmp_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	28 [label="Define
+kmp_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	29 [label="Define
+kmp_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	30 [label="Define
+kmp_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	31 [label="Define
+missing_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	32 [label="Define
+missing_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	33 [label="Define
+missing_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	34 [label="Define
+missing_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	35 [label="Define
+ppip_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	36 [label="Define
+ppip_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	37 [label="Define
+ppip_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	38 [label="Define
+ppip_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	39 [label="Define
+ppip_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	40 [label="Define
+ks_m", style="filled", fillcolor="#60aef3", shape="oval"];
+	41 [label="Define
+ks_E", style="filled", fillcolor="#60aef3", shape="oval"];
+	42 [label="Define
+ks_pz", style="filled", fillcolor="#60aef3", shape="oval"];
+	43 [label="Define
+ks_py", style="filled", fillcolor="#60aef3", shape="oval"];
+	44 [label="Define
+ks_px", style="filled", fillcolor="#60aef3", shape="oval"];
+	45 [label="Define
+p_p", style="filled", fillcolor="#60aef3", shape="oval"];
+	0 [label="pipkmks__ks_pippim__B4_M16", style="filled", fillcolor="#e8f8fc", shape="oval"];
+	50 -> 51;
+	49 -> 50;
+	48 -> 49;
+	47 -> 48;
+	46 -> 47;
+	2 -> 46;
+	3 -> 2;
+	4 -> 3;
+	5 -> 4;
+	6 -> 5;
+	7 -> 6;
+	8 -> 7;
+	9 -> 8;
+	10 -> 9;
+	11 -> 10;
+	12 -> 11;
+	13 -> 12;
+	14 -> 13;
+	15 -> 14;
+	16 -> 15;
+	17 -> 16;
+	18 -> 17;
+	19 -> 18;
+	20 -> 19;
+	21 -> 20;
+	22 -> 21;
+	23 -> 22;
+	24 -> 23;
+	25 -> 24;
+	26 -> 25;
+	27 -> 26;
+	28 -> 27;
+	29 -> 28;
+	30 -> 29;
+	31 -> 30;
+	32 -> 31;
+	33 -> 32;
+	34 -> 33;
+	35 -> 34;
+	36 -> 35;
+	37 -> 36;
+	38 -> 37;
+	39 -> 38;
+	40 -> 39;
+	41 -> 40;
+	42 -> 41;
+	43 -> 42;
+	44 -> 43;
+	45 -> 44;
+	0 -> 45;
+}

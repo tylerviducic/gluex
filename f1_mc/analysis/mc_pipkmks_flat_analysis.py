@@ -6,7 +6,7 @@ import os
 
 
 os.nice(18)
-ROOT.EnableImplicitMT()
+ROOT.EnableImplicitMT(5)
 
 ROOT.gStyle.SetOptStat(0)
 
@@ -19,7 +19,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'fall'
+run_period = 'spring'
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
 
@@ -49,7 +49,7 @@ ks_mass_cut = 'ks_m > 0.45 && ks_m < 0.55'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
-beam_range = 'e_beam > 6.50000000000 && e_beam <= 10.5'
+beam_range = 'e_beam >= 6.5 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
 p_p_cut = 'p_p > 0.4'
 
@@ -67,6 +67,12 @@ kstar_cut_dict = {
 }
 
 f1_cut_list = [kstar_no_cut, kstar_plus_cut, kstar_zero_cut, kstar_all_cut]
+
+beam_bin_filter = """
+int get_beam_bin_index(double e_beam) {
+        return static_cast<int>(e_beam-6.5) + 1;
+}
+"""
 
 t_bin_filter = """
 int get_t_bin_index(double t) {
@@ -86,6 +92,7 @@ int get_t_bin_index(double t) {
 """
 
 ROOT.gInterpreter.Declare(t_bin_filter)
+ROOT.gInterpreter.Declare(beam_bin_filter)
 
 ## LOAD IN DATA ##
 
@@ -150,7 +157,7 @@ df = df.Define('kmks_pz', 'km_pz + ks_pz')
 df = df.Define('kmks_E', 'km_E + ks_E')
 df = df.Define('kmks_m', 'sqrt(kmks_E*kmks_E - kmks_px*kmks_px - kmks_py*kmks_py - kmks_pz*kmks_pz)')
 
-df = df.Define('e_bin', 'int(e_beam-6.5) +1')
+df = df.Define('e_bin', 'get_beam_bin_index(e_beam)')
 df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
@@ -165,7 +172,7 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-# df.Snapshot(f'mc_pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_filtered_{run_period_dict[run_period]}.root')
+df.Snapshot(f'mc_pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_filtered_{run_period_dict[run_period]}.root')
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
 df = df.Filter(beam_range).Filter(t_range)
@@ -227,3 +234,4 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
+ROOT.RDF.SaveGraph(df, f"mc_pipkmks_graph_{run_period_dict[run_period]}.dot")
