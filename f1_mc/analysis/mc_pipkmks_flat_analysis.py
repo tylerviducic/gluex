@@ -6,7 +6,7 @@ import os
 
 
 os.nice(18)
-ROOT.EnableImplicitMT(5)
+ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
@@ -19,7 +19,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'spring'
+run_period = 'fall'
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
 
@@ -52,6 +52,7 @@ f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
 beam_range = 'e_beam >= 6.5 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
 p_p_cut = 'p_p > 0.4'
+mx2_ppipkmks_cut = 'abs(mx2_ppipkmks) < 0.03'
 
 
 kstar_no_cut = 'kspip_m > 0.0'
@@ -98,6 +99,7 @@ ROOT.gInterpreter.Declare(beam_bin_filter)
 
 df = ROOT.RDataFrame(treename, filename)
 
+# print(df.GetColumnNames())
 
 ## DEFINE ALL NECESSARY COLUMNS ##
 
@@ -108,6 +110,18 @@ df = df.Define('ks_py', "pip2_py + pim_py")
 df = df.Define('ks_pz', "pip2_pz + pim_pz")
 df = df.Define('ks_E', "pip2_E + pim_E")
 df = df.Define('ks_m', "sqrt(ks_E*ks_E - ks_px*ks_px - ks_py*ks_py - ks_pz*ks_pz)")
+
+df = df.Define('ks_px_measured', "pip2_px_measured + pim_px_measured")
+df = df.Define('ks_py_measured', "pip2_py_measured + pim_py_measured")
+df = df.Define('ks_pz_measured', "pip2_pz_measured + pim_pz_measured")
+df = df.Define('ks_E_measured', "pip2_E_measured + pim_E_measured")
+df = df.Define('ks_m_measured', "sqrt(ks_E_measured*ks_E_measured - ks_px_measured*ks_px_measured - ks_py_measured*ks_py_measured - ks_pz_measured*ks_pz_measured)")
+
+df = df.Define('mxpx_ppipkmks', '-p_px_measured - pip1_px_measured - km_px_measured - ks_px_measured')
+df = df.Define('mxpy_ppipkmks', '-p_py_measured - pip1_py_measured - km_py_measured - ks_py_measured')
+df = df.Define('mxpz_ppipkmks', 'e_beam - p_pz_measured - pip1_pz_measured - km_pz_measured - ks_pz_measured')
+df = df.Define('mxe_ppipkmks', 'e_beam + 0.938272088 - p_E_measured - pip1_E_measured - km_E_measured - ks_E_measured')
+df = df.Define('mx2_ppipkmks', 'mxe_ppipkmks*mxe_ppipkmks - mxpx_ppipkmks*mxpx_ppipkmks - mxpy_ppipkmks*mxpy_ppipkmks - mxpz_ppipkmks*mxpz_ppipkmks')
 
 df = df.Define('ppip_px', 'pip1_px + p_px')
 df = df.Define('ppip_py', 'pip1_py + p_py')
@@ -162,7 +176,7 @@ df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-df = df.Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut)
+df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut)
 print('cuts done in {} seconds'.format(time.time() - start_time))
 
 
@@ -234,4 +248,4 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
-# ROOT.RDF.SaveGraph(df, f"mc_pipkmks_graph_{run_period_dict[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"mc_pipkmks_graph_{run_period_dict[run_period]}.dot")

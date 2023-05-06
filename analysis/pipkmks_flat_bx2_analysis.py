@@ -19,7 +19,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = '2017'
+run_period = 'fall'
 filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
 treename = 'pipkmks__B4_M16'
 
@@ -51,6 +51,7 @@ f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
 beam_range = 'e_beam >= 6.50000000000 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
 p_p_cut = 'p_p > 0.4'
+mx2_ppipkmks_cut = 'abs(mx2_ppipkmks) < 0.03'
 
 kstar_no_cut = 'kspip_m > 0.0'
 kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
@@ -113,6 +114,12 @@ df = df.Define('ks_pz_measured', "pip2_pz_measured + pim_pz_measured")
 df = df.Define('ks_E_measured', "pip2_E_measured + pim_E_measured")
 df = df.Define('ks_m_measured', "sqrt(ks_E_measured*ks_E_measured - ks_px_measured*ks_px_measured - ks_py_measured*ks_py_measured - ks_pz_measured*ks_pz_measured)")
 
+df = df.Define('mxpx_ppipkmks', '-p_px_measured - pip1_px_measured - km_px_measured - ks_px_measured')
+df = df.Define('mxpy_ppipkmks', '-p_py_measured - pip1_py_measured - km_py_measured - ks_py_measured')
+df = df.Define('mxpz_ppipkmks', 'e_beam - p_pz_measured - pip1_pz_measured - km_pz_measured - ks_pz_measured')
+df = df.Define('mxe_ppipkmks', 'e_beam + 0.938272088 - p_E_measured - pip1_E_measured - km_E_measured - ks_E_measured')
+df = df.Define('mx2_ppipkmks', 'mxe_ppipkmks*mxe_ppipkmks - mxpx_ppipkmks*mxpx_ppipkmks - mxpy_ppipkmks*mxpy_ppipkmks - mxpz_ppipkmks*mxpz_ppipkmks')
+
 df = df.Define('ppip_px', 'pip1_px + p_px')
 df = df.Define('ppip_py', 'pip1_py + p_py')
 df = df.Define('ppip_pz', 'pip1_pz + p_pz')
@@ -174,7 +181,7 @@ df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-df = df.Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut)
+df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut)
 print('cuts done in {} seconds'.format(time.time() - start_time))
 
 
@@ -185,7 +192,7 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-df.Snapshot(f'pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_period_dict[run_period]}.root')
+# df.Snapshot(f'pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_period_dict[run_period]}.root')
 
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
@@ -247,7 +254,7 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close()
 
-ROOT.RDF.SaveGraph(df, f"pipkmks_graph_{run_period_dict[run_period]}.dot")
+# ROOT.RDF.SaveGraph(df, f"pipkmks_graph_{run_period_dict[run_period]}.dot")
     
 ######################
 ## DEPRECIATED CODE ##
