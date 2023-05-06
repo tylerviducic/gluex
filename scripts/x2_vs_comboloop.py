@@ -21,6 +21,19 @@ comboloop_tree = f'{channel}__B4_M16'
 bxdf = ROOT.RDataFrame(bx2_tree, file_path + bx2_filename)
 combodf = ROOT.RDataFrame(comboloop_tree, file_path + comboloop_filename)
 
-print(f'N_events in combo df: {combodf.Count().GetValue()}')
-print(f'N_events in bx2 df: {bxdf.Count().GetValue()}')
+pp_cut = 'p_p > 0.4'
 
+combodf = combodf.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
+
+combodf = combodf.Filter(pp_cut)
+
+print(f'N_events in bx2 df: {bxdf.Count().GetValue()}')
+print(f'N_events in combo df after pp cut: {combodf.Count().GetValue()}')
+
+bx_columns = set([str(bxdf.GetColumnNames()[i]) for i in range(bxdf.GetColumnNames().size())])
+combo_columns = set([str(combodf.GetColumnNames()[i]) for i in range(combodf.GetColumnNames().size())])
+
+diff1 = bx_columns - combo_columns
+diff2 = combo_columns - bx_columns
+print(f'Columns in bx2 df but not in combo df: {diff1}')
+print(f'Columns in combo df but not in bx2 df: {diff2}')
