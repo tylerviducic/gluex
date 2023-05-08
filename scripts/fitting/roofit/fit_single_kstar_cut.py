@@ -2,6 +2,8 @@
 
 import ROOT
 
+#TODO fit acceptance corrected distributions because background is not smooth
+
 channel = 'pipkmks'
 run_period = 'fall'
 selector_method = 'bestX2'
@@ -30,7 +32,7 @@ data_hist = data_file.Get(data_hist_name)
 # data_hist.Draw()
 # input('Press enter to continue...')
 
-x = ROOT.RooRealVar("x", "x", 1.1, 1.7)
+x = ROOT.RooRealVar("x", "x", 1.125, 1.7)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(x), data_hist)
 
 # x.setRange("signal", 1.15, 2.0)
@@ -56,7 +58,7 @@ bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -1.0, 1.0)
 bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -1.0, 1.0)
 bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -1.0, 1.0)
 
-bkg = ROOT.RooChebychev("bkg", "bkg", x, ROOT.RooArgList(bkg_par1, bkg_par2))
+bkg = ROOT.RooChebychev("bkg", "bkg", x, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
 
 ## BERSTEIN ##
 
