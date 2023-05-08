@@ -13,7 +13,7 @@ run_dict = {
 
 beam = 9
 kstar_cut = 'plus'
-bin_width = 'medium'
+bin_width = 'narrow'
 t_bin = 3
 beam_range = f'{beam - 0.5}_{beam+0.5}'
 
@@ -30,7 +30,7 @@ data_hist = data_file.Get(data_hist_name)
 # data_hist.Draw()
 # input('Press enter to continue...')
 
-x = ROOT.RooRealVar("x", "x", 1.0, 2.5)
+x = ROOT.RooRealVar("x", "x", 1.1, 1.7)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(x), data_hist)
 
 # x.setRange("signal", 1.15, 2.0)
@@ -38,7 +38,7 @@ dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(x), data_hist)
 ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
 
 relbw_m = ROOT.RooRealVar("relbw_m", "relbw_m", 1.285, 1.2, 1.3)
-relbw_width = ROOT.RooRealVar("relbw_width", "relbw_width", 0.025, 0.01, 0.05)
+relbw_width = ROOT.RooRealVar("relbw_width", "relbw_width", 0.025, 0.01, 0.03)
 
 relbw = ROOT.RelBreitWigner("relbw", "relbw", x, relbw_m, relbw_width)
 
@@ -56,7 +56,7 @@ bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -1.0, 1.0)
 bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -1.0, 1.0)
 bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -1.0, 1.0)
 
-bkg = ROOT.RooChebychev("bkg", "bkg", x, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
+bkg = ROOT.RooChebychev("bkg", "bkg", x, ROOT.RooArgList(bkg_par1, bkg_par2))
 
 ## BERSTEIN ##
 
@@ -76,4 +76,23 @@ bkg = ROOT.RooChebychev("bkg", "bkg", x, ROOT.RooArgList(bkg_par1, bkg_par2, bkg
 
 # bkg = ROOT.RooArgusBG("bkg", "bkg", arg_par_mass_offset, arg_par_m0, arg_par_c, arg_par_p)
 
+## COMBINED PDF ##
+bkg_frac = ROOT.RooRealVar("bkg_frac", "bkg_frac", 0.5, 0.1, 0.9)
+bkg_pdf = ROOT.RooAddPdf("bkg_pdf", "bkg_pdf", ROOT.RooArgList(bkg, bw), ROOT.RooArgList(bkg_frac))
 
+sig_frac = ROOT.RooRealVar("sig_frac", "sig_frac", 0.5, 0.1, 0.9)
+combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(relbw, bkg_pdf), ROOT.RooArgList(sig_frac))
+
+# combined_pdf.fitTo(dh, ROOT.RooFit.Range("signal"))
+combined_pdf.fitTo(dh)
+
+frame = x.frame()
+dh.plotOn(frame)
+combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.kRed))
+combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.kViolet))
+combined_pdf.plotOn(frame, ROOT.RooFit.Components("bw"), ROOT.RooFit.LineColor(ROOT.kGreen))
+combined_pdf.plotOn(frame, ROOT.RooFit.Components("relbw"), ROOT.RooFit.LineColor(ROOT.kBlue))
+
+frame.Draw()
+
+input('Press enter to continue...')
