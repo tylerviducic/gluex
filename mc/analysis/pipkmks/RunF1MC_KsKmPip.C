@@ -1,13 +1,9 @@
 void RunF1MC_KsKmPip(){
 
     gROOT->ProcessLine("TChain* ch = new TChain(\"pipkmks__ks_pippim__B4_M16_Tree\")");
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/f1_pipkmks_s18_100m_v16_rt_20220419034710pm/root/trees/*.root\")"); //spring OLD
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/f1_pipkmks_f18_100m_v16_rt_20220419034345pm/root/trees/*.root\")"); //fall OLD
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/f1_pipkmks_17_100m_v50_rt_20230117125849pm/root/trees/*.root\")"); //2017 OLD
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_bgk_flat_20220720035959pm/root/trees/*.root\")"); //flat bkg
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_20220310040819pm/root/trees/*.root\")"); //2017
-    // gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/home/viducic/f1_mc/bggen/combined_bggen_total_fall_batch01.root\")"); //2017
-    gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_s18_100m_v16_rt_t29_3237/root/trees/tree_pipkmks__ks_pippim__B4_M16_gen_amp/*.root\")"); //spring
+
+    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_s18_100m_v16_rt_t29_3237/root/trees/tree_pipkmks__ks_pippim__B4_M16_gen_amp/*.root\")"); //spring
+    gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_f18_100m_v16_rt_t29_3238/root/trees/tree_pipkmks__ks_pippim__B4_M16_gen_amp/*.root\")"); //fall
     gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
     gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_flat.C++\", 4)");
 
@@ -21,3 +17,13 @@ void RunF1MC_KsKmPip(){
 
 
 }
+
+
+// OLD FILE PATHS //
+
+    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/f1_pipkmks_s18_100m_v16_rt_20220419034710pm/root/trees/*.root\")"); //spring OLD
+    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/f1_pipkmks_f18_100m_v16_rt_20220419034345pm/root/trees/*.root\")"); //fall OLD
+    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/f1_pipkmks_17_100m_v50_rt_20230117125849pm/root/trees/*.root\")"); //2017 OLD
+    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_bgk_flat_20220720035959pm/root/trees/*.root\")"); //flat bkg
+    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_20220310040819pm/root/trees/*.root\")"); //2017
+    // gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/home/viducic/f1_mc/bggen/combined_bggen_total_fall_batch01.root\")"); //2017
