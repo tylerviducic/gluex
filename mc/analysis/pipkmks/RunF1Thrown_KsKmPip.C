@@ -5,7 +5,8 @@ void RunF1Thrown_KsKmPip(){
     gROOT->ProcessLine("DPROOFLiteManager::Set_SandBox(\"/volatile/halld/home/viducic/PROOF/.proof\")");
     gROOT->ProcessLine("TChain* ch = new TChain(\"Thrown_Tree\")"); 
     // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_s18_100m_v16_rt_t29_3237/root/thrown/*.root\")"); //spring 2018
-    gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_f18_100m_v16_rt_t29_3238/root/thrown/*.root\")"); //fall 2018
+    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_f18_100m_v16_rt_t29_3238/root/thrown/*.root\")"); //fall 2018
+    gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_phasespace_s17_100m_v16_rt_t29_3245/root/thrown/*.root\")"); // 2017
     gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_thrown.C++\", 4)");
 
 }
