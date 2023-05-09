@@ -136,7 +136,7 @@ for t_index in range(1, n_t_bins+1):
 
 print("histos done in {} seconds".format(time.time() - start_time))
 
-target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_thrown_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_thrown_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 for histo in histo_array:
@@ -146,7 +146,7 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
-# ROOT.RDF.SaveGraph(df, f"mc_pipkmks_thrown_graph_{run_period_dict[run_period]}.dot")
+# ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_thrown_graph_{run_period_dict[run_period]}.dot")
 
 
 ##############################
