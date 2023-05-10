@@ -64,7 +64,7 @@ def get_flat_thrown_file_and_tree(channel, run_period):
     return f'/work/hall/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_flat_result_{run_dict[run_period]}.root'
 
 
-def get_needed_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False):
+def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False):
     file_tuple = ()
     if datatype == 'data':
         file_tuple = get_flat_data_file_and_tree(channel, run_period, comboloop, filtered, hist)
