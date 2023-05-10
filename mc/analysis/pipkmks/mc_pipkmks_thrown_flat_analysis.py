@@ -110,29 +110,41 @@ df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 #         print(f"number of events in E Bin({i}) and t Bin({j}) = {df.Filter(f'e_bin == {i}').Filter(f't_bin == {j}').Count().GetValue()}")
 
         
-histo_array.append(df.Histo1D(('tslope', 'tslope', 100, 0.0, 2.0), 'men_t'))
-histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 50, 1.0, 1.7), 'pipkmks_m'))
+
+histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m'))
 
 n_e_bins = 4
 n_t_bins = 8
 
+def fill_histos(cut_df, histo_array, beam_index=0, t_index=0):
+    hist_name = f'pipkmks_'
+    beam_name = 'beam_full_'
+    t_name = 't_full'
+    if beam_index > 0:
+        beam_low = beam_dict[beam_index][0]
+        beam_high = beam_dict[beam_index][1]
+        beam_name = f'beam_{beam_low}_{beam_high}_'
+    if t_index > 0:
+        t_low = t_dict[t_index][0]
+        t_high = t_dict[t_index][1]
+        t_name = f't_{t_low}_{t_high}'
+    hist_name += beam_name + t_name
+    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 100, 1.0, 2.5), 'pipkmks_m'))
+
+
 for energy_index in range(1, n_e_bins+1):
-    beam_low = beam_dict[energy_index][0]
-    beam_high = beam_dict[energy_index][1]
-    histo_array.append(df.Filter(f'e_bin == {energy_index}').Histo1D(('tslope_beam_{}-{}'.format(beam_low, beam_high), 'tslope_beam_{}-{}'.format(beam_low, beam_high), 100, 0.0, 2.0), 'men_t'))
-    histo_array.append(df.Filter(f'e_bin == {energy_index}').Histo1D(('pipkmks_beam_{}_{}_full_t_narrow'.format(beam_low, beam_high), 'pipkmks_beam_{}-{}_full_t_narrow'.format(beam_low, beam_high), 50, 1.0, 1.7), 'pipkmks_m'))
+    e_cut_df = df.Filter(f'e_bin == {energy_index}')
+    fill_histos(e_cut_df, histo_array, beam_index=energy_index)
 
 
     for t_index in range(1, n_t_bins+1):
-        t_low = t_dict[t_index][0]
-        t_high = t_dict[t_index][1]
-        histo_array.append(df.Filter(f'e_bin == {energy_index}').Filter(f't_bin == {t_index}').Histo1D(('pipkmks_beam_{}_{}_t_{}-{}_narrow'.format(beam_low, beam_high, t_low, t_high), 'pipkmks_beam_{}-{}_t_{}-{}_narrow'.format(beam_low, beam_high, t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
+        e_t_cut_df = e_cut_df.Filter(f't_bin == {t_index}')
+        fill_histos(e_t_cut_df, histo_array, beam_index=energy_index, t_index=t_index)
 
 
 for t_index in range(1, n_t_bins+1):
-        t_low = t_dict[t_index][0]
-        t_high = t_dict[t_index][1]
-        histo_array.append(df.Filter(f't_bin == {t_index}').Histo1D(('pipkmks_fullbeam_t_{}-{}_narrow'.format(t_low, t_high), 'pipkmks_fullbeam_t_{}-{}_narrow'.format(t_low, t_high), 50, 1.0, 1.7), 'pipkmks_m'))
+        t_cut_df = df.Filter(f't_bin == {t_index}')
+        fill_histos(t_cut_df, histo_array, t_index=t_index)
 
 print("histos done in {} seconds".format(time.time() - start_time))
 
