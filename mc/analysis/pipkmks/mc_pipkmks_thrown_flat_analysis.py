@@ -4,7 +4,7 @@ import time
 import os
 
 os.nice(18)
-ROOT.EnableImplicitMT(5)
+ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
@@ -16,7 +16,7 @@ run_period_dict = {
     '2017': '2017',
 }
 
-run_period = 'spring'
+run_period = '2017'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_thrown_{run_period}.root"
 treename = "pipkmks_thrown"
