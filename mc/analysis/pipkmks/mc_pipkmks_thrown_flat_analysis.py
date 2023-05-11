@@ -2,6 +2,7 @@
 import ROOT
 import time
 import os
+from common_analysis_tools import *
 
 os.nice(18)
 ROOT.EnableImplicitMT()
@@ -10,7 +11,7 @@ ROOT.gStyle.SetOptStat(0)
 
 start_time = time.time()
 
-run_period_dict = {
+run_dict = {
     'spring': '2018_spring',
     'fall': '2018_fall',
     '2017': '2017',
@@ -148,7 +149,7 @@ for t_index in range(1, n_t_bins+1):
 
 print("histos done in {} seconds".format(time.time() - start_time))
 
-target_file = ROOT.TFile(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_thrown_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_thrown_flat_result_{run_dict[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 for histo in histo_array:
@@ -158,7 +159,7 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_thrown_graph_{run_period_dict[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_thrown_graph_{run_dict[run_period]}.dot")
 
 
 ##############################
