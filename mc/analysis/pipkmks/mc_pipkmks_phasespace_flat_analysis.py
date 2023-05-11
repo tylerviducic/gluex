@@ -3,6 +3,7 @@
 import ROOT
 import time
 import os
+from common_analysis_tools import *
 
 
 os.nice(18)
@@ -13,15 +14,15 @@ ROOT.gStyle.SetOptStat(0)
 start_time = time.time()
 
 
-run_period_dict = {
-    'spring': '2018_spring',
-    'fall': '2018_fall',
-    '2017': '2017',
-}
+# run_period_dict = {
+#     'spring': '2018_spring',
+#     'fall': '2018_fall',
+#     '2017': '2017',
+# }
 
-run_period = 'fall'
-filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_flat_bestX2_{run_period}.root'
-treename = 'pipkmks__ks_pippim__M16'
+run_period = 'spring'
+filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_flat_bestX2_{run_dict[run_period]}.root'
+treename = 'pipkmks__ks_pippim__B4_M16'
 
 histo_array = []
 
@@ -45,7 +46,7 @@ beam_dict = {
 ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'
 ks_cut2 = ' vertex_distance > 3'
-ks_mass_cut = 'ks_m > 0.45 && ks_m < 0.55'
+ks_mass_cut = 'ks_m > 0.475 && ks_m < 0.525'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
@@ -176,7 +177,7 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-df.Snapshot(f'mc_pipkmks_phasespace_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_filtered_{run_period_dict[run_period]}.root')
+df.Snapshot(f'mc_pipkmks_phasespace_filtered_{run_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_filtered_{run_dict[run_period]}.root')
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
 df = df.Filter(beam_range).Filter(t_range)
@@ -226,7 +227,7 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_flat_result_{run_dict[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 ks_m.Write()
@@ -238,4 +239,4 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_phasespace_graph_{run_period_dict[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_phasespace_graph_{run_dict[run_period]}.dot")
