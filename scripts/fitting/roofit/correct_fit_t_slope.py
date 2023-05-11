@@ -32,7 +32,6 @@ thrown_file = ROOT.TFile(thrown_filename, 'READ')
 # must cut on signal region
 
 
-#TODO add t and beam energy cuts to data and recon MC wrt inclusivity 
 
 data_rdf = ROOT.RDataFrame(data_treename, data_filename)
 mc_rdf = ROOT.RDataFrame(mc_treename, mc_filename)

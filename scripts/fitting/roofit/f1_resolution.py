@@ -4,8 +4,6 @@ import ROOT
 from common_analysis_tools import *
 
 
-#TODO apply all cuts to MC annd fit f1 signal to get width. it (should???) will be a breit-wigner
-
 file_and_tree = get_flat_file_and_tree('pipkmks', 'spring', 'signal')
 
 energy_cut = 'e_beam >= 6.5 && e_beam <= 10.5'
