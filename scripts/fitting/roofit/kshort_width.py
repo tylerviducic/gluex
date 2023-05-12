@@ -72,4 +72,10 @@ composite.plotOn(frame, ROOT.RooFit.Components("gaus_2"), ROOT.RooFit.LineStyle(
 
 frame.Draw()
 
+def get_composite_width(sig1, sig2, frac):
+    return sig1 * frac + sig2 * (1.0 - frac)
+    
+composite_width = get_composite_width(ks_sigma_1.getVal(), ks_sigma_2.getVal(), gaus_frac.getVal())
+print(f'Width of double gaussian is: {composite_width}')
 input("Press enter to exit")
+
