@@ -43,7 +43,7 @@ ks_sigma_2 = ROOT.RooRealVar("sigma_2", "sigma_2", 0.01, 0.002, 0.02)
 
 gaus_2 = ROOT.RooGaussian("gaus_2", "gaus_2", m_pipi, ks_mean_2, ks_sigma_2)
 
-gaus_frac = ROOT.RooRealVar("gaus_frac", "gaus_frac", 0.95, 0.0, 1.0)
+gaus_frac = ROOT.RooRealVar("gaus_frac", "gaus_frac", 0.05, 0.0, 1.0)
 double_gaus = ROOT.RooAddPdf("double_gaus", "double_gaus", ROOT.RooArgList(gaus_1, gaus_2), ROOT.RooArgList(gaus_frac))
 
 
@@ -76,6 +76,9 @@ def get_composite_width(sig1, sig2, frac):
     return sig1 * frac + sig2 * (1.0 - frac)
     
 composite_width = get_composite_width(ks_sigma_1.getVal(), ks_sigma_2.getVal(), gaus_frac.getVal())
+print(f'Width of first gaussian is: {ks_sigma_1.getVal()}')
+print(f'Width of second gaussian is: {ks_sigma_2.getVal()}')
+print(f'Fraction of first gaussian is: {gaus_frac.getVal()}')
 print(f'Width of double gaussian is: {composite_width}')
 input("Press enter to exit")
 

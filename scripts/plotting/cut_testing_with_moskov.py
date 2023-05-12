@@ -5,13 +5,7 @@ import os
 
 #TODO add "poor man kinfit" like moskov asked based on LHCb paper
 
-"""
-E(Ks) = sqrt(p^2(Ks) - m^2(Ks)[PDG])
-"""
 
-def poor_man_kinfit(ks_px, ks_py, ks_pz):
-    ks_p2 = ks_px*ks_px + ks_py*ks_py + ks_pz*ks_pz
-    return ROOT.TMath.Sqrt(ks_p2 - 0.497614*0.497614)
 
 os.nice(18)
 ROOT.EnableImplicitMT()
@@ -48,6 +42,11 @@ beam_dict = {
 
 ## DEFINE CUTS ##
 
+ks_fit_mean = 0.4971
+ks_fit_width = 0.01035
+sigma_cut = 2
+ks_mass_cut = f'ks_m > {ks_fit_mean - sigma_cut*ks_fit_width} && ks_m < {ks_fit_mean + sigma_cut*ks_fit_width}'
+
 ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'
 ks_cut2 = ' vertex_distance > 3'
@@ -65,8 +64,8 @@ kstar_no_cut = 'kspip_m > 0.0'
 kstar_plus_cut = 'kspip_m < 0.85 || kspip_m > 1.05'
 kstar_zero_cut = 'kmpip_m < 0.85 || kmpip_m > 1.05'
 #TODO refactor all-cut to be sum of two kstar individual cuts such that only one change is requried/cut
-kstar_all_cut1 = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
-kstar_all_cut2 = '(kspip_m < 0.8 || kspip_m > 1.1) && (kmpip_m < 0.8 || kmpip_m > 1.1)'
+kstar_all_cut = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
+# kstar_all_cut2 = '(kspip_m < 0.8 || kspip_m > 1.1) && (kmpip_m < 0.8 || kmpip_m > 1.1)'
 
 kstar_cut_dict = {
     'kspip_m > 0.0': 'kstar_no_cut',
@@ -100,8 +99,18 @@ int get_t_bin_index(double t) {
 }
 """
 
+ks_energy_fix = """
+double fix_ks_energy(double ks_px, double ks_py, double ks_pz) {
+    double pdg_ksm = 0.497611;
+    double ks_p2 = ks_px*ks_px + ks_py*ks_py + ks_pz*ks_pz;
+    double ks_E = sqrt(ks_p2 + pdg_ksm*pdg_ksm);
+    return ks_E;
+}
+"""
+
 ROOT.gInterpreter.Declare(t_bin_filter)
 ROOT.gInterpreter.Declare(beam_bin_filter)
+ROOT.gInterpreter.Declare(ks_energy_fix)
 
 ## LOAD IN DATA ##
 
@@ -116,8 +125,9 @@ df = df.Define('ks_px', "pip2_px + pim_px")
 df = df.Define('ks_py', "pip2_py + pim_py")
 df = df.Define('ks_pz', "pip2_pz + pim_pz")
 df = df.Define('ks_E', "pip2_E + pim_E")
+df = df.Define('ks_E_fixed', 'fix_ks_energy(ks_px, ks_py, ks_pz)')
 df = df.Define('ks_m', "sqrt(ks_E*ks_E - ks_px*ks_px - ks_py*ks_py - ks_pz*ks_pz)")
-df = df.Define('ks_m_fixed', '0.497')
+df = df.Define('ks_m_fixed', 'sqrt(ks_E_fixed*ks_E_fixed - ks_px*ks_px - ks_py*ks_py - ks_pz*ks_pz)')
 
 df = df.Define('ks_px_measured', "pip2_px_measured + pim_px_measured")
 df = df.Define('ks_py_measured', "pip2_py_measured + pim_py_measured")
@@ -170,7 +180,9 @@ df = df.Define('pipkmks_px', 'pip1_px + km_px + ks_px')
 df = df.Define('pipkmks_py', 'pip1_py + km_py + ks_py')
 df = df.Define('pipkmks_pz', 'pip1_pz + km_pz + ks_pz')
 df = df.Define('pipkmks_E', 'pip1_E + km_E + ks_E')
+df = df.Define('pipkmks_E_fixed', 'pip1_E + km_E + ks_E_fixed')
 df = df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
+df = df.Define('pipkmks_m_fixed', 'sqrt(pipkmks_E_fixed*pipkmks_E_fixed - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
 
 df = df.Define('pipkmks_px_measured', "pip1_px_measured + km_px_measured + ks_px_measured")
 df = df.Define('pipkmks_py_measured', "pip1_py_measured + km_py_measured + ks_py_measured")
@@ -191,16 +203,24 @@ df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(ks_mass_cut2)
+df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(ks_mass_cut)
 
 
 c1 = ROOT.TCanvas()
-c1.Divide(2,2)
+# c1.Divide(2,2)
 # hist1 = df.Filter(ks_mass_cut1).Histo1D(('pipkmks_m','pipkmks_m', 45, 1.1, 1.6), 'pipkmks_m')
-hist1 = df.Filter(kstar_all_cut1).Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
-hist2 = df.Filter(kstar_all_cut2).Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
+hist1 = df.Filter(kstar_all_cut).Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
+# hist2 = df.Filter(kstar_all_cut2).Histo1D(('pipkmks_m_fixed','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m_fixed')
+hist2 = df.Filter(kstar_all_cut).Histo1D(('pipkmks_m_fixed','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
 hist_kspip = df.Histo1D(('ksp_m','ksp_m', 100, 0.5, 1.5), 'kspip_m')
 hist_kmpip = df.Histo1D(('kmp_m','kmp_m', 100, 0.5, 1.5), 'kmpip_m')
+
+hist1.SetLineColor(2)
+
+hist1.Draw()
+hist2.Draw('same')
+
+c1.Update()
 
 # for i in range(10000):
 #     hist_kmpip.Fill(0.8)
@@ -208,17 +228,17 @@ hist_kmpip = df.Histo1D(('kmp_m','kmp_m', 100, 0.5, 1.5), 'kmpip_m')
 #     hist_kmpip.Fill(1.05)
 #     hist_kmpip.Fill(0.85)
 
-hist2.SetLineColor(2)
-c1.cd(1)
-hist1.Draw()
-c1.cd(2)
-hist2.Draw()
-c1.cd(3)
-hist_kspip.Draw()
-c1.cd(4)
-hist_kmpip.Draw()
+# hist2.SetLineColor(2)
+# c1.cd(1)
+# hist1.Draw()
+# c1.cd(2)
+# hist2.Draw()
+# c1.cd(3)
+# hist_kspip.Draw()
+# c1.cd(4)
+# hist_kmpip.Draw()
 
-c1.Update()
+# c1.Update()
 
 input('Press <Enter> to continue')
 
