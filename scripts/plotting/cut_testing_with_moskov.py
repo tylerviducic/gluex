@@ -3,6 +3,16 @@ import time
 import os
 
 
+#TODO add "poor man kinfit" like moskov asked based on LHCb paper
+
+"""
+E(Ks) = sqrt(p^2(Ks) - m^2(Ks)[PDG])
+"""
+
+def poor_man_kinfit(ks_px, ks_py, ks_pz):
+    ks_p2 = ks_px*ks_px + ks_py*ks_py + ks_pz*ks_pz
+    return ROOT.TMath.Sqrt(ks_p2 - 0.497614*0.497614)
+
 os.nice(18)
 ROOT.EnableImplicitMT()
 
@@ -37,7 +47,6 @@ beam_dict = {
 }
 
 ## DEFINE CUTS ##
-#TODO cuts to not be just-in-time compiled
 
 ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'

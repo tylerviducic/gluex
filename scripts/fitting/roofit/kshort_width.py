@@ -1,5 +1,13 @@
 # script to test width of kshort
 
+
+"""
+An effective resolution is computed as σ = f σ1 + (1 − f )σ2 where f is the fraction 
+of the first Gaussian contribution. The resulting effective resolutions for the LL and DD categories are 
+σLL = 2.53 MeV and σDD = 6.46 MeV. The KS0 signals are selected within 
+3.0σ of the fitted KS0 mass of 497.8 MeV.2
+"""
+
 import ROOT
 
 data_filename = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
