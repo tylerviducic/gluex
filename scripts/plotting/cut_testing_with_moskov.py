@@ -203,17 +203,20 @@ df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(ks_mass_cut)
+# df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(ks_mass_cut).Filter(kstar_all_cut)
+df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(kstar_all_cut)
 
 
 c1 = ROOT.TCanvas()
 # c1.Divide(2,2)
 # hist1 = df.Filter(ks_mass_cut1).Histo1D(('pipkmks_m','pipkmks_m', 45, 1.1, 1.6), 'pipkmks_m')
-hist1 = df.Filter(kstar_all_cut).Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
-# hist2 = df.Filter(kstar_all_cut2).Histo1D(('pipkmks_m_fixed','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m_fixed')
-hist2 = df.Filter(kstar_all_cut).Histo1D(('pipkmks_m_fixed','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
-hist_kspip = df.Histo1D(('ksp_m','ksp_m', 100, 0.5, 1.5), 'kspip_m')
-hist_kmpip = df.Histo1D(('kmp_m','kmp_m', 100, 0.5, 1.5), 'kmpip_m')
+# hist1 = df.Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
+# hist2 = df.Histo1D(('pipkmks_m_fixed','pipkmks_m_fixed', 75, 1.1, 2.0), 'pipkmks_m_fixed')
+# hist2 = df.Filter(kstar_all_cut).Histo1D(('pipkmks_m_fixed','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
+# hist_kspip = df.Histo1D(('ksp_m','ksp_m', 100, 0.5, 1.5), 'kspip_m')
+# hist_kmpip = df.Histo1D(('kmp_m','kmp_m', 100, 0.5, 1.5), 'kmpip_m')
+hist1 = df.Histo1D(('ks_m', 'ks_m', 200, 0.3, 0.7), 'ks_m')
+hist2 = df.Histo1D(('ks_m', 'ks_m', 200, 0.3, 0.7), 'ks_m_fixed')
 
 hist1.SetLineColor(2)
 
