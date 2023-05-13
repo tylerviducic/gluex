@@ -16,7 +16,7 @@ void RunF1Thrown_KsKmPip(){
     gROOT->ProcessLine("DPROOFLiteManager::Set_SandBox(\"/volatile/halld/home/viducic/PROOF/.proof\")");
     gROOT->ProcessLine("TChain* ch = new TChain(\"Thrown_Tree\")"); 
     gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pimkpks_phasespace_s18_100m_v50_rt_t29_3252/root/thrown/*.root\")"); //spring 2018
-    gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_thrown.C++\", 4)");
+    gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_phasespace_thrown.C++\", 4)");
 }
 
 
