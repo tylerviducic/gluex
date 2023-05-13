@@ -3,13 +3,9 @@ import time
 import os
 
 
-#TODO add "poor man kinfit" like moskov asked based on LHCb paper
-
-
 
 os.nice(18)
 ROOT.EnableImplicitMT()
-
 ROOT.gStyle.SetOptStat(0)
 
 start_time = time.time()
@@ -46,12 +42,20 @@ ks_fit_mean = 0.4971
 ks_fit_width = 0.01035
 sigma_cut = 2
 ks_mass_cut = f'ks_m > {ks_fit_mean - sigma_cut*ks_fit_width} && ks_m < {ks_fit_mean + sigma_cut*ks_fit_width}'
+# ks_mass_cut1 = f'ks_m > {ks_fit_mean - 1*ks_fit_width} && ks_m < {ks_fit_mean + 1*ks_fit_width}'
+# ks_mass_cut2 = f'ks_m > {ks_fit_mean - 2*ks_fit_width} && ks_m < {ks_fit_mean + 2*ks_fit_width}'
+# ks_mass_cut3 = f'ks_m > {ks_fit_mean - 3*ks_fit_width} && ks_m < {ks_fit_mean + 3*ks_fit_width}'
+
+
+# print("ks mass cut 1:" + ks_mass_cut1)
+# print("ks mass cut 2:" + ks_mass_cut2)
+# print("ks mass cut 3:" + ks_mass_cut3)
 
 ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'
 ks_cut2 = ' vertex_distance > 3'
-ks_mass_cut1 = 'ks_m > 0.45 && ks_m < 0.55'
-ks_mass_cut2 = 'ks_m > 0.49 && ks_m < 0.505'
+# ks_mass_cut1 = 'ks_m > 0.45 && ks_m < 0.55'
+# ks_mass_cut2 = 'ks_m > 0.49 && ks_m < 0.505'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
@@ -204,24 +208,35 @@ df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
 # df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(ks_mass_cut).Filter(kstar_all_cut)
-df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(kstar_all_cut)
+df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(kstar_all_cut).Filter(ks_mass_cut)
 
 
 c1 = ROOT.TCanvas()
 # c1.Divide(2,2)
 # hist1 = df.Filter(ks_mass_cut1).Histo1D(('pipkmks_m','pipkmks_m', 45, 1.1, 1.6), 'pipkmks_m')
-# hist1 = df.Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
-# hist2 = df.Histo1D(('pipkmks_m_fixed','pipkmks_m_fixed', 75, 1.1, 2.0), 'pipkmks_m_fixed')
+hist1 = df.Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
+hist2 = df.Histo1D(('pipkmks_m_fixed','pipkmks_m_fixed', 75, 1.1, 2.0), 'pipkmks_m_fixed')
 # hist2 = df.Filter(kstar_all_cut).Histo1D(('pipkmks_m_fixed','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
 # hist_kspip = df.Histo1D(('ksp_m','ksp_m', 100, 0.5, 1.5), 'kspip_m')
 # hist_kmpip = df.Histo1D(('kmp_m','kmp_m', 100, 0.5, 1.5), 'kmpip_m')
-hist1 = df.Histo1D(('ks_m', 'ks_m', 200, 0.3, 0.7), 'ks_m')
-hist2 = df.Histo1D(('ks_m', 'ks_m', 200, 0.3, 0.7), 'ks_m_fixed')
+# hist1 = df.Histo1D(('ks_m', 'ks_m', 200, 0.3, 0.7), 'ks_m')
+# hist2 = df.Histo1D(('ks_m', 'ks_m', 200, 0.3, 0.7), 'ks_m_fixed')
 
-hist1.SetLineColor(2)
+# hist0 = df.Histo1D(('ks_m0', 'ks_m0', 400, 0.4, 0.6), 'ks_m').GetValue()
+# hist1 = df.Filter(ks_mass_cut1).Histo1D(('ks_m1', 'ks_m1', 400, 0.4, 0.6), 'ks_m').GetValue()
+# hist2 = df.Filter(ks_mass_cut2).Histo1D(('ks_m2', 'ks_m2', 400, 0.4, 0.6), 'ks_m').GetValue()
+# hist3 = df.Filter(ks_mass_cut3).Histo1D(('ks_m3', 'ks_m3', 400, 0.4, 0.6), 'ks_m').GetValue()
 
-hist1.Draw()
+# hist0.SetLineColor(ROOT.kBlack)
+hist1.SetLineColor(ROOT.kBlue)
+hist2.SetLineColor(ROOT.kRed)
+# hist3.SetLineColor(ROOT.kGreen)
+
+# hist1.SetLineColor(2)
+
+hist1.Draw('same')
 hist2.Draw('same')
+
 
 c1.Update()
 
