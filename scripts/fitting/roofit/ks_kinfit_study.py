@@ -3,14 +3,12 @@
 import ROOT
 from common_analysis_tools import *
 
-print
 file_and_tree = get_flat_file_and_tree('pipkmks', 'spring', 'signal', filtered=False)
 
 ks_mass_cut = f'abs(ks_m - {KSHORT_FIT_MEAN}) < 3*{KSHORT_FIT_WIDTH}'
 ks_pathlength_cut = 'pathlength_sig > 5'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
-
 beam_range = 'e_beam >= 6.50000000000 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
 p_p_cut = 'p_p > 0.4'
@@ -136,7 +134,9 @@ df = df.Define('pipkmks_m_fixed', 'sqrt(pipkmks_E_fixed*pipkmks_E_fixed - pipkmk
 df = df.Define('pipkmks_px_measured', "pip1_px_measured + km_px_measured + ks_px_measured")
 df = df.Define('pipkmks_py_measured', "pip1_py_measured + km_py_measured + ks_py_measured")
 df = df.Define('pipkmks_pz_measured', "pip1_pz_measured + km_pz_measured + ks_pz_measured")
+df = df.Define('pipkmks_E_measured', "pip1_E_measured + km_E_measured + ks_E_measured")
 df = df.Define('pipkmks_pt', 'sqrt(pipkmks_px_measured*pipkmks_px_measured + pipkmks_py_measured*pipkmks_py_measured)')
+df = df.Define('pipkmks_m_measured', "sqrt(pipkmks_E_measured*pipkmks_E_measured - pipkmks_px_measured*pipkmks_px_measured - pipkmks_py_measured*pipkmks_py_measured - pipkmks_pz_measured*pipkmks_pz_measured)")
 
 df = df.Define('pipkmks_p_pt_diff', 'pipkmks_pt - p_pt')
 
@@ -150,4 +150,6 @@ df = df.Define('e_bin', 'get_beam_bin_index(e_beam)')
 df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
-df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(kstar_all_cut).Filter(ks_mass_cut)
+df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(kstar_all_cut).Filter(ks_mass_cut).Filter(beam_range).Filter(t_range)
+
+
