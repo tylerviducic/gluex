@@ -761,11 +761,10 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 			// }
 			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
 			// if (loc_i == 4) { locPiPlus1P4 = locThrownP4; }
-			if(!firstPiPlus){
+			if(dThrownWrapper->Get_ParentIndex() < 0){
 				locPiPlus1P4_Thrown = locThrownP4;
-				firstPiPlus = true;
 			}
-			else if(dThrownWrapper->Get_ParentIndex() >= 0 && loc_i == dThrownWrapper->Get_ParentIndex()){
+			else if(KsThrown_Index == dThrownWrapper->Get_ParentIndex()){
 				locPiPlus2P4_Thrown = locThrownP4;
 			}
 		}
