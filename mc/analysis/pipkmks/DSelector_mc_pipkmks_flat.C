@@ -11,7 +11,8 @@ void DSelector_mc_pipkmks_flat::Init(TTree *locTree)
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "/work/halld/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_bestX2_2017.root"; //output flat tree (one combo per tree entry), "" for none
+	// dFlatTreeFileName = "/work/halld/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_bestX2_2017.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/work/halld/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_bestX2_2018_fall_debug.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.
@@ -164,6 +165,31 @@ void DSelector_mc_pipkmks_flat::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py_measured"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz_measured"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_measured"); //fundamental = char, int, float, double, etc.
+
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_thrown");
 	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pathlength_sig"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cos_colin"); //fundamental = char, int, float, double, etc.
@@ -680,6 +706,97 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("w", w);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("s", s);
 
+	if(dThrownBeam != NULL)
+		double locEnergy_Thrown = dThrownBeam->Get_P4().E();
+	
+	TLorentzVector dTargetP4_Thrown;
+	dTargetP4.SetXYZM(0.0,0.0,0.0,0.938);
+
+	TLorentzVector locProtonP4_Thrown;
+	TLorentzVector locPiPlus1P4_Thrown;
+	TLorentzVector locPiMinusP4_Thrown;
+	TLorentzVector locPiPlus2P4_Thrown;
+	TLorentzVector locKMinusP4_Thrown;
+	TLorentzVector locKShortP4_Thrown;
+
+	TLorentzVector PiPlusHypo1_Thrown;
+	TLorentzVector PiPlusHypo2_Thrown;
+	UInt_t KsThrown_Index;
+	
+	Bool_t piPlusChecked = false;
+	Bool_t firstPiPlus = false;
+
+	//Loop over throwns
+	for(UInt_t loc_i = 0; loc_i < Get_NumThrown(); ++loc_i)
+	{
+	// 	//Set branch array indices corresponding to this particle
+		dThrownWrapper->Set_ArrayIndex(loc_i);
+
+	// 	//Do stuff with the wrapper here ...
+		Particle_t locPID_Thrown = dThrownWrapper->Get_PID();
+		TLorentzVector locThrownP4 = dThrownWrapper->Get_P4();
+		// cout << "Thrown " << loc_i << ": " << locPID << ", " << locThrownP4.Px() << ", " << locThrownP4.Py() << ", " << locThrownP4.Pz() << ", " << locThrownP4.E() << endl;
+
+
+		if (locPID_Thrown == 12){
+			locKMinusP4_Thrown = locThrownP4;
+		}
+		if (locPID_Thrown == 14){
+			locProtonP4_Thrown = locThrownP4;
+		}
+		if (locPID_Thrown == 9){
+			locPiMinusP4_Thrown = locThrownP4;
+		}
+		if(locPID_Thrown == 16){
+			locKShortP4_Thrown = locThrownP4;
+			KsThrown_Index = loc_i;
+		}
+		if (locPID_Thrown == 8){
+			// if(!piPlusChecked) { 
+			// 	locPiPlus1P4_Thrown = locThrownP4;
+			// 	piPlusChecked = true;
+			// } 
+			// else{
+			// 	locPiPlus2P4_Thrown = locThrownP4;
+			// }
+			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
+			// if (loc_i == 4) { locPiPlus1P4 = locThrownP4; }
+			if(!firstPiPlus){
+				locPiPlus1P4_Thrown = locThrownP4;
+				firstPiPlus = true;
+			}
+			else if(dThrownWrapper->Get_ParentIndex() >= 0 && loc_i == dThrownWrapper->Get_ParentIndex()){
+				locPiPlus2P4_Thrown = locThrownP4;
+			}
+		}
+
+	}
+
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px_thrown", locPiPlus1P4_Thrown.Px());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_py_thrown", locPiPlus1P4_Thrown.Py());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_pz_thrown", locPiPlus1P4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_E_thrown", locPiPlus1P4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_px_thrown", locPiPlus2P4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_py_thrown", locPiPlus2P4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_pz_thrown", locPiPlus2P4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_E_thrown", locPiPlus2P4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_px_thrown", locPiMinusP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_py_thrown", locPiMinusP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_pz_thrown", locPiMinusP4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_E_thrown", locPiMinusP4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_px_thrown", locKMinusP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_py_thrown", locKMinusP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_pz_thrown", locKMinusP4_Thrown.Pz());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_E_thrown", locKMinusP4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_px_thrown", locProtonP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_py_thrown", locProtonP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_pz_thrown", locProtonP4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E_thrown", locProtonP4_Thrown.E()); 
+
 		//FILL FLAT TREE
 	Fill_FlatTree(); //for the active combo
 //	} // end of combo loop
@@ -688,20 +805,7 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 	Fill_NumCombosSurvivedHists();
 
 	/******************************************* LOOP OVER THROWN DATA (OPTIONAL) ***************************************/
-/*
-	//Thrown beam: just use directly
-	if(dThrownBeam != NULL)
-		double locEnergy = dThrownBeam->Get_P4().E();
 
-	//Loop over throwns
-	for(UInt_t loc_i = 0; loc_i < Get_NumThrown(); ++loc_i)
-	{
-		//Set branch array indices corresponding to this particle
-		dThrownWrapper->Set_ArrayIndex(loc_i);
-
-		//Do stuff with the wrapper here ...
-	}
-*/
 	/****************************************** LOOP OVER OTHER ARRAYS (OPTIONAL) ***************************************/
 /*
 	//Loop over beam particles (note, only those appearing in combos are present)

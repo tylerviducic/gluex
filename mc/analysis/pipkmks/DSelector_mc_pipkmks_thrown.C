@@ -205,7 +205,7 @@ Bool_t DSelector_mc_pipkmks_thrown::Process(Long64_t locEntry)
 		//Do stuff with the wrapper here ...
 		Particle_t locPID = dThrownWrapper->Get_PID();
 		TLorentzVector locThrownP4 = dThrownWrapper->Get_P4();
-		cout << "Thrown " << loc_i << ": " << locPID << ", " << locThrownP4.Px() << ", " << locThrownP4.Py() << ", " << locThrownP4.Pz() << ", " << locThrownP4.E() << endl;
+		// cout << "Thrown " << loc_i << ": " << locPID << ", " << locThrownP4.Px() << ", " << locThrownP4.Py() << ", " << locThrownP4.Pz() << ", " << locThrownP4.E() << endl;
 
 
 		if (locPID == 12){

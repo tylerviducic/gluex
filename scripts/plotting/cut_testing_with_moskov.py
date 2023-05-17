@@ -42,9 +42,9 @@ ks_fit_mean = 0.4971
 ks_fit_width = 0.01035
 sigma_cut = 2
 ks_mass_cut = f'ks_m > {ks_fit_mean - sigma_cut*ks_fit_width} && ks_m < {ks_fit_mean + sigma_cut*ks_fit_width}'
-# ks_mass_cut1 = f'ks_m > {ks_fit_mean - 1*ks_fit_width} && ks_m < {ks_fit_mean + 1*ks_fit_width}'
-# ks_mass_cut2 = f'ks_m > {ks_fit_mean - 2*ks_fit_width} && ks_m < {ks_fit_mean + 2*ks_fit_width}'
-# ks_mass_cut3 = f'ks_m > {ks_fit_mean - 3*ks_fit_width} && ks_m < {ks_fit_mean + 3*ks_fit_width}'
+ks_mass_cut1 = f'ks_m > {ks_fit_mean - 1*ks_fit_width} && ks_m < {ks_fit_mean + 1*ks_fit_width}'
+ks_mass_cut2 = f'ks_m > {ks_fit_mean - 2*ks_fit_width} && ks_m < {ks_fit_mean + 2*ks_fit_width}'
+ks_mass_cut3 = f'ks_m > {ks_fit_mean - 3*ks_fit_width} && ks_m < {ks_fit_mean + 3*ks_fit_width}'
 
 
 # print("ks mass cut 1:" + ks_mass_cut1)
@@ -199,7 +199,7 @@ df = df.Define('kmks_px', 'km_px + ks_px')
 df = df.Define('kmks_py', 'km_py + ks_py')
 df = df.Define('kmks_pz', 'km_pz + ks_pz')
 df = df.Define('kmks_E', 'km_E + ks_E')
-df = df.Define('kmks_m', 'sqrt(kmks_E*kmks_E - kmks_px*kmks_px - kmks_py*kmks_py - kmks_pz*kmks_pz)')\
+df = df.Define('kmks_m', 'sqrt(kmks_E*kmks_E - kmks_px*kmks_px - kmks_py*kmks_py - kmks_pz*kmks_pz)')
 
 df = df.Define('e_bin', 'get_beam_bin_index(e_beam)')
 df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
@@ -214,29 +214,29 @@ df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut)
 c1 = ROOT.TCanvas()
 # c1.Divide(2,2)
 # hist1 = df.Filter(ks_mass_cut1).Histo1D(('pipkmks_m','pipkmks_m', 45, 1.1, 1.6), 'pipkmks_m')
-hist1 = df.Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
-hist2 = df.Histo1D(('pipkmks_m_fixed','pipkmks_m_fixed', 75, 1.1, 2.0), 'pipkmks_m_fixed')
+# hist1 = df.Histo1D(('pipkmks_m','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
+# hist2 = df.Histo1D(('pipkmks_m_fixed','pipkmks_m_fixed', 75, 1.1, 2.0), 'pipkmks_m_fixed')
 # hist2 = df.Filter(kstar_all_cut).Histo1D(('pipkmks_m_fixed','pipkmks_m', 75, 1.1, 2.0), 'pipkmks_m')
 # hist_kspip = df.Histo1D(('ksp_m','ksp_m', 100, 0.5, 1.5), 'kspip_m')
 # hist_kmpip = df.Histo1D(('kmp_m','kmp_m', 100, 0.5, 1.5), 'kmpip_m')
 # hist1 = df.Histo1D(('ks_m', 'ks_m', 200, 0.3, 0.7), 'ks_m')
 # hist2 = df.Histo1D(('ks_m', 'ks_m', 200, 0.3, 0.7), 'ks_m_fixed')
 
-# hist0 = df.Histo1D(('ks_m0', 'ks_m0', 400, 0.4, 0.6), 'ks_m').GetValue()
-# hist1 = df.Filter(ks_mass_cut1).Histo1D(('ks_m1', 'ks_m1', 400, 0.4, 0.6), 'ks_m').GetValue()
-# hist2 = df.Filter(ks_mass_cut2).Histo1D(('ks_m2', 'ks_m2', 400, 0.4, 0.6), 'ks_m').GetValue()
-# hist3 = df.Filter(ks_mass_cut3).Histo1D(('ks_m3', 'ks_m3', 400, 0.4, 0.6), 'ks_m').GetValue()
+hist0 = df.Histo1D(('ks_m0', 'ks_m0', 400, 0.4, 0.6), 'ks_m').GetValue()
+hist1 = df.Filter(ks_mass_cut1).Histo1D(('ks_m1', 'ks_m1', 400, 0.4, 0.6), 'ks_m').GetValue()
+hist2 = df.Filter(ks_mass_cut2).Histo1D(('ks_m2', 'ks_m2', 400, 0.4, 0.6), 'ks_m').GetValue()
+hist3 = df.Filter(ks_mass_cut3).Histo1D(('ks_m3', 'ks_m3', 400, 0.4, 0.6), 'ks_m').GetValue()
 
-# hist0.SetLineColor(ROOT.kBlack)
+hist0.SetLineColor(ROOT.kBlack)
 hist1.SetLineColor(ROOT.kBlue)
 hist2.SetLineColor(ROOT.kRed)
-# hist3.SetLineColor(ROOT.kGreen)
+hist3.SetLineColor(ROOT.kGreen)
 
 # hist1.SetLineColor(2)
-
+hist0.Draw()
 hist1.Draw('same')
 hist2.Draw('same')
-
+hist3.Draw('same')
 
 c1.Update()
 
