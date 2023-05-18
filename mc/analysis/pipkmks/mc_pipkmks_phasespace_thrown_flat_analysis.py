@@ -4,8 +4,8 @@ import time
 import os
 from common_analysis_tools import *
 
-os.nice(18)
-ROOT.EnableImplicitMT()
+# os.nice(18)
+# ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
@@ -16,7 +16,7 @@ run_period = 'spring'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_{run_dict[run_period]}.root"
 treename = "pipkmks_thrown"
-
+print(filename)
 histo_array = []
 
 beam_range = 'Beam_E >= 6.50000000000 && Beam_E <= 10.5'
@@ -71,6 +71,15 @@ ROOT.gInterpreter.Declare(beam_bin_filter)
 
 df = ROOT.RDataFrame(treename, filename)
 
+columns = ["nThrown",
+           "PiPlus1_px",# "PiPlus1_py", "PiPlus1_pz", "PiPlus1_E", 
+           "PiPlus2_px",# "PiPlus2_py", "PiPlus2_pz", "PiPlus2_E", 
+           "PiMinus_px",# "PiMinus_py", "PiMinus_pz", "PiMinus_E", 
+           "KMinus_px", #"KMinus_py", "KMinus_pz", "KMinus_E", 
+           "Proton_px",# "Proton_py", "Proton_pz", "Proton_E", 
+           "Ks_px"#, "Ks_py", "Ks_pz", "Ks_E"
+]
+
 
 # columns = ["nParticles", "nThrown", "Beam_px", "Beam_py", "Beam_pz", "Beam_E", 
 #            "Target_px", "Target_py", "Target_pz", "Target_E", 
@@ -79,7 +88,7 @@ df = ROOT.RDataFrame(treename, filename)
 #            "PiMinus_px", "PiMinus_py", "PiMinus_pz", "PiMinus_E", 
 #            "KMinus_px", "KMinus_py", "KMinus_pz", "KMinus_E", 
 #            "Proton_px", "Proton_py", "Proton_pz", "Proton_E", 
-#            "Ks_px", "Ks_py", "Ks_pz", "Ks_E", 
+#            "Ks_px", "Ks_py", "Ks_pz", "Ks_E"]
 #            "theta_p", "mom_p", "phi_p", 
 #            "theta_km", "mom_km", "phi_km", 
 #            "theta_pip1", "mom_pip1", "phi_pip1",
@@ -97,7 +106,6 @@ df = df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - 
 df = df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
 df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 
-
 # df = df.Filter(beam_range).Filter(t_range)
 # for i in range(int(df.Min('e_bin').GetValue()), int(df.Max('e_bin').GetValue())+1):
 #     print(f"number of events in E Bin({i}) = {df.Filter(f'e_bin == {i}').Count().GetValue()}")
@@ -105,9 +113,8 @@ df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 #     for j in range(int(df.Min('t_bin').GetValue()), int(df.Max('t_bin').GetValue())+1):
 #         print(f"number of events in E Bin({i}) and t Bin({j}) = {df.Filter(f'e_bin == {i}').Filter(f't_bin == {j}').Count().GetValue()}")
 
-        
-
 histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m'))
+
 
 n_e_bins = 4
 n_t_bins = 8
@@ -149,7 +156,6 @@ print('file created in {} seconds'.format(time.time() - start_time))
 
 for histo in histo_array:
     histo.Write()
-
 
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 

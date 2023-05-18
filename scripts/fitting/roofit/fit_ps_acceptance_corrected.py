@@ -19,13 +19,13 @@ data_file = ROOT.TFile.Open(data_file_and_tree[0], 'READ')
 
 recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace', filtered=False, hist=True)
 thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
-
+print(recon_phasespace_file_and_tree[0])
+input('please exit now')
 
 recon_file = ROOT.TFile.Open(recon_phasespace_file_and_tree[0], 'READ')
 thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
 
 
-#TODO plot thrown and recon data to make sure they are correct
 data_hist_name = channel + '_cut_kstar_' + kstar_cut + '_cut_beam_' + beam_range+ f'_t_{t_bin_dict[t_bin]}' +';1'
 data_hist = data_file.Get(data_hist_name)
 recon_hist = recon_file.Get(data_hist_name)
@@ -42,9 +42,11 @@ ac_data_hist.Divide(acceptance_hist)
 c = ROOT.TCanvas()
 c.Divide(2,1)
 c.cd(1)
-data_hist.Draw()
+# data_hist.Draw()
+recon_hist.Draw()
 c.cd(2)
-ac_data_hist.Draw()
+# ac_data_hist.Draw()
+thrown_hist.Draw()
 c.Update()
 
 input('Press enter to continue...')

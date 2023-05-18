@@ -721,7 +721,7 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 
 	TLorentzVector PiPlusHypo1_Thrown;
 	TLorentzVector PiPlusHypo2_Thrown;
-	UInt_t KsThrown_Index;
+	Int_t KsThrown_Index;
 	
 	Bool_t piPlusChecked = false;
 	Bool_t firstPiPlus = false;
