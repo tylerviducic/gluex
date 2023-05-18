@@ -1,4 +1,5 @@
 #include "DSelector_mc_pipkmks_phasespace_thrown.h"
+#include <vector>
 
 void DSelector_mc_pipkmks_phasespace_thrown::Init(TTree *locTree)
 {
@@ -14,7 +15,7 @@ void DSelector_mc_pipkmks_phasespace_thrown::Init(TTree *locTree)
 	//dOutputTreeFileNameMap["Bin1"] = "mcgen_bin1.root"; //key is user-defined, value is output file name
 	//dOutputTreeFileNameMap["Bin2"] = "mcgen_bin2.root"; //key is user-defined, value is output file name
 	//dOutputTreeFileNameMap["Bin3"] = "mcgen_bin3.root"; //key is user-defined, value is output file name
-	dFlatTreeFileName = "/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_2017.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_2018_spring.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = "pipkmks_thrown"; //if blank, default name will be chosen
 	dSaveDefaultFlatBranches = false; // False: don't save default branches, reduce disk footprint.
 
@@ -40,7 +41,7 @@ void DSelector_mc_pipkmks_phasespace_thrown::Init(TTree *locTree)
 
 	//dTreeInterface->Clear_GetEntryBranches(); //now get none
 	//dTreeInterface->Register_GetEntryBranch("Proton__P4"); //manually set the branches you want
-		dFlatTreeInterface->Create_Branch_Fundamental<Int_t>("nParticles");
+	dFlatTreeInterface->Create_Branch_Fundamental<Int_t>("nParticles");
 	dFlatTreeInterface->Create_Branch_Fundamental<Int_t>("nThrown");
 
 
@@ -104,10 +105,10 @@ void DSelector_mc_pipkmks_phasespace_thrown::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mom_pim");
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("phi_pim");
 
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("theta_f1");
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mom_f1");
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("phi_f1");
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mass_f1");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("theta_f1");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mom_f1");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("phi_f1");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mass_f1");
 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mpippim");
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mppip1");
@@ -116,11 +117,11 @@ void DSelector_mc_pipkmks_phasespace_thrown::Init(TTree *locTree)
     dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("men_s");
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("men_t");
 
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cosTheta_f1_cm");
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("phi_f1_cm");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cosTheta_f1_cm");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("phi_f1_cm");
 
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cosTheta_Ks_cm");
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("phi_Ks_cm");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cosTheta_Ks_cm");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("phi_Ks_cm");
 }
 
 Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
@@ -182,6 +183,11 @@ Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
 	Bool_t piPlusChecked = false;
 	int nparticles = 0;
 	int nThrown = Get_NumThrown();
+	Int_t KsThrown_Index;
+
+	// create a vector for potential pi+ candidates indices
+	vector<int> piPlusIndices;
+	
 	//Loop over throwns
 	for(UInt_t loc_i = 0; loc_i < Get_NumThrown(); ++loc_i)
 	{
@@ -197,21 +203,18 @@ Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
 		if (locPID == 12){
 			locKMinusP4 = locThrownP4;
 		}
-		if (locPID == 14){
-			locProtonP4 = locThrownP4;
-		}
 		if (locPID == 9){
 			locPiMinusP4 = locThrownP4;
 		}
 		if(locPID == 16){
 			locKShortP4 = locThrownP4;
+			KsThrown_Index = loc_i;
 		}
 		if (locPID == 8){
-			if(!piPlusChecked) { 
+			if(dThrownWrapper->Get_ParentIndex() < 0){
 				locPiPlus1P4 = locThrownP4;
-				piPlusChecked = true;
-			} 
-			else{
+			}
+			else if(KsThrown_Index == dThrownWrapper->Get_ParentIndex()){
 				locPiPlus2P4 = locThrownP4;
 			}
 			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
@@ -268,33 +271,33 @@ Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
 	TLorentzVector locF1P4 = locKmKsPip_P4;
 	// Boosting in CM frame
 
-	TLorentzVector cms = locBeamP4 + dTargetP4;
-	TVector3 locBoost_cms = -cms.BoostVector();
+	// TLorentzVector cms = locBeamP4 + dTargetP4;
+	// TVector3 locBoost_cms = -cms.BoostVector();
 
-	TLorentzVector locBeamP4_CM = locBeamP4 ;
-	TLorentzVector locPiPlus1P4_CM = locPiPlus1P4 ;
-	TLorentzVector locKMinusP4_CM = locKMinusP4;
-	TLorentzVector locProtonP4_CM = locProtonP4;
-	//Step 1
-	TLorentzVector locPiMinusP4_CM = locPiMinusP4;
-	TLorentzVector locPiPlus2P4_CM = locPiPlus2P4;
+	// TLorentzVector locBeamP4_CM = locBeamP4 ;
+	// TLorentzVector locPiPlus1P4_CM = locPiPlus1P4 ;
+	// TLorentzVector locKMinusP4_CM = locKMinusP4;
+	// TLorentzVector locProtonP4_CM = locProtonP4;
+	// //Step 1
+	// TLorentzVector locPiMinusP4_CM = locPiMinusP4;
+	// TLorentzVector locPiPlus2P4_CM = locPiPlus2P4;
 
-	TLorentzVector locKmPip2PimP4_CM = locKmKsPip_P4;
-	TLorentzVector locProtonPip1P4_CM = locProtonPip1_P4;
-	// TLorentzVector locKshortP4_CM = locPip2Pim_P4;
-	TLorentzVector locKshortP4_CM = locKShortP4;
+	// TLorentzVector locKmPip2PimP4_CM = locKmKsPip_P4;
+	// TLorentzVector locProtonPip1P4_CM = locProtonPip1_P4;
+	// // TLorentzVector locKshortP4_CM = locPip2Pim_P4;
+	// TLorentzVector locKshortP4_CM = locKShortP4;
 
-	TLorentzVector locF1P4_CM = locKmPip2PimP4_CM;
+	// TLorentzVector locF1P4_CM = locKmPip2PimP4_CM;
 
 
-	locBeamP4_CM.Boost(locBoost_cms);
-	locKMinusP4_CM.Boost(locBoost_cms);
-	locProtonP4_CM.Boost(locBoost_cms);
-	locKmPip2PimP4_CM.Boost(locBoost_cms);
-	locProtonPip1P4_CM.Boost(locBoost_cms);
-	locKshortP4_CM.Boost(locBoost_cms);
+	// locBeamP4_CM.Boost(locBoost_cms);
+	// locKMinusP4_CM.Boost(locBoost_cms);
+	// locProtonP4_CM.Boost(locBoost_cms);
+	// locKmPip2PimP4_CM.Boost(locBoost_cms);
+	// locProtonPip1P4_CM.Boost(locBoost_cms);
+	// locKshortP4_CM.Boost(locBoost_cms);
 
-	locF1P4_CM.Boost(locBoost_cms);
+	// locF1P4_CM.Boost(locBoost_cms);
 
 	// TVector3 y_hat = (locBeamP4_CM.Vect().Unit().Cross(locF1P4_CM.Vect().Unit())).Unit();
 	
@@ -404,7 +407,7 @@ Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("mom_pim", piminus_mom);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("phi_pim", piminus_phi);				
 
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("mass_f1", f1_mass);
+	// dFlatTreeInterface->Fill_Fundamental<Double_t>("mass_f1", f1_mass);
 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("mpippim",locPip2Pim_P4.M());
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("mKsKm", locKmKsPip_P4.M());
@@ -414,11 +417,11 @@ Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("men_s",s_men);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("men_t",minus_t_kmks);
 
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("cosTheta_Ks_cm", locKshortP4_CM.CosTheta());
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("phi_Ks_cm", locKshortP4_CM.Phi()*180/3.141592653);
+	// dFlatTreeInterface->Fill_Fundamental<Double_t>("cosTheta_Ks_cm", locKshortP4_CM.CosTheta());
+	// dFlatTreeInterface->Fill_Fundamental<Double_t>("phi_Ks_cm", locKshortP4_CM.Phi()*180/3.141592653);
 
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("cosTheta_f1_cm", locF1P4_CM.CosTheta());
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("phi_f1_cm", locF1P4_CM.Phi()*180/3.141592653);
+	// dFlatTreeInterface->Fill_Fundamental<Double_t>("cosTheta_f1_cm", locF1P4_CM.CosTheta());
+	// dFlatTreeInterface->Fill_Fundamental<Double_t>("phi_f1_cm", locF1P4_CM.Phi()*180/3.141592653);
 
 	// dFlatTreeInterface->Fill_Fundamental<Double_t>("cosTheta_Ks_gj",cosThetaKs_GJ);
 	// dFlatTreeInterface->Fill_Fundamental<Double_t>("phi_Ks_gj", phiKs_GJ);
