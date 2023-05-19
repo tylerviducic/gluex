@@ -197,9 +197,11 @@ Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
 		//Do stuff with the wrapper here ...
 		Particle_t locPID = dThrownWrapper->Get_PID();
 		TLorentzVector locThrownP4 = dThrownWrapper->Get_P4();
-		cout << "Thrown " << loc_i << ": " << locPID << ", " << locThrownP4.Px() << ", " << locThrownP4.Py() << ", " << locThrownP4.Pz() << ", " << locThrownP4.E() << endl;
+		// cout << "Thrown " << loc_i << ": " << locPID << ", " << locThrownP4.Px() << ", " << locThrownP4.Py() << ", " << locThrownP4.Pz() << ", " << locThrownP4.E() << endl;
 
-
+		if (locPID == 14){
+			locProtonP4 = locThrownP4;
+		}
 		if (locPID == 12){
 			locKMinusP4 = locThrownP4;
 		}
@@ -214,11 +216,19 @@ Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
 			if(dThrownWrapper->Get_ParentIndex() < 0){
 				locPiPlus1P4 = locThrownP4;
 			}
-			else if(KsThrown_Index == dThrownWrapper->Get_ParentIndex()){
-				locPiPlus2P4 = locThrownP4;
+			else{
+				piPlusIndices.push_back(loc_i);
 			}
 			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
 			// if (loc_i == 4) { locPiPlus1P4 = locThrownP4; }
+		}
+	}
+
+	// loop over pion candidate indices and see if it's parent index is equal to the Ks. if it is, make that pion's 4 vector the pi+2
+	for (int i = 0; i < piPlusIndices.size(); i++){
+		dThrownWrapper->Set_ArrayIndex(piPlusIndices[i]);
+		if (dThrownWrapper->Get_ParentIndex() == KsThrown_Index){
+			locPiPlus2P4 = dThrownWrapper->Get_P4();
 		}
 	}
 

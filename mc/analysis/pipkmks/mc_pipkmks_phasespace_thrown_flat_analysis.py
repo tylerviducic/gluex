@@ -4,8 +4,8 @@ import time
 import os
 from common_analysis_tools import *
 
-# os.nice(18)
-# ROOT.EnableImplicitMT()
+os.nice(18)
+ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
@@ -98,13 +98,28 @@ columns = ["nThrown",
 #            "mpippim", "mppip1", "mKsKm", 
 #            "men_s", "men_t", "cosTheta_f1_cm", "phi_f1_cm", "cosTheta_Ks_cm", "phi_Ks_cm"]
 
-df = df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + PiPlus2_px + PiMinus_px')
-df = df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + PiPlus2_py + PiMinus_py')
-df = df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + PiPlus2_pz + PiMinus_pz')
-df = df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + PiPlus2_E + PiMinus_E')
+df = df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + Ks_px')
+df = df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + Ks_py')
+df = df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + Ks_pz')
+df = df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + Ks_E')
 df = df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
 df = df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
 df = df.Define('t_bin', 'get_t_bin_index(men_t)')
+
+# print(df.Display(['men_t', 't_bin', 'Beam_E', 'e_bin', 'pipkmks_m', 'Proton_E']).Print())
+# print(df.Filter('t_bin != 6').Count().GetValue())
+# input("Press Enter to continue...")
+
+# df = df.Define('km_m', 'sqrt(KMinus_E*KMinus_E - KMinus_px*KMinus_px - KMinus_py*KMinus_py - KMinus_pz*KMinus_pz)')
+# define masses for kshort, piplus1, piminus, and piplu2
+# df = df.Define('ks_m', 'sqrt(Ks_E*Ks_E - Ks_px*Ks_px - Ks_py*Ks_py - Ks_pz*Ks_pz)')
+# df = df.Define('pip1_m', 'sqrt(PiPlus1_E*PiPlus1_E - PiPlus1_px*PiPlus1_px - PiPlus1_py*PiPlus1_py - PiPlus1_pz*PiPlus1_pz)')
+# df = df.Define('pim_m', 'sqrt(PiMinus_E*PiMinus_E - PiMinus_px*PiMinus_px - PiMinus_py*PiMinus_py - PiMinus_pz*PiMinus_pz)')
+# df = df.Define('pip2_m', 'sqrt(PiPlus2_E*PiPlus2_E - PiPlus2_px*PiPlus2_px - PiPlus2_py*PiPlus2_py - PiPlus2_pz*PiPlus2_pz)')
+
+# hist_m_test = df.Histo1D(('pim_m', 'pim_m', 100, -0.1, 1.0), 'pim_m')
+# hist_m_test.Draw()
+# input("Press Enter to continue...")
 
 # df = df.Filter(beam_range).Filter(t_range)
 # for i in range(int(df.Min('e_bin').GetValue()), int(df.Max('e_bin').GetValue())+1):
@@ -135,13 +150,16 @@ def fill_histos(cut_df, histo_array, beam_index=0, t_index=0):
     histo_array.append(cut_df.Histo1D((hist_name, hist_name, 100, 1.0, 2.5), 'pipkmks_m'))
 
 
+
 for energy_index in range(1, n_e_bins+1):
     e_cut_df = df.Filter(f'e_bin == {energy_index}')
     fill_histos(e_cut_df, histo_array, beam_index=energy_index)
 
 
     for t_index in range(1, n_t_bins+1):
+        # print(df.Filter('t_bin == {}'.format(t_index)).Filter('e_bin == {}'.format(energy_index)).Count().GetValue())
         e_t_cut_df = e_cut_df.Filter(f't_bin == {t_index}')
+        hist = e_t_cut_df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m')
         fill_histos(e_t_cut_df, histo_array, beam_index=energy_index, t_index=t_index)
 
 
@@ -151,6 +169,7 @@ for t_index in range(1, n_t_bins+1):
 
 print("histos done in {} seconds".format(time.time() - start_time))
 
+print(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_phasespace_thrown_flat_result_{run_dict[run_period]}.root")
 target_file = ROOT.TFile(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_phasespace_thrown_flat_result_{run_dict[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
