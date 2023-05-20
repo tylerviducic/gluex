@@ -20,6 +20,7 @@ start_time = time.time()
 #     '2017': '2017',
 # }
 
+#TODO run over other available datasets
 run_period = 'spring'
 filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_flat_bestX2_{run_dict[run_period]}.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
@@ -46,14 +47,15 @@ beam_dict = {
 ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'
 ks_cut2 = ' vertex_distance > 3'
-ks_mass_cut = 'ks_m > 0.475 && ks_m < 0.525'
+# ks_mass_cut = 'ks_m > 0.475 && ks_m < 0.525'
+ks_mass_cut = f'abs(ks_m - {KSHORT_FIT_MEAN}) < {2 * KSHORT_FIT_WIDTH}'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
 beam_range = 'e_beam >= 6.50000000000 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
 p_p_cut = 'p_p > 0.4'
-mx2_ppipkmks_cut = 'abs(mx2_ppipkmks) < 0.03'
+mx2_ppipkmks_cut = 'abs(mx2_ppipkmks) < 0.01'
 
 kstar_no_cut = 'kspip_m > 0.0'
 kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
