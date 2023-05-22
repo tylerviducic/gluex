@@ -3,6 +3,7 @@
 import ROOT
 import time
 import os
+from common_analysis_tools import *
 
 
 os.nice(18)
@@ -45,14 +46,15 @@ beam_dict = {
 ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'
 ks_cut2 = ' vertex_distance > 3'
-ks_mass_cut = 'ks_m > 0.475 && ks_m < 0.525'
+# ks_mass_cut = 'ks_m > 0.475 && ks_m < 0.525'
+ks_mass_cut = f'abs(ks_m - {KSHORT_FIT_MEAN}) < {2 * KSHORT_FIT_WIDTH}'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
 beam_range = 'e_beam >= 6.5 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
 p_p_cut = 'p_p > 0.4'
-mx2_ppipkmks_cut = 'abs(mx2_ppipkmks) < 0.03'
+mx2_ppipkmks_cut = 'abs(mx2_ppipkmks) < 0.01'
 
 
 kstar_no_cut = 'kspip_m > 0.0'
@@ -186,7 +188,7 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-# df.Snapshot(f'mc_pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_filtered_{run_period_dict[run_period]}.root')
+df.Snapshot(f'mc_pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_filtered_{run_period_dict[run_period]}.root')
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
 df = df.Filter(beam_range).Filter(t_range)
