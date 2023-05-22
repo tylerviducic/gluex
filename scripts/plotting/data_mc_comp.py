@@ -21,8 +21,9 @@ run_dict = {
 
 ROOT.gROOT.SetBatch(True) # run ROOT in batch mode to create canvas without drawing to screen
 
-data_filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_filtered_{run_dict[run_period]}.root'
-mc_filename = f'/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/mc_pipkmks_filtered_{run_dict[run_period]}.root'
+data_filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_filtered_{run_dict[run_period]}.root'
+mc_filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_filtered_{run_dict[run_period]}.root'
+print(data_filename)
 
 data_tree_name = 'pipkmks_filtered_2018_spring'
 mc_tree_name = 'mc_pipkmks_filtered_2018_spring'
@@ -64,7 +65,7 @@ data_df = data_df.Define("pip2_phi", "atan2(pip2_py, pip2_px)*(180.0/3.141592653
 data_df = data_df.Define("pim_phi", "atan2(pim_py, pim_px)*(180.0/3.141592653589793238463)")
 data_df = data_df.Define("km_phi", "atan2(km_py, km_px)*(180.0/3.141592653589793238463)")
 data_df = data_df.Define("p_phi", "atan2(p_py, p_px)*(180.0/3.141592653589793238463)")
-data_df = data_df.Define("p_p", "sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)")
+# data_df = data_df.Define("p_p", "sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)")
 
 mc_df = mc_df.Define("pip1_theta", "atan2( sqrt(pip1_px*pip1_px + pip1_py*pip1_py), pip1_pz)*(180.0/3.141592653589793238463)")
 mc_df = mc_df.Define("pip2_theta", "atan2( sqrt(pip2_px*pip2_px + pip2_py*pip2_py), pip2_pz)*(180.0/3.141592653589793238463)")
@@ -76,13 +77,15 @@ mc_df = mc_df.Define("pip2_phi", "atan2(pip2_py, pip2_px)*(180.0/3.1415926535897
 mc_df = mc_df.Define("pim_phi", "atan2(pim_py, pim_px)*(180.0/3.141592653589793238463)")
 mc_df = mc_df.Define("km_phi", "atan2(km_py, km_px)*(180.0/3.141592653589793238463)")
 mc_df = mc_df.Define("p_phi", "atan2(p_py, p_px)*(180.0/3.141592653589793238463)")
-mc_df = mc_df.Define("p_p", "sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)")
+# mc_df = mc_df.Define("p_p", "sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)")
 
 pp_cut = "p_p > 0.4"
-f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
+f1_region = 'pipkmks_m > 1.24 && pipkmks_m < 1.32'
 
 data_df = data_df.Filter(pp_cut).Filter(f1_region)
 mc_df = mc_df.Filter(pp_cut).Filter(f1_region)
+
+# print(data_df.Count().GetValue())
 
 
 all_variables = kinematic_variables + angular_variables
@@ -96,14 +99,14 @@ pdf_filename = '/w/halld-scshelf2101/home/viducic/plots/data_mc_compare/mc_data_
 
 c1 = ROOT.TCanvas("c1", "c1", 1200, 900)
 c1.Print(pdf_filename + "[")
-c1.Clear();
+c1.Clear()
 
 for variable in all_variables:
     # print(variable)
     if (variable in angular_variables):
         n_bins = 50
     else:
-        n_bins = 300
+        n_bins = 150
 
     c1.cd()
 
@@ -113,6 +116,8 @@ for variable in all_variables:
         hist_name = variable
 
     data_hist = data_df.Histo1D((hist_name, hist_name, n_bins, hist_range_dict[variable][0], hist_range_dict[variable][1]), variable)
+    # data_hist = data_df.Histo1D(variable)
+    # print(data_hist.Integral())
     mc_hist = mc_df.Histo1D((hist_name, hist_name, n_bins, hist_range_dict[variable][0], hist_range_dict[variable][1]), variable)
     data_hist.Scale(1.0/data_hist.Integral())
     mc_hist.Scale(1.0/mc_hist.Integral())
