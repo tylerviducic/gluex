@@ -15,8 +15,11 @@ hist = df.Filter(energy_cut).Filter(t_cut).Histo1D(('pipkmks', 'pipkmks', 200, 1
 
 m_kkpi = ROOT.RooRealVar('m_kkpi', 'm_kkpi', 1.0, 1.8)
 mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.2, 1.3)
-width = ROOT.RooRealVar('width', 'width', 0.025, 0.001, 0.1)
+width = ROOT.RooRealVar('width', 'width', 0.023, 0.001, 0.1)
 sigma = ROOT.RooRealVar('sigma', 'sigma', 0.025, 0.001, 0.1)
+
+width.setConstant(ROOT.kTRUE)
+# mean.setConstant(ROOT.kTRUE)
 
 dh = ROOT.RooDataHist('dh', 'dh', ROOT.RooArgList(m_kkpi), hist)
 
