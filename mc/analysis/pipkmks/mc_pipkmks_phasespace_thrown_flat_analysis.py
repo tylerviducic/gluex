@@ -12,7 +12,7 @@ ROOT.gStyle.SetOptStat(0)
 start_time = time.time()
 
 
-run_period = 'spring'
+run_period = 'fall'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_{run_dict[run_period]}.root"
 treename = "pipkmks_thrown"
@@ -128,7 +128,8 @@ df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 #     for j in range(int(df.Min('t_bin').GetValue()), int(df.Max('t_bin').GetValue())+1):
 #         print(f"number of events in E Bin({i}) and t Bin({j}) = {df.Filter(f'e_bin == {i}').Filter(f't_bin == {j}').Count().GetValue()}")
 
-histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m'))
+# histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m'))
+histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 30, 1.2, 1.5), 'pipkmks_m'))
 
 
 n_e_bins = 4

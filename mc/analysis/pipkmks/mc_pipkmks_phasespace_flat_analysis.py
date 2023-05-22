@@ -21,7 +21,7 @@ start_time = time.time()
 # }
 
 #TODO run over other available datasets
-run_period = 'spring'
+run_period = 'fall'
 filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_flat_bestX2_{run_dict[run_period]}.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
 
