@@ -1,4 +1,4 @@
-# FIT KKPi INTEGRATED Distribution after phasespace acceptance correction for mean and width check
+# FIT KKPi INTEGRATED and scale signal MC to it for crosscheck
 
 import ROOT
 from common_analysis_tools import *
@@ -12,31 +12,50 @@ ROOT.gStyle.SetOptStat(0)
 channel = 'pipkmks'
 run_period = 'spring'
 
+flux_filename = f'/w/halld-scshelf2101/home/viducic/data/flux/flux_{flux_dict[run_period]}.root'
+flux_file = ROOT.TFile.Open(flux_filename, "READ")
+lumi_hist = flux_file.Get('tagged_lumi')
+lumi = lumi_hist.Integral(lumi_hist.FindBin(8.0), lumi_hist.FindBin(10.0))
+
 data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data')
 data_df = ROOT.RDataFrame(data_file_and_tree[1], data_file_and_tree[0])
 
 recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace')
 thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
 
+signal_file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
+signal_df = ROOT.RDataFrame(signal_file_and_tree[1], signal_file_and_tree[0])
 
 recon_df = ROOT.RDataFrame(recon_phasespace_file_and_tree[1], recon_phasespace_file_and_tree[0])
 
 thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
 
 kstar_all_cut = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
-data_df = data_df.Filter(kstar_all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-recon_df = recon_df.Filter(kstar_all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+beam_range = 'e_beam >= 8.0 && e_beam <= 10.0'
+t_range = 'mand_t >= 0.1 && mand_t <= 0.5'
+
+br_kkpi = 0.091
+br_kspipi = 0.692
+
+# scale_factor = 0.0215 # beam = 6.5-10.5 GeV, 0.5 < mand_t < 1.9 GeV^2
+scale_factor = 0.003 # beam = 8-10 GeV, 0.1 < mand_t < 1.9 GeV^2
+n_gen = 23045322
+
+data_df = data_df.Filter(kstar_all_cut).Filter(beam_range).Filter(t_range)
+recon_df = recon_df.Filter(kstar_all_cut).Filter(beam_range).Filter(t_range)
+signal_df = signal_df.Filter(kstar_all_cut).Filter(beam_range).Filter(t_range)
 
 # data_hist = data_df.Histo1D(('data_hist', 'data_hist', 40, 1.2, 1.7), 'pipkmks_m')
 # recon_hist = recon_df.Histo1D(('recon_hist', 'recon_hist', 40, 1.2, 1.7), 'pipkmks_m')
 data_hist = data_df.Histo1D(('data_hist', 'data_hist', 30, 1.2, 1.5), 'pipkmks_m')
 recon_hist = recon_df.Histo1D(('recon_hist', 'recon_hist', 30, 1.2, 1.5), 'pipkmks_m')
+signal_hist = signal_df.Histo1D(('signal_hist', 'signal_hist', 30, 1.2, 1.5), 'pipkmks_m').GetValue()
 
 
 data_hist.Sumw2()
 recon_hist.Sumw2()
 
-thrown_hist_name = channel + ';1'
+thrown_hist_name = channel + '_sf;1'
 thrown_hist = thrown_file.Get(thrown_hist_name)
 
 thrown_hist.Sumw2()
@@ -46,8 +65,9 @@ acceptance_hist.Divide(thrown_hist)
 
 ac_data_hist = data_hist.Clone()
 ac_data_hist.Divide(acceptance_hist)
+signal_hist.Divide(acceptance_hist)
+signal_hist.Scale(scale_factor)
 
-# yes 
 
 # c = ROOT.TCanvas()
 # c.Divide(2,2)
@@ -68,6 +88,7 @@ ac_data_hist.Divide(acceptance_hist)
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
 # m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), ac_data_hist)
+signal_dh = ROOT.RooDataHist("signal_dh", "signal_dh", ROOT.RooArgList(m_kkpi), signal_hist)
 
 ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
 
@@ -77,7 +98,7 @@ relbw_width = ROOT.RooRealVar("relbw_width", "relbw_width", 0.025, 0.001, 0.1)
 # set up a roofit voightian with a mean of 1.285, width of 0.024, and a sigma of 0.013
 voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.285, 1.2, 1.3)
 voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.024, 0.01, 0.075)
-voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.01247, 0.01, 0.5)
+voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.01252, 0.01, 0.5)
 voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_m, voight_width, voight_sigma)
 
 # hold the voight parameters fixed
@@ -144,16 +165,24 @@ print("ndf = " + str(ndf))
 print("chi2/ndf = " + str(chi2_per_ndf))
 
 frame = m_kkpi.frame()
+signal_dh.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['orange'])), ROOT.RooFit.MarkerColor(ROOT.TColor.GetColor(colorblind_hex_dict['red'])))
 dh.plotOn(frame)
+# curve = frame.findObject("signal_dh")
+# curve.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['orange']))
 # draw_pdf(kstar_cut, frame, combined_pdf, '1285')
 # combined_pdf.plotOn(frame, ROOT.RooFit.VisualizeError(fit_result), ROOT.RooFit.LineColor(ROOT.kRed))
 combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red'])))
 # fit_result.plotOn(frame, ROOT.RooAbsArg(voight), ROOT.RooFit.LineColor(ROOT.kRed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("bw"), ROOT.RooFit.LineColor(ROOT.kGreen))
-combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
+# combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("relbw"), ROOT.RooFit.LineColor(ROOT.kBlue))
 combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue'])))
 
 frame.Draw()
 
 input('Press enter to continue...')
+
+sfcs = (scale_factor * 6 * n_gen) / (lumi * br_kkpi * br_kspipi)
+print('scaling factor cross section eqn: cs = [sf * 6 * N(gen)] / [L * BR(f1->KKpi) * BR(Ks->pipi)]')
+print(f'calculation: cs = [{scale_factor} * 6 * {n_gen}] / [{lumi} * {br_kkpi} * {br_kspipi}]')
+print(f'cs = {sfcs/1000} nb')

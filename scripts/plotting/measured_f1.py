@@ -3,7 +3,9 @@
 import ROOT
 from common_analysis_tools import *
 
-file_and_tree = get_flat_file_and_tree('pipkmks', 'spring', 'data', filtered=False)
+ROOT.gStyle.SetOptStat(0)
+
+file_and_tree = get_flat_file_and_tree('pipkmks', 'spring', 'signal', filtered=False)
 
 ks_mass_cut = f'abs(ks_m - {KSHORT_FIT_MEAN}) < 3*{KSHORT_FIT_WIDTH}'
 ks_pathlength_cut = 'pathlength_sig > 5'
@@ -157,32 +159,33 @@ hist_mx_all = df.Histo1D(('mx2_ppipkmks', 'mx2_ppipkmks', 500, -0.05, 0.05), 'mx
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut).Filter(kstar_all_cut).Filter(ks_mass_cut).Filter(beam_range).Filter(t_range)
 
-hist_pipkmks_measured = df.Histo1D(('pipkmks_measured', 'pipkmks_measured', 110, 1.1, 2.2), 'pipkmks_m_measured')
-hist_pipkmks = df.Histo1D(('pipkmks', 'pipkmks', 110, 1.1, 2.2), 'pipkmks_m')
-hist_pipkmks_fixed = df.Histo1D(('pipkmks_fixed', 'pipkmks_fixed', 110, 1.1, 2.2), 'pipkmks_m_fixed')
-hist_pipkmks_fixed.SetLineColor(ROOT.kBlack)
-hist_pipkmks.SetLineColor(ROOT.kRed)
+hist_pipkmks_measured = df.Histo1D(('pipkmks_measured', 'pipkmks_measured', 400, 1.2, 1.4), 'pipkmks_m_measured')
+hist_pipkmks = df.Histo1D(('pipkmks', 'pipkmks', 400, 1.2, 1.4), 'pipkmks_m')
+hist_pipkmks_fixed = df.Histo1D(('pipkmks_fixed', 'pipkmks_fixed', 400, 1.2, 1.4), 'pipkmks_m_fixed')
+hist_pipkmks_fixed.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
+hist_pipkmks.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
+hist_pipkmks_measured.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
 
-hist_pipkmks_fixed2 = df.Filter('t_bin == 2').Histo1D(('pipkmks_fixed2', 'pipkmks_fixed2', 110, 1.1, 2.2), 'pipkmks_m_fixed')
-hist_pipkmks_fixed3 = df.Filter('t_bin == 3').Histo1D(('pipkmks_fixed3', 'pipkmks_fixed3', 110, 1.1, 2.2), 'pipkmks_m_fixed')
-hist_pipkmks_fixed4 = df.Filter('t_bin == 4').Histo1D(('pipkmks_fixed4', 'pipkmks_fixed4', 110, 1.1, 2.2), 'pipkmks_m_fixed')
-hist_pipkmks_fixed5 = df.Filter('t_bin == 4').Histo1D(('pipkmks_fixed5', 'pipkmks_fixed5', 110, 1.1, 2.2), 'pipkmks_m_fixed')
+# hist_pipkmks_fixed2 = df.Filter('t_bin == 2').Histo1D(('pipkmks_fixed2', 'pipkmks_fixed2', 110, 1.1, 2.2), 'pipkmks_m_fixed')
+# hist_pipkmks_fixed3 = df.Filter('t_bin == 3').Histo1D(('pipkmks_fixed3', 'pipkmks_fixed3', 110, 1.1, 2.2), 'pipkmks_m_fixed')
+# hist_pipkmks_fixed4 = df.Filter('t_bin == 4').Histo1D(('pipkmks_fixed4', 'pipkmks_fixed4', 110, 1.1, 2.2), 'pipkmks_m_fixed')
+# hist_pipkmks_fixed5 = df.Filter('t_bin == 4').Histo1D(('pipkmks_fixed5', 'pipkmks_fixed5', 110, 1.1, 2.2), 'pipkmks_m_fixed')
 
 c1 = ROOT.TCanvas("c1", "c1", 800, 600)
 
-c1.Divide(2,2)
-c1.cd(1)
-hist_pipkmks_fixed2.Draw()
+# c1.Divide(2,2)
+# c1.cd(1)
+# hist_pipkmks_fixed2.Draw()
 # hist_mx_all.Draw()
-c1.cd(2)
-# hist_pipkmks_fixed.Draw()
-# hist_pipkmks_measured.Draw('same')
-# hist_pipkmks.Draw('same')
-hist_pipkmks_fixed3.Draw()
-c1.cd(3)
-hist_pipkmks_fixed4.Draw()
-c1.cd(4)
-hist_pipkmks_fixed5.Draw()
+# c1.cd(2)
+hist_pipkmks_fixed.Draw()
+hist_pipkmks_measured.Draw('same')
+hist_pipkmks.Draw('same')
+# hist_pipkmks_fixed3.Draw()
+# c1.cd(3)
+# hist_pipkmks_fixed4.Draw()
+# c1.cd(4)
+# hist_pipkmks_fixed5.Draw()
 
 c1.Update()
 

@@ -2,10 +2,10 @@
 
 import ROOT
 
-data_filename = "/w/halld-scshelf2101/home/viducic/selector_output/f1_flat/pipkmks_flat_result_2018_spring.root"
+data_filename = "/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_result_2018_spring.root"
 data_file = ROOT.TFile.Open(data_filename)
 
-data_hist = data_file.Get("pipkmks_beam_8_t_0.4_kstar_all_cut_medium")
+data_hist = data_file.Get("pipkmks_beam_8_t_0.4_kstar_all_cut;1")
 
 x = ROOT.RooRealVar("x", "x", 1.0, 1.7)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(x), data_hist)
@@ -51,3 +51,4 @@ composite.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROO
 composite.plotOn(frame, ROOT.RooFit.Components("bw"), ROOT.RooFit.LineColor(ROOT.kRed))
 
 frame.Draw()
+input("Press enter to continue...")

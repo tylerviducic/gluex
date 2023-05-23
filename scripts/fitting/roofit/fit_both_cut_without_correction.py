@@ -1,4 +1,4 @@
-# FIT KKPi INTEGRATED Distribution after phasespace acceptance correction for mean and width check
+# FIT KKPi INTEGRATED Distribution without corrections
 
 import ROOT
 from common_analysis_tools import *
@@ -15,39 +15,16 @@ run_period = 'spring'
 data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data')
 data_df = ROOT.RDataFrame(data_file_and_tree[1], data_file_and_tree[0])
 
-recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace')
-thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
-
-
-recon_df = ROOT.RDataFrame(recon_phasespace_file_and_tree[1], recon_phasespace_file_and_tree[0])
-
-thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
 
 kstar_all_cut = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
-data_df = data_df.Filter(kstar_all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-recon_df = recon_df.Filter(kstar_all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+data_df = data_df.Filter(kstar_all_cut)
 
-# data_hist = data_df.Histo1D(('data_hist', 'data_hist', 40, 1.2, 1.7), 'pipkmks_m')
-# recon_hist = recon_df.Histo1D(('recon_hist', 'recon_hist', 40, 1.2, 1.7), 'pipkmks_m')
-data_hist = data_df.Histo1D(('data_hist', 'data_hist', 30, 1.2, 1.5), 'pipkmks_m')
-recon_hist = recon_df.Histo1D(('recon_hist', 'recon_hist', 30, 1.2, 1.5), 'pipkmks_m')
+
+data_hist = data_df.Histo1D(('data_hist', 'data_hist', 50, 1.2, 1.7), 'pipkmks_m').GetValue()
 
 
 data_hist.Sumw2()
-recon_hist.Sumw2()
 
-thrown_hist_name = channel + ';1'
-thrown_hist = thrown_file.Get(thrown_hist_name)
-
-thrown_hist.Sumw2()
-
-acceptance_hist = recon_hist.Clone()
-acceptance_hist.Divide(thrown_hist)
-
-ac_data_hist = data_hist.Clone()
-ac_data_hist.Divide(acceptance_hist)
-
-# yes 
 
 # c = ROOT.TCanvas()
 # c.Divide(2,2)
@@ -65,9 +42,8 @@ ac_data_hist.Divide(acceptance_hist)
 
 # input('Press enter to continue...')
 
-m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
-# m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
-dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), ac_data_hist)
+m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.7)
+dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
 ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
 
@@ -77,7 +53,7 @@ relbw_width = ROOT.RooRealVar("relbw_width", "relbw_width", 0.025, 0.001, 0.1)
 # set up a roofit voightian with a mean of 1.285, width of 0.024, and a sigma of 0.013
 voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.285, 1.2, 1.3)
 voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.024, 0.01, 0.075)
-voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.01247, 0.01, 0.5)
+voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.012456, 0.01, 0.5)
 voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_m, voight_width, voight_sigma)
 
 # hold the voight parameters fixed
@@ -136,7 +112,7 @@ chi2_var = combined_pdf.createChi2(dh)
 fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
-n_bins = ac_data_hist.GetNbinsX()
+n_bins = data_hist.GetNbinsX()
 ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
 chi2_per_ndf = chi2_val / ndf
 print("chi2 = " + str(chi2_val))

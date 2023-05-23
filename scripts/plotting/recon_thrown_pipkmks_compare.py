@@ -3,6 +3,9 @@
 import ROOT
 from common_analysis_tools import *
 
+ROOT.gStyle.SetOptStat(0)
+
+
 # file_and_tree = get_flat_file_and_tree('pipkmks', 'spring', 'signal')
 # df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
 filename = '/work/halld/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_bestX2_2018_fall_debug.root'
@@ -158,17 +161,17 @@ hist_km_double = df.Histo1D(('km_double', 'km_double', 100, 0.0, 1.0), 'km_m_thr
 hist_km_double.SetLineColor(ROOT.kRed)
 
 c = ROOT.TCanvas('c', 'c', 800, 600)
-c.Divide(2,2)
+c.Divide(2,1)
 c.cd(1)
 hist_r_t.Draw()
+# c.cd(2)
+# hist_thrown.Draw('HIST')
+# hist_recon.Draw("same HIST")
 c.cd(2)
-hist_thrown.Draw('HIST')
-hist_recon.Draw("same HIST")
-c.cd(3)
 hist_ks_r_t.Draw()
-c.cd(4)
-hist_ks_thrown.Draw('HIST')
-hist_ks_recon.Draw('same HIST')
+# c.cd(4)
+# hist_ks_thrown.Draw('HIST')
+# hist_ks_recon.Draw('same HIST')
 # hist_km_double.Draw()
 # hist_km_4v.Draw('same')
 # hist_ks_thrown.Draw()
