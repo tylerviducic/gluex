@@ -96,14 +96,14 @@ relbw_m = ROOT.RooRealVar("relbw_m", "relbw_m", 1.285, 1.2, 1.3)
 relbw_width = ROOT.RooRealVar("relbw_width", "relbw_width", 0.025, 0.001, 0.1)
 
 # set up a roofit voightian with a mean of 1.285, width of 0.024, and a sigma of 0.013
-voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.285, 1.2, 1.3)
-voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.024, 0.01, 0.075)
+voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.281, 1.2, 1.3)
+voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.0223, 0.01, 0.075)
 voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.01252, 0.01, 0.5)
 voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_m, voight_width, voight_sigma)
 
 # hold the voight parameters fixed
-# voight_m.setConstant(True)
-# voight_width.setConstant(True)
+voight_m.setConstant(True)
+voight_width.setConstant(True)
 voight_sigma.setConstant(True)
 
 relbw = ROOT.RelBreitWigner("relbw", "relbw", m_kkpi, relbw_m, relbw_width)
@@ -174,7 +174,7 @@ dh.plotOn(frame)
 combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red'])))
 # fit_result.plotOn(frame, ROOT.RooAbsArg(voight), ROOT.RooFit.LineColor(ROOT.kRed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("bw"), ROOT.RooFit.LineColor(ROOT.kGreen))
-# combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
+combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("relbw"), ROOT.RooFit.LineColor(ROOT.kBlue))
 combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue'])))
 

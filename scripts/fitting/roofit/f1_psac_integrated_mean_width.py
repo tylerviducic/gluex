@@ -134,6 +134,7 @@ chi2_var = combined_pdf.createChi2(dh)
 # combined_pdf.fitTo(dh, ROOT.RooFit.Range("signal"))
 # combined_pdf.fitTo(dh)
 fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
+# fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
 n_bins = ac_data_hist.GetNbinsX()
