@@ -21,7 +21,7 @@ run_period_dict = {
 }
 
 #TODO run over other available datasets
-run_period = 'spring'
+run_period = '2017'
 filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
 treename = 'pipkmks__B4_M16'
 
