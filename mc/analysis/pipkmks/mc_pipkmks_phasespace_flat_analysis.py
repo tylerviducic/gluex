@@ -20,7 +20,7 @@ start_time = time.time()
 #     '2017': '2017',
 # }
 
-run_period = '2017'
+run_period = 'spring'
 filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_flat_bestX2_{run_dict[run_period]}.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
 
