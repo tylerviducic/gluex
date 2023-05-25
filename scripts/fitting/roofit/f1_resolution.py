@@ -4,7 +4,6 @@ import ROOT
 from common_analysis_tools import *
 
 channel = 'pipkmks'
-run_period = 'spring'
 
 def get_acceptance_corrected_signal_mc(channel, run_period):
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
@@ -17,9 +16,9 @@ def get_acceptance_corrected_signal_mc(channel, run_period):
     signal_df = signal_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
     recon_df = recon_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
 
-    signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 30, 1.2, 1.5), 'pipkmks_m').GetValue()
-    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 30, 1.2, 1.5), 'pipkmks_m').GetValue()
-    thrown_hist_name = channel + ';1'
+    signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 150, 1.2, 1.5), 'pipkmks_m').GetValue()
+    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 150, 1.2, 1.5), 'pipkmks_m').GetValue()
+    thrown_hist_name = channel + '_f1_res;1'
     thrown_hist = thrown_file.Get(thrown_hist_name)
 
     signal_hist.Sumw2()

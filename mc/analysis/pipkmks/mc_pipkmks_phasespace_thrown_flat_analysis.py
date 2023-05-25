@@ -130,6 +130,7 @@ df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 
 # histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m'))
 histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks', 'pipkmks', 30, 1.2, 1.5), 'pipkmks_m'))
+histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res', 'pipkmks_f1_res', 150, 1.2, 1.5), 'pipkmks_m'))
 histo_array.append(df.Filter('men_t > 0.1 && men_t < 0.5').Filter('Beam_E > 8.0 && Beam_E < 10.0').Histo1D(('pipkmks_sf', 'pipkmks_sf', 30, 1.2, 1.5), 'pipkmks_m'))
 
 
