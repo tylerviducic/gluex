@@ -64,15 +64,15 @@ m_kkpi.setRange("fit_range", range_min, range_max)
 # m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), ac_data_hist_total)
 
-ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
+# ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
 
-relbw_m = ROOT.RooRealVar("relbw_m", "relbw_m", 1.285, 1.2, 1.3)
-relbw_width = ROOT.RooRealVar("relbw_width", "relbw_width", 0.025, 0.001, 0.1)
+# relbw_m = ROOT.RooRealVar("relbw_m", "relbw_m", 1.285, 1.2, 1.3)
+# relbw_width = ROOT.RooRealVar("relbw_width", "relbw_width", 0.025, 0.001, 0.1)
 
 # set up a roofit voightian with a mean of 1.285, width of 0.024, and a sigma of 0.013
 voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.285, 1.2, 1.3)
 voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.024, 0.01, 0.075)
-voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.01247, 0.01, 0.5)
+voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.011786, 0.01, 0.5)
 voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_m, voight_width, voight_sigma)
 
 # hold the voight parameters fixed
@@ -80,7 +80,7 @@ voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_m, voight_width, vo
 # voight_width.setConstant(True)
 voight_sigma.setConstant(True)
 
-relbw = ROOT.RelBreitWigner("relbw", "relbw", m_kkpi, relbw_m, relbw_width)
+# relbw = ROOT.RelBreitWigner("relbw", "relbw", m_kkpi, relbw_m, relbw_width)
 
 # bw_m = ROOT.RooRealVar("bw_m", "bw_m", 1.42, 1.4, 1.43)
 # bw_width = ROOT.RooRealVar("bw_width", "bw_width", 0.05, 0.01, 0.5)
