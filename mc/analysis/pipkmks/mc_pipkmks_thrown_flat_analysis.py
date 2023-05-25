@@ -94,10 +94,10 @@ df = ROOT.RDataFrame(treename, filename)
 #            "mpippim", "mppip1", "mKsKm", 
 #            "men_s", "men_t", "cosTheta_f1_cm", "phi_f1_cm", "cosTheta_Ks_cm", "phi_Ks_cm"]
 
-df = df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + PiPlus2_px + PiMinus_px')
-df = df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + PiPlus2_py + PiMinus_py')
-df = df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + PiPlus2_pz + PiMinus_pz')
-df = df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + PiPlus2_E + PiMinus_E')
+df = df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + Ks_px')
+df = df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + Ks_py')
+df = df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + Ks_pz')
+df = df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + Ks_E')
 df = df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
 df = df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
 df = df.Define('t_bin', 'get_t_bin_index(men_t)')

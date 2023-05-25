@@ -12,7 +12,7 @@ ROOT.gStyle.SetOptStat(0)
 start_time = time.time()
 
 
-run_period = 'spring'
+run_period = '2017'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_{run_dict[run_period]}.root"
 treename = "pipkmks_thrown"
