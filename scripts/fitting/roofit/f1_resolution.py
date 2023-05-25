@@ -16,8 +16,8 @@ def get_acceptance_corrected_signal_mc(channel, run_period):
     signal_df = signal_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
     recon_df = recon_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
 
-    signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 150, 1.2, 1.5), 'pipkmks_m').GetValue()
-    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 150, 1.2, 1.5), 'pipkmks_m').GetValue()
+    signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 90, 1.2, 1.5), 'pipkmks_m').GetValue()
+    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 90, 1.2, 1.5), 'pipkmks_m').GetValue()
     thrown_hist_name = channel + '_f1_res;1'
     thrown_hist = thrown_file.Get(thrown_hist_name)
 
