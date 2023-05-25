@@ -14,7 +14,7 @@ void DSelector_mc_pipkmks_thrown::Init(TTree *locTree)
 	//dOutputTreeFileNameMap["Bin1"] = "mcgen_bin1.root"; //key is user-defined, value is output file name
 	//dOutputTreeFileNameMap["Bin2"] = "mcgen_bin2.root"; //key is user-defined, value is output file name
 	//dOutputTreeFileNameMap["Bin3"] = "mcgen_bin3.root"; //key is user-defined, value is output file name
-	dFlatTreeFileName = "/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_thrown_2017.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_thrown_2018_spring.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = "pipkmks_thrown"; //if blank, default name will be chosen
 	dSaveDefaultFlatBranches = false; // False: don't save default branches, reduce disk footprint.
 
@@ -196,6 +196,12 @@ Bool_t DSelector_mc_pipkmks_thrown::Process(Long64_t locEntry)
 	Bool_t piPlusChecked = false;
 	int nparticles = 0;
 	int nThrown = Get_NumThrown();
+
+	Int_t KsThrown_Index;
+
+	// create a vector for potential pi+ candidates indices
+	vector<int> piPlusIndices;
+
 	//Loop over throwns
 	for(UInt_t loc_i = 0; loc_i < Get_NumThrown(); ++loc_i)
 	{
@@ -219,17 +225,26 @@ Bool_t DSelector_mc_pipkmks_thrown::Process(Long64_t locEntry)
 		}
 		if(locPID == 16){
 			locKShortP4 = locThrownP4;
+			KsThrown_Index = loc_i;
+			
 		}
 		if (locPID == 8){
-			if(!piPlusChecked) { 
+			if(dThrownWrapper->Get_ParentIndex() < 0){
 				locPiPlus1P4 = locThrownP4;
-				piPlusChecked = true;
-			} 
+			}
 			else{
-				locPiPlus2P4 = locThrownP4;
+				piPlusIndices.push_back(loc_i);
 			}
 			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
 			// if (loc_i == 4) { locPiPlus1P4 = locThrownP4; }
+		}
+	}
+
+	// loop over pion candidate indices and see if it's parent index is equal to the Ks. if it is, make that pion's 4 vector the pi+2
+	for (int i = 0; i < piPlusIndices.size(); i++){
+		dThrownWrapper->Set_ArrayIndex(piPlusIndices[i]);
+		if (dThrownWrapper->Get_ParentIndex() == KsThrown_Index){
+			locPiPlus2P4 = dThrownWrapper->Get_P4();
 		}
 	}
 
