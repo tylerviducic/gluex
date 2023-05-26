@@ -47,6 +47,7 @@ def get_acceptance_corrected_kkpi(channel, run_period):
 
     return ac_data_hist
 
+
 ac_data_hist_2017 = get_acceptance_corrected_kkpi(channel, '2017')
 ac_data_hist_spring = get_acceptance_corrected_kkpi(channel, 'spring')
 ac_data_hist_fall = get_acceptance_corrected_kkpi(channel, 'fall')
@@ -59,9 +60,8 @@ ac_data_hist_total.Add(ac_data_hist_2017)
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
 range_min = 1.2
-range_max = 1.49
+range_max = 1.5
 m_kkpi.setRange("fit_range", range_min, range_max)
-# m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), ac_data_hist_total)
 
 # ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
@@ -72,7 +72,8 @@ dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), ac_data_hist_total)
 # set up a roofit voightian with a mean of 1.285, width of 0.024, and a sigma of 0.013
 voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.285, 1.2, 1.3)
 voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.024, 0.01, 0.075)
-voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.011786, 0.01, 0.5)
+voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.0111726, 0.01, 0.5)
+voight_sigma.setError(.000435994)
 voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_m, voight_width, voight_sigma)
 
 # hold the voight parameters fixed
@@ -128,8 +129,8 @@ chi2_var = combined_pdf.createChi2(dh)
 
 # combined_pdf.fitTo(dh, ROOT.RooFit.Range("signal"))
 # combined_pdf.fitTo(dh)
-# fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
-fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
+fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
+# fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
 # fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
@@ -141,6 +142,8 @@ print("chi2 = " + str(chi2_val))
 print("ndf = " + str(ndf))
 print("chi2/ndf = " + str(chi2_per_ndf))
 
+c1 = ROOT.TCanvas("c1", "c1", 800, 600)
+c1.cd()
 frame = m_kkpi.frame()
 
 npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
@@ -160,16 +163,32 @@ combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(
 combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue'])))
 
 frame.Draw()
+c1.Update()
 
 pullDist = ROOT.TH1I("pullDist", "pullDist", 3, 0, 3)
 for i in range(0, pullHist.GetN()):
     pullDist.Fill(abs(pullHist.GetY()[i]))
 
-input('Press enter to continue...')
+ks_test_func = combined_pdf.createHistogram("ks_test_func", m_kkpi, ROOT.RooFit.Binning(1000))
+ks_test_data = dh.createHistogram("ks_test_data", m_kkpi, ROOT.RooFit.Binning(1000))
 
-c = ROOT.TCanvas("c", "c", 800, 600)
-c.Divide(1, 2)
-c.cd(1)
+kstest = ks_test_data.KolmogorovTest(ks_test_func)
+# latex = ROOT.TLatex(); #prepare text in LaTeX format latex->SetTextSize(0.035);
+# latex.SetNDC()
+# latex.DrawLatex(0.25, 0.75, ROOT.Form("K-S test = %.2f", kstest)); 
+print("K-S test = " + str(kstest))
+
+"""
+K-S test = 1 means very high probability of data coming from the 
+distribution described by the model
+"""
+ks_test_data.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+
+
+c2 = ROOT.TCanvas("c2", "c2", 800, 600)
+c2.cd()
+c2.Divide(3, 1)
+c2.cd(1)
 pullHist.Draw("AP")
 
 y = 0.0
@@ -179,9 +198,12 @@ line.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
 line.SetLineStyle(2)
 line.SetLineWidth(2)
 line.Draw("same")
-c.cd(2)
+c2.cd(2)
 pullDist.Draw()
-c.Update()
+c2.cd(3)
+ks_test_data.Draw()
+ks_test_func.Draw("same")
+c2.Update()
 
 
 print(f"f1 mass = {voight_m.getVal() * 1000} +/- {voight_m.getError() * 1000}")
