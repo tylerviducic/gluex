@@ -16,7 +16,7 @@ def get_acceptance_corrected_signal_mc(channel, run_period, n_bins):
 
     signal_df = signal_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
     # reduce signal_df to 10% of it's size
-    signal_df = signal_df.Range(0, int(signal_df.Count().GetValue() / 500))
+    signal_df = signal_df.Range(0, int(signal_df.Count().GetValue() / 250))
     recon_df = recon_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
 
     signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', n_bins, 1.2, 1.5), 'pipkmks_m').GetValue()
