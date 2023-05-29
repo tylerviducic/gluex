@@ -113,7 +113,7 @@ void DSelector_mc_pipkmks_phasespace_flat::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_ClonesArray<TLorentzVector>("flat_my_p4_array");
 	*/
 
-dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental = char, int, float, double, etc.
 	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py"); //fundamental = char, int, float, double, etc.
@@ -164,6 +164,32 @@ dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py_measured"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz_measured"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_measured"); //fundamental = char, int, float, double, etc.
+
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip2_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("km_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_thrown"); //fundamental = char, int, float, double, etc.
 	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pathlength_sig"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cos_colin"); //fundamental = char, int, float, double, etc.
@@ -273,6 +299,24 @@ Bool_t DSelector_mc_pipkmks_phasespace_flat::Process(Long64_t locEntry)
 
 		// Grab combo Chi^2/NDF and see if it's the best. 
 		// If it is, save the combo index
+				/********************************************* GET COMBO RF TIMING INFO *****************************************/
+
+		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
+		Double_t locBunchPeriod = dAnalysisUtilities.Get_BeamBunchPeriod(Get_RunNumber());
+		Double_t locDeltaT_RF = dAnalysisUtilities.Get_DeltaT_RF(Get_RunNumber(), locBeamX4_Measured, dComboWrapper);
+		Int_t locRelBeamBucket = dAnalysisUtilities.Get_RelativeBeamBucket(Get_RunNumber(), locBeamX4_Measured, dComboWrapper); // 0 for in-time events, non-zero integer for out-of-time photons
+		Int_t locNumOutOfTimeBunchesInTree = 1; //YOU need to specify this number
+			// Number of out-of-time beam bunches in tree (on a single side, so that total number out-of-time bunches accepted is 2 times this number for left + right bunches) 
+
+		Bool_t locSkipNearestOutOfTimeBunch = true; // True: skip events from nearest out-of-time bunch on either side (recommended).
+		Int_t locNumOutOfTimeBunchesToUse = locSkipNearestOutOfTimeBunch ? locNumOutOfTimeBunchesInTree-1:locNumOutOfTimeBunchesInTree; 
+		Double_t locAccidentalScalingFactor = dAnalysisUtilities.Get_AccidentalScalingFactor(Get_RunNumber(), locBeamP4.E(), dIsMC); // Ideal value would be 1, but deviations require added factor, which is different for data and MC.
+		Double_t locAccidentalScalingFactorError = dAnalysisUtilities.Get_AccidentalScalingFactorError(Get_RunNumber(), locBeamP4.E()); // Ideal value would be 1, but deviations observed, need added factor.
+		Double_t locHistAccidWeightFactor = locRelBeamBucket==0 ? 1 : -locAccidentalScalingFactor/(2*locNumOutOfTimeBunchesToUse) ; // Weight by 1 for in-time events, ScalingFactor*(1/NBunches) for out-of-time
+		if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
+			dComboWrapper->Set_IsComboCut(true); 
+			return kTRUE; 
+		} 
 
 		double chi2 = dComboWrapper->Get_ChiSq_KinFit();
 		double ndf = dComboWrapper->Get_NDF_KinFit();
@@ -348,25 +392,6 @@ Bool_t DSelector_mc_pipkmks_phasespace_flat::Process(Long64_t locEntry)
 		//Step 1
 		TLorentzVector locPiMinusX4_Measured = dPiMinusWrapper->Get_X4_Measured();
 		TLorentzVector locPiPlus2X4_Measured = dPiPlus2Wrapper->Get_X4_Measured();
-
-		/********************************************* GET COMBO RF TIMING INFO *****************************************/
-
-		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
-		Double_t locBunchPeriod = dAnalysisUtilities.Get_BeamBunchPeriod(Get_RunNumber());
-		Double_t locDeltaT_RF = dAnalysisUtilities.Get_DeltaT_RF(Get_RunNumber(), locBeamX4_Measured, dComboWrapper);
-		Int_t locRelBeamBucket = dAnalysisUtilities.Get_RelativeBeamBucket(Get_RunNumber(), locBeamX4_Measured, dComboWrapper); // 0 for in-time events, non-zero integer for out-of-time photons
-		Int_t locNumOutOfTimeBunchesInTree = 1; //YOU need to specify this number
-			// Number of out-of-time beam bunches in tree (on a single side, so that total number out-of-time bunches accepted is 2 times this number for left + right bunches) 
-
-		Bool_t locSkipNearestOutOfTimeBunch = true; // True: skip events from nearest out-of-time bunch on either side (recommended).
-		Int_t locNumOutOfTimeBunchesToUse = locSkipNearestOutOfTimeBunch ? locNumOutOfTimeBunchesInTree-1:locNumOutOfTimeBunchesInTree; 
-		Double_t locAccidentalScalingFactor = dAnalysisUtilities.Get_AccidentalScalingFactor(Get_RunNumber(), locBeamP4.E(), dIsMC); // Ideal value would be 1, but deviations require added factor, which is different for data and MC.
-		Double_t locAccidentalScalingFactorError = dAnalysisUtilities.Get_AccidentalScalingFactorError(Get_RunNumber(), locBeamP4.E()); // Ideal value would be 1, but deviations observed, need added factor.
-		Double_t locHistAccidWeightFactor = locRelBeamBucket==0 ? 1 : -locAccidentalScalingFactor/(2*locNumOutOfTimeBunchesToUse) ; // Weight by 1 for in-time events, ScalingFactor*(1/NBunches) for out-of-time
-		if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==1) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
-			dComboWrapper->Set_IsComboCut(true); 
-			return kTRUE; 
-		} 
 
 	
 		// FLIGHT SIGNIFIGANCE CALCULATIONS 
@@ -667,8 +692,104 @@ Bool_t DSelector_mc_pipkmks_phasespace_flat::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("w", w);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("s", s);
 
+
+
+	if(dThrownBeam != NULL)
+		double locEnergy_Thrown = dThrownBeam->Get_P4().E();
+	
+	TLorentzVector dTargetP4_Thrown;
+	dTargetP4.SetXYZM(0.0,0.0,0.0,0.938);
+
+	TLorentzVector locProtonP4_Thrown;
+	TLorentzVector locPiPlus1P4_Thrown;
+	TLorentzVector locPiMinusP4_Thrown;
+	TLorentzVector locPiPlus2P4_Thrown;
+	TLorentzVector locKMinusP4_Thrown;
+	TLorentzVector locKShortP4_Thrown;
+
+	TLorentzVector PiPlusHypo1_Thrown;
+	TLorentzVector PiPlusHypo2_Thrown;
+	Int_t KsThrown_Index;
+	
+	Bool_t piPlusChecked = false;
+	Bool_t firstPiPlus = false;
+
+	//Loop over throwns
+	for(UInt_t loc_i = 0; loc_i < Get_NumThrown(); ++loc_i)
+	{
+	// 	//Set branch array indices corresponding to this particle
+		dThrownWrapper->Set_ArrayIndex(loc_i);
+
+	// 	//Do stuff with the wrapper here ...
+		Particle_t locPID_Thrown = dThrownWrapper->Get_PID();
+		TLorentzVector locThrownP4 = dThrownWrapper->Get_P4();
+		// cout << "Thrown " << loc_i << ": " << locPID << ", " << locThrownP4.Px() << ", " << locThrownP4.Py() << ", " << locThrownP4.Pz() << ", " << locThrownP4.E() << endl;
+
+
+		if (locPID_Thrown == 12){
+			locKMinusP4_Thrown = locThrownP4;
+		}
+		if (locPID_Thrown == 14){
+			locProtonP4_Thrown = locThrownP4;
+		}
+		if (locPID_Thrown == 9){
+			locPiMinusP4_Thrown = locThrownP4;
+		}
+		if(locPID_Thrown == 16){
+			locKShortP4_Thrown = locThrownP4;
+			KsThrown_Index = loc_i;
+		}
+		if (locPID_Thrown == 8){
+			// if(!piPlusChecked) { 
+			// 	locPiPlus1P4_Thrown = locThrownP4;
+			// 	piPlusChecked = true;
+			// } 
+			// else{
+			// 	locPiPlus2P4_Thrown = locThrownP4;
+			// }
+			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
+			// if (loc_i == 4) { locPiPlus1P4 = locThrownP4; }
+			if(dThrownWrapper->Get_ParentIndex() < 0){
+				locPiPlus1P4_Thrown = locThrownP4;
+			}
+			else if(KsThrown_Index == dThrownWrapper->Get_ParentIndex()){
+				locPiPlus2P4_Thrown = locThrownP4;
+			}
+		}
+
+	}
+
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px_thrown", locPiPlus1P4_Thrown.Px());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_py_thrown", locPiPlus1P4_Thrown.Py());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_pz_thrown", locPiPlus1P4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_E_thrown", locPiPlus1P4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_px_thrown", locPiPlus2P4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_py_thrown", locPiPlus2P4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_pz_thrown", locPiPlus2P4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip2_E_thrown", locPiPlus2P4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_px_thrown", locPiMinusP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_py_thrown", locPiMinusP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_pz_thrown", locPiMinusP4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim_E_thrown", locPiMinusP4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_px_thrown", locKMinusP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_py_thrown", locKMinusP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_pz_thrown", locKMinusP4_Thrown.Pz());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("km_E_thrown", locKMinusP4_Thrown.E()); 
+
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("ks_px_thrown", locKShortP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("ks_py_thrown", locKShortP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("ks_pz_thrown", locKShortP4_Thrown.Pz());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("ks_E_thrown", locKShortP4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_px_thrown", locProtonP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_py_thrown", locProtonP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_pz_thrown", locProtonP4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E_thrown", locProtonP4_Thrown.E()); 
 		//FILL FLAT TREE
-		Fill_FlatTree(); //for the active combo
+	Fill_FlatTree(); //for the active combo
 	//} // end of combo loop
 
 	//FILL HISTOGRAMS: Num combos / events surviving actions

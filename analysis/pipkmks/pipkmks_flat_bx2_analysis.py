@@ -102,6 +102,8 @@ df = ROOT.RDataFrame(treename, filename)
 
 ## DEFINE ALL NECESSARY COLUMNS ##
 
+print(df.GetColumnNames())
+
 df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
 df = df.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
 

@@ -1,6 +1,6 @@
-#include "DSelector_pimkpks_flat_bestchi2.h"
+#include "DSelector_mc_pimkpks_phasespace_flat.h"
 
-void DSelector_pimkpks_flat_bestchi2::Init(TTree *locTree)
+void DSelector_mc_pimkpks_phasespace_flat::Init(TTree *locTree)
 {
 	// USERS: IN THIS FUNCTION, ONLY MODIFY SECTIONS WITH A "USER" OR "EXAMPLE" LABEL. LEAVE THE REST ALONE.
 
@@ -11,7 +11,7 @@ void DSelector_pimkpks_flat_bestchi2::Init(TTree *locTree)
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "pimkpks_flat_bestX2.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/work/halld/home/viducic/data/pimkpks/mc/phasespace/mc_pimkpks_phasespace_flat_bestX2_2017.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.
@@ -112,10 +112,8 @@ void DSelector_pimkpks_flat_bestchi2::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_NoSplitTObject<TLorentzVector>("flat_my_p4");
 	dFlatTreeInterface->Create_Branch_ClonesArray<TLorentzVector>("flat_my_p4_array");
 	*/
-
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental = char, int, float, double, etc.
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam_measured"); //fundamental = char, int, float, double, etc.
-
+	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_px"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_py"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_pz"); //fundamental = char, int, float, double, etc.
@@ -165,6 +163,31 @@ void DSelector_pimkpks_flat_bestchi2::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py_measured"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz_measured"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_measured"); //fundamental = char, int, float, double, etc.
+
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim2_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim2_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim2_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim2_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("kp_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("kp_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("kp_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("kp_E_thrown"); //fundamental = char, int, float, double, etc.
+	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_px_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_py_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz_thrown"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_thrown"); //fundamental = char, int, float, double, etc.
 	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pathlength_sig"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cos_colin"); //fundamental = char, int, float, double, etc.
@@ -191,7 +214,7 @@ void DSelector_pimkpks_flat_bestchi2::Init(TTree *locTree)
 
 }
 
-Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
+Bool_t DSelector_mc_pimkpks_phasespace_flat::Process(Long64_t locEntry)
 {
 	// The Process() function is called for each entry in the tree. The entry argument
 	// specifies which entry in the currently loaded tree is to be processed.
@@ -259,7 +282,6 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 	*/
 
 	/************************************************* LOOP OVER COMBOS *************************************************/
-
 	double best_chi2 = 100000000;
 	int best_combo = 0;
 	//Loop over combos
@@ -272,20 +294,15 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 		if(dComboWrapper->Get_IsComboCut()) // Is false when tree originally created
 			continue; // Combo has been cut previously
 
-					
-		// Grab combo Chi^2/NDF and see if it's the best. 
-		// If it is, save the combo index
-
 		double chi2 = dComboWrapper->Get_ChiSq_KinFit();
 		double ndf = dComboWrapper->Get_NDF_KinFit();
+
 
 		if (chi2/ndf <= best_chi2) {
 			best_chi2 = chi2/ndf;
 			best_combo = loc_i;
 		}
 	}
-
-	dComboWrapper->Set_ComboIndex(best_combo);
 
 	double locKinFit_CL = dComboWrapper->Get_ConfidenceLevel_KinFit("");
 
@@ -299,13 +316,13 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 
 		//Step 0
 		Int_t locBeamID = dComboBeamWrapper->Get_BeamID();
-		Int_t locPiMinus1TrackID = dPiMinus1Wrapper->Get_TrackID();
-		Int_t locKPlusTrackID = dKPlusWrapper->Get_TrackID();
+		Int_t locPiPlus1TrackID = dPiPlus1Wrapper->Get_TrackID();
+		Int_t locKMinusTrackID = dKMinusWrapper->Get_TrackID();
 		Int_t locProtonTrackID = dProtonWrapper->Get_TrackID();
 
 		//Step 1
-		Int_t locPiMinus2TrackID = dPiMinus2Wrapper->Get_TrackID();
-		Int_t locPiPlusTrackID = dPiPlusWrapper->Get_TrackID();
+		Int_t locPiPlus2TrackID = dPiPlus2Wrapper->Get_TrackID();
+		Int_t locPiMinusTrackID = dPiMinusWrapper->Get_TrackID();
 
 		/*********************************************** GET FOUR-MOMENTUM **********************************************/
 
@@ -313,43 +330,22 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 		//dTargetP4 is target p4
 		//Step 0
 		TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
-		TLorentzVector locPiMinus1P4 = dPiMinus1Wrapper->Get_P4();
-		TLorentzVector locKPlusP4 = dKPlusWrapper->Get_P4();
+		TLorentzVector locPiPlus1P4 = dPiPlus1Wrapper->Get_P4();
+		TLorentzVector locKMinusP4 = dKMinusWrapper->Get_P4();
 		TLorentzVector locProtonP4 = dProtonWrapper->Get_P4();
 		//Step 1
-		TLorentzVector locPiMinus2P4 = dPiMinus2Wrapper->Get_P4();
-		TLorentzVector locPiPlusP4 = dPiPlusWrapper->Get_P4();
+		TLorentzVector locPiPlus2P4 = dPiPlus2Wrapper->Get_P4();
+		TLorentzVector locPiMinusP4 = dPiMinusWrapper->Get_P4();
 
 		// Get Measured P4's:
 		//Step 0
 		TLorentzVector locBeamP4_Measured = dComboBeamWrapper->Get_P4_Measured();
-		TLorentzVector locPiMinus1P4_Measured = dPiMinus1Wrapper->Get_P4_Measured();
-		TLorentzVector locKPlusP4_Measured = dKPlusWrapper->Get_P4_Measured();
+		TLorentzVector locPiPlus1P4_Measured = dPiPlus1Wrapper->Get_P4_Measured();
+		TLorentzVector locKMinusP4_Measured = dKMinusWrapper->Get_P4_Measured();
 		TLorentzVector locProtonP4_Measured = dProtonWrapper->Get_P4_Measured();
 		//Step 1
-		TLorentzVector locPiMinus2P4_Measured = dPiMinus2Wrapper->Get_P4_Measured();
-		TLorentzVector locPiPlusP4_Measured = dPiPlusWrapper->Get_P4_Measured();
-
-		/*********************************************** GET X4's **********************************************/
-
-		//Step 0
-		TLorentzVector locBeamX4 = dComboBeamWrapper->Get_X4();
-		TLorentzVector locPiMinus1X4 = dPiMinus1Wrapper->Get_X4();
-		TLorentzVector locKPlusX4 = dKPlusWrapper->Get_X4();
-		TLorentzVector locProtonX4 = dProtonWrapper->Get_X4();
-		//Step 1
-		TLorentzVector locPiPlusX4 = dPiPlusWrapper->Get_X4();
-		TLorentzVector locPiMinus2X4 = dPiMinus2Wrapper->Get_X4();
-
-		// Get Measured X4's:
-		//Step 0
-		//TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
-		TLorentzVector locPiMinus1X4_Measured = dPiMinus1Wrapper->Get_X4_Measured();
-		TLorentzVector locKPlusX4_Measured = dKPlusWrapper->Get_X4_Measured();
-		TLorentzVector locProtonX4_Measured = dProtonWrapper->Get_X4_Measured();
-		//Step 1
-		TLorentzVector locPiPlusX4_Measured = dPiPlusWrapper->Get_X4_Measured();
-		TLorentzVector locPiMinus2X4_Measured = dPiMinus2Wrapper->Get_X4_Measured();
+		TLorentzVector locPiPlus2P4_Measured = dPiPlus2Wrapper->Get_P4_Measured();
+		TLorentzVector locPiMinusP4_Measured = dPiMinusWrapper->Get_P4_Measured();
 
 		/********************************************* GET COMBO RF TIMING INFO *****************************************/
 
@@ -370,21 +366,13 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 			return kTRUE; 
 		} 
 
-		// FLIGHT SIGNIFIGANCE CALCULATIONS 
-		TLorentzVector locProdSpacetimeVertex = dComboBeamWrapper->Get_X4();
-		TLorentzVector locDecayingKShortX4 = dTreeInterface->Get_TObject<TLorentzVector>("DecayingKShort__X4",best_combo);
-		TLorentzVector locDeltaSpacetimeKs = locProdSpacetimeVertex - locDecayingKShortX4;
-		double locPathLengthKs = locDeltaSpacetimeKs.Vect().Mag();
- 		float locPathLengthSigmaKs = Get_Fundamental<Float_t>("DecayingKShort__PathLengthSigma", best_combo);
- 		double locPathLengthSignificanceKs = locPathLengthKs/locPathLengthSigmaKs;
-
 		/********************************************* COMBINE FOUR-MOMENTUM ********************************************/
 
 		// DO YOUR STUFF HERE
 
 		// Combine 4-vectors
 		TLorentzVector locMissingP4_Measured = locBeamP4_Measured + dTargetP4;
-		locMissingP4_Measured -= locPiMinus1P4_Measured + locKPlusP4_Measured + locProtonP4_Measured + locPiMinus2P4_Measured + locPiPlusP4_Measured;
+		locMissingP4_Measured -= locPiPlus1P4_Measured + locKMinusP4_Measured + locProtonP4_Measured + locPiPlus2P4_Measured + locPiMinusP4_Measured;
 
 		/******************************************** EXECUTE ANALYSIS ACTIONS *******************************************/
 
@@ -427,11 +415,11 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 			//For beam: Don't want to group with final-state photons. Instead use "Unknown" PID (not ideal, but it's easy).
 		map<Particle_t, set<Int_t> > locUsedThisCombo_MissingMass;
 		locUsedThisCombo_MissingMass[Unknown].insert(locBeamID); //beam
-		locUsedThisCombo_MissingMass[PiMinus].insert(locPiMinus1TrackID);
-		locUsedThisCombo_MissingMass[KPlus].insert(locKPlusTrackID);
+		locUsedThisCombo_MissingMass[PiPlus].insert(locPiPlus1TrackID);
+		locUsedThisCombo_MissingMass[KMinus].insert(locKMinusTrackID);
 		locUsedThisCombo_MissingMass[Proton].insert(locProtonTrackID);
-		locUsedThisCombo_MissingMass[PiMinus].insert(locPiMinus2TrackID);
-		locUsedThisCombo_MissingMass[PiPlus].insert(locPiPlusTrackID);
+		locUsedThisCombo_MissingMass[PiPlus].insert(locPiPlus2TrackID);
+		locUsedThisCombo_MissingMass[PiMinus].insert(locPiMinusTrackID);
 
 		//compare to what's been used so far
 		if(locUsedSoFar_MissingMass.find(locUsedThisCombo_MissingMass) == locUsedSoFar_MissingMass.end())
@@ -450,7 +438,7 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 		//	continue;
 		//}
 
-				/************************************ EXAMPLE: DOCA AND COLINIEARITY ************************************/
+			/************************************ EXAMPLE: DOCA AND COLINIEARITY ************************************/
 
 		// -------- FOR K_SHORT DECAY VERTEX -------------
 
@@ -607,10 +595,9 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 			dFlatTreeInterface->Fill_TObject<TLorentzVector>("flat_my_p4_array", locMyComboP4_Flat, loc_j);
 		}
 		*/
+
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("accidweight", locHistAccidWeightFactor);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam", locBeamP4.E()); 
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam_measured", locBeamP4_Measured.E()); 
-	
 	
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_px", locPiMinus1P4.Px());
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_py", locPiMinus1P4.Py());
@@ -669,8 +656,104 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("mand_t", minus_t);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("w", w);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("s", s);
+
+	if(dThrownBeam != NULL)
+		double locEnergy_Thrown = dThrownBeam->Get_P4().E();
+	
+	TLorentzVector dTargetP4_Thrown;
+	dTargetP4.SetXYZM(0.0,0.0,0.0,0.938);
+
+	TLorentzVector locProtonP4_Thrown;
+	TLorentzVector locPiMinus1P4_Thrown;
+	TLorentzVector locPiPlusP4_Thrown;
+	TLorentzVector locPiMinus2P4_Thrown;
+	TLorentzVector locKPlusP4_Thrown;
+	TLorentzVector locKShortP4_Thrown;
+
+	TLorentzVector PiMinusHypo1_Thrown;
+	TLorentzVector PiMinusHypo2_Thrown;
+	Int_t KsThrown_Index;
+	
+	Bool_t piMinusChecked = false;
+	Bool_t firstPiMinus = false;
+
+	//Loop over throwns
+	for(UInt_t loc_i = 0; loc_i < Get_NumThrown(); ++loc_i)
+	{
+	// 	//Set branch array indices corresponding to this particle
+		dThrownWrapper->Set_ArrayIndex(loc_i);
+
+	// 	//Do stuff with the wrapper here ...
+		Particle_t locPID_Thrown = dThrownWrapper->Get_PID();
+		TLorentzVector locThrownP4 = dThrownWrapper->Get_P4();
+		// cout << "Thrown " << loc_i << ": " << locPID << ", " << locThrownP4.Px() << ", " << locThrownP4.Py() << ", " << locThrownP4.Pz() << ", " << locThrownP4.E() << endl;
+
+
+		if (locPID_Thrown == 11){
+			locKPlusP4_Thrown = locThrownP4;
+		}
+		if (locPID_Thrown == 14){
+			locProtonP4_Thrown = locThrownP4;
+		}
+		if (locPID_Thrown == 8){
+			locPiPlusP4_Thrown = locThrownP4;
+		}
+		if(locPID_Thrown == 16){
+			locKShortP4_Thrown = locThrownP4;
+			KsThrown_Index = loc_i;
+		}
+		if (locPID_Thrown == 9){
+			// if(!piPlusChecked) { 
+			// 	locPiPlus1P4_Thrown = locThrownP4;
+			// 	piPlusChecked = true;
+			// } 
+			// else{
+			// 	locPiPlus2P4_Thrown = locThrownP4;
+			// }
+			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
+			// if (loc_i == 4) { locPiPlus1P4 = locThrownP4; }
+			if(dThrownWrapper->Get_ParentIndex() < 0){
+				locPiMinus1P4_Thrown = locThrownP4;
+			}
+			else if(KsThrown_Index == dThrownWrapper->Get_ParentIndex()){
+				locPiMinus2P4_Thrown = locThrownP4;
+			}
+		}
+
+	}
+
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_px_thrown", locPiMinus1P4_Thrown.Px());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_py_thrown", locPiMinus1P4_Thrown.Py());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_pz_thrown", locPiMinus1P4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_E_thrown", locPiMinus1P4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim2_px_thrown", locPiMinus2P4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim2_py_thrown", locPiMinus2P4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim2_pz_thrown", locPiMinus2P4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim2_E_thrown", locPiMinus2P4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip_px_thrown", locPiPlusP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip_py_thrown", locPiPlusP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip_pz_thrown", locPiPlusP4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip_E_thrown", locPiPlusP4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("kp_px_thrown", locKPlusP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("kp_py_thrown", locKPlusP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("kp_pz_thrown", locKPlusP4_Thrown.Pz());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("kp_E_thrown", locKPlusP4_Thrown.E()); 
+
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("ks_px_thrown", locKShortP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("ks_py_thrown", locKShortP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("ks_pz_thrown", locKShortP4_Thrown.Pz());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("ks_E_thrown", locKShortP4_Thrown.E()); 
+	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_px_thrown", locProtonP4_Thrown.Px()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_py_thrown", locProtonP4_Thrown.Py()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_pz_thrown", locProtonP4_Thrown.Pz()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E_thrown", locProtonP4_Thrown.E()); 
+
 		//FILL FLAT TREE
-		Fill_FlatTree(); //for the active combo
+	Fill_FlatTree(); //for the active combo
 	//} // end of combo loop
 
 	//FILL HISTOGRAMS: Num combos / events surviving actions
@@ -740,7 +823,7 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 	return kTRUE;
 }
 
-void DSelector_pimkpks_flat_bestchi2::Finalize(void)
+void DSelector_mc_pimkpks_phasespace_flat::Finalize(void)
 {
 	//Save anything to output here that you do not want to be in the default DSelector output ROOT file.
 
