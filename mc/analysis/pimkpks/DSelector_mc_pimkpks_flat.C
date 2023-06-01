@@ -11,7 +11,7 @@ void DSelector_mc_pimkpks_flat::Init(TTree *locTree)
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "/work/halld/home/viducic/data/pimkpks/mc/signal/mc_pimkpks_flat_bestX2_2018_fall.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/work/halld/home/viducic/data/pimkpks/mc/signal/mc_pimkpks_flat_bestX2_2017.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.
@@ -300,7 +300,25 @@ Bool_t DSelector_mc_pimkpks_flat::Process(Long64_t locEntry)
 		if(dComboWrapper->Get_IsComboCut()) // Is false when tree originally created
 			continue; // Combo has been cut previously
 
-					
+
+		/********************************************* GET COMBO RF TIMING INFO *****************************************/
+
+		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
+		Double_t locBunchPeriod = dAnalysisUtilities.Get_BeamBunchPeriod(Get_RunNumber());
+		Double_t locDeltaT_RF = dAnalysisUtilities.Get_DeltaT_RF(Get_RunNumber(), locBeamX4_Measured, dComboWrapper);
+		Int_t locRelBeamBucket = dAnalysisUtilities.Get_RelativeBeamBucket(Get_RunNumber(), locBeamX4_Measured, dComboWrapper); // 0 for in-time events, non-zero integer for out-of-time photons
+		Int_t locNumOutOfTimeBunchesInTree = 4; //YOU need to specify this number
+			//Number of out-of-time beam bunches in tree (on a single side, so that total number out-of-time bunches accepted is 2 times this number for left + right bunches) 
+
+		Bool_t locSkipNearestOutOfTimeBunch = true; // True: skip events from nearest out-of-time bunch on either side (recommended).
+		Int_t locNumOutOfTimeBunchesToUse = locSkipNearestOutOfTimeBunch ? locNumOutOfTimeBunchesInTree-1:locNumOutOfTimeBunchesInTree; 
+		Double_t locAccidentalScalingFactor = dAnalysisUtilities.Get_AccidentalScalingFactor(Get_RunNumber(), locBeamP4.E(), dIsMC); // Ideal value would be 1, but deviations require added factor, which is different for data and MC.
+		Double_t locAccidentalScalingFactorError = dAnalysisUtilities.Get_AccidentalScalingFactorError(Get_RunNumber(), locBeamP4.E()); // Ideal value would be 1, but deviations observed, need added factor.
+		Double_t locHistAccidWeightFactor = locRelBeamBucket==0 ? 1 : -locAccidentalScalingFactor/(2*locNumOutOfTimeBunchesToUse) ; // Weight by 1 for in-time events, ScalingFactor*(1/NBunches) for out-of-time
+		if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
+			dComboWrapper->Set_IsComboCut(true); 
+			continue; 
+		} 					
 		// Grab combo Chi^2/NDF and see if it's the best. 
 		// If it is, save the combo index
 
@@ -379,24 +397,6 @@ Bool_t DSelector_mc_pimkpks_flat::Process(Long64_t locEntry)
 		TLorentzVector locPiPlusX4_Measured = dPiPlusWrapper->Get_X4_Measured();
 		TLorentzVector locPiMinus2X4_Measured = dPiMinus2Wrapper->Get_X4_Measured();
 
-		/********************************************* GET COMBO RF TIMING INFO *****************************************/
-
-		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
-		Double_t locBunchPeriod = dAnalysisUtilities.Get_BeamBunchPeriod(Get_RunNumber());
-		Double_t locDeltaT_RF = dAnalysisUtilities.Get_DeltaT_RF(Get_RunNumber(), locBeamX4_Measured, dComboWrapper);
-		Int_t locRelBeamBucket = dAnalysisUtilities.Get_RelativeBeamBucket(Get_RunNumber(), locBeamX4_Measured, dComboWrapper); // 0 for in-time events, non-zero integer for out-of-time photons
-		Int_t locNumOutOfTimeBunchesInTree = 4; //YOU need to specify this number
-			//Number of out-of-time beam bunches in tree (on a single side, so that total number out-of-time bunches accepted is 2 times this number for left + right bunches) 
-
-		Bool_t locSkipNearestOutOfTimeBunch = true; // True: skip events from nearest out-of-time bunch on either side (recommended).
-		Int_t locNumOutOfTimeBunchesToUse = locSkipNearestOutOfTimeBunch ? locNumOutOfTimeBunchesInTree-1:locNumOutOfTimeBunchesInTree; 
-		Double_t locAccidentalScalingFactor = dAnalysisUtilities.Get_AccidentalScalingFactor(Get_RunNumber(), locBeamP4.E(), dIsMC); // Ideal value would be 1, but deviations require added factor, which is different for data and MC.
-		Double_t locAccidentalScalingFactorError = dAnalysisUtilities.Get_AccidentalScalingFactorError(Get_RunNumber(), locBeamP4.E()); // Ideal value would be 1, but deviations observed, need added factor.
-		Double_t locHistAccidWeightFactor = locRelBeamBucket==0 ? 1 : -locAccidentalScalingFactor/(2*locNumOutOfTimeBunchesToUse) ; // Weight by 1 for in-time events, ScalingFactor*(1/NBunches) for out-of-time
-		if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
-			dComboWrapper->Set_IsComboCut(true); 
-			return kTRUE; 
-		} 
 
 		// FLIGHT SIGNIFIGANCE CALCULATIONS 
 		TLorentzVector locProdSpacetimeVertex = dComboBeamWrapper->Get_X4();

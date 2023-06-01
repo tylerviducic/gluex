@@ -11,7 +11,7 @@ void DSelector_mc_pipkmks_flat::Init(TTree *locTree)
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "/work/halld/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_bestX2_2018_fall.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/work/halld/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_bestX2_2017.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.
@@ -304,7 +304,23 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 		
 		// Grab combo Chi^2/NDF and see if it's the best. 
 		// If it is, save the combo index
+		TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
+		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
+		Double_t locBunchPeriod = dAnalysisUtilities.Get_BeamBunchPeriod(Get_RunNumber());
+		Double_t locDeltaT_RF = dAnalysisUtilities.Get_DeltaT_RF(Get_RunNumber(), locBeamX4_Measured, dComboWrapper);
+		Int_t locRelBeamBucket = dAnalysisUtilities.Get_RelativeBeamBucket(Get_RunNumber(), locBeamX4_Measured, dComboWrapper); // 0 for in-time events, non-zero integer for out-of-time photons
+		Int_t locNumOutOfTimeBunchesInTree = 4; //YOU need to specify this number
+			//Number of out-of-time beam bunches in tree (on a single side, so that total number out-of-time bunches accepted is 2 times this number for left + right bunches) 
 
+		Bool_t locSkipNearestOutOfTimeBunch = true; // True: skip events from nearest out-of-time bunch on either side (recommended).
+		Int_t locNumOutOfTimeBunchesToUse = locSkipNearestOutOfTimeBunch ? locNumOutOfTimeBunchesInTree-1:locNumOutOfTimeBunchesInTree; 
+		Double_t locAccidentalScalingFactor = dAnalysisUtilities.Get_AccidentalScalingFactor(Get_RunNumber(), locBeamP4.E(), dIsMC); // Ideal value would be 1, but deviations require added factor, which is different for data and MC.
+		Double_t locAccidentalScalingFactorError = dAnalysisUtilities.Get_AccidentalScalingFactorError(Get_RunNumber(), locBeamP4.E()); // Ideal value would be 1, but deviations observed, need added factor.
+		Double_t locHistAccidWeightFactor = locRelBeamBucket==0 ? 1 : -locAccidentalScalingFactor/(2*locNumOutOfTimeBunchesToUse) ; // Weight by 1 for in-time events, ScalingFactor*(1/NBunches) for out-of-time
+		if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
+			dComboWrapper->Set_IsComboCut(true); 
+			continue; 
+		} 
 		double chi2 = dComboWrapper->Get_ChiSq_KinFit();
 		double ndf = dComboWrapper->Get_NDF_KinFit();
 
@@ -346,7 +362,7 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 		// Get P4's: //is kinfit if kinfit performed, else is measured
 		//dTargetP4 is target p4
 		//Step 0
-		TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
+		// TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
 		TLorentzVector locPiPlus1P4 = dPiPlus1Wrapper->Get_P4();
 		TLorentzVector locKMinusP4 = dKMinusWrapper->Get_P4();
 		TLorentzVector locProtonP4 = dProtonWrapper->Get_P4();
@@ -377,7 +393,7 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 
 		// Get Measured X4's:
 		//Step 0
-		//TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
+		// TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
 		TLorentzVector locPiPlus1X4_Measured = dPiPlus1Wrapper->Get_X4_Measured();
 		TLorentzVector locKMinusX4_Measured = dKMinusWrapper->Get_X4_Measured();
 		TLorentzVector locProtonX4_Measured = dProtonWrapper->Get_X4_Measured();
@@ -387,6 +403,7 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 
 		/********************************************* GET COMBO RF TIMING INFO *****************************************/
 
+		TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
 		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
 		Double_t locBunchPeriod = dAnalysisUtilities.Get_BeamBunchPeriod(Get_RunNumber());
 		Double_t locDeltaT_RF = dAnalysisUtilities.Get_DeltaT_RF(Get_RunNumber(), locBeamX4_Measured, dComboWrapper);
@@ -399,11 +416,6 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 		Double_t locAccidentalScalingFactor = dAnalysisUtilities.Get_AccidentalScalingFactor(Get_RunNumber(), locBeamP4.E(), dIsMC); // Ideal value would be 1, but deviations require added factor, which is different for data and MC.
 		Double_t locAccidentalScalingFactorError = dAnalysisUtilities.Get_AccidentalScalingFactorError(Get_RunNumber(), locBeamP4.E()); // Ideal value would be 1, but deviations observed, need added factor.
 		Double_t locHistAccidWeightFactor = locRelBeamBucket==0 ? 1 : -locAccidentalScalingFactor/(2*locNumOutOfTimeBunchesToUse) ; // Weight by 1 for in-time events, ScalingFactor*(1/NBunches) for out-of-time
-		if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
-			dComboWrapper->Set_IsComboCut(true); 
-			return kTRUE; 
-		} 
-
 
 		// FLIGHT SIGNIFIGANCE CALCULATIONS 
 		TLorentzVector locProdSpacetimeVertex = dComboBeamWrapper->Get_X4();
@@ -730,6 +742,9 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 	Bool_t piPlusChecked = false;
 	Bool_t firstPiPlus = false;
 
+	// create a vector for potential pi+ candidates indices
+	vector<int> piPlusIndices;
+
 	//Loop over throwns
 	for(UInt_t loc_i = 0; loc_i < Get_NumThrown(); ++loc_i)
 	{
@@ -756,23 +771,22 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 			KsThrown_Index = loc_i;
 		}
 		if (locPID_Thrown == 8){
-			// if(!piPlusChecked) { 
-			// 	locPiPlus1P4_Thrown = locThrownP4;
-			// 	piPlusChecked = true;
-			// } 
-			// else{
-			// 	locPiPlus2P4_Thrown = locThrownP4;
-			// }
-			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
-			// if (loc_i == 4) { locPiPlus1P4 = locThrownP4; }
 			if(dThrownWrapper->Get_ParentIndex() < 0){
 				locPiPlus1P4_Thrown = locThrownP4;
 			}
-			else if(KsThrown_Index == dThrownWrapper->Get_ParentIndex()){
-				locPiPlus2P4_Thrown = locThrownP4;
+			else{
+				piPlusIndices.push_back(loc_i);
 			}
 		}
 
+	}
+
+		// loop over pion candidate indices and see if it's parent index is equal to the Ks. if it is, make that pion's 4 vector the pi+2
+	for (int i = 0; i < piPlusIndices.size(); i++){
+		dThrownWrapper->Set_ArrayIndex(piPlusIndices[i]);
+		if (dThrownWrapper->Get_ParentIndex() == KsThrown_Index){
+			locPiPlus2P4_Thrown = dThrownWrapper->Get_P4();
+		}
 	}
 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px_thrown", locPiPlus1P4_Thrown.Px());
