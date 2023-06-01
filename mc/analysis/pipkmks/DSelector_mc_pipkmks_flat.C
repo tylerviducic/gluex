@@ -362,7 +362,7 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 		// Get P4's: //is kinfit if kinfit performed, else is measured
 		//dTargetP4 is target p4
 		//Step 0
-		// TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
+		TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
 		TLorentzVector locPiPlus1P4 = dPiPlus1Wrapper->Get_P4();
 		TLorentzVector locKMinusP4 = dKMinusWrapper->Get_P4();
 		TLorentzVector locProtonP4 = dProtonWrapper->Get_P4();
