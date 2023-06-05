@@ -11,7 +11,7 @@ void DSelector_pipkmks_flat_2019_ks_unconstrained_t1_s2::Init(TTree *locTree)
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "pipkmks_flat_bestX2_debug_unconstrained.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "pipkmks_flat_bestX2_unconstrained.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.
