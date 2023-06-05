@@ -11,7 +11,7 @@ void DSelector_pipkmks_flat_2019_ks_constrained_t1_s2::Init(TTree *locTree)
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
 	dOutputTreeFileName = ""; //"" for none
-	dFlatTreeFileName = "pipkmks_flat_bestX2.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "pipkmks_flat_bestX2_debug_constrained.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.
@@ -364,7 +364,7 @@ Bool_t DSelector_pipkmks_flat_2019_ks_constrained_t1_s2::Process(Long64_t locEnt
 
 		// Get Measured X4's:
 		//Step 0
-		//TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
+		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
 		TLorentzVector locPiPlus1X4_Measured = dPiPlus1Wrapper->Get_X4_Measured();
 		TLorentzVector locKMinusX4_Measured = dKMinusWrapper->Get_X4_Measured();
 		TLorentzVector locProtonX4_Measured = dProtonWrapper->Get_X4_Measured();
