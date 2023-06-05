@@ -35,7 +35,6 @@ def get_acceptance_corrected_kkpi(channel, run_period):
 
     data_hist.Sumw2()
     recon_hist.Sumw2()
-
     thrown_hist.Sumw2()
 
     acceptance_hist = recon_hist.Clone()
