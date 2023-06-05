@@ -290,7 +290,7 @@ Bool_t DSelector_mc_pipkmks_phasespace_flat::Process(Long64_t locEntry)
 	/************************************************* LOOP OVER COMBOS *************************************************/
 
 	double best_chi2 = 100000000;
-	int best_combo = 0;
+	int best_combo = -1;
 	//Loop over combos
 	for(UInt_t loc_i = 0; loc_i < Get_NumCombos(); ++loc_i)
 	{
@@ -318,9 +318,13 @@ Bool_t DSelector_mc_pipkmks_phasespace_flat::Process(Long64_t locEntry)
 		Double_t locAccidentalScalingFactor = dAnalysisUtilities.Get_AccidentalScalingFactor(Get_RunNumber(), locBeamP4.E(), dIsMC); // Ideal value would be 1, but deviations require added factor, which is different for data and MC.
 		Double_t locAccidentalScalingFactorError = dAnalysisUtilities.Get_AccidentalScalingFactorError(Get_RunNumber(), locBeamP4.E()); // Ideal value would be 1, but deviations observed, need added factor.
 		Double_t locHistAccidWeightFactor = locRelBeamBucket==0 ? 1 : -locAccidentalScalingFactor/(2*locNumOutOfTimeBunchesToUse) ; // Weight by 1 for in-time events, ScalingFactor*(1/NBunches) for out-of-time
-		if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
+		// if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
+		// 	dComboWrapper->Set_IsComboCut(true); 
+		// 	return kTRUE; 
+		// } 
+		if(locRelBeamBucket!=0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
 			dComboWrapper->Set_IsComboCut(true); 
-			return kTRUE; 
+			continue;
 		} 
 
 		double chi2 = dComboWrapper->Get_ChiSq_KinFit();
@@ -331,7 +335,9 @@ Bool_t DSelector_mc_pipkmks_phasespace_flat::Process(Long64_t locEntry)
 			best_combo = loc_i;
 		}
 	}
-
+	if(best_combo == -1){
+		return kTRUE;
+	}
 	dComboWrapper->Set_ComboIndex(best_combo);
 
 	double locKinFit_CL = dComboWrapper->Get_ConfidenceLevel_KinFit("");
