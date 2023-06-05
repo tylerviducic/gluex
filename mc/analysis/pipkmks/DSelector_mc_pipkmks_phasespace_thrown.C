@@ -217,7 +217,7 @@ Bool_t DSelector_mc_pipkmks_phasespace_thrown::Process(Long64_t locEntry)
 				locPiPlus1P4 = locThrownP4;
 			}
 			else{
-				piMinusIndices.push_back(loc_i);
+				piPlusIndices.push_back(loc_i);
 			}
 			// if (loc_i == 2) { locPiPlus2P4 = locThrownP4; }
 			// if (loc_i == 4) { locPiPlus1P4 = locThrownP4; }

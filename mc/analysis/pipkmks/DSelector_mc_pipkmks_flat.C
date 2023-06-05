@@ -403,7 +403,7 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 
 		/********************************************* GET COMBO RF TIMING INFO *****************************************/
 
-		TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
+		// TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
 		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
 		Double_t locBunchPeriod = dAnalysisUtilities.Get_BeamBunchPeriod(Get_RunNumber());
 		Double_t locDeltaT_RF = dAnalysisUtilities.Get_DeltaT_RF(Get_RunNumber(), locBeamX4_Measured, dComboWrapper);
