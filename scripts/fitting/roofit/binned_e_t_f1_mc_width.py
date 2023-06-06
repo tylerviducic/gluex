@@ -58,8 +58,6 @@ df = pd.DataFrame({'chi2_ndf': chi2_ndf_list, 'sigma': sigma_list, 'sigma_err': 
 df.to_csv('/work/halld/home/viducic/data/fit_params/pipkmks/binned_e_t_f1_mc_width.csv', index=False)
 
 
-
-
 input('Press enter to continue...')
 
 
