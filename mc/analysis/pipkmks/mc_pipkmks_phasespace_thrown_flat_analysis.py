@@ -12,7 +12,7 @@ ROOT.gStyle.SetOptStat(0)
 start_time = time.time()
 
 
-run_period = 'fall'
+run_period = '2017'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_{run_dict[run_period]}.root"
 treename = "pipkmks_thrown"
@@ -153,7 +153,7 @@ def fill_histos(cut_df, histo_array, beam_index=0, t_index=0):
         t_high = t_dict[t_index][1]
         t_name = f't_{t_low}_{t_high}'
     hist_name += beam_name + t_name
-    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 100, 1.0, 2.5), 'pipkmks_m'))
+    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), 'pipkmks_m'))
 
 
 
@@ -165,7 +165,6 @@ for energy_index in range(1, n_e_bins+1):
     for t_index in range(1, n_t_bins+1):
         # print(df.Filter('t_bin == {}'.format(t_index)).Filter('e_bin == {}'.format(energy_index)).Count().GetValue())
         e_t_cut_df = e_cut_df.Filter(f't_bin == {t_index}')
-        hist = e_t_cut_df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m')
         fill_histos(e_t_cut_df, histo_array, beam_index=energy_index, t_index=t_index)
 
 

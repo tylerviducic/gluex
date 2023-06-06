@@ -225,7 +225,7 @@ def fill_histos(cut_df, histo_array, cut, beam_index=0, t_index=0):
         t_high = t_dict[t_index][1]
         t_name = f't_{t_low}_{t_high}'
     hist_name += beam_name + t_name
-    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 100, 1.0, 2.5), 'pipkmks_m'))
+    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), 'pipkmks_m'))
 
     
 

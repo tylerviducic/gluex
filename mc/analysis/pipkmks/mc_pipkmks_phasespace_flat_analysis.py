@@ -20,7 +20,7 @@ start_time = time.time()
 #     '2017': '2017',
 # }
 
-run_period = 'spring'
+run_period = '2017'
 filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/phasespace/mc_pipkmks_phasespace_flat_bestX2_{run_dict[run_period]}.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
 
@@ -204,7 +204,7 @@ def fill_histos(cut_df, histo_array, cut, beam_index=0, t_index=0):
         t_high = t_dict[t_index][1]
         t_name = f't_{t_low}_{t_high}'
     hist_name += beam_name + t_name
-    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 100, 1.0, 2.5), 'pipkmks_m'))
+    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), 'pipkmks_m'))
 
 
 for cut in f1_cut_list:
