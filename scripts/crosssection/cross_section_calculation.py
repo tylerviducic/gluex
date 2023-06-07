@@ -23,6 +23,8 @@ yield_error_list = []
 bin_width_list = []
 cross_section_list = []
 cross_section_error_list = []
+t_bin_list = []
+t_bin_width_list = []
 
 
 # print(df)
@@ -44,29 +46,29 @@ for e in range(7, 11):
         
         hist = acceptance_correct_all_gluex_1_kkpi_data(channel, cut, e, t)
 
-        m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", fit_range_low, fit_range_high)
+        m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", fit_range_low, fit_range_high)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
-        voight_mean = ROOT.RooRealVar("voight_mean", "voight_mean", 1.281, 1.275, 1.2295)
-        voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.022, 0.01, 0.05)
+        voight_mean = ROOT.RooRealVar(f"voight_mean_{e}_{t}", f"voight_mean_{e}_{t}", 1.281, 1.26, 1.3)
+        voight_width = ROOT.RooRealVar(f"voight_width_{e}_{t}", f"voight_width_{e}_{t}", 0.022, 0.01, 0.05)
         e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==t)]['sigma'].values[0]
-        voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", e_t_sigma, 0.001, 0.1)
+        voight_sigma = ROOT.RooRealVar(f"voight_sigma_{e}_{t}", f"voight_sigma_{e}_{t}", e_t_sigma, 0.001, 0.1)
         voight_sigma.setConstant(True)
 
-        voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_mean, voight_width, voight_sigma)
+        voight = ROOT.RooVoigtian(f"voight_{e}_{t}", f"voight_{e}_{t}", m_kkpi, voight_mean, voight_width, voight_sigma)
 
         ## CHEBYCHEV ##
 
-        bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -1.0, 1.0)
-        bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -1.0, 1.0)
-        bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -1.0, 1.0)
-        bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -1.0, 1.0)
+        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", -5.0, 5.0)
+        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", -5.0, 5.0)
+        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -5.0, 5.0)
+        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -5.0, 5.0)
 
-        bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3)) 
+        bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3)) 
 
-        sig_frac = ROOT.RooRealVar("sig_frac", "sig_frac", 0.5, 0.0, 1.0)
+        sig_frac = ROOT.RooRealVar(f"sig_frac_{e}_{t}", f"sig_frac_{e}_{t}", 0.5, 0.0, 1.0)
 
-        combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(sig_frac))
+        combined_pdf = ROOT.RooAddPdf(f'combined_pdf_{e}_{t}', f'combined_pdf_{e}_{t}', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(sig_frac))
         chi2_var = combined_pdf.createChi2(dh)
 
         fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
@@ -82,18 +84,18 @@ for e in range(7, 11):
 
         frame = m_kkpi.frame()
 
-        n_bins = hist.GetNbinsX()
+        n_bins = (fit_range_high-fit_range_low)*100
         ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
         chi2ndf = chi2_val / ndf
 
         dh.plotOn(frame)
         combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red'])))
         # pullHist = frame.pullHist()
-        combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
-        combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue'])))
+        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"bkg_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
+        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"voight_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue'])))
 
-        ks_test_func = combined_pdf.createHistogram("ks_test_func", m_kkpi, ROOT.RooFit.Binning(1000))
-        ks_test_data = dh.createHistogram("ks_test_data", m_kkpi, ROOT.RooFit.Binning(1000))
+        ks_test_func = combined_pdf.createHistogram(f"ks_test_func_{e}_{t}", m_kkpi, ROOT.RooFit.Binning(1000))
+        ks_test_data = dh.createHistogram(f"ks_test_data_{e}_{t}", m_kkpi, ROOT.RooFit.Binning(1000))
 
         kstest = ks_test_data.KolmogorovTest(ks_test_func)
         mean_list.append(voight_mean.getVal())
@@ -106,14 +108,24 @@ for e in range(7, 11):
         yield_error_list.append(ac_yield_error)
         cross_section_list.append(cross_section)
         cross_section_error_list.append(cross_section_error)
+        t_bin_list.append((t_cut_dict[t][1] - t_cut_dict[t][0])/2.0)
+        t_bin_width_list.append(t_width_dict[t]/2.0)
         
         frame.Draw()
 
         canvas_dict[e].Update()
 
 # make a pandas datframe out of the lists
-value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'ks_test': ks_test_list, 'yield': ac_yield_list, 'yield_error': yield_error_list, 'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list})
+value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'ks_test': ks_test_list, 'yield': ac_yield_list, 'yield_error': yield_error_list, 'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list})
 value_df.to_csv('/work/halld/home/viducic/data/fit_params/pipkmks/cross_section_values.csv', index=False)
+
+pdf_filename = '/work/halld/home/viducic/plots/kkpi_fits/pipkmks_gluex_1_fits.pdf'
+
+canvas_dict[i].Print(pdf_filename +'[')
+for i in range(7, 11):
+    canvas_dict[i].Print(pdf_filename)
+
+canvas_dict[i].Print(pdf_filename +']')
 
 input('Press enter to exit')
 
