@@ -14,16 +14,14 @@ ROOT.gStyle.SetOptStat(0)
 start_time = time.time()
 
 
-run_period_dict = {
-    'spring': '2018_spring',
-    'fall': '2018_fall',
-    '2017': '2017',
-}
-
-
-run_period = 'spring'
-filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_{run_period_dict[run_period]}.root'
+run_period = '2019_constrained'
+filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_{run_dict[run_period]}.root'
 treename = 'pipkmks__B4_M16'
+
+if run_period == '2019_unconstrained':
+    treename = 'pipkmks__T1_S2_M16'
+elif run_period == '2019_constrained':
+    treename = 'pipkmks__T1_S2'
 
 histo_array = []
 
@@ -102,7 +100,7 @@ df = ROOT.RDataFrame(treename, filename)
 
 ## DEFINE ALL NECESSARY COLUMNS ##
 
-print(df.GetColumnNames())
+# print(df.GetColumnNames())
 
 df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
 df = df.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
@@ -197,7 +195,7 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-df.Snapshot(f'pipkmks_filtered_{run_period_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_filtered_{run_period_dict[run_period]}.root')
+df.Snapshot(f'pipkmks_filtered_{run_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_filtered_{run_dict[run_period]}.root')
 
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
@@ -250,7 +248,7 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_result_{run_period_dict[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_result_{run_dict[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 
@@ -263,7 +261,7 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close()
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/pipkmks_graph_{run_period_dict[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/pipkmks_graph_{run_dict[run_period]}.dot")
     
 ######################
 ## DEPRECIATED CODE ##
