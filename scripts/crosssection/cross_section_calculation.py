@@ -67,17 +67,19 @@ for e in range(7, 11):
 
         bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3)) 
 
-        sig_frac = ROOT.RooRealVar(f"sig_frac_{e}_{t}", f"sig_frac_{e}_{t}", 0.5, 0.0, 1.0)
+        # sig_frac = ROOT.RooRealVar(f"sig_frac_{e}_{t}", f"sig_frac_{e}_{t}", 0.5, 0.0, 1.0)
+        n_signal = ROOT.RooRealVar(f"n_signal_{e}_{t}", f"n_signal_{e}_{t}", 1000, 0, 100000)
+        n_bkg = ROOT.RooRealVar(f"n_bkg_{e}_{t}", f"n_bkg_{e}_{t}", 1000, 0, 100000)
 
-        combined_pdf = ROOT.RooAddPdf(f'combined_pdf_{e}_{t}', f'combined_pdf_{e}_{t}', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(sig_frac))
+        combined_pdf = ROOT.RooAddPdf(f'combined_pdf_{e}_{t}', f'combined_pdf_{e}_{t}', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(n_signal, n_bkg))
         chi2_var = combined_pdf.createChi2(dh)
 
         fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
 
         hist_error = c_double(0.0)
         hist_integral = hist.IntegralAndError(hist.FindBin(fit_range_low), hist.FindBin(fit_range_high), hist_error)
-        ac_yield =  hist_integral * sig_frac.getVal()
-        ac_yield_error = propogate_error_multiplication(ac_yield, [hist_integral, sig_frac.getVal()], [hist_error.value, sig_frac.getError()])
+        ac_yield = n_signal.getVal()
+        ac_yield_error = n_signal.getError()
         cross_section = calculate_crosssection_from_acceptance_corrected_yield(ac_yield, luminosity, t_width_dict[t], F1_KKPI_BRANCHING_FRACTION)
         cross_section_error = propogate_error_multiplication(cross_section, [ac_yield, luminosity, F1_KKPI_BRANCHING_FRACTION], [ac_yield_error, math.sqrt(luminosity), F1_KKPI_BRANCHING_FRACTION_ERROR])
 
