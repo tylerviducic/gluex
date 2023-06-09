@@ -79,6 +79,7 @@ for e in range(7, 11):
         minuit = ROOT.RooMinuit(c2)
         minuit.migrad()
         minuit.minos()
+        # minuit.hesse()
 
         fit_result = minuit.save()
 
