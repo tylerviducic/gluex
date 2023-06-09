@@ -62,21 +62,25 @@ for e in range(7, 11):
 
         ## CHEBYCHEV ##
 
-        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", -5.0, 5.0)
-        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", -5.0, 5.0)
-        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -5.0, 5.0)
-        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -5.0, 5.0)
+        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", -2.0, 2.0)
+        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", -2.0, 2.0)
+        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -2.0, 2.0)
+        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -2.0, 2.0)
 
         bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2)) 
 
         # sig_frac = ROOT.RooRealVar(f"sig_frac_{e}_{t}", f"sig_frac_{e}_{t}", 0.5, 0.0, 1.0)
-        n_signal = ROOT.RooRealVar(f"n_signal_{e}_{t}", f"n_signal_{e}_{t}", 1000, 0, 100000)
-        n_bkg = ROOT.RooRealVar(f"n_bkg_{e}_{t}", f"n_bkg_{e}_{t}", 1000, 0, 100000)
+        n_signal = ROOT.RooRealVar(f"n_signal_{e}_{t}", f"n_signal_{e}_{t}", 100000, 0, 10000000)
+        n_bkg = ROOT.RooRealVar(f"n_bkg_{e}_{t}", f"n_bkg_{e}_{t}", 100000, 0, 10000000)
 
         combined_pdf = ROOT.RooAddPdf(f'combined_pdf_{e}_{t}', f'combined_pdf_{e}_{t}', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(n_signal, n_bkg))
         chi2_var = combined_pdf.createChi2(dh)
+        c2 = ROOT.RooChi2Var(f"c2_{e}_{t}", f"c2_{e}_{t}", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
+        minuit = ROOT.RooMinuit(c2)
+        minuit.migrad()
+        minuit.hesse()
 
-        fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
+        fit_result = minuit.save()
 
         hist_error = c_double(0.0)
         hist_integral = hist.IntegralAndError(hist.FindBin(fit_range_low), hist.FindBin(fit_range_high), hist_error)
