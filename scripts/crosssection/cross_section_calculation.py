@@ -78,7 +78,7 @@ for e in range(7, 11):
         c2 = ROOT.RooChi2Var(f"c2_{e}_{t}", f"c2_{e}_{t}", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
         minuit = ROOT.RooMinuit(c2)
         minuit.migrad()
-        minuit.hesse()
+        minuit.minos()
 
         fit_result = minuit.save()
 
