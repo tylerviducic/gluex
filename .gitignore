@@ -10,7 +10,9 @@
 *.jpeg
 *.err
 *.out
-
+*.C.d
+*.C.so
+*.pcm
 
 f1_mc/log
 f1_mc/jobs_out
