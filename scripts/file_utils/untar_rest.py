@@ -4,7 +4,7 @@ import os
 import tarfile
 
 # get list of files in the directory
-topdir = '/lustre19/expphy/volatile/halld/home/viducic/REST/pimkpks_signal_2017'
+topdir = '/lustre19/expphy/volatile/halld/home/viducic/REST/pimkpks_signal_2018_fall'
 files = os.listdir(topdir)
 
 # loop over files
