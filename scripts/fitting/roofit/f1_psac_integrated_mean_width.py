@@ -58,9 +58,6 @@ ac_data_hist_total.Add(ac_data_hist_2017)
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
-range_min = 1.2
-range_max = 1.5
-m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), ac_data_hist_total)
 
 # ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
@@ -119,17 +116,27 @@ bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2
 # bkg_frac = ROOT.RooRealVar("bkg_frac", "bkg_frac", 0.5, 0.0, 1.0)
 # bkg_pdf = ROOT.RooAddPdf("bkg_pdf", "bkg_pdf", ROOT.RooArgList(bkg, bw), ROOT.RooArgList(bkg_frac))
 
-sig_frac = ROOT.RooRealVar("sig_frac", "sig_frac", 0.5, 0.0, 1.0)
+# sig_frac = ROOT.RooRealVar("sig_frac", "sig_frac", 0.5, 0.0, 1.0)
 # # combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(relbw, bkg_pdf), ROOT.RooArgList(sig_frac))
-combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(sig_frac))
+# combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(sig_frac))
+
+n_f1 = ROOT.RooRealVar("n_f1", "n_f1", 10000, 0.0, 1000000000)
+n_bkg = ROOT.RooRealVar("n_bkg", "n_bkg", 10000, 0.0, 1000000000)
+
+combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(n_f1, n_bkg))
 
 chi2_var = combined_pdf.createChi2(dh)
 
+c2 = ROOT.RooChi2Var(f"c2", f"c2", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
+minuit = ROOT.RooMinuit(c2)
+minuit.migrad()
+minuit.minos()
 
 # combined_pdf.fitTo(dh, ROOT.RooFit.Range("signal"))
 # combined_pdf.fitTo(dh)
-fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
+# fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
 # fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
+fit_result = minuit.save()
 # fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
@@ -209,5 +216,6 @@ print(f"f1 mass = {voight_m.getVal() * 1000} +/- {voight_m.getError() * 1000}")
 print(f"f1 width = {voight_width.getVal() * 1000} +/- {voight_width.getError() * 1000}")
 print(f"Fit X2/ndf = {chi2_per_ndf}")
 print(f"second X2/ndf = {chi2ndf}")
+print(f'f1 yield = {n_f1.getVal()} +/- {n_f1.getError()}')
 
 input("Press enter to close")

@@ -93,20 +93,31 @@ bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -1.0, 1.0)
 
 bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3)) 
 
-bkg_frac = ROOT.RooRealVar("bkg_frac", "bkg_frac", 0.5, 0.0, 1.0)
-f1_frac = ROOT.RooRealVar("f1_frac", "f1_frac", 0.5, 0.0, 1.0)
+# bkg_frac = ROOT.RooRealVar("bkg_frac", "bkg_frac", 0.5, 0.0, 1.0)
+# f1_frac = ROOT.RooRealVar("f1_frac", "f1_frac", 0.5, 0.0, 1.0)
 
-combined_voight = ROOT.RooAddPdf("combined_voight", "combined_voight", ROOT.RooArgList(voight_f1, voight_eta), ROOT.RooArgList(f1_frac))
-combined_pdf = ROOT.RooAddPdf("combined_pdf", "combined_pdf", ROOT.RooArgList(combined_voight, bkg), ROOT.RooArgList(bkg_frac))
+n_bkg = ROOT.RooRealVar("n_bkg", "n_bkg", 10000, 0, 100000000)
+n_eta = ROOT.RooRealVar("n_eta", "n_eta", 10000, 0, 100000000)
+n_f1 = ROOT.RooRealVar("n_f1", "n_f1", 10000, 0, 100000000)
+
+# combined_voight = ROOT.RooAddPdf("combined_voight", "combined_voight", ROOT.RooArgList(voight_f1, voight_eta), ROOT.RooArgList(f1_frac))
+# combined_pdf = ROOT.RooAddPdf("combined_pdf", "combined_pdf", ROOT.RooArgList(combined_voight, bkg), ROOT.RooArgList(bkg_frac))
+
+combined_pdf = ROOT.RooAddPdf("combined_pdf", "comined_pdf", ROOT.RooArgList(voight_f1, voight_eta, bkg), ROOT.RooArgList(n_f1, n_eta, n_bkg))
 
 chi2_var = combined_pdf.createChi2(dh)
+
+c2 = ROOT.RooChi2Var(f"c2", f"c2", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
+minuit = ROOT.RooMinuit(c2)
+minuit.migrad()
+minuit.minos()
 
 
 # combined_pdf.fitTo(dh, ROOT.RooFit.Range("signal"))
 # combined_pdf.fitTo(dh)
-fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
+# fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
 # fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
-# fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Save())
+fit_result = minuit.save()
 
 chi2_val = chi2_var.getVal()
 n_bins = ac_data_hist_total.GetNbinsX()
@@ -186,5 +197,6 @@ print(f"f1 mass = {voight_m_f1.getVal() * 1000} +/- {voight_m_f1.getError() * 10
 print(f"f1 width = {voight_width_f1.getVal() * 1000} +/- {voight_width_f1.getError() * 1000}")
 print(f"Fit X2/ndf = {chi2_per_ndf}")
 print(f"second X2/ndf = {chi2ndf}")
+print(f"f1 yield = {n_f1.getVal()} +/- {n_f1.getError()}")
 
 input("Press enter to close")
