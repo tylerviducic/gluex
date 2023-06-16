@@ -4,7 +4,8 @@ import os
 import tarfile
 
 # get list of files in the directory
-topdir = '/lustre19/expphy/volatile/halld/home/viducic/REST/pimkpks_signal_2018_fall'
+topdir = '/cache/halld/gluex_simulations/REQUESTED_MC/pimkpks_phasespace_s18_100m_v50_rt_t29_3252/hddm/'
+target_dir = '/lustre19/expphy/volatile/halld/home/viducic/REST/pimkpks_phasespace_2018_spring/'
 files = os.listdir(topdir)
 
 # loop over files
@@ -16,6 +17,6 @@ for f in files:
 
         # Extract the .tar file
         with tarfile.open(file_path, 'r') as tar:
-            tar.extractall(topdir)
+            tar.extractall(target_dir)
 
         print(f"Extracted {f} successfully.")
