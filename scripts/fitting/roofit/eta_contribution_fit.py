@@ -97,6 +97,7 @@ bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2
 # f1_frac = ROOT.RooRealVar("f1_frac", "f1_frac", 0.5, 0.0, 1.0)
 
 n_bkg = ROOT.RooRealVar("n_bkg", "n_bkg", 10000, 0, 100000000)
+# n_eta = ROOT.RooRealVar("n_eta", "n_eta", 0, 31028)
 n_eta = ROOT.RooRealVar("n_eta", "n_eta", 10000, 0, 100000000)
 n_f1 = ROOT.RooRealVar("n_f1", "n_f1", 10000, 0, 100000000)
 
@@ -124,6 +125,7 @@ n_bins = ac_data_hist_total.GetNbinsX()
 # n_bins = 29
 ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
 chi2_per_ndf = chi2_val / ndf
+print('n_bins = ' + str(n_bins))
 print("chi2 = " + str(chi2_val))
 print("ndf = " + str(ndf))
 print("chi2/ndf = " + str(chi2_per_ndf))
