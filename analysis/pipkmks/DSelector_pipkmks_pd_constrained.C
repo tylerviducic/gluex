@@ -10,8 +10,8 @@ void DSelector_pipkmks_pd_constrained::Init(TTree *locTree)
 
 	//USERS: SET OUTPUT FILE NAME //can be overriden by user in PROOF
 	dOutputFileName = ""; //"" for none
-	dOutputTreeFileName = "pipkmks_pd_constrained.root"; //"" for none
-	dFlatTreeFileName = ""; //output flat tree (one combo per tree entry), "" for none
+	dOutputTreeFileName = ""; //"" for none
+	dFlatTreeFileName = "pipkmks_pd_constrained.root"; // output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = ""; //if blank, default name will be chosen
 	//dSaveDefaultFlatBranches = true; // False: don't save default branches, reduce disk footprint.
 	//dSaveTLorentzVectorsAsFundamentaFlatTree = false; // Default (or false): save particles as TLorentzVector objects. True: save as four doubles instead.
@@ -167,8 +167,6 @@ void DSelector_pipkmks_pd_constrained::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_measured");  // fundamental = char, int, float, double, etc.
 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pathlength_sig");	// fundamental = char, int, float, double, etc.
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cos_colin");		// fundamental = char, int, float, double, etc.
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("vertex_distance"); // fundamental = char, int, float, double, etc.
 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mand_t"); // fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("w");	   // fundamental = char, int, float, double, etc.
@@ -561,8 +559,6 @@ Bool_t DSelector_pipkmks_pd_constrained::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E_measured", locProtonP4_Measured.E());
 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pathlength_sig", locPathLengthSignificanceKs);
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("cos_colin", cos_theta_col);
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("vertex_distance", vertex_distance_Ks);
 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("mand_t", minus_t);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("w", w);
