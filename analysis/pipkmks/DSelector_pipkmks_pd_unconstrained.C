@@ -167,8 +167,6 @@ void DSelector_pipkmks_pd_unconstrained::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_measured");  // fundamental = char, int, float, double, etc.
 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pathlength_sig");	// fundamental = char, int, float, double, etc.
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cos_colin");		// fundamental = char, int, float, double, etc.
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("vertex_distance"); // fundamental = char, int, float, double, etc.
 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mand_t"); // fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("w");	   // fundamental = char, int, float, double, etc.
@@ -561,8 +559,6 @@ Bool_t DSelector_pipkmks_pd_unconstrained::Process(Long64_t locEntry)
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E_measured", locProtonP4_Measured.E());
 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("pathlength_sig", locPathLengthSignificanceKs);
-		dFlatTreeInterface->Fill_Fundamental<Double_t>("cos_colin", cos_theta_col);
-		dFlatTreeInterface->Fill_Fundamental<Double_t>("vertex_distance", vertex_distance_Ks);
 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("mand_t", minus_t);
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("w", w);
