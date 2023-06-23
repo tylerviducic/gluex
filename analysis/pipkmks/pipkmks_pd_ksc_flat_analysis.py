@@ -6,8 +6,8 @@ import os
 from common_analysis_tools import *
 
 
-filename = '/work/halld/home/viducic/data/pipkmks/data/mxp_study/pipkmks_pd_unconstrained.root'
-treename = 'pipkmks__ks_pippim__B4_M16'
+filename = '/work/halld/home/viducic/data/pipkmks/data/mxp_study/pipkmks_pd_constrained.root'
+treename = 'pipkmks__ks_pippim__B4'
 
 
 ks_pathlength_cut = 'pathlength_sig > 5'
