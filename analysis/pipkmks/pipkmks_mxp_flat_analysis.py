@@ -153,20 +153,22 @@ df = df.Filter(cl_cut).Filter(pathlength_sig_cut).Filter(delta_pp_cut).Filter(la
 
 # f1 plotting and testing
 
-hist_pipkmks_nocut = df.Histo1D(('pipkmks_nocut', 'pipkmks_nocut', 100, 1.0, 2.0), 'pipkmks_m')
-hist_pipkmks_nocut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
-hist_pipkmks_kpcut = df.Filter(KSTAR_PLUS_CUT).Histo1D(('pipkmks_kpcut', 'pipkmks_kpcut', 100, 1.0, 2.0), 'pipkmks_m')
-hist_pipkmks_kpcut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
-hist_pipkmks_kzcut = df.Filter(KSTAR_ZERO_CUT).Histo1D(('pipkmks_kzcut', 'pipkmks_kzcut', 100, 1.0, 2.0), 'pipkmks_m')
-hist_pipkmks_kzcut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
-hist_pipkmks_allcut = df.Filter(KSTAR_ALL_CUT).Histo1D(('pipkmks_allcut', 'pipkmks_allcut', 100, 1.0, 2.0), 'pipkmks_m')
-hist_pipkmks_allcut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['orange']))
+# hist_pipkmks_nocut = df.Histo1D(('pipkmks_nocut', 'pipkmks_nocut', 100, 1.0, 2.0), 'pipkmks_m')
+# hist_pipkmks_nocut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
+# hist_pipkmks_kpcut = df.Filter(KSTAR_PLUS_CUT).Histo1D(('pipkmks_kpcut', 'pipkmks_kpcut', 100, 1.0, 2.0), 'pipkmks_m')
+# hist_pipkmks_kpcut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+# hist_pipkmks_kzcut = df.Filter(KSTAR_ZERO_CUT).Histo1D(('pipkmks_kzcut', 'pipkmks_kzcut', 100, 1.0, 2.0), 'pipkmks_m')
+# hist_pipkmks_kzcut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
+# hist_pipkmks_allcut = df.Filter(KSTAR_ALL_CUT).Histo1D(('pipkmks_allcut', 'pipkmks_allcut', 100, 1.0, 2.0), 'pipkmks_m')
+# hist_pipkmks_allcut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['orange']))
 
-c = ROOT.TCanvas('c', 'c', 900, 900)
-hist_pipkmks_nocut.Draw()
-hist_pipkmks_kpcut.Draw("same")
-hist_pipkmks_kzcut.Draw("same")
-hist_pipkmks_allcut.Draw("same")
-c.Update()
+# c = ROOT.TCanvas('c', 'c', 900, 900)
+# hist_pipkmks_nocut.Draw()
+# hist_pipkmks_kpcut.Draw("same")
+# hist_pipkmks_kzcut.Draw("same")
+# hist_pipkmks_allcut.Draw("same")
+# c.Update()
+
+df.Snapshot(f'pipkmks_mxp_filtered', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_mxp_filtered.root')
 
 input('Press enter to continue...')
