@@ -100,7 +100,7 @@ void DSelector_pimkpks_flat_bestchi2::Init(TTree *locTree)
 	/************************** EXAMPLE USER INITIALIZATION: CUSTOM OUTPUT BRANCHES - FLAT TREE *************************/
 
 	// RECOMMENDED: CREATE ACCIDENTAL WEIGHT BRANCH
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("accidweight");
+	// dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("accidweight");
 
 	//EXAMPLE FLAT TREE CUSTOM BRANCHES (OUTPUT ROOT FILE NAME MUST FIRST BE GIVEN!!!! (ABOVE: TOP)):
 	//The type for the branch must be included in the brackets
@@ -167,8 +167,6 @@ void DSelector_pimkpks_flat_bestchi2::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_measured"); //fundamental = char, int, float, double, etc.
 	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pathlength_sig"); //fundamental = char, int, float, double, etc.
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("cos_colin"); //fundamental = char, int, float, double, etc.
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("vertex_distance"); //fundamental = char, int, float, double, etc.
 	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("mand_t"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("w"); //fundamental = char, int, float, double, etc.
@@ -261,7 +259,7 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 	/************************************************* LOOP OVER COMBOS *************************************************/
 
 	double best_chi2 = 100000000;
-	int best_combo = 0;
+	int best_combo = -1;
 	//Loop over combos
 	for(UInt_t loc_i = 0; loc_i < Get_NumCombos(); ++loc_i)
 	{
@@ -284,10 +282,15 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 		Double_t locAccidentalScalingFactor = dAnalysisUtilities.Get_AccidentalScalingFactor(Get_RunNumber(), locBeamP4.E(), dIsMC); // Ideal value would be 1, but deviations require added factor, which is different for data and MC.
 		Double_t locAccidentalScalingFactorError = dAnalysisUtilities.Get_AccidentalScalingFactorError(Get_RunNumber(), locBeamP4.E()); // Ideal value would be 1, but deviations observed, need added factor.
 		Double_t locHistAccidWeightFactor = locRelBeamBucket==0 ? 1 : -locAccidentalScalingFactor/(2*locNumOutOfTimeBunchesToUse) ; // Weight by 1 for in-time events, ScalingFactor*(1/NBunches) for out-of-time
-		if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
-			dComboWrapper->Set_IsComboCut(true); 
-			continue; 
-		} 					
+		// if(locSkipNearestOutOfTimeBunch && abs(locRelBeamBucket)==0) { // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
+		// 	dComboWrapper->Set_IsComboCut(true); 
+		// 	continue; 
+		// }
+		if (locRelBeamBucket != 0)
+		{ // Skip nearest out-of-time bunch: tails of in-time distribution also leak in
+			dComboWrapper->Set_IsComboCut(true);
+			continue;
+		}
 		// Grab combo Chi^2/NDF and see if it's the best. 
 		// If it is, save the combo index
 
@@ -300,6 +303,11 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 		}
 	}
 
+	// grab the best combo from the above loop if its in the central timing peak
+	if (best_combo == -1)
+	{
+		return kTRUE;
+	}
 	dComboWrapper->Set_ComboIndex(best_combo);
 
 	double locKinFit_CL = dComboWrapper->Get_ConfidenceLevel_KinFit("");
@@ -606,7 +614,7 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 			dFlatTreeInterface->Fill_TObject<TLorentzVector>("flat_my_p4_array", locMyComboP4_Flat, loc_j);
 		}
 		*/
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("accidweight", locHistAccidWeightFactor);
+	// dFlatTreeInterface->Fill_Fundamental<Double_t>("accidweight", locHistAccidWeightFactor);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam", locBeamP4.E()); 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam_measured", locBeamP4_Measured.E()); 
 	
@@ -662,8 +670,8 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("p_E_measured", locProtonP4_Measured.E()); 
 	
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pathlength_sig", locPathLengthSignificanceKs); 
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("cos_colin", cos_theta_col);
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("vertex_distance", vertex_distance_Ks);
+	// dFlatTreeInterface->Fill_Fundamental<Double_t>("cos_colin", cos_theta_col);
+	// dFlatTreeInterface->Fill_Fundamental<Double_t>("vertex_distance", vertex_distance_Ks);
 	
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("mand_t", minus_t);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("w", w);
