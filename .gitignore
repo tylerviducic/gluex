@@ -72,3 +72,13 @@ mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C_ACLiC_dict_rdict.pcm
 mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C.so
 mc/analysis/pipkmks/DSelector_mc_pipkmks_thrown_C_ACLiC_dict_rdict.pcm
 mc/analysis/pipkmks/DSelector_mc_pipkmks_thrown_C.so
+mc/analysis/pimkpks/DSelector_mc_pimkpks_flat_correct_rf_C.d
+mc/analysis/pimkpks/DSelector_mc_pimkpks_flat_correct_rf_C.so
+mc/analysis/pimkpks/DSelector_pimkpks_phasespace_flat_correct_rf_C.d
+mc/analysis/pimkpks/DSelector_pimkpks_phasespace_flat_correct_rf_C.so
+mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C_ACLiC_dict_rdict.pcm
+mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C.so
+mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C_ACLiC_dict_rdict.pcm
+mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C.so
+mc/analysis/pipkmks/DSelector_mc_pipkmks_thrown_C_ACLiC_dict_rdict.pcm
+mc/analysis/pipkmks/DSelector_mc_pipkmks_thrown_C.so
