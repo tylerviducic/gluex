@@ -20,6 +20,11 @@ grouped = df.groupby('beam_energy')
 
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
 
+#create two figures, one with 4 sub plots and the other without subplots
+fig2, ax5 = plt.subplots()
+
+
+
 color_dict = {
     7: 'red',
     8: 'blue',
@@ -28,8 +33,8 @@ color_dict = {
 }
 
 for name, group in grouped:
-    if name == 7:
-        continue
+    # if name == 7:
+    #     continue
     # print(f'name = {name}')
     x = group['t_bin_middle'].values
     cs = group['cross_section'].values
@@ -44,6 +49,13 @@ for name, group in grouped:
     ax1.set_xlabel('t (GeV^2)')
     ax1.set_ylabel('d^2\sigma/dtdM (nb/GeV^4)')
     ax1.set_title('Cross section')
+    #draw this on ax5 as well
+    ax5.errorbar(x, cs, yerr=cs_err, fmt='o', color=color_dict[name], label=f'{name} GeV')
+    # ax5.plot(theory_df['t'], theory_df['diff_cs'], color=color_dict[name])
+    ax5.legend()
+    ax5.set_xlabel('t (GeV^2)')
+    ax5.set_ylabel('d^2\sigma/dtdM (nb/GeV^4)')
+    ax5.set_title('Cross section')
 
 
     mean = group['mean'].values
@@ -73,4 +85,7 @@ for name, group in grouped:
 
         # Show or save the plot
         # plt.show()  # or 
-plt.savefig(f'/work/halld/home/viducic/plots/cross_section/{channel}_same_plots.png')
+fig.savefig(f'/work/halld/home/viducic/plots/cross_section/{channel}_same_plots.png')
+#save ax5 as it's own image 
+# plt.figure(2)
+ax5.figure.savefig(f'/work/halld/home/viducic/plots/cross_section/{channel}_cs_same_plot.png')
