@@ -270,7 +270,10 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 		if(dComboWrapper->Get_IsComboCut()) // Is false when tree originally created
 			continue; // Combo has been cut previously
 
+		/********************************************* GET COMBO RF TIMING INFO *****************************************/
+
 		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
+		TLorentzVector locBeamP4 = dComboBeamWrapper->Get_P4();
 		Double_t locBunchPeriod = dAnalysisUtilities.Get_BeamBunchPeriod(Get_RunNumber());
 		Double_t locDeltaT_RF = dAnalysisUtilities.Get_DeltaT_RF(Get_RunNumber(), locBeamX4_Measured, dComboWrapper);
 		Int_t locRelBeamBucket = dAnalysisUtilities.Get_RelativeBeamBucket(Get_RunNumber(), locBeamX4_Measured, dComboWrapper); // 0 for in-time events, non-zero integer for out-of-time photons
@@ -366,7 +369,7 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 
 		// Get Measured X4's:
 		//Step 0
-		//TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
+		TLorentzVector locBeamX4_Measured = dComboBeamWrapper->Get_X4_Measured();
 		TLorentzVector locPiMinus1X4_Measured = dPiMinus1Wrapper->Get_X4_Measured();
 		TLorentzVector locKPlusX4_Measured = dKPlusWrapper->Get_X4_Measured();
 		TLorentzVector locProtonX4_Measured = dProtonWrapper->Get_X4_Measured();
