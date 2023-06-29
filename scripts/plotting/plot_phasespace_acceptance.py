@@ -8,6 +8,8 @@ cut = 'all'
 
 hist_list = []
 canvas_list = []
+hist_7gev_list = []
+hist_8gev_list = []
 
 for e in range(7, 11):
     c = ROOT.TCanvas(f'canvas_{e}', f'canvas_{e}', 1200, 900)
@@ -36,13 +38,22 @@ for e in range(7, 11):
         total_lumi = lumi_spring + lumi_fall + lumi_2017
 
         acceptance_spring = phasespace_recon_hist_spring.Clone(f'acceptance_spring_{e}_{t}')
+        acceptance_spring.Sumw2()
         acceptance_spring.Divide(phasespace_thrown_hist_spring)
 
         acceptance_fall = phasespace_recon_hist_fall.Clone(f'acceptance_fall_{e}_{t}')
+        acceptance_fall.Sumw2()
         acceptance_fall.Divide(phasespace_thrown_hist_fall)
 
         acceptance_2017 = phasespace_recon_hist_2017.Clone(f'acceptance_2017_{e}_{t}')
+        acceptance_2017.Sumw2()
         acceptance_2017.Divide(phasespace_thrown_hist_2017)
+
+        if e == 7:
+            hist_7gev_list.append((acceptance_spring, acceptance_fall, acceptance_2017))
+        if e == 8:
+            hist_8gev_list.append((acceptance_spring, acceptance_fall, acceptance_2017))
+
 
         acceptance = acceptance_spring.Clone(f'acceptance_{e}_{t}')
         acceptance.Scale(lumi_spring/total_lumi)
@@ -76,6 +87,44 @@ for k in range(1, 8):
     hist_list[l+14].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
     hist_list[l+14].Draw('same')
 c1.Update()
+
+c2 = ROOT.TCanvas('c2', 'c2', 1200, 900)
+c2.Divide(4, 2)
+for m in range(1, 8):
+    c2.cd(m)
+    # hist_7gev_list[m-1][1].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
+    # hist_7gev_list[m-1][1].Draw()
+    # hist_7gev_list[m-1][2].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
+    # hist_7gev_list[m-1][2].Draw('same')
+    # hist_7gev_list[m-1][0].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+    # hist_7gev_list[m-1][0].Draw('same')
+    hist_8gev_list[m-1][1].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
+    hist_8gev_list[m-1][1].Draw()
+    hist_8gev_list[m-1][2].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
+    hist_8gev_list[m-1][2].Draw('same')
+    hist_8gev_list[m-1][0].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+    hist_8gev_list[m-1][0].Draw('same')
+
+
+# leg_7gev = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
+# leg_7gev.AddEntry(hist_7gev_list[0][0], 'Spring', 'l')
+# leg_7gev.AddEntry(hist_7gev_list[0][1], 'Fall', 'l')
+# leg_7gev.AddEntry(hist_7gev_list[0][2], '2017', 'l')
+leg_8gev = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
+leg_8gev.AddEntry(hist_8gev_list[0][0], 'Spring', 'l')
+leg_8gev.AddEntry(hist_8gev_list[0][1], 'Fall', 'l')
+leg_8gev.AddEntry(hist_8gev_list[0][2], '2017', 'l')
+c2.cd(1)
+# leg_7gev.Draw()
+leg_8gev.Draw()
+c2.cd(5)
+# leg_7gev.Draw()
+leg_8gev.Draw()
+c2.Update()
+
+
+
+
 
 
 input('Press any key to continue...')
