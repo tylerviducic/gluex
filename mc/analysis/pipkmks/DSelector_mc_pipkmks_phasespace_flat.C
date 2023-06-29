@@ -165,6 +165,8 @@ void DSelector_mc_pipkmks_phasespace_flat::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_pz_measured"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("p_E_measured"); //fundamental = char, int, float, double, etc.
 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam_thrown"); // fundamental = char, int, float, double, etc.
+
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px_thrown"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py_thrown"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_pz_thrown"); //fundamental = char, int, float, double, etc.
@@ -703,9 +705,9 @@ Bool_t DSelector_mc_pipkmks_phasespace_flat::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("w", w);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("s", s);
 
-
+	double locEnergy_Thrown = 0;
 	if(dThrownBeam != NULL)
-		double locEnergy_Thrown = dThrownBeam->Get_P4().E();
+		locEnergy_Thrown = dThrownBeam->Get_P4().E();
 	
 	TLorentzVector dTargetP4_Thrown;
 	dTargetP4.SetXYZM(0.0,0.0,0.0,0.938);
@@ -771,6 +773,7 @@ Bool_t DSelector_mc_pipkmks_phasespace_flat::Process(Long64_t locEntry)
 		}
 	}
 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam_thrown", locEnergy_Thrown);
 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px_thrown", locPiPlus1P4_Thrown.Px());
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_py_thrown", locPiPlus1P4_Thrown.Py());
