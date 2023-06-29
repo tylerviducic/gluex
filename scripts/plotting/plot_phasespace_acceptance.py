@@ -29,9 +29,11 @@ for e in range(7, 11):
         phasespace_thrown_hist_2017 = get_phasespace_thrown_hist(channel, '2017', e, t)
         phasespace_thrown_hist_2017.GetXaxis().SetRangeUser(1.2, 1.5)
 
-        lumi_spring = get_luminosity('spring')
-        lumi_fall = get_luminosity('fall')
-        lumi_2017 = get_luminosity('2017')
+        lumi_spring = get_luminosity('spring', beam_low=e-0.5, beam_high=e+0.5)
+        lumi_fall = get_luminosity('fall',beam_low=e-0.5, beam_high=e+0.5)
+        lumi_2017 = get_luminosity('2017', beam_low=e-0.5, beam_high=e+0.5)
+
+        total_lumi = lumi_spring + lumi_fall + lumi_2017
 
         acceptance_spring = phasespace_recon_hist_spring.Clone(f'acceptance_spring_{e}_{t}')
         acceptance_spring.Divide(phasespace_thrown_hist_spring)
@@ -43,8 +45,9 @@ for e in range(7, 11):
         acceptance_2017.Divide(phasespace_thrown_hist_2017)
 
         acceptance = acceptance_spring.Clone(f'acceptance_{e}_{t}')
-        acceptance.Add(acceptance_fall, lumi_fall/lumi_spring)
-        acceptance.Add(acceptance_2017, lumi_2017/lumi_spring)
+        acceptance.Scale(lumi_spring/total_lumi)
+        acceptance.Add(acceptance_fall, lumi_fall/total_lumi)
+        acceptance.Add(acceptance_2017, lumi_2017/total_lumi)
 
         acceptance.SetTitle(f'Acceptance for E(y) =  {e} GeV, t = {t_bin_dict[t]} GeV^2')
         acceptance.GetXaxis().SetTitle('M_{K^{+}K^{-}#pi^{+}} (GeV)')
@@ -58,6 +61,22 @@ for e in range(7, 11):
     
     canvas_list[e-7].Update()
     canvas_list[e-7].SaveAs(f'/work/halld/home/viducic/plots/cross_section/{channel}_phasespace_acceptance_{e}.png')
+
+c1 = ROOT.TCanvas('c1', 'c1', 1200, 900)
+c1.Divide(4, 2)
+for k in range(1, 8):
+    l = k-1
+    c1.cd(k)
+    hist_list[l+21].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['purple']))
+    hist_list[l+21].Draw()
+    hist_list[l].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+    hist_list[l].Draw('same')
+    hist_list[l+7].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
+    hist_list[l+7].Draw('same')
+    hist_list[l+14].SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
+    hist_list[l+14].Draw('same')
+c1.Update()
+
 
 input('Press any key to continue...')
 
