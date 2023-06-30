@@ -201,8 +201,6 @@ df = df.Filter(mx2_ppimkpks_cut).Filter(ks_pathlength_cut).Filter(ks_mass_cut).F
 print('cuts done in {} seconds'.format(time.time() - start_time))
 
 
-
-
 ## MAKE HISTOGRAMS ##
 
 ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')

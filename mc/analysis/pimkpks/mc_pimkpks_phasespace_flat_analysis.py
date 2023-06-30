@@ -13,8 +13,8 @@ ROOT.gStyle.SetOptStat(0)
 
 start_time = time.time()
 
-run_period = 'fall'
-filename = f'/work/halld/home/viducic/data/pimkpks/mc/signal/mc_pimkpks_flat_correct_rf_{run_dict[run_period]}.root'
+run_period = '2017'
+filename = f'/work/halld/home/viducic/data/pimkpks/mc/phasespace/pimkpks_phasespace_flat_correct_rf_{run_dict[run_period]}.root'
 treename = 'pimkpks__ks_pippim__B4_M16'
 
 histo_array = []
@@ -205,7 +205,7 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-df.Snapshot(f'mc_pimkmpks_filtered_{run_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pimkpks/mc/signal/mc_pimkpks_filtered_{run_dict[run_period]}.root')
+df.Snapshot(f'mc_pimkmpks_phasespace_filtered_{run_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pimkpks/mc/phasespace/mc_pimkpks_phasespace_filtered_{run_dict[run_period]}.root')
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
 df = df.Filter(beam_range).Filter(t_range)
@@ -257,7 +257,7 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pimkpks/mc/signal/mc_pimkpks_flat_result_{run_dict[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pimkpks/mc/phasespace/mc_pimkpks_phasespace_flat_result_{run_dict[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 ks_m.Write()
@@ -269,4 +269,4 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pimkpks_graph_{run_dict[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pimkpks_phasespace_graph_{run_dict[run_period]}.dot")
