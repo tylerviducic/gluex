@@ -14,7 +14,7 @@ ROOT.gStyle.SetOptStat(0)
 start_time = time.time()
 
 
-run_period = 'spring'
+run_period = '2017'
 filename = f'/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_flat_bestX2_{run_dict[run_period]}.root'
 treename = 'pimkpks__B4_M16'
 
@@ -198,26 +198,8 @@ df = df.Define('ppip_m', 'sqrt(ppip_E*ppip_E - ppip_px*ppip_px - ppip_py*ppip_py
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
 df = df.Filter(mx2_ppimkpks_cut).Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(ksp_mass_cut).Filter(p_p_cut)
-# print('cuts done in {} seconds'.format(time.time() - start_time))
+print('cuts done in {} seconds'.format(time.time() - start_time))
 
-
-hist_kkpi_nocuts = df.Histo1D(('kkpi_nocuts', 'kkpi_nocuts', 100, 1.1, 1.7), 'pimkpks_m')
-hist_kkpi_nocuts.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
-hist_kkpi_kstar_minus_cut = df.Filter(KSTAR_MINUS_CUT).Histo1D(('kkpi_kstar_minus_cut', 'kkpi_kstar_minus_cut', 100, 1.1, 1.7), 'pimkpks_m')
-hist_kkpi_kstar_minus_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
-hist_kkpi_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('kkpi_kstar_zero_cut', 'kkpi_kstar_zero_cut', 100, 1.1, 1.7), 'pimkpks_m')
-hist_kkpi_kstar_zero_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
-hist_kkpi_kstar_all_cut = df.Filter(kstar_all_cut).Histo1D(('kkpi_kstar_all_cut', 'kkpi_kstar_all_cut', 100, 1.1, 1.7), 'pimkpks_m')
-hist_kkpi_kstar_all_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['purple']))
-
-c1 = ROOT.TCanvas('c1', 'c1', 800, 600)
-hist_kkpi_nocuts.Draw()
-hist_kkpi_kstar_minus_cut.Draw('same')
-hist_kkpi_kstar_zero_cut.Draw('same')
-hist_kkpi_kstar_all_cut.Draw('same')
-c1.Update()
-
-input('Press any key to continue...')
 
 
 
@@ -227,73 +209,73 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-# df.Snapshot(f'pimkpks_filtered_{run_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_filtered_{run_dict[run_period]}.root')
+df.Snapshot(f'pimkpks_filtered_{run_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_filtered_{run_dict[run_period]}.root')
 
 
 # ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
-# df = df.Filter(beam_range).Filter(t_range)
+df = df.Filter(beam_range).Filter(t_range)
 
-# print('cut file written in {} seconds'.format(time.time() - start_time))
+print('cut file written in {} seconds'.format(time.time() - start_time))
  
 
-# ## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
+## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
 
-# n_e_bins = 4
-# n_t_bins = 8
+n_e_bins = 4
+n_t_bins = 8
 
-# def fill_histos(cut_df, histo_array, cut, beam_index=0, t_index=0):
-#     cut_name = kstar_cut_dict[cut]
-#     hist_name = f'pimkpks_cut_{cut_name}_'
-#     beam_name = 'beam_full_'
-#     t_name = 't_full'
-#     if beam_index > 0:
-#         beam_low = beam_dict[beam_index][0]
-#         beam_high = beam_dict[beam_index][1]
-#         beam_name = f'beam_{beam_low}_{beam_high}_'
-#     if t_index > 0:
-#         t_low = t_bin_dict[t_index][0]
-#         t_high = t_bin_dict[t_index][1]
-#         t_name = f't_{t_low}_{t_high}'
-#     hist_name += beam_name + t_name
-#     histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), 'pimkpks_m'))
+def fill_histos(cut_df, histo_array, cut, beam_index=0, t_index=0):
+    cut_name = kstar_cut_dict[cut]
+    hist_name = f'pimkpks_cut_{cut_name}_'
+    beam_name = 'beam_full_'
+    t_name = 't_full'
+    if beam_index > 0:
+        beam_low = beam_dict[beam_index][0]
+        beam_high = beam_dict[beam_index][1]
+        beam_name = f'beam_{beam_low}_{beam_high}_'
+    if t_index > 0:
+        t_low = t_bin_dict[t_index][0]
+        t_high = t_bin_dict[t_index][1]
+        t_name = f't_{t_low}_{t_high}'
+    hist_name += beam_name + t_name
+    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), 'pimkpks_m'))
 
     
 
-# for cut in f1_cut_list:
-#     cut_df = df.Filter(cut)
-#     fill_histos(cut_df, histo_array, cut)
+for cut in f1_cut_list:
+    cut_df = df.Filter(cut)
+    fill_histos(cut_df, histo_array, cut)
         
 
-#     for energy_index in range(1, n_e_bins+1):
-#         e_cut_df = cut_df.Filter(f'e_bin == {energy_index}')
-#         fill_histos(e_cut_df, histo_array, cut, beam_index=energy_index)
+    for energy_index in range(1, n_e_bins+1):
+        e_cut_df = cut_df.Filter(f'e_bin == {energy_index}')
+        fill_histos(e_cut_df, histo_array, cut, beam_index=energy_index)
 
-#         for t_index in range(1, n_t_bins+1):
-#             e_t_cut_df = e_cut_df.Filter(f't_bin == {t_index}')
-#             fill_histos(e_t_cut_df, histo_array, cut, beam_index=energy_index, t_index=t_index)
+        for t_index in range(1, n_t_bins+1):
+            e_t_cut_df = e_cut_df.Filter(f't_bin == {t_index}')
+            fill_histos(e_t_cut_df, histo_array, cut, beam_index=energy_index, t_index=t_index)
          
-#     for t_index in range(1, n_t_bins+1):
-#        t_cut_df = cut_df.Filter(f't_bin == {t_index}')
-#        fill_histos(t_cut_df, histo_array, cut, t_index=t_index)
+    for t_index in range(1, n_t_bins+1):
+       t_cut_df = cut_df.Filter(f't_bin == {t_index}')
+       fill_histos(t_cut_df, histo_array, cut, t_index=t_index)
 
-# print("histos done in {} seconds".format(time.time() - start_time))
+print("histos done in {} seconds".format(time.time() - start_time))
 
-# ## WRITE HISTOGRAMS TO FILE ##
+## WRITE HISTOGRAMS TO FILE ##
 
-# target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_flat_result_{run_dict[run_period]}.root", 'RECREATE')
-# print('file created in {} seconds'.format(time.time() - start_time))
-
-
-# ks_m.Write()
-
-# for histo in histo_array:
-#     histo.Write()
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_flat_result_{run_dict[run_period]}.root", 'RECREATE')
+print('file created in {} seconds'.format(time.time() - start_time))
 
 
-# print("histos written in {} seconds".format(time.time() - start_time))
-# target_file.Close()
+ks_m.Write()
 
-# ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/pimkpks_graph_{run_dict[run_period]}.dot")
+for histo in histo_array:
+    histo.Write()
+
+
+print("histos written in {} seconds".format(time.time() - start_time))
+target_file.Close()
+
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/pimkpks_graph_{run_dict[run_period]}.dot")
     
 ######################
 ## DEPRECIATED CODE ##
@@ -342,3 +324,21 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 # c.cd(2)
 # hist_kppim.Draw()
 # c.Update()
+
+# hist_kkpi_nocuts = df.Histo1D(('kkpi_nocuts', 'kkpi_nocuts', 100, 1.1, 1.7), 'pimkpks_m')
+# hist_kkpi_nocuts.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
+# hist_kkpi_kstar_minus_cut = df.Filter(KSTAR_MINUS_CUT).Histo1D(('kkpi_kstar_minus_cut', 'kkpi_kstar_minus_cut', 100, 1.1, 1.7), 'pimkpks_m')
+# hist_kkpi_kstar_minus_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+# hist_kkpi_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('kkpi_kstar_zero_cut', 'kkpi_kstar_zero_cut', 100, 1.1, 1.7), 'pimkpks_m')
+# hist_kkpi_kstar_zero_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
+# hist_kkpi_kstar_all_cut = df.Filter(kstar_all_cut).Histo1D(('kkpi_kstar_all_cut', 'kkpi_kstar_all_cut', 100, 1.1, 1.7), 'pimkpks_m')
+# hist_kkpi_kstar_all_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['purple']))
+
+# c1 = ROOT.TCanvas('c1', 'c1', 800, 600)
+# hist_kkpi_nocuts.Draw()
+# hist_kkpi_kstar_minus_cut.Draw('same')
+# hist_kkpi_kstar_zero_cut.Draw('same')
+# hist_kkpi_kstar_all_cut.Draw('same')
+# c1.Update()
+
+# input('Press any key to continue...')
