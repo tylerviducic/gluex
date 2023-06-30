@@ -27,7 +27,8 @@ hist_beam_recon.Scale(1/hist_beam_recon.Integral())
 hist_beam_recon.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
 hist_beam_thrown.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
 
-hist_pp_thrown_vs_beam = thrown_df.Histo2D(('hist_pp_thrown_vs_beam', 'hist_pp_thrown_vs_beam', 200, 5, 11.5, 100, 0, 1.0), 'Beam_E', 'P_p')
+hist_pp_thrown_vs_beam = thrown_df.Histo2D(('hist_pp_thrown_vs_beam', 'hist_pp_thrown_vs_beam', 100, 5, 11.5, 50, 0, 1.0), 'Beam_E', 'P_p')
+
 
 
 c = ROOT.TCanvas('c', 'c', 1200, 900)
@@ -41,7 +42,9 @@ c1.cd(1)
 acceptance.Draw('hist')
 c1.cd(2)
 hist_pp_thrown_vs_beam.Draw('colz')
+c1.SetLogz()
 c1.Update()
+
 
 
 input('Press enter to exit')
