@@ -45,8 +45,9 @@ ks_cut1 = 'cos_colin > 0.99'
 ks_cut2 = ' vertex_distance > 3'
 # ks_mass_cut = 'ks_m > 0.475 && ks_m < 0.525'
 ks_mass_cut = f'abs(ks_m - {KSHORT_FIT_MEAN}) < {2 * KSHORT_FIT_WIDTH}'
-ppim_mass_cut = 'ppim_m > 1.4'
+ppim_mass_cut = 'ppim_m > 1.8'
 kpp_mass_cut = 'kpp_m > 1.95'
+ksp_mass_cut = 'ksp_m > 1.95'
 f1_region = 'pimkpks_m > 1.255 && pimkpks_m < 1.311'
 beam_range = 'e_beam >= 6.50000000000 && e_beam <= 10.5'
 t_range = 'mand_t <= 1.9'
@@ -143,6 +144,13 @@ df = df.Define('kpp_E', 'p_E + kp_E')
 
 df = df.Define('kpp_m', 'sqrt(kpp_E*kpp_E - kpp_px*kpp_px - kpp_py*kpp_py - kpp_pz*kpp_pz)')
 
+df = df.Define('ksp_px', 'p_px + ks_px')
+df = df.Define('ksp_py', 'p_py + ks_py')
+df = df.Define('ksp_pz', 'p_pz + ks_pz')
+df = df.Define('ksp_E', 'p_E + ks_E')
+
+df = df.Define('ksp_m', 'sqrt(ksp_E*ksp_E - ksp_px*ksp_px - ksp_py*ksp_py - ksp_pz*ksp_pz)')
+
 df = df.Define('kspim_px', 'pim1_px + ks_px')
 df = df.Define('kspim_py', 'pim1_py + ks_py')
 df = df.Define('kspim_pz', 'pim1_pz + ks_pz')
@@ -180,21 +188,34 @@ df = df.Define('kpks_m', 'sqrt(kpks_E*kpks_E - kpks_px*kpks_px - kpks_py*kpks_py
 df = df.Define('e_bin', 'get_beam_bin_index(e_beam)')
 df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
+df = df.Define('ppip_px', 'p_px + pip_px')
+df = df.Define('ppip_py', 'p_py + pip_py')
+df = df.Define('ppip_pz', 'p_pz + pip_pz')
+df = df.Define('ppip_E', 'p_E + pip_E')
+df = df.Define('ppip_m', 'sqrt(ppip_E*ppip_E - ppip_px*ppip_px - ppip_py*ppip_py - ppip_pz*ppip_pz)')
+
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-# df = df.Filter(mx2_ppimkpks_cut).Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(kpp_mass_cut).Filter(p_p_cut)
+df = df.Filter(mx2_ppimkpks_cut).Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(ksp_mass_cut).Filter(p_p_cut)
 # print('cuts done in {} seconds'.format(time.time() - start_time))
 
-hist_ks_before = df.Histo1D(('ks_m_before', 'ks_m_before', 100, 0.3, 0.7), 'ks_m')
-hist_ks_after = df.Filter(KS_PATHLENGTH_CUT).Histo1D(('ks_m_after', 'ks_m_after', 100, 0.3, 0.7), 'ks_m')
-hist_ks_before.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
-hist_ks_after.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
 
-c = ROOT.TCanvas('c', 'c', 900, 900)
-hist_ks_before.Draw()
-hist_ks_after.Draw('same')
-c.Update()
+hist_kkpi_nocuts = df.Histo1D(('kkpi_nocuts', 'kkpi_nocuts', 100, 1.1, 1.7), 'pimkpks_m')
+hist_kkpi_nocuts.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green']))
+hist_kkpi_kstar_minus_cut = df.Filter(KSTAR_MINUS_CUT).Histo1D(('kkpi_kstar_minus_cut', 'kkpi_kstar_minus_cut', 100, 1.1, 1.7), 'pimkpks_m')
+hist_kkpi_kstar_minus_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+hist_kkpi_kstar_zero_cut = df.Filter(kstar_zero_cut).Histo1D(('kkpi_kstar_zero_cut', 'kkpi_kstar_zero_cut', 100, 1.1, 1.7), 'pimkpks_m')
+hist_kkpi_kstar_zero_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
+hist_kkpi_kstar_all_cut = df.Filter(kstar_all_cut).Histo1D(('kkpi_kstar_all_cut', 'kkpi_kstar_all_cut', 100, 1.1, 1.7), 'pimkpks_m')
+hist_kkpi_kstar_all_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['purple']))
+
+c1 = ROOT.TCanvas('c1', 'c1', 800, 600)
+hist_kkpi_nocuts.Draw()
+hist_kkpi_kstar_minus_cut.Draw('same')
+hist_kkpi_kstar_zero_cut.Draw('same')
+hist_kkpi_kstar_all_cut.Draw('same')
+c1.Update()
 
 input('Press any key to continue...')
 
@@ -277,3 +298,47 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 ######################
 ## DEPRECIATED CODE ##
 ######################
+
+
+# hist_ks_before = df.Histo1D(('ks_m_before', 'ks_m_before', 100, 0.3, 0.7), 'ks_m')
+# hist_ks_after = df.Filter(KS_PATHLENGTH_CUT).Histo1D(('ks_m_after', 'ks_m_after', 100, 0.3, 0.7), 'ks_m')
+# hist_ks_before.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
+# hist_ks_after.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+
+# c = ROOT.TCanvas('c', 'c', 900, 900)
+# hist_ks_before.Draw()
+# hist_ks_after.Draw('same')
+# c.Update()
+
+
+# hist_mx_all = df.Histo1D(('mx_all', 'mx_all', 100, -0.05, 0.05), 'mx2_ppimkpks')
+# hist_mx_all.Draw()
+
+
+# c = ROOT.TCanvas('c', 'c', 500, 500)
+# c.Divide(2,1)
+# c.cd(1)
+# hist_ppip = df.Histo1D(('ppip_m', 'ppip_m', 100, 1.0, 2.5), 'ppip_m')
+# hist_ppip.Draw()
+# c.cd(2)
+# hist_ppim = df.Histo1D(('ppim_m', 'ppim_m', 100, 1.0, 2.5), 'ppim_m')
+# hist_ppim.Draw()
+# c.Update()
+
+
+# hist_kpp = df.Histo1D(('kpp_m', 'kpp_m', 150, 1.3, 3.0), 'kpp_m')
+# hist_kpp.Draw()
+
+# hist_pks = df.Histo1D(('pks_m', 'pks_m', 200, 1.3, 3.0), 'ksp_m')
+# hist_pks.Draw()
+
+# hist_kspim = df.Histo1D(('kspim_m', 'kspim_m', 150, 0.5, 2.0), 'kspim_m')
+# hist_kppim = df.Histo1D(('kppim_m', 'kppim_m', 150, 0.5, 2.0), 'kppim_m')
+
+# c = ROOT.TCanvas()
+# c.Divide(2,1)
+# c.cd(1)
+# hist_kspim.Draw()
+# c.cd(2)
+# hist_kppim.Draw()
+# c.Update()
