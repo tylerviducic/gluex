@@ -9,7 +9,12 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
+channel = 'pimkpks'
+
+if channel == 'pipkmks' :
+    all_cut = KSTAR_ALL_CUT_PIPKMKS
+elif channel == 'pimkpks' :
+    all_cut = KSTAR_ALL_CUT_PIMKPKS
 
 
 def get_acceptance_corrected_kkpi(channel, run_period):
@@ -25,11 +30,11 @@ def get_acceptance_corrected_kkpi(channel, run_period):
 
     thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
 
-    data_df = data_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
-    recon_df = recon_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
+    data_df = data_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+    recon_df = recon_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
 
-    data_hist = data_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 30, 1.2, 1.5), 'pipkmks_m').GetValue()
-    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 30, 1.2, 1.5), 'pipkmks_m').GetValue()
+    data_hist = data_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
+    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
     thrown_hist_name = channel + ';1'
     thrown_hist = thrown_file.Get(thrown_hist_name)
 
