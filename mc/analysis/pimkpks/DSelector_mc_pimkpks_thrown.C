@@ -14,7 +14,7 @@ void DSelector_mc_pimkpks_thrown::Init(TTree *locTree)
 	//dOutputTreeFileNameMap["Bin1"] = "mcgen_bin1.root"; //key is user-defined, value is output file name
 	//dOutputTreeFileNameMap["Bin2"] = "mcgen_bin2.root"; //key is user-defined, value is output file name
 	//dOutputTreeFileNameMap["Bin3"] = "mcgen_bin3.root"; //key is user-defined, value is output file name
-	dFlatTreeFileName = "/volatile/halld/home/viducic/selector_output/f1_pimkpks/thrown/pimkpks_thrown_2018_spring.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/volatile/halld/home/viducic/selector_output/f1_pimkpks/thrown/pimkpks_thrown_2018_fall.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = "pimkpks_thrown"; //if blank, default name will be chosen
 	dSaveDefaultFlatBranches = false; // False: don't save default branches, reduce disk footprint.
 
@@ -202,21 +202,21 @@ Bool_t DSelector_mc_pimkpks_thrown::Process(Long64_t locEntry)
 
 
 		if (locPID_Thrown == 11){
-			locKPlusP4_Thrown = locThrownP4;
+			locKPlusP4 = locThrownP4;
 		}
 		if (locPID_Thrown == 14){
-			locProtonP4_Thrown = locThrownP4;
+			locProtonP4 = locThrownP4;
 		}
 		if (locPID_Thrown == 8){
-			locPiPlusP4_Thrown = locThrownP4;
+			locPiPlusP4 = locThrownP4;
 		}
 		if(locPID_Thrown == 16){
-			locKShortP4_Thrown = locThrownP4;
+			locKShortP4 = locThrownP4;
 			KsThrown_Index = loc_i;
 		}
 		if (locPID_Thrown == 9){
 			if(dThrownWrapper->Get_ParentIndex() < 0){
-				locPiMinus1P4_Thrown = locThrownP4;
+				locPiMinus1P4 = locThrownP4;
 			}
 			else{
 				piMinusIndices.push_back(loc_i);
@@ -225,9 +225,9 @@ Bool_t DSelector_mc_pimkpks_thrown::Process(Long64_t locEntry)
 	}	
 
 	for (int i = 0; i < piMinusIndices.size(); i++){
-		dThrownWrapper->Set_ArrayIndex(piPlusIndices[i]);
+		dThrownWrapper->Set_ArrayIndex(piMinusIndices[i]);
 		if (dThrownWrapper->Get_ParentIndex() == KsThrown_Index){
-			locPiPlus2P4 = dThrownWrapper->Get_P4();
+			locPiMinus2P4 = dThrownWrapper->Get_P4();
 		}
 	}
 	double proton_theta = locProtonP4.Theta() * 180/3.141592653;
