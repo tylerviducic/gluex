@@ -15,8 +15,9 @@ thrown_df = ROOT.RDataFrame(thrown_treename, thrown_filename)
 
 thrown_df = thrown_df.Define("P_p", "sqrt(Proton_px*Proton_px + Proton_py*Proton_py + Proton_pz*Proton_pz)")
 
-hist_beam_thrown = thrown_df.Histo1D(('hist_beam_thrown', 'hist_beam_thrown', 200, 5, 11.5), 'Beam_E').GetValue()
-hist_beam_recon = recon_df.Histo1D(('hist_beam_recon', 'hist_beam_recon', 200, 5, 11.5), 'e_beam')
+hist_beam_thrown = thrown_df.Histo1D(('hist_beam_thrown', 'hist_beam_thrown', 4, 6.5, 10.5), 'Beam_E').GetValue()
+hist_beam_recon = recon_df.Histo1D(('hist_beam_recon', 'hist_beam_recon', 4, 6.5, 10.5), 'e_beam').GetValue()
+
 
 acceptance = hist_beam_recon.Clone('acceptance')
 acceptance.Divide(hist_beam_thrown)
