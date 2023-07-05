@@ -5,6 +5,11 @@ from common_analysis_tools import *
 
 channel = 'pipkmks'
 
+if channel == 'pipkmks' :
+    all_cut = KSTAR_ALL_CUT_PIPKMKS
+elif channel == 'pimkpks' :
+    all_cut = KSTAR_ALL_CUT_PIMKPKS
+
 def get_acceptance_corrected_signal_mc(channel, run_period, n_bins):
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
     signal_df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]) 
@@ -14,13 +19,13 @@ def get_acceptance_corrected_signal_mc(channel, run_period, n_bins):
     thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
     print(thrown_phasespace_file_and_tree[0])
 
-    signal_df = signal_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
+    signal_df = signal_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
     # reduce signal_df to 10% of it's size
     signal_df = signal_df.Range(0, int(signal_df.Count().GetValue() / 250))
-    recon_df = recon_df.Filter(KSTAR_ALL_CUT).Filter(T_RANGE).Filter(BEAM_RANGE)
+    recon_df = recon_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
 
-    signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', n_bins, 1.2, 1.5), 'pipkmks_m').GetValue()
-    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', n_bins, 1.2, 1.5), 'pipkmks_m').GetValue()
+    signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', n_bins, 1.2, 1.5), f'{channel}_m').GetValue()
+    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', n_bins, 1.2, 1.5), f'{channel}_m').GetValue()
     thrown_hist_name = channel + f'_f1_res_{n_bins};1'
     thrown_hist = thrown_file.Get(thrown_hist_name)
 
@@ -62,8 +67,9 @@ lumi_2017 = get_luminosity('2017')
 lumi_total = lumi_spring + lumi_fall + lumi_2017
 
 ac_signal_hist_total = ac_signal_hist_spring.Clone()
-ac_signal_hist_total.Add(ac_signal_hist_fall, lumi_fall / lumi_spring)
-ac_signal_hist_total.Add(ac_signal_hist_2017, lumi_2017 / lumi_spring)
+ac_signal_hist_total.Scale(lumi_spring / lumi_total)
+ac_signal_hist_total.Add(ac_signal_hist_fall, lumi_fall / lumi_total)
+ac_signal_hist_total.Add(ac_signal_hist_2017, lumi_2017 / lumi_total)
 
 for i in range(1, ac_signal_hist_total.GetNbinsX() + 1):
     my_error = propogate_error_addition([ac_signal_hist_spring.GetBinError(i), ac_signal_hist_fall.GetBinError(i), ac_signal_hist_2017.GetBinError(i)])
@@ -87,7 +93,7 @@ dh = ROOT.RooDataHist('dh', 'dh', ROOT.RooArgList(m_kkpi), ac_signal_hist_total)
 func = ROOT.RooVoigtian('func', 'func', m_kkpi, mean, width, sigma)
 chi2_var = func.createChi2(dh)
 fit_result = func.chi2FitTo(dh, ROOT.RooFit.Save(), ROOT.RooFit.Range("fit_range"))
-# fit_result = func.chi2FitTo(dh, ROOT.RooFit.Save())
+fit_result = func.chi2FitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
 n_bins = ac_signal_hist_total.GetNbinsX()
