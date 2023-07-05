@@ -9,12 +9,15 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     all_cut = KSTAR_ALL_CUT_PIPKMKS
+    voight_resoltion = F1_PIPKMKS_VOIGHT_SIGMA
 elif channel == 'pimkpks' :
     all_cut = KSTAR_ALL_CUT_PIMKPKS
+    voight_resoltion = F1_PIMKPKS_VOIGHT_SIGMA
 
 
 def get_acceptance_corrected_kkpi(channel, run_period):
@@ -73,7 +76,8 @@ dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), ac_data_hist_total)
 # set up a roofit voightian with a mean of 1.285, width of 0.024, and a sigma of 0.013
 voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.285, 1.2, 1.3)
 voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.024, 0.01, 0.075)
-voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.0111726, 0.01, 0.5)
+voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", voight_resoltion, 0.01, 0.5)
+# voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.0111726, 0.01, 0.5)
 voight_sigma.setError(.000435994)
 voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_m, voight_width, voight_sigma)
 
@@ -96,7 +100,7 @@ bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -1.0, 1.0)
 bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -1.0, 1.0)
 bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -1.0, 1.0)
 
-bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3)) 
+bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3, bkg_par4)) 
 
 
 ## BERNSTEIN ##
