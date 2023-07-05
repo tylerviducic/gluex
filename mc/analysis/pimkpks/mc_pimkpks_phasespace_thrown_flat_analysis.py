@@ -17,7 +17,7 @@ run_dict = {
     '2017': '2017',
 }
 
-run_period = 'spring'
+run_period = '2017'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pimkpks/thrown/pimkpks_phasespace_thrown_{run_dict[run_period]}.root"
 treename = "pimkpks_thrown"
@@ -113,6 +113,7 @@ df = df.Define('t_bin', 'get_t_bin_index(men_t)')
         
 
 histo_array.append(df.Histo1D(('pimkpks', 'pimkpks', 150, 1.0, 2.5), 'pimkpks_m'))
+histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pimkpks_f1_res_30', 'pimkpks', 30, 1.2, 1.5), 'pimkpks_m'))
 print(df.Filter('men_t > 0.1 && men_t < 0.5').Filter('Beam_E > 8.0 && Beam_E < 10.0').Count().GetValue())
 
 

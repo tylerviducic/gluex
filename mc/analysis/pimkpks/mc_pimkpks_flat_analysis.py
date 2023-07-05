@@ -13,7 +13,7 @@ ROOT.gStyle.SetOptStat(0)
 
 start_time = time.time()
 
-run_period = 'fall'
+run_period = '2017'
 filename = f'/work/halld/home/viducic/data/pimkpks/mc/signal/mc_pimkpks_flat_correct_rf_{run_dict[run_period]}.root'
 treename = 'pimkpks__ks_pippim__B4_M16'
 
