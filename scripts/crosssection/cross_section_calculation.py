@@ -7,10 +7,11 @@ import math
 from ctypes import c_double
 
 
-channel = 'pipkmks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
-df = pd.read_csv('/work/halld/home/viducic/data/fit_params/pipkmks/binned_e_t_f1_mc_width.csv')
+df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
 
 mean_list = []
 mean_error_list = []
@@ -128,9 +129,9 @@ for e in range(7, 11):
 
 # make a pandas datframe out of the lists
 value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'ks_test': ks_test_list, 'yield': ac_yield_list, 'yield_error': yield_error_list, 'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list})
-value_df.to_csv('/work/halld/home/viducic/data/fit_params/pipkmks/cross_section_values.csv', index=False)
+value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/cross_section_values.csv', index=False)
 
-pdf_filename = '/work/halld/home/viducic/plots/kkpi_fits/pipkmks_gluex_1_fits.pdf'
+pdf_filename = f'/work/halld/home/viducic/plots/kkpi_fits/{channel}_gluex_1_fits.pdf'
 
 canvas_dict[i].Print(pdf_filename +'[')
 for i in range(7, 11):

@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 from common_analysis_tools import *
 import pandas as pd
 
-channel = 'pipkmks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 filename = f'/work/halld/home/viducic/data/fit_params/{channel}/cross_section_values.csv'
 theory_filename = '/work/halld/home/viducic/theory_predictions/t-slope-{}GeVnew.dat'
 
