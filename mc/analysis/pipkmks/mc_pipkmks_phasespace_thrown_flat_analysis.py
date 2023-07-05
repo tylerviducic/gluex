@@ -129,7 +129,7 @@ df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 #         print(f"number of events in E Bin({i}) and t Bin({j}) = {df.Filter(f'e_bin == {i}').Filter(f't_bin == {j}').Count().GetValue()}")
 
 # histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m'))
-histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks', 'pipkmks', 30, 1.2, 1.5), 'pipkmks_m'))
+histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks', 'pipkmks', 150, 1.0, 2.5), 'pipkmks_m'))
 histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_30', 'pipkmks', 30, 1.2, 1.5), 'pipkmks_m'))
 histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_90', 'pipkmks_f1_res', 90, 1.2, 1.5), 'pipkmks_m'))
 histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_200', 'pipkmks_f1_res', 200, 1.2, 1.5), 'pipkmks_m'))
