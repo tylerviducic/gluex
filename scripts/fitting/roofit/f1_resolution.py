@@ -3,7 +3,7 @@
 import ROOT
 from common_analysis_tools import *
 
-channel = 'pipkmks'
+channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     all_cut = KSTAR_ALL_CUT_PIPKMKS
