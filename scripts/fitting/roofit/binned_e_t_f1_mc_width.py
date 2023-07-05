@@ -5,10 +5,11 @@ from common_analysis_tools import *
 import numpy as np
 import pandas as pd
 
-channel = 'pipkmks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
-beam_energy = 9
+beam_energy = 10
 
 chi2_ndf_list = []
 sigma_list = []
@@ -55,7 +56,7 @@ for e in range(7, 11):
 # create a pandas dataframe from the lists in this script
 df = pd.DataFrame({'chi2_ndf': chi2_ndf_list, 'sigma': sigma_list, 'sigma_err': sigma_err_list, 'energy': energy_list, 't_bin': t_bin_list})
 #write that dataframe to a csv file without the index column
-df.to_csv('/work/halld/home/viducic/data/fit_params/pipkmks/binned_e_t_f1_mc_width.csv', index=False)
+df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv', index=False)
 
 
 input('Press enter to continue...')
