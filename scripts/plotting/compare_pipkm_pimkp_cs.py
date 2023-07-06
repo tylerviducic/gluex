@@ -18,6 +18,7 @@ color_dict = {
 fig, ax = plt.subplots()
 
 
+
 for channel in channels:
     filename = f'/work/halld/home/viducic/data/fit_params/{channel}/cross_section_values.csv'
     df = pd.read_csv(filename)
@@ -32,6 +33,12 @@ for channel in channels:
             cs_fc = color_dict[name]
         else:
             cs_fc = 'none'
+
+        theory_df = pd.read_csv(theory_filename.format(name), delim_whitespace=True)
+        theory_df.columns = ['t', 'diff_cs']
+        theory_df = theory_df.loc[(theory_df['t'] > 0.1) & (theory_df['t'] < 1.9)]
+        theory_df['diff_cs'] = theory_df['diff_cs']
+        ax.plot(theory_df['t'], theory_df['diff_cs'], color=color_dict[name])
 
         x = group['t_bin_middle'].values
         cs = group['cross_section'].values

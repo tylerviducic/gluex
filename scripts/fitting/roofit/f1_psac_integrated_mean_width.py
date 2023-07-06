@@ -9,8 +9,8 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     all_cut = KSTAR_ALL_CUT_PIPKMKS
