@@ -8,16 +8,18 @@ import seaborn as sns
 
 sns.set_theme()
 
+#TODO figure out NANs
+
 def combine_both_channels():
     df_pipkmks = pd.read_csv('/work/halld/home/viducic/data/fit_params/pipkmks/cross_section_values.csv')
     df_pipkmks['channel'] = 'pipkmks'
     df_pipkmks_acceptance = pd.read_csv('/work/halld/home/viducic/data/fit_params/pipkmks/binned_integrated_acceptance.csv')
-    print(df_pipkmks_acceptance.to_string())
     df_pipkmks = df_pipkmks.merge(df_pipkmks_acceptance, on=['beam_energy', 't_bin_middle'], how='left')
     df_pimkpks = pd.read_csv('/work/halld/home/viducic/data/fit_params/pimkpks/cross_section_values.csv')
     df_pimkpks['channel'] = 'pimkpks'
     df_pimkpks_acceptance = pd.read_csv('/work/halld/home/viducic/data/fit_params/pimkpks/binned_integrated_acceptance.csv')
     df_pimkpks = df_pimkpks.merge(df_pimkpks_acceptance, on=['beam_energy', 't_bin_middle'], how='left')
+    #t_bin_middle,t_bin_width,beam_energy
     df = pd.concat([df_pipkmks, df_pimkpks], ignore_index=True)
     return df
 
