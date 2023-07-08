@@ -5,8 +5,8 @@ import pandas as pd
 import numpy as np
 from common_analysis_tools import *
 
-channel = 'pimkpks'
-# channel = 'pipkmks'
+# channel = 'pimkpks'
+channel = 'pipkmks'
 
 df = pd.DataFrame()
 
