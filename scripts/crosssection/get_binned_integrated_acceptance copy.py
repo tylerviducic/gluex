@@ -29,7 +29,7 @@ for e in range(7, 11):
 
         acceptance_list.append(avg_acceptance)
         e_list.append(e)
-        t_bin_middle = (t_cut_dict[t][1] + t_cut_dict[t][1]) / 2
+        t_bin_middle = (t_cut_dict[t][0] + t_cut_dict[t][1]) / 2
         t_list.append(t_bin_middle)
 
 df['acceptance'] = acceptance_list
