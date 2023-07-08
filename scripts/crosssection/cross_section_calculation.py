@@ -7,8 +7,8 @@ import math
 from ctypes import c_double
 
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -127,7 +127,7 @@ for e in range(7, 11):
         yield_error_list.append(ac_yield_error)
         cross_section_list.append(cross_section)
         cross_section_error_list.append(cross_section_error)
-        t_bin_list.append(t_cut_dict[t][1] - t_width_dict[t]/2.0)
+        t_bin_list.append((t_cut_dict[t][0] + t_cut_dict[t][1])/2.0)
         t_bin_width_list.append(t_width_dict[t]/2.0)
         energy_bin_list.append(e)
         
