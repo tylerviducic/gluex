@@ -7,8 +7,8 @@ import math
 from ctypes import c_double
 
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -53,7 +53,7 @@ for e in range(7, 11):
     for t in range(1, 8):
         canvas_dict[e].cd(t)
         
-        hist = acceptance_correct_all_gluex_1_kkpi_data(channel, cut, e, t)
+        hist = acceptance_correct_all_binned_gluex1_kkpi_data(channel, cut, e, t)
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", fit_range_low, fit_range_high)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
