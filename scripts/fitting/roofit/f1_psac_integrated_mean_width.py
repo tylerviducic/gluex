@@ -83,7 +83,7 @@ voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.285, 1.2, 1.3)
 voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.024, 0.01, 0.075)
 voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", voight_resoltion, 0.01, 0.5)
 # voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.0111726, 0.01, 0.5)
-voight_sigma.setError(.000435994)
+voight_sigma.setError(voight_resolution_error)
 voight = ROOT.RooVoigtian("voight", "voight", m_kkpi, voight_m, voight_width, voight_sigma)
 
 # hold the voight parameters fixed
