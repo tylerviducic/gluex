@@ -12,7 +12,7 @@ ROOT.gStyle.SetOptStat(0)
 start_time = time.time()
 
 
-run_period = '2017'
+run_period = 'spring'
 
 filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_{run_dict[run_period]}.root"
 treename = "pipkmks_thrown"
@@ -130,10 +130,11 @@ df = df.Define('t_bin', 'get_t_bin_index(men_t)')
 
 # histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 100, 1.0, 2.5), 'pipkmks_m'))
 histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks', 'pipkmks', 150, 1.0, 2.5), 'pipkmks_m'))
-histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_30', 'pipkmks', 30, 1.2, 1.5), 'pipkmks_m'))
-histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_90', 'pipkmks_f1_res', 90, 1.2, 1.5), 'pipkmks_m'))
-histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_200', 'pipkmks_f1_res', 200, 1.2, 1.5), 'pipkmks_m'))
-histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_500', 'pipkmks_f1_res', 500, 1.2, 1.5), 'pipkmks_m'))
+histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_30', 'pipkmks_f1_res_30', 30, 1.2, 1.5), 'pipkmks_m'))
+histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_90', 'pipkmks_f1_res_90', 90, 1.2, 1.5), 'pipkmks_m'))
+histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_200', 'pipkmks_f1_res_200', 200, 1.2, 1.5), 'pipkmks_m'))
+histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_300', 'pipkmks_f1_res_300', 200, 1.2, 1.5), 'pipkmks_m'))
+histo_array.append(df.Filter('Beam_E >= 6.5 && Beam_E <=10.5').Filter('men_t >= 0.1 & men_t <= 1.9').Histo1D(('pipkmks_f1_res_500', 'pipkmks_f1_res_500', 500, 1.2, 1.5), 'pipkmks_m'))
 histo_array.append(df.Filter('men_t > 0.1 && men_t < 0.5').Filter('Beam_E > 8.0 && Beam_E < 10.0').Histo1D(('pipkmks_sf', 'pipkmks_sf', 30, 1.2, 1.5), 'pipkmks_m'))
 
 
