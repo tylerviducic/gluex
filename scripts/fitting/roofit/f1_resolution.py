@@ -3,7 +3,8 @@
 import ROOT
 from common_analysis_tools import *
 
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -71,8 +72,9 @@ def get_acceptance_corrected_signal_mc(channel, run_period, n_bins):
 # ac_signal_hist_total.Add(ac_signal_hist_fall, lumi_fall / lumi_total)
 # ac_signal_hist_total.Add(ac_signal_hist_2017, lumi_2017 / lumi_total)
 
-n_bins = 300
-scale_factor = 10
+## n_bins options are 30, 90, 200, 300, 500
+n_bins = 90
+scale_factor = 200
 
 acc_cor_signal_mc_hist_total = get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=scale_factor)
 
