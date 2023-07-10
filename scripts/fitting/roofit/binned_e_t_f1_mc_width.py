@@ -9,6 +9,19 @@ import pandas as pd
 channel = 'pimkpks'
 cut = 'all'
 
+if channel == 'pipkmks':
+    voight_mean = F1_PIPKMKS_VOIGHT_MEAN
+    voight_mean_error = F1_PIPKMKS_VOIGHT_MEAN_ERROR
+    voight_width = F1_PIPKMKS_VOIGHT_WIDTH
+    voight_width_error = F1_PIPKMKS_VOIGHT_WIDTH_ERROR
+    voight_resolution = F1_PIPKMKS_VOIGHT_SIGMA
+elif channel == 'pimkpks':
+    voight_mean = F1_PIMKPKS_VOIGHT_MEAN
+    voight_mean_error = F1_PIMKPKS_VOIGHT_MEAN_ERROR
+    voight_width = F1_PIMKPKS_VOIGHT_WIDTH
+    voight_width_error = F1_PIMKPKS_VOIGHT_WIDTH_ERROR
+    voight_resolution = F1_PIMKPKS_VOIGHT_SIGMA
+
 beam_energy = 10
 
 chi2_ndf_list = []
@@ -23,12 +36,14 @@ c1.Divide(7, 4)
 for e in range(7, 11):
     for i in range(1, 8):
         c1.cd(i + 7 * (e - 7))
-        ac_signal_hist_total = accepptance_correct_all_gluex1_kkpi_signal(channel, cut, e, i)
+        ac_signal_hist_total = acceptance_correct_all_binned_gluex1_kkpi_signal_mc(channel, cut, e, i)
 
         m_kkpi = ROOT.RooRealVar('m_kkpi', 'm_kkpi', 1.2, 1.5)
-        mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.2, 1.3)
-        width = ROOT.RooRealVar('width', 'width', 0.023, 0.001, 0.1)
-        sigma = ROOT.RooRealVar('sigma', 'sigma', 0.025, 0.001, 0.1)
+        mean = ROOT.RooRealVar('mean', 'mean', voight_mean, 1.2, 1.3)
+        mean.setError(voight_mean_error)
+        width = ROOT.RooRealVar('width', 'width', voight_width, 0.001, 0.1)
+        width.setError(voight_width_error)
+        sigma = ROOT.RooRealVar('sigma', 'sigma', voight_resolution, 0.001, 0.1)
 
         width.setConstant(ROOT.kTRUE)
         mean.setConstant(ROOT.kTRUE)
