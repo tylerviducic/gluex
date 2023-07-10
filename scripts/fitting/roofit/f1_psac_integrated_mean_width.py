@@ -9,8 +9,9 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
+cut = 'all'
 
 if channel == 'pipkmks' :
     all_cut = KSTAR_ALL_CUT_PIPKMKS
@@ -20,49 +21,51 @@ elif channel == 'pimkpks' :
     voight_resoltion = F1_PIMKPKS_VOIGHT_SIGMA
 
 
-def get_acceptance_corrected_kkpi(channel, run_period):
+# def get_acceptance_corrected_kkpi(channel, run_period):
 
-    data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data')
-    data_df = ROOT.RDataFrame(data_file_and_tree[1], data_file_and_tree[0])
+#     data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data')
+#     data_df = ROOT.RDataFrame(data_file_and_tree[1], data_file_and_tree[0])
 
-    recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace')
-    thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
-
-
-    recon_df = ROOT.RDataFrame(recon_phasespace_file_and_tree[1], recon_phasespace_file_and_tree[0])
-
-    thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
-
-    data_df = data_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-    recon_df = recon_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-
-    data_hist = data_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
-    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
-    thrown_hist_name = channel + ';1'
-    thrown_hist = thrown_file.Get(thrown_hist_name)
-
-    data_hist.Sumw2()
-    recon_hist.Sumw2()
-    thrown_hist.Sumw2()
-
-    acceptance_hist = recon_hist.Clone()
-    acceptance_hist.Divide(thrown_hist)
-
-    ac_data_hist = data_hist.Clone()
-    ac_data_hist.Divide(acceptance_hist)
-    ac_data_hist.SetDirectory(0)
-
-    return ac_data_hist
+#     recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace')
+#     thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
 
 
-ac_data_hist_2017 = get_acceptance_corrected_kkpi(channel, '2017')
-ac_data_hist_spring = get_acceptance_corrected_kkpi(channel, 'spring')
-ac_data_hist_fall = get_acceptance_corrected_kkpi(channel, 'fall')
+#     recon_df = ROOT.RDataFrame(recon_phasespace_file_and_tree[1], recon_phasespace_file_and_tree[0])
+
+#     thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
+
+#     data_df = data_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+#     recon_df = recon_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+
+#     data_hist = data_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
+#     recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
+#     thrown_hist_name = channel + ';1'
+#     thrown_hist = thrown_file.Get(thrown_hist_name)
+
+#     data_hist.Sumw2()
+#     recon_hist.Sumw2()
+#     thrown_hist.Sumw2()
+
+#     acceptance_hist = recon_hist.Clone()
+#     acceptance_hist.Divide(thrown_hist)
+
+#     ac_data_hist = data_hist.Clone()
+#     ac_data_hist.Divide(acceptance_hist)
+#     ac_data_hist.SetDirectory(0)
+
+#     return ac_data_hist
 
 
-ac_data_hist_total = ac_data_hist_spring
-ac_data_hist_total.Add(ac_data_hist_fall)
-ac_data_hist_total.Add(ac_data_hist_2017)
+# ac_data_hist_2017 = get_acceptance_corrected_kkpi(channel, '2017')
+# ac_data_hist_spring = get_acceptance_corrected_kkpi(channel, 'spring')
+# ac_data_hist_fall = get_acceptance_corrected_kkpi(channel, 'fall')
+
+
+# ac_data_hist_total = ac_data_hist_spring
+# ac_data_hist_total.Add(ac_data_hist_fall)
+# ac_data_hist_total.Add(ac_data_hist_2017)
+
+ac_data_hist_total = get_integrated_gluex1_acceptance_corrected_data(channel, cut)
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
