@@ -16,9 +16,11 @@ cut = 'all'
 if channel == 'pipkmks' :
     all_cut = KSTAR_ALL_CUT_PIPKMKS
     voight_resoltion = F1_PIPKMKS_VOIGHT_SIGMA
+    voight_resolution_error = F1_PIPKMKS_VOIGHT_SIGMA_ERROR
 elif channel == 'pimkpks' :
     all_cut = KSTAR_ALL_CUT_PIMKPKS
     voight_resoltion = F1_PIMKPKS_VOIGHT_SIGMA
+    voight_resolution_error = F1_PIMKPKS_VOIGHT_SIGMA_ERROR
 
 
 # def get_acceptance_corrected_kkpi(channel, run_period):
