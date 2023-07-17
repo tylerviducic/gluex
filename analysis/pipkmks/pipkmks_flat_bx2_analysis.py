@@ -35,7 +35,7 @@ t_dict = {
 }
 
 beam_dict = {
-    1: (6.5, 7.5), 2: (7.5, 8.5), 3: (8.5, 9.5), 4: (9.5, 10.5)
+    1: (6.5, 7.5), 2: (7.5, 8.5), 3: (8.5, 9.5), 4: (9.5, 10.5), 5: (10.5, 11.5)
 }
 
 ## DEFINE CUTS ##
@@ -49,7 +49,7 @@ ks_mass_cut = f'abs(ks_m - {KSHORT_FIT_MEAN}) < {2 * KSHORT_FIT_WIDTH}'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
-beam_range = 'e_beam >= 6.50000000000 && e_beam <= 10.5'
+beam_range = 'e_beam >= 6.50000000000 && e_beam <= 11.5'
 t_range = 'mand_t <= 1.9'
 p_p_cut = 'p_p > 0.4'
 mx2_ppipkmks_cut = 'abs(mx2_ppipkmks) < 0.01'
@@ -206,7 +206,7 @@ print('cut file written in {} seconds'.format(time.time() - start_time))
 
 ## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
 
-n_e_bins = 4
+n_e_bins = 5
 n_t_bins = 8
 
 def fill_histos(cut_df, histo_array, cut, beam_index=0, t_index=0):
