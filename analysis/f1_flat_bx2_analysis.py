@@ -95,20 +95,20 @@ elif channel == 'pimkpks':
 
 for cut in cut_list:
     cut_df = df.Filter(cut)
-    fill_histos(cut_df, histo_array, cut)
+    fill_histos(cut_df, histo_array, cut, channel)
         
 
     for energy_index in range(1, n_e_bins+1):
         e_cut_df = cut_df.Filter(f'e_bin == {energy_index}')
-        fill_histos(e_cut_df, histo_array, cut, beam_index=energy_index)
+        fill_histos(e_cut_df, histo_array, cut, channel, beam_index=energy_index)
 
         for t_index in range(1, n_t_bins+1):
             e_t_cut_df = e_cut_df.Filter(f't_bin == {t_index}')
-            fill_histos(e_t_cut_df, histo_array, cut, beam_index=energy_index, t_index=t_index)
+            fill_histos(e_t_cut_df, histo_array, cut, channel, beam_index=energy_index, t_index=t_index)
          
     for t_index in range(1, n_t_bins+1):
        t_cut_df = cut_df.Filter(f't_bin == {t_index}')
-       fill_histos(t_cut_df, histo_array, cut, t_index=t_index)
+       fill_histos(t_cut_df, histo_array, cut, channel, t_index=t_index)
 
 print("histos done in {} seconds".format(time.time() - start_time))
 
