@@ -4,6 +4,7 @@ import ROOT
 import time
 import os
 from common_analysis_tools import *
+import sys 
 
 
 os.nice(18)
@@ -14,8 +15,14 @@ ROOT.gStyle.SetOptStat(0)
 start_time = time.time()
 
 
-run_period = 'spring'
-filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_{run_dict[run_period]}.root'
+run_period = sys.argv[1]
+
+if run_period not in ALLOWED_RUN_PERIODS:
+    if run_period not in ['2019_unconstrained', '2019_constrained']:
+        raise ValueError('Invalid run period')
+
+
+filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_{RUN_DICT[run_period]}.root'
 treename = 'pipkmks__B4_M16'
 
 if run_period == '2019_unconstrained':
@@ -25,74 +32,11 @@ elif run_period == '2019_constrained':
 
 histo_array = []
 
-t_low =  ['0.1', '0.2', '0.3', '0.4']
-t_med = ['0.65', '0.9']
-t_high = ['1.4', '1.9']
-
-t_dict = {
-    1: (0.0, 0.1), 2: (0.1, 0.2), 3: (0.2, 0.3), 4: (0.3, 0.4), 
-    5: (0.4, 0.65), 6: (0.65, 0.9), 7: (0.9, 1.4), 8: (1.4, 1.9)
-}
-
-beam_dict = {
-    1: (6.5, 7.5), 2: (7.5, 8.5), 3: (8.5, 9.5), 4: (9.5, 10.5), 5: (10.5, 11.5)
-}
-
 ## DEFINE CUTS ##
-#TODO cuts to not be just-in-time compiled
+#TODO cuts to use NUMBA
 
-ks_pathlength_cut = 'pathlength_sig > 5'
-ks_cut1 = 'cos_colin > 0.99'
-ks_cut2 = ' vertex_distance > 3'
-# ks_mass_cut = 'ks_m > 0.475 && ks_m < 0.525'
-ks_mass_cut = f'abs(ks_m - {KSHORT_FIT_MEAN}) < {2 * KSHORT_FIT_WIDTH}'
-ppim_mass_cut = 'ppip_m > 1.4'
-kmp_mass_cut = 'kmp_m > 1.95'
-f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
-beam_range = 'e_beam >= 6.50000000000 && e_beam <= 11.5'
-t_range = 'mand_t <= 1.9'
-p_p_cut = 'p_p > 0.4'
-mx2_ppipkmks_cut = 'abs(mx2_ppipkmks) < 0.01'
-
-kstar_no_cut = 'kspip_m > 0.0'
-kstar_plus_cut = 'kspip_m < 0.8 || kspip_m > 1.0'
-kstar_zero_cut = 'kmpip_m < 0.8 || kmpip_m > 1.0'
-kstar_all_cut = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
-
-kstar_cut_dict = {
-    'kspip_m > 0.0': 'kstar_no_cut',
-    'kspip_m < 0.8 || kspip_m > 1.0': 'kstar_plus_cut',
-    'kmpip_m < 0.8 || kmpip_m > 1.0': 'kstar_zero_cut',
-    '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)': 'kstar_all_cut'
-}
-
-f1_cut_list = [kstar_no_cut, kstar_plus_cut, kstar_zero_cut, kstar_all_cut]
-
-beam_bin_filter = """
-int get_beam_bin_index(double e_beam) {
-        return static_cast<int>(e_beam-6.5) + 1;
-}
-"""
-
-t_bin_filter = """
-int get_t_bin_index(double t) {
-    if (t <= 0.4) {
-        return static_cast<int>(t/0.1)+1;
-    }
-    else if (t > 0.4 && t <= 0.9) {
-        return static_cast<int>((t-0.4)/0.25)+5;
-    }
-    else if (t > 0.9 && t <= 1.9) {
-        return static_cast<int>((t-0.9)/0.5)+7;
-    }
-    else {
-        return -1;
-    }
-}
-"""
-
-ROOT.gInterpreter.Declare(t_bin_filter)
-ROOT.gInterpreter.Declare(beam_bin_filter)
+ROOT.gInterpreter.Declare(T_BIN_FILTER)
+ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
 
 ## LOAD IN DATA ##
 
@@ -184,7 +128,7 @@ df = df.Define('t_bin', 'get_t_bin_index(mand_t)')
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-df = df.Filter(mx2_ppipkmks_cut).Filter(ks_pathlength_cut).Filter(ks_mass_cut).Filter(ppim_mass_cut).Filter(kmp_mass_cut).Filter(p_p_cut)
+df = df.Filter(MX2_PPIPKMKS_CUT).Filter(KS_PATHLENGTH_CUT).Filter(KS_MASS_CUT).Filter(PPIP_MASS_CUT).Filter(KMP_MASS_CUT).Filter(P_P_CUT)
 print('cuts done in {} seconds'.format(time.time() - start_time))
 
 
@@ -195,39 +139,37 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-df.Snapshot(f'pipkmks_filtered_{run_dict[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_filtered_{run_dict[run_period]}.root')
+df.Snapshot(f'pipkmks_filtered_{RUN_DICT[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_filtered_{RUN_DICT[run_period]}.root')
 
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
-df = df.Filter(beam_range).Filter(t_range)
+df = df.Filter(BEAM_RANGE).Filter(T_RANGE)
 
 print('cut file written in {} seconds'.format(time.time() - start_time))
  
 
 ## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
 
-n_e_bins = 5
-n_t_bins = 8
+n_e_bins = len(ALLOWED_E_BINS)
+n_t_bins = len(ALLOWED_T_BINS)
 
 def fill_histos(cut_df, histo_array, cut, beam_index=0, t_index=0):
-    cut_name = kstar_cut_dict[cut]
+    cut_name = KSTAR_CUT_NAME_DICT_PIPKMKS[cut]
     hist_name = f'pipkmks_cut_{cut_name}_'
     beam_name = 'beam_full_'
     t_name = 't_full'
     if beam_index > 0:
-        beam_low = beam_dict[beam_index][0]
-        beam_high = beam_dict[beam_index][1]
+        beam_low = BEAM_CUT_DICT[beam_index][0]
+        beam_high = BEAM_CUT_DICT[beam_index][1]
         beam_name = f'beam_{beam_low}_{beam_high}_'
     if t_index > 0:
-        t_low = t_dict[t_index][0]
-        t_high = t_dict[t_index][1]
+        t_low = T_CUT_DICT[t_index][0]
+        t_high = T_CUT_DICT[t_index][1]
         t_name = f't_{t_low}_{t_high}'
     hist_name += beam_name + t_name
     histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), 'pipkmks_m'))
 
-    
-
-for cut in f1_cut_list:
+for cut in F1_CUT_LIST_PIPKMKS:
     cut_df = df.Filter(cut)
     fill_histos(cut_df, histo_array, cut)
         
@@ -248,7 +190,7 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_result_{run_dict[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_result_{RUN_DICT[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 
@@ -261,7 +203,7 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close()
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/pipkmks_graph_{run_dict[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/pipkmks_graph_{RUN_DICT[run_period]}.dot")
     
 ######################
 ## DEPRECIATED CODE ##
