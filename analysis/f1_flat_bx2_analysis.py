@@ -6,6 +6,10 @@ import os
 from common_analysis_tools import *
 import sys
 
+"""
+usage of this file is as follows:
+python3 f1_flat_bx2_analysis.py <channel> <run_period> <data_type>
+"""
 
 os.nice(18)
 ROOT.EnableImplicitMT()
