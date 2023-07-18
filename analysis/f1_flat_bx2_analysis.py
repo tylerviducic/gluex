@@ -77,8 +77,8 @@ def fill_histos(cut_df, histo_array, cut, channel, beam_index=0, t_index=0):
     beam_name = 'beam_full_'
     t_name = 't_full'
     if beam_index > 0:
-        beam_low = BEAM_CUT_DICT[beam_index][0]
-        beam_high = BEAM_CUT_DICT[beam_index][1]
+        beam_low = BEAM_INDEX_DICT[beam_index][0]
+        beam_high = BEAM_INDEX_DICT[beam_index][1]
         beam_name = f'beam_{beam_low}_{beam_high}_'
     if t_index > 0:
         t_low = T_CUT_DICT[t_index][0]
