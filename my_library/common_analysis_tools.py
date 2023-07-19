@@ -255,11 +255,11 @@ def get_flat_phasespace_file_and_tree(channel, run_period, comboloop=False, filt
 def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=True):
     if not phasespace:
         if not hist:
-            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}thrown/{channel}_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
+            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
         return (f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
     elif phasespace:
         if not hist:
-            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}thrown/{channel}_phasespace_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
+            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_phasespace_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
         return(f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_phasespace_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
         
 def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False, thrown=False, verbose=False):
@@ -1080,6 +1080,7 @@ def define_pimkpks_thrown_columns(df):
     new_df = new_df.Define('pimkpks_m', 'sqrt(pimkpks_E*pimkpks_E - pimkpks_px*pimkpks_px - pimkpks_py*pimkpks_py - pimkpks_pz*pimkpks_pz)')
     new_df = new_df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
     new_df = new_df.Define('t_bin', 'get_t_bin_index(men_t)')
+    return new_df
 
 def define_columns(df, channel, thrown=False):
     if channel == 'pipkmks':

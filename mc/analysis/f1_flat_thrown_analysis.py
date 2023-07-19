@@ -32,9 +32,10 @@ df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
 
 ## DEFINE ALL NECESSARY COLUMNS ##
 
-df = ct.define_columns(df, channel)
+df = ct.define_columns(df, channel, thrown=True)
 
-histo_array.append(df.Histo1D(('pipkmks', 'pipkmks', 150, 1.0, 2.5), 'pipkmks_m'))
+
+histo_array.append(df.Histo1D((channel, channel, 150, 1.0, 2.5), f'{channel}_m'))
 
 n_e_bins = len(ct.ALLOWED_E_BINS)
 n_t_bins = len(ct.ALLOWED_T_BINS)
@@ -73,9 +74,9 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-output_path = ct.get_path_for_output_file(channel, run_period, data_type, thrown=True)
+output_path = ct.get_path_for_output_file(channel, data_type, thrown=True)
 
-target_file = ROOT.TFile(f"{output_path}/mc_{channel}_thrown_{data_type}_flat_result_{ct.RUN_DICTt[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"{output_path}/mc_{channel}_thrown_{data_type}_flat_result_{ct.RUN_DICT[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 for histo in histo_array:
