@@ -3,6 +3,7 @@
 import os
 
 #TODO STATUS BAR OR TIMER OR BOTH
+#TODO options for smaller-scale running (maybe pass lists as arguments?)
 
 def run_recon_analysis(channel: str, run_period: str, data_type: str):
     analysis_file = '/work/halld/home/viducic/analysis/f1_flat_bx2_analysis.py'
