@@ -3,7 +3,7 @@
 import ROOT
 import time
 import os
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 import sys
 
 
@@ -17,10 +17,10 @@ start_time = time.time()
 
 run_period = sys.argv[1]
 
-if run_period not in ALLOWED_RUN_PERIODS:
+if run_period not in ct.ALLOWED_RUN_PERIODS:
     raise ValueError('Invalid run period')
 
-filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_bestX2_{RUN_DICT[run_period]}.root'
+filename = f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_bestX2_{ct.RUN_DICT[run_period]}.root'
 treename = 'pipkmks__ks_pippim__B4_M16'
 
 histo_array = []
@@ -33,7 +33,7 @@ ks_pathlength_cut = 'pathlength_sig > 5'
 ks_cut1 = 'cos_colin > 0.99'
 ks_cut2 = ' vertex_distance > 3'
 # ks_mass_cut = 'ks_m > 0.475 && ks_m < 0.525'
-ks_mass_cut = f'abs(ks_m - {KSHORT_FIT_MEAN}) < {2 * KSHORT_FIT_WIDTH}'
+ks_mass_cut = f'abs(ks_m - {ct.KSHORT_FIT_MEAN}) < {2 * ct.KSHORT_FIT_WIDTH}'
 ppim_mass_cut = 'ppip_m > 1.4'
 kmp_mass_cut = 'kmp_m > 1.95'
 f1_region = 'pipkmks_m > 1.255 && pipkmks_m < 1.311'
@@ -57,8 +57,8 @@ kstar_cut_dict = {
 
 f1_cut_list = [kstar_no_cut, kstar_plus_cut, kstar_zero_cut, kstar_all_cut]
 
-ROOT.gInterpreter.Declare(T_BIN_FILTER)
-ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
+ROOT.gInterpreter.Declare(ct.T_BIN_FILTER)
+ROOT.gInterpreter.Declare(ct.BEAM_BIN_FILTER)
 
 ## LOAD IN DATA ##
 
@@ -151,7 +151,7 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-df.Snapshot(f'mc_pipkmks_filtered_{RUN_DICT[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_filtered_{RUN_DICT[run_period]}.root')
+df.Snapshot(f'mc_pipkmks_filtered_{ct.RUN_DICT[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_filtered_{ct.RUN_DICT[run_period]}.root')
 
 ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
 df = df.Filter(beam_range).Filter(t_range)
@@ -170,12 +170,12 @@ def fill_histos(cut_df, histo_array, cut, beam_index=0, t_index=0):
     beam_name = 'beam_full_'
     t_name = 't_full'
     if beam_index > 0:
-        beam_low = BEAM_CUT_DICT[beam_index][0]
-        beam_high = BEAM_CUT_DICT[beam_index][1]
+        beam_low = ct.BEAM_CUT_DICT[beam_index][0]
+        beam_high = ct.BEAM_CUT_DICT[beam_index][1]
         beam_name = f'beam_{beam_low}_{beam_high}_'
     if t_index > 0:
-        t_low = T_CUT_DICT[t_index][0]
-        t_high = T_CUT_DICT[t_index][1]
+        t_low = ct.T_CUT_DICT[t_index][0]
+        t_high = ct.T_CUT_DICT[t_index][1]
         t_name = f't_{t_low}_{t_high}'
     hist_name += beam_name + t_name
     histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), 'pipkmks_m'))
@@ -204,7 +204,7 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_result_{RUN_DICT[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pipkmks/mc/signal/mc_pipkmks_flat_result_{ct.RUN_DICT[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 ks_m.Write()
@@ -216,4 +216,4 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_graph_{RUN_DICT[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_graph_{ct.RUN_DICT[run_period]}.dot")

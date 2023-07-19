@@ -2,7 +2,7 @@
 import ROOT
 import time
 import os
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 
 os.nice(18)
 ROOT.EnableImplicitMT()

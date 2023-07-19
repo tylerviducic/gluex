@@ -2,7 +2,7 @@
 import ROOT
 import time
 import os
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 
 os.nice(18)
 ROOT.EnableImplicitMT()
@@ -14,7 +14,7 @@ start_time = time.time()
 
 run_period = 'spring'
 
-filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_{run_dict[run_period]}.root"
+filename = f"/volatile/halld/home/viducic/selector_output/f1_pipkmks/thrown/pipkmks_phasespace_thrown_{ct.RUN_DICT[run_period]}.root"
 treename = "pipkmks_thrown"
 print(filename)
 histo_array = []
@@ -175,8 +175,8 @@ for t_index in range(1, n_t_bins+1):
 
 print("histos done in {} seconds".format(time.time() - start_time))
 
-print(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_phasespace_thrown_flat_result_{run_dict[run_period]}.root")
-target_file = ROOT.TFile(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_phasespace_thrown_flat_result_{run_dict[run_period]}.root", 'RECREATE')
+print(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_phasespace_thrown_flat_result_{ct.RUN_DICT[run_period]}.root")
+target_file = ROOT.TFile(f"/work/halld/home/viducic/data/pipkmks/mc/thrown/mc_pipkmks_phasespace_thrown_flat_result_{ct.RUN_DICT[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 for histo in histo_array:
@@ -185,4 +185,4 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close() 
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_phasespace_thrown_graph_{run_dict[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/mc_pipkmks_phasespace_thrown_graph_{ct.RUN_DICT[run_period]}.dot")
