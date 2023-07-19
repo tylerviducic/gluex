@@ -18,7 +18,10 @@ elif channel == 'pimkpks' :
 n_bins = 90
 scale_factor = 200
 
-acc_cor_signal_mc_hist_total = ct.get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=scale_factor)
+# acc_cor_signal_mc_hist_total = ct.get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=scale_factor)
+signal_mc = ct.get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, scale_factor=100, nbins = 300)
+ct.set_sqrtN_error(signal_mc)
+
 
 # for i in range(1, ac_signal_hist_total.GetNbinsX() + 1):
 #     my_error = propogate_error_addition([ac_signal_hist_spring.GetBinError(i), ac_signal_hist_fall.GetBinError(i), ac_signal_hist_2017.GetBinError(i)])
@@ -26,8 +29,8 @@ acc_cor_signal_mc_hist_total = ct.get_integrated_acceptance_corrected_signal_mc_
 #     print(f'bin {i}: my_error = {my_error}, sumw2_error = {sumw2_error}')
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
-range_min = 1.2
-range_max = 1.4
+range_min = 1.22
+range_max = 1.35
 m_kkpi.setRange("fit_range", range_min, range_max)
 mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.2, 1.3)
 width = ROOT.RooRealVar('width', 'width', 0.023, 0.001, 0.1)
@@ -37,7 +40,7 @@ width.setConstant(ROOT.kTRUE)
 mean.setConstant(ROOT.kTRUE)
 
 
-dh = ROOT.RooDataHist('dh', 'dh', ROOT.RooArgList(m_kkpi), acc_cor_signal_mc_hist_total)
+dh = ROOT.RooDataHist('dh', 'dh', ROOT.RooArgList(m_kkpi), signal_mc)
 
 func = ROOT.RooVoigtian('func', 'func', m_kkpi, mean, width, sigma)
 chi2_var = func.createChi2(dh)
@@ -45,7 +48,8 @@ fit_result = func.chi2FitTo(dh, ROOT.RooFit.Save(), ROOT.RooFit.Range("fit_range
 fit_result = func.chi2FitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
-n_bins = acc_cor_signal_mc_hist_total.GetNbinsX()
+signal_mc.GetXaxis().SetRangeUser(range_min, range_max)
+n_bins = signal_mc.GetNbinsX()
 print("n_bins = " + str(n_bins))
 ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
 chi2_per_ndf = chi2_val / ndf
