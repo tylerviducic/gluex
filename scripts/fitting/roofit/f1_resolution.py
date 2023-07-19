@@ -3,8 +3,8 @@
 import ROOT
 import my_library.common_analysis_tools as ct
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
