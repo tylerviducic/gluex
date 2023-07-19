@@ -3,14 +3,18 @@
 # main at the bttom will be used to call the needed functions
 
 import ROOT
-from common_analysis_tools import *
+from my_library.common_analysis_tools import *
 # import numpy as np
 # import pandas as pd
 # import matplotlib.pyplot as plt
 
+def build_legend(histograms: list):
+    legend = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
+    for hist in histograms:
+        legend.AddEntry(hist, hist.GetTitle(), 'l')
+    return legend
 
-#TODO write this function
-def plot_data_kshort_no_cuts():
+def plot_data_kshort_no_cuts(bin_low=0.35, bin_high=0.65, nbins=500):
     data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
     file_treename = 'pipkmks__B4_M16'
 
@@ -20,14 +24,17 @@ def plot_data_kshort_no_cuts():
     df = df.Define("ks_pz", 'pip2_pz + pim_pz')
     df = df.Define("ks_E", 'pip2_E + pim_E')
     df = df.Define("ks_m", 'sqrt(ks_E*ks_E - ks_px*ks_px - ks_py*ks_py - ks_pz*ks_pz)')
-    hist_no_cut = df.Histo1D(('ks_m', 'ks_m', 500, 0.35, 0.65), 'ks_m')
-    hist_cut = df.Filter(KS_PATHLENGTH_CUT).Histo1D(('ks_m', 'ks_m', 500, 0.35, 0.65), 'ks_m')
-    hist_cut.SetLineColor(ROOT.kRed)
-    c = ROOT.TCanvas()
-    hist_no_cut.Draw()
-    hist_cut.Draw("SAME")
-    c.Update()
-    input("Press Enter to continue...")
+    hist_no_cut = df.Histo1D(('ks_m', 'ks_m', nbins, bin_low, bin_high), 'ks_m')
+    hist_no_cut.SetTitle("M(#pi^{+}#pi^{-}) [GeV]")
+    hist_no_cut.GetXaxis().SetTitle("M(#pi^{+}#pi^{-}) [GeV]")
+    hist_no_cut.GetYaxis().SetTitle(f"Counts/{1000*((bin_high-bin_low)/nbins):.2f} MeV")
+    hist_cut = df.Filter(KS_PATHLENGTH_CUT).Histo1D(('ks_m', 'ks_m', nbins, bin_low, bin_high), 'ks_m')
+    hist_cut.SetTitle("M(#pi^{+}#pi^{-}) [GeV]")
+    hist_cut.GetXaxis().SetTitle("M(#pi^{+}#pi^{-}) [GeV]")
+    hist_cut.GetYaxis().SetTitle(f"Counts/{1000*((bin_high-bin_low)/nbins):.2f} MeV")
+    hist_no_cut.SetLineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['blue']))
+    hist_cut.SetLineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['red']))
+    return hist_no_cut, hist_cut
 
 def result_of_p_p_cut():
     data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
@@ -38,11 +45,7 @@ def result_of_p_p_cut():
     hist_t_mand = df.Histo1D(('mand_t', 'mand_t', 500, 0.0, 1.0), 'mand_t')
     hist_cut_tmand = df.Filter('p_p > 0.4').Histo1D(('mand_t_cut', 'mand_t_cut', 500, 0.0, 1.0), 'mand_t')
     hist_cut_tmand.SetLineColor(ROOT.kRed)
-    c = ROOT.TCanvas()
-    hist_t_mand.Draw()
-    hist_cut_tmand.Draw("SAME")
-    c.Update()
-    input("Press Enter to continue...")
+    return hist_t_mand, hist_cut_tmand
 
 def plot_mx2_all():
     data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
@@ -74,10 +77,10 @@ def plot_pipkmks_phasespace_with_cuts():
     df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
 
     c = ROOT.TCanvas()
-    hist_cut = df.Filter(KSTAR_ALL_CUT).Histo1D(('pipkmks', 'pipkmks', 100, 1.1, 2.0), 'pipkmks_m')
+    hist_cut = df.Filter(KSTAR_ALL_CUT_PIPKMKS).Histo1D(('pipkmks', 'pipkmks', 100, 1.1, 2.0), 'pipkmks_m')
     hist = df.Histo1D(('pipkmks', 'pipkmks', 100, 1.1, 2.0), 'pipkmks_m')
-    hist.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue']))
-    hist_cut.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+    hist.SetLineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['blue']))
+    hist_cut.SetLineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['red']))
     hist.Draw()
     hist_cut.Draw("SAME")
     c.Update()
