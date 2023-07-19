@@ -23,9 +23,9 @@ if __name__ == '__main__':
     thrown_data_types = ['signal', 'phasespace']
 
     for channel in channels:
-        # for data_type in recon_data_types:
-        #     for run_period in run_periods:
-                # run_recon_analysis(channel, run_period, data_type)
+        for data_type in recon_data_types:
+            for run_period in run_periods:
+                run_recon_analysis(channel, run_period, data_type)
         for data_type in thrown_data_types:
             for run_period in run_periods:
                 run_thrown_analysis(channel, run_period, data_type)
