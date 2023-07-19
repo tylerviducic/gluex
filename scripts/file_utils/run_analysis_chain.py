@@ -2,6 +2,8 @@
 
 import os
 
+#TODO STATUS BAR OR TIMER OR BOTH
+
 def run_recon_analysis(channel: str, run_period: str, data_type: str):
     analysis_file = '/work/halld/home/viducic/analysis/f1_flat_bx2_analysis.py'
     command = f'python3 {analysis_file} {channel} {run_period} {data_type}'
