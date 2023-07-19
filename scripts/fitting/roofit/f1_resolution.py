@@ -1,82 +1,24 @@
 # script to get resolution of f1 to evaluate effectiveness of potential Ks constraint
 
 import ROOT
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 
 channel = 'pipkmks'
 # channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
-    all_cut = KSTAR_ALL_CUT_PIPKMKS
+    all_cut = ct.KSTAR_ALL_CUT_PIPKMKS
 elif channel == 'pimkpks' :
-    all_cut = KSTAR_ALL_CUT_PIMKPKS
+    all_cut = ct.KSTAR_ALL_CUT_PIMKPKS
 
-def get_acceptance_corrected_signal_mc(channel, run_period, n_bins):
-    file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
-    signal_df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]) 
-    recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace')
-    thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
-    recon_df = ROOT.RDataFrame(recon_phasespace_file_and_tree[1], recon_phasespace_file_and_tree[0])
-    thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
-    # print(thrown_phasespace_file_and_tree[0])
 
-    signal_df = signal_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-    # reduce signal_df size
-    # signal_df = signal_df.Range(0, int(signal_df.Count().GetValue() / 250))
-    recon_df = recon_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-
-    signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', n_bins, 1.2, 1.5), f'{channel}_m').GetValue()
-    recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', n_bins, 1.2, 1.5), f'{channel}_m').GetValue()
-    thrown_hist_name = channel + f'_f1_res_{n_bins};1'
-    thrown_hist = thrown_file.Get(thrown_hist_name)
-
-    signal_hist.Sumw2()
-    recon_hist.Sumw2()
-    thrown_hist.Sumw2()
-
-    acceptance_hist = recon_hist.Clone()
-    acceptance_hist.Divide(thrown_hist)
-        
-    ac_signal_hist = signal_hist.Clone()
-    ac_signal_hist.Divide(acceptance_hist)
-
-    ac_signal_hist.SetDirectory(0)
-
-    # c = ROOT.TCanvas()
-    # c.Divide(3, 1)
-    # c.cd(1)
-    # signal_hist.Draw()
-    # # c.cd(2)
-    # # recon_hist.Draw()
-    # c.cd(2)
-    # acceptance_hist.Draw()
-    # c.cd(3)
-    # ac_signal_hist.Draw()
-    # c.Update()
-    # input('press enter to continue')
-    # c.Clear()
-    return ac_signal_hist
-
-# ac_signal_hist_spring = get_acceptance_corrected_signal_mc(channel, 'spring', n_bins)
-# ac_signal_hist_fall = get_acceptance_corrected_signal_mc(channel, 'fall', n_bins)
-# ac_signal_hist_2017 = get_acceptance_corrected_signal_mc(channel, '2017', n_bins)
-
-# lumi_spring = get_luminosity('spring')
-# lumi_fall = get_luminosity('fall')
-# lumi_2017 = get_luminosity('2017')
-# lumi_total = lumi_spring + lumi_fall + lumi_2017
-
-# ac_signal_hist_total = ac_signal_hist_spring.Clone()
-# ac_signal_hist_total.Scale(lumi_spring / lumi_total)
-# ac_signal_hist_total.Add(ac_signal_hist_fall, lumi_fall / lumi_total)
-# ac_signal_hist_total.Add(ac_signal_hist_2017, lumi_2017 / lumi_total)
 
 ## n_bins options are 30, 90, 200, 300, 500
 n_bins = 90
 scale_factor = 200
 
-acc_cor_signal_mc_hist_total = get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=scale_factor)
+acc_cor_signal_mc_hist_total = ct.get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=scale_factor)
 
 # for i in range(1, ac_signal_hist_total.GetNbinsX() + 1):
 #     my_error = propogate_error_addition([ac_signal_hist_spring.GetBinError(i), ac_signal_hist_fall.GetBinError(i), ac_signal_hist_2017.GetBinError(i)])
@@ -136,7 +78,7 @@ pullHist.Draw("AP")
 y = 0.0
 
 line= ROOT.TLine(frame.GetXaxis().GetXmin(), y, frame.GetXaxis().GetXmax(), y)
-line.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+line.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
 line.SetLineStyle(2)
 line.SetLineWidth(2)
 line.Draw("same")
@@ -147,3 +89,80 @@ c.Update()
 print(f'chi2ndf: {chi2ndf}')
 input('press enter to continue')
 
+
+####################################################################################
+####################################################################################
+####################################################################################
+####################################################################################
+
+
+
+
+
+
+##########################################
+############# O L D  C O D E #############
+############# O L D  C O D E #############
+############# O L D  C O D E #############
+##########################################
+
+
+# def get_acceptance_corrected_signal_mc(channel, run_period, n_bins):
+#     file_and_tree = ct.get_flat_file_and_tree(channel, run_period, 'signal')
+#     signal_df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]) 
+#     recon_phasespace_file_and_tree = ct.get_flat_file_and_tree(channel, run_period, 'phasespace')
+#     thrown_phasespace_file_and_tree = ct.get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
+#     recon_df = ROOT.RDataFrame(recon_phasespace_file_and_tree[1], recon_phasespace_file_and_tree[0])
+#     thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
+#     # print(thrown_phasespace_file_and_tree[0])
+
+#     signal_df = signal_df.Filter(all_cut).Filter(ct.T_RANGE).Filter(ct.BEAM_RANGE)
+#     # reduce signal_df size
+#     # signal_df = signal_df.Range(0, int(signal_df.Count().GetValue() / 250))
+#     recon_df = recon_df.Filter(all_cut).Filter(ct.T_RANGE).Filter(ct.BEAM_RANGE)
+
+#     signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', n_bins, 1.2, 1.5), f'{channel}_m').GetValue()
+#     recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', n_bins, 1.2, 1.5), f'{channel}_m').GetValue()
+#     thrown_hist_name = channel + f'_f1_res_{n_bins};1'
+#     thrown_hist = thrown_file.Get(thrown_hist_name)
+
+#     signal_hist.Sumw2()
+#     recon_hist.Sumw2()
+#     thrown_hist.Sumw2()
+
+#     acceptance_hist = recon_hist.Clone()
+#     acceptance_hist.Divide(thrown_hist)
+        
+#     ac_signal_hist = signal_hist.Clone()
+#     ac_signal_hist.Divide(acceptance_hist)
+
+#     ac_signal_hist.SetDirectory(0)
+
+#     # c = ROOT.TCanvas()
+#     # c.Divide(3, 1)
+#     # c.cd(1)
+#     # signal_hist.Draw()
+#     # # c.cd(2)
+#     # # recon_hist.Draw()
+#     # c.cd(2)
+#     # acceptance_hist.Draw()
+#     # c.cd(3)
+#     # ac_signal_hist.Draw()
+#     # c.Update()
+#     # input('press enter to continue')
+#     # c.Clear()
+#     return ac_signal_hist
+
+# ac_signal_hist_spring = get_acceptance_corrected_signal_mc(channel, 'spring', n_bins)
+# ac_signal_hist_fall = get_acceptance_corrected_signal_mc(channel, 'fall', n_bins)
+# ac_signal_hist_2017 = get_acceptance_corrected_signal_mc(channel, '2017', n_bins)
+
+# lumi_spring = get_luminosity('spring')
+# lumi_fall = get_luminosity('fall')
+# lumi_2017 = get_luminosity('2017')
+# lumi_total = lumi_spring + lumi_fall + lumi_2017
+
+# ac_signal_hist_total = ac_signal_hist_spring.Clone()
+# ac_signal_hist_total.Scale(lumi_spring / lumi_total)
+# ac_signal_hist_total.Add(ac_signal_hist_fall, lumi_fall / lumi_total)
+# ac_signal_hist_total.Add(ac_signal_hist_2017, lumi_2017 / lumi_total)
