@@ -4,17 +4,21 @@
 
 import ROOT
 from my_library.common_analysis_tools import *
+import os
 # import numpy as np
 # import pandas as pd
 # import matplotlib.pyplot as plt
 
 def build_legend(histograms: list):
+    print("building legend")
     legend = ROOT.TLegend(0.7, 0.7, 0.9, 0.9)
     for hist in histograms:
         legend.AddEntry(hist, hist.GetTitle(), 'l')
     return legend
 
-def plot_data_kshort_no_cuts(bin_low=0.35, bin_high=0.65, nbins=500):
+def get_ks_before_after_cut(bin_low=0.3, bin_high=0.7, nbins=500):
+    os.nice(18)
+    ROOT.EnableImplicitMT()
     data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
     file_treename = 'pipkmks__B4_M16'
 
@@ -34,7 +38,29 @@ def plot_data_kshort_no_cuts(bin_low=0.35, bin_high=0.65, nbins=500):
     hist_cut.GetYaxis().SetTitle(f"Counts/{1000*((bin_high-bin_low)/nbins):.2f} MeV")
     hist_no_cut.SetLineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['blue']))
     hist_cut.SetLineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['red']))
-    return hist_no_cut, hist_cut
+    hist_cut.SetDirectory(0)
+    hist_no_cut.SetDirectory(0)
+    return hist_no_cut.GetValue(), hist_cut.GetValue()
+
+def get_mpipi_vs_pathlength_sig(bin_lowx=0.3, bin_highx=0.7, bin_lowy=0, bin_highy=10, nbinsx=200, nbinsy=200):
+    os.nice(18)
+    ROOT.EnableImplicitMT()
+    data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
+    file_treename = 'pipkmks__B4_M16'
+
+    df = ROOT.RDataFrame(file_treename, data_file)
+    df = df.Define("ks_px", 'pip2_px + pim_px')
+    df = df.Define("ks_py", 'pip2_py + pim_py')
+    df = df.Define("ks_pz", 'pip2_pz + pim_pz')
+    df = df.Define("ks_E", 'pip2_E + pim_E')
+    df = df.Define("ks_m", 'sqrt(ks_E*ks_E - ks_px*ks_px - ks_py*ks_py - ks_pz*ks_pz)')
+
+    hist = df.Histo2D(('ks_m_vs_pathlength', 'ks_m_vs_pathlength', nbinsx, bin_lowx, bin_highx, nbinsy, bin_lowy, bin_highy), 'ks_m', 'pathlength_sig')
+    hist.SetTitle("M(#pi^{+}#pi^{-}) vs. Pathlength Signifigance")
+    hist.GetXaxis().SetTitle("M(#pi^{+}#pi^{-}) [GeV]")
+    hist.GetYaxis().SetTitle("Pathlength Signifigance")
+    hist.SetDirectory(0)
+    return hist.GetValue()
 
 def result_of_p_p_cut():
     data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
@@ -89,7 +115,8 @@ def plot_pipkmks_phasespace_with_cuts():
 
 if __name__ == "__main__":
     ROOT.gStyle.SetOptStat(0)
-    # plot_data_kshort_no_cuts()
+    # get_ks_before_after_cut
+    #()
     # result_of_p_p_cut()
     # plot_mx2_all()
     plot_pipkmks_phasespace_with_cuts()
