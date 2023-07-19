@@ -8,6 +8,7 @@ contains common analysis tools/code snippets that i use
 
 import math
 import ROOT
+import pandas as pd
 
 ### COMMONLY USED VARIABLES ###
 
@@ -309,6 +310,26 @@ def get_luminosity_gluex_1(beam_low=6.5, beam_high=10.5):
 
     return lumi_spring + lumi_fall + lumi_2017
     
+def weight_histograms_by_flux(hist_spring: ROOT.TH1, hist_fall: ROOT.TH1, hist_2017: ROOT.TH1):
+    hist_spring.Sumw2()
+    hist_fall.Sumw2()
+    hist_2017.Sumw2()
+    
+    lumi_spring = get_luminosity('spring')
+    lumi_fall = get_luminosity('fall')
+    lumi_2017 = get_luminosity('2017')
+    lumi_total = lumi_spring + lumi_fall + lumi_2017
+
+    combined_hist = hist_spring.Clone()
+    combined_hist.Scale(lumi_spring / lumi_total)
+    combined_hist.Add(hist_fall, lumi_fall / lumi_total)
+    combined_hist.Add(hist_2017, lumi_2017 / lumi_total)
+
+    combined_hist.Sumw2()
+    combined_hist.SetDirectory(0)
+
+    return combined_hist
+
 
 
 def propogate_error_multiplication(target_datapoint, input_datapoints: list, input_errors: list):
@@ -356,7 +377,7 @@ def get_signal_mc_hist(channel, run_period, cut, e, t_bin_index):
     return signal_mc_hist
 
 def get_integrated_data_hist(channel, run_period, cut):
-    hist_name = f'{channel}_cut_kstar_{cut}_cut_beam_full_t_full;1'
+    hist_name = f'{channel}_kstar_{cut}_cut_beam_full_t_full;1'
     data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data', filtered=False, hist=True)
     data_hist_file = ROOT.TFile(data_file_and_tree[0])
     data_hist = data_hist_file.Get(hist_name)
@@ -742,9 +763,38 @@ def get_integrated_gluex1_acceptance_corrected_signal_mc(channel, cut):
 
     return acceptance_corrected_data_signal_mc
 
-#TODO add this function
 def get_integrated_kstar_corrected_data_hist(channel):
-    return 
+    data_hist = get_integrated_gluex1_data(channel, 'all')
+    kstar_efficiency_df = pd.read_csv('/work/halld/home/viducic/data/ps_dalitz/kstar_cut_efficiency_stepsize_10.csv')
+    for i in range(1, data_hist.GetXaxis().GetNbins()+1):
+        bin_ef_df = kstar_efficiency_df.loc[kstar_efficiency_df.mass_bin_center == round(data_hist.GetXaxis().GetBinCenter(i), 3)]
+        if len(bin_ef_df) == 0:
+            print(f'Bin center = {data_hist.GetXaxis().GetBinCenter(i)} has no efficiency value')
+            continue
+        bin_eff = bin_ef_df.kstar_cut_efficiency.values[0]
+        data_hist.SetBinContent(i, data_hist.GetBinContent(i) / bin_eff)
+    data_hist.SetDirectory(0)
+    return data_hist
+
+def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nbins = 100, xmin = 1.0, xmax = 2.5, cut='all'):
+    file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
+    df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
+    df = df.Filter(KSTAR_CUT_DICT_PIPKMKS[cut]).Filter(T_RANGE).Filter(BEAM_RANGE)
+    hist = df.Histo1D((f'{channel}_m', f'{channel}_m', nbins, 1.0, 2.5), f'{channel}_m')
+    hist.Sumw2()
+    hist.SetDirectory(0)
+    return hist
+
+def get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, nbins = 100, xmin = 1.0, xmax = 2.5, cut='all'):
+    hist_spring = get_integrated_signal_mc_hist_for_resolution_fitting(channel, 'spring', nbins, xmin, xmax, cut)
+    hist_fall = get_integrated_signal_mc_hist_for_resolution_fitting(channel, 'fall', nbins, xmin, xmax, cut)
+    hist_2017 = get_integrated_signal_mc_hist_for_resolution_fitting(channel, '2017', nbins, xmin, xmax, cut)
+    combined_weighted_hist = weight_histograms_by_flux(hist_spring, hist_fall, hist_2017)
+    combined_weighted_hist.Sumw2()
+    combined_weighted_hist.SetDirectory(0)
+    return combined_weighted_hist
+
+
 
 # this is legit awful code. im sorry if anyone in the future needs to use this
 def get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=1):
@@ -849,6 +899,7 @@ def get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel
 
     acceptance_corrected_signal_mc_hist.SetDirectory(0)
     return acceptance_corrected_signal_mc_hist
+
 
 def check_run_period(run_period):
     if run_period not in ALLOWED_RUN_PERIODS:
