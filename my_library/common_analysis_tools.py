@@ -125,6 +125,7 @@ ALLOWED_T_BINS = range(1, 8)
 ALLOWED_RUN_PERIODS = ['spring', 'fall', '2017']
 ALLOWED_CHANNELS = ['pipkmks', 'pimkpks']
 ALLOWED_DATATYPES_RECON = ['data', 'signal', 'phasespace']
+ALLOWED_DATATYPES_THROWN = ['signal', 'phasespace']
 
 T_BIN_DICT = {1: '0.1_0.2', 2: '0.2_0.3', 3: '0.3_0.4',
               4: '0.4_0.65', 5: '0.65_0.9', 
@@ -251,19 +252,23 @@ def get_flat_phasespace_file_and_tree(channel, run_period, comboloop=False, filt
         print('no comboloop phasespace mc file yet')
     return (file_path, treename)
 
-def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False):
+def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=True):
     if not phasespace:
+        if not hist:
+            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}thrown/{channel}_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
         return (f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
     elif phasespace:
-        return(f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_phasespace_thrown_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
+        if not hist:
+            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}thrown/{channel}_phasespace_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
+        return(f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_phasespace_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
         
 def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False, thrown=False, verbose=False):
     file_tuple = ()
     if thrown:
         if datatype == 'signal':
-            file_tuple = get_flat_thrown_file_and_tree(channel, run_period)
+            file_tuple = get_flat_thrown_file_and_tree(channel, run_period, hist=False)
         elif datatype == 'phasespace':
-            file_tuple = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
+            file_tuple = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True, hist=False)
         else:
             print('invalid thrown datatype')
             return
@@ -856,11 +861,22 @@ def check_datatype_recon(datatype):
     if datatype not in ALLOWED_DATATYPES_RECON:
         error_message = f"Datatype {datatype} not allowed. Allowed datatypes are: {ALLOWED_DATATYPES_RECON}"
         raise ValueError(error_message)
+    
+def check_datatype_thrown(datatype):
+    if datatype not in ALLOWED_DATATYPES_THROWN:
+        error_message = f"Datatype {datatype} not allowed. Allowed datatypes are: {ALLOWED_DATATYPES_THROWN}"
+        raise ValueError(error_message)
 
 def verify_args(channel, run_period, datatype):
     check_run_period(run_period)
     check_channel(channel)
     check_datatype_recon(datatype)
+    return True
+
+def verify_thrown_args(channel, run_period, datatype):
+    check_run_period(run_period)
+    check_channel(channel)
+    check_datatype_thrown(datatype)
     return True
 
 def define_pimkpks_columns(df):
@@ -1042,11 +1058,40 @@ def define_pipkmks_columns(df):
     new_df = new_df.Define('t_bin', 'get_t_bin_index(mand_t)')
     return new_df
 
-def define_columns(df, channel):
+def define_pipkmks_thrown_columns(df):
+    ROOT.gInterpreter.Declare(T_BIN_FILTER)
+    ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
+    new_df = df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + Ks_px')
+    new_df = new_df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + Ks_py')
+    new_df = new_df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + Ks_pz')
+    new_df = new_df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + Ks_E')
+    new_df = new_df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
+    new_df = new_df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
+    new_df = new_df.Define('t_bin', 'get_t_bin_index(men_t)')
+    return new_df
+
+def define_pimkpks_thrown_columns(df):
+    ROOT.gInterpreter.Declare(T_BIN_FILTER)
+    ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
+    new_df = df.Define('pimkpks_px', 'PiMinus1_px + KPlus_px + Ks_px')
+    new_df = new_df.Define('pimkpks_py', 'PiMinus1_py + KPlus_py + Ks_py')
+    new_df = new_df.Define('pimkpks_pz', 'PiMinus1_pz + KPlus_pz + Ks_pz')
+    new_df = new_df.Define('pimkpks_E', 'PiMinus1_E + KPlus_E + Ks_E')
+    new_df = new_df.Define('pimkpks_m', 'sqrt(pimkpks_E*pimkpks_E - pimkpks_px*pimkpks_px - pimkpks_py*pimkpks_py - pimkpks_pz*pimkpks_pz)')
+    new_df = new_df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
+    new_df = new_df.Define('t_bin', 'get_t_bin_index(men_t)')
+
+def define_columns(df, channel, thrown=False):
     if channel == 'pipkmks':
-        new_df = define_pipkmks_columns(df)
+        if thrown:
+            new_df = define_pipkmks_thrown_columns(df)
+        else: 
+            new_df = define_pipkmks_columns(df)
     elif channel == 'pimkpks':
-        new_df = define_pimkpks_columns(df)
+        if thrown:
+            new_df = define_pimkpks_thrown_columns(df)
+        else:
+            new_df = define_pimkpks_columns(df)
     else:
         raise ValueError('Unknown channel: {}'.format(channel)) 
     return new_df
@@ -1059,13 +1104,13 @@ def filter_dataframe(df, channel):
     else:
         raise ValueError('Unknown channel: {}'.format(channel))
 
-def get_path_for_output_file(channel, datatype):
+def get_path_for_output_file(channel, datatype, thrown=False):
+    if thrown:
+        return f'/work/halld/home/viducic/data/{channel}/mc/thrown'
     if datatype == 'data':
         return f'/work/halld/home/viducic/data/{channel}/data/bestX2'
-    elif datatype == 'signal':
-        return f'/work/halld/home/viducic/data/{channel}/mc/signal'
-    elif datatype == 'phasespace':
-        return f'/work/halld/home/viducic/data/pipkmks/mc/phasespace'
+    elif datatype == 'signal' or datatype == 'phasespace':
+        return f'/work/halld/home/viducic/data/{channel}/mc/{datatype}'
     else:
         raise ValueError('Unknown datatype: {}'.format(datatype))
     

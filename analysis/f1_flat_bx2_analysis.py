@@ -3,7 +3,7 @@
 import ROOT
 import time
 import os
-from my_library.common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 import sys
 
 """
@@ -20,9 +20,9 @@ channel = sys.argv[1]
 run_period = sys.argv[2]
 data_type = sys.argv[3]
 
-verify_args(channel, run_period, data_type)
+ct.verify_args(channel, run_period, data_type)
 
-file_and_tree = get_flat_file_and_tree(channel, run_period, data_type, filtered=False)
+file_and_tree = ct.get_flat_file_and_tree(channel, run_period, data_type, filtered=False)
 
 # if run_period == '2019_unconstrained':
 #     treename = 'pimkpks__T1_S2_M16'
@@ -39,12 +39,12 @@ df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
 
 # print(df.GetColumnNames())
 
-df = define_columns(df, channel)
+df = ct.define_columns(df, channel)
 
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-df = filter_dataframe(df, channel)
+df = ct.filter_dataframe(df, channel)
 print('cuts done in {} seconds'.format(time.time() - start_time))
 
 
@@ -54,44 +54,44 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-output_path = get_path_for_output_file(channel, data_type)
-df.Snapshot(f'{channel}_filtered_{RUN_DICT[run_period]}', f'{output_path}/{channel}_filtered_{RUN_DICT[run_period]}.root')
+output_path = ct.get_path_for_output_file(channel, data_type)
+df.Snapshot(f'{channel}_filtered_{ct.RUN_DICT[run_period]}', f'{output_path}/{channel}_filtered_{ct.RUN_DICT[run_period]}.root')
 
 
 # ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
-df = df.Filter(BEAM_RANGE).Filter(T_RANGE)
+df = df.Filter(ct.BEAM_RANGE).Filter(ct.T_RANGE)
 
 print('cut file written in {} seconds'.format(time.time() - start_time))
 
 ## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
 
-n_e_bins = len(ALLOWED_E_BINS)
-n_t_bins = len(ALLOWED_T_BINS)
+n_e_bins = len(ct.ALLOWED_E_BINS)
+n_t_bins = len(ct.ALLOWED_T_BINS)
 
 def fill_histos(cut_df, histo_array, cut, channel, beam_index=0, t_index=0):
     if channel == 'pipkmks':
-        cut_name = KSTAR_CUT_NAME_DICT_PIPKMKS[cut]
+        cut_name = ct.KSTAR_CUT_NAME_DICT_PIPKMKS[cut]
     elif channel == 'pimkpks':
-        cut_name = KSTAR_CUT_NAME_DICT_PIMKPKS[cut]
+        cut_name = ct.KSTAR_CUT_NAME_DICT_PIMKPKS[cut]
     hist_name = f'{channel}_kstar_{cut_name}_cut_'
     beam_name = 'beam_full_'
     t_name = 't_full'
     if beam_index > 0:
-        beam_low = BEAM_INDEX_DICT[beam_index][0]
-        beam_high = BEAM_INDEX_DICT[beam_index][1]
+        beam_low = ct.BEAM_INDEX_DICT[beam_index][0]
+        beam_high = ct.BEAM_INDEX_DICT[beam_index][1]
         beam_name = f'beam_{beam_low}_{beam_high}_'
     if t_index > 0:
-        t_low = T_CUT_DICT[t_index][0]
-        t_high = T_CUT_DICT[t_index][1]
+        t_low = ct.T_CUT_DICT[t_index][0]
+        t_high = ct.T_CUT_DICT[t_index][1]
         t_name = f't_{t_low}_{t_high}'
     hist_name += beam_name + t_name
     histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), f'{channel}_m'))
 
     
 if channel == 'pipkmks':
-    cut_list = F1_CUT_LIST_PIPKMKS
+    cut_list = ct.F1_CUT_LIST_PIPKMKS
 elif channel == 'pimkpks':
-    cut_list = F1_CUT_LIST_PIMKPKS
+    cut_list = ct.F1_CUT_LIST_PIMKPKS
 
 for cut in cut_list:
     cut_df = df.Filter(cut)
@@ -114,7 +114,7 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-target_file = ROOT.TFile(f"{output_path}/{channel}_flat_result_{RUN_DICT[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"{output_path}/{channel}_flat_result_{ct.RUN_DICT[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 
@@ -127,4 +127,4 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close()
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/{channel}_{data_type}_graph_{RUN_DICT[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/{channel}_{data_type}_graph_{ct.RUN_DICT[run_period]}.dot")
