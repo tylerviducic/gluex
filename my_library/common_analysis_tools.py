@@ -742,6 +742,10 @@ def get_integrated_gluex1_acceptance_corrected_signal_mc(channel, cut):
 
     return acceptance_corrected_data_signal_mc
 
+#TODO add this function
+def get_integrated_kstar_corrected_data_hist(channel):
+    return 
+
 # this is legit awful code. im sorry if anyone in the future needs to use this
 def get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=1):
     if channel == 'pipkmks':
