@@ -9,6 +9,7 @@ contains common analysis tools/code snippets that i use
 import math
 import ROOT
 import pandas as pd
+import numpy as np
 
 ### COMMONLY USED VARIABLES ###
 
@@ -779,7 +780,7 @@ def get_integrated_kstar_corrected_data_hist(channel):
 def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nbins=500, xmin=1.0, xmax=2.5, cut='all', scale_factor=1):
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
     df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
-    df = df.Filter(KSTAR_CUT_DICT_PIPKMKS[cut]).Filter(T_RANGE).Filter(BEAM_RANGE)
+    df = df.Filter(T_RANGE).Filter(BEAM_RANGE)#.Filter(KSTAR_CUT_DICT_PIPKMKS[cut])
     hist = df.Histo1D((f'{channel}_m', f'{channel}_m', nbins, 1.0, 2.5), f'{channel}_m')
     hist.Sumw2()
     hist.SetDirectory(0)
@@ -795,6 +796,10 @@ def get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, nbins=5
     combined_weighted_hist.SetDirectory(0)
     return combined_weighted_hist
 
+def set_sqrtN_error(hist):
+    for i in range(1, hist.GetNbinsX()+1):
+        error = np.sqrt(hist.GetBinContent(i))
+        hist.SetBinError(i, error)
 
 # this is legit awful code. im sorry if anyone in the future needs to use this
 def get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=1):
