@@ -776,24 +776,24 @@ def get_integrated_kstar_corrected_data_hist(channel):
     data_hist.SetDirectory(0)
     return data_hist
 
-def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nbins = 100, xmin = 1.0, xmax = 2.5, cut='all'):
+def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nbins=500, xmin=1.0, xmax=2.5, cut='all', scale_factor=1):
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
     df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
     df = df.Filter(KSTAR_CUT_DICT_PIPKMKS[cut]).Filter(T_RANGE).Filter(BEAM_RANGE)
     hist = df.Histo1D((f'{channel}_m', f'{channel}_m', nbins, 1.0, 2.5), f'{channel}_m')
     hist.Sumw2()
     hist.SetDirectory(0)
-    return hist
+    return hist.GetValue()
 
-def get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, nbins = 100, xmin = 1.0, xmax = 2.5, cut='all'):
+def get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, nbins=500, xmin = 1.0, xmax = 2.5, cut='all', scale_factor=1):
     hist_spring = get_integrated_signal_mc_hist_for_resolution_fitting(channel, 'spring', nbins, xmin, xmax, cut)
     hist_fall = get_integrated_signal_mc_hist_for_resolution_fitting(channel, 'fall', nbins, xmin, xmax, cut)
     hist_2017 = get_integrated_signal_mc_hist_for_resolution_fitting(channel, '2017', nbins, xmin, xmax, cut)
     combined_weighted_hist = weight_histograms_by_flux(hist_spring, hist_fall, hist_2017)
+    combined_weighted_hist.Scale(1/scale_factor)
     combined_weighted_hist.Sumw2()
     combined_weighted_hist.SetDirectory(0)
     return combined_weighted_hist
-
 
 
 # this is legit awful code. im sorry if anyone in the future needs to use this
