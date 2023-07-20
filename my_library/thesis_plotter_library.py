@@ -1,6 +1,4 @@
-# barebones script for plotting things for things for thesis 
-# each plotting snippet will become a function in thesis_plotter.py
-# main at the bttom will be used to call the needed functions
+# library for plotting in a notebook for my thesis
 
 import ROOT
 import my_library.common_analysis_tools as ct
