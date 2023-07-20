@@ -409,7 +409,7 @@ def get_phasespace_thrown_hist(channel, run_period, e, t_bin_index):
     return thrown_hist
 
 def get_data_hist(channel, run_period, cut, e, t_bin_index):
-    hist_name = f'{channel}_cut_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    hist_name = f'{channel}_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
     data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data', filtered=False, hist=True)
     data_hist_file = ROOT.TFile(data_file_and_tree[0])
     data_hist = data_hist_file.Get(hist_name)
@@ -834,9 +834,6 @@ def get_binned_gluex1_kstar_corrected_data(channel, e, t_bin_index, cut='all'):
     corrected_hist.Sumw2()
     corrected_hist.SetDirectory(0)
     return corrected_hist
-
-
-
 
 def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nbins=500, xmin=1.0, xmax=2.5, cut='all', scale_factor=1):
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
