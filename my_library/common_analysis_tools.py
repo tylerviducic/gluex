@@ -795,19 +795,38 @@ def get_integrated_gluex1_acceptance_corrected_signal_mc(channel, cut):
 
     return acceptance_corrected_data_signal_mc
 
+def correct_data_hist_for_kstar_efficiency(hist):
+    new_hist = hist.Clone()
+    new_hist.Sumw2()
+    kstar_efficiency_df = pd.read_csv('/work/halld/home/viducic/data/ps_dalitz/kstar_cut_efficiency_stepsize_10.csv')
+    for i in range(1, hist.GetXaxis().GetNbins()+1):
+        bin_ef_df = kstar_efficiency_df.loc[kstar_efficiency_df.mass_bin_center == round(hist.GetXaxis().GetBinCenter(i), 3)]
+        if len(bin_ef_df) == 0:
+            print(f'Bin center = {hist.GetXaxis().GetBinCenter(i)} has no efficiency value')
+            continue
+        bin_eff = bin_ef_df.kstar_cut_efficiency.values[0]
+        hist.SetBinContent(i, hist.GetBinContent(i) / bin_eff)
+    hist.SetDirectory(0)
+    return hist
+
 def get_integrated_gluex1_kstar_corrected_data_hist(channel):
     data_hist = get_integrated_gluex1_data(channel, 'all')
     data_hist.Sumw2()
-    kstar_efficiency_df = pd.read_csv('/work/halld/home/viducic/data/ps_dalitz/kstar_cut_efficiency_stepsize_10.csv')
-    for i in range(1, data_hist.GetXaxis().GetNbins()+1):
-        bin_ef_df = kstar_efficiency_df.loc[kstar_efficiency_df.mass_bin_center == round(data_hist.GetXaxis().GetBinCenter(i), 3)]
-        if len(bin_ef_df) == 0:
-            print(f'Bin center = {data_hist.GetXaxis().GetBinCenter(i)} has no efficiency value')
-            continue
-        bin_eff = bin_ef_df.kstar_cut_efficiency.values[0]
-        data_hist.SetBinContent(i, data_hist.GetBinContent(i) / bin_eff)
-    data_hist.SetDirectory(0)
-    return data_hist
+    corrected_hist = correct_data_hist_for_kstar_efficiency(data_hist)
+    corrected_hist.Sumw2()
+    corrected_hist.SetDirectory(0)
+    return corrected_hist
+
+def get_binned_kstar_corrected_data(channel, run_period, e, t_bin_index, cut='all'):
+    validate_e_bin(e)
+    validate_t_bin(t_bin_index)
+    data_hist = get_data_hist(channel, run_period, cut, e, t_bin_index)
+    data_hist.Sumw2()
+    corrected_hist = correct_data_hist_for_kstar_efficiency(data_hist)
+    corrected_hist.Sumw2()
+    corrected_hist.SetDirectory(0)
+    return corrected_hist
+
 
 def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nbins=500, xmin=1.0, xmax=2.5, cut='all', scale_factor=1):
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
