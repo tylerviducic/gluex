@@ -6,9 +6,10 @@ import pandas as pd
 import math
 from ctypes import c_double
 
+#TODO add correct acceptance
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
