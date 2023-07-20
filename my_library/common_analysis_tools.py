@@ -359,7 +359,26 @@ def weight_histograms_by_flux(hist_spring: ROOT.TH1, hist_fall: ROOT.TH1, hist_2
 
     return combined_hist
 
+def validate_t_bin(t):
+    if t not in ALLOWED_T_BINS:
+        raise ValueError('invalid t bin number')
+    return True
 
+def validate_e_bin(e):
+    if e not in ALLOWED_E_BINS:
+        raise ValueError('invalid e bin number')
+    return True
+
+def get_binned_kkpi_hist_title(channel, e, t_bin_index):
+    validate_t_bin(t_bin_index)
+    validate_e_bin(e)
+    if channel == 'pipkmks':
+        kkpi = 'K^{-}K_{s}#pi^{-}'
+    elif channel == 'pimkpks':
+        kkpi = 'K^{+}K_{s}#pi^{+}'
+    else:
+        return None
+    return 'M({}) for E_{}={}- and t={}-{}'.format(kkpi, '#gamma', e-0.5, e+0.5, T_CUT_DICT[t_bin_index][0], T_CUT_DICT[t_bin_index][1])
 
 def propogate_error_multiplication(target_datapoint, input_datapoints: list, input_errors: list):
     err_f2 = 0
@@ -459,12 +478,8 @@ def acceptance_correct_binned_kkpi_data(channel, run_period, cut, e, t_bin_index
     e should be an integer between 7 and 10 inclusive
     cut should be either "no_cut, plus, zero, or all
     """
-    if e not in ALLOWED_E_BINS:
-        print('invalid E value')
-        return
-    if t_bin_index not in ALLOWED_T_BINS:
-        print('invalid t bin number')
-        return
+    validate_e_bin(e)
+    validate_t_bin(t_bin_index)
     
     data_hist = get_data_hist(channel, run_period, cut, e, t_bin_index)
     recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
@@ -614,12 +629,8 @@ def get_binned_integrated_phasespace_acceptance(channel, run_period, e, t_bin_in
     e should be an integer between 7 and 10 inclusive
     cut should be either "no_cut, plus, zero, or all
     """
-    if e not in ALLOWED_E_BINS:
-        print('invalid E value')
-        return
-    if t_bin_index not in ALLOWED_T_BINS:
-        print('invalid t bin number')
-        return
+    validate_e_bin(e)
+    validate_t_bin(t_bin_index)
     
     recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
     thrown_hist = get_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
@@ -632,12 +643,8 @@ def get_binned_phasespace_acceptance(channel, run_period, e, t_bin_index, cut):
     e should be an integer between 7 and 10 inclusive
     cut should be either "no_cut, plus, zero, or all
     """
-    if e not in ALLOWED_E_BINS:
-        print('invalid E value')
-        return
-    if t_bin_index not in ALLOWED_T_BINS:
-        print('invalid t bin number')
-        return
+    validate_e_bin(e)
+    validate_t_bin(t_bin_index)
     
     recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
     thrown_hist = get_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
@@ -669,12 +676,8 @@ def get_phasespace_acceptance(channel, run_period, cut, e, t_bin_index):
     e should be an integer between 7 and 10 inclusive
     cut should be either "no_cut, plus, zero, or all
     """
-    if e not in ALLOWED_E_BINS:
-        print('invalid E value')
-        return
-    if t_bin_index not in ALLOWED_T_BINS:
-        print('invalid t bin number')
-        return
+    validate_e_bin(e)
+    validate_t_bin(t_bin_index)
     
     recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
     thrown_hist = get_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
@@ -814,6 +817,39 @@ def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nb
     hist.Sumw2()
     hist.SetDirectory(0)
     return hist.GetValue()
+
+def get_binned_signal_mc_hist_for_resoltion_fitting(channel, run_period, e, t_bin_index, n_bins = 200, xmin=1.0, xmax=2.5, cut='all', scale_factor=1):
+    validate_e_bin(e)
+    validate_t_bin(t_bin_index)
+
+    file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
+    df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
+    e_cut = f'e_beam > {BEAM_CUT_DICT[e][0]} && e_beam < {BEAM_CUT_DICT[e][1]}'
+    df = df.Filter(f't_bin = {t_bin_index}').Filter(e_cut)#.Filter(KSTAR_CUT_DICT_PIPKMKS[cut])
+    hist = df.Histo1D((f'{channel}_m', f'{channel}_m', n_bins, xmin, xmax), f'{channel}_m')
+    hist.Sumw2()
+    hist.SetDirectory(0)
+    return hist.GetValue()
+
+def get_gluex1_binned_signal_mc_hist_for_resoltion_fitting(channel, e, t_bin_index, n_bins = 200, xmin=1.0, xmax=2.5, cut='all', scale_factor=1):
+    hist_spring = get_binned_signal_mc_hist_for_resoltion_fitting(channel, 'spring', e, t_bin_index, n_bins, xmin, xmax, cut, scale_factor)
+    hist_fall = get_binned_signal_mc_hist_for_resoltion_fitting(channel, 'fall', e, t_bin_index, n_bins, xmin, xmax, cut, scale_factor)
+    hist_2017 = get_binned_signal_mc_hist_for_resoltion_fitting(channel, '2017', e, t_bin_index, n_bins, xmin, xmax, cut, scale_factor)
+
+    hist_spring.Sumw2()
+    hist_fall.Sumw2()
+    hist_2017.Sumw2()
+
+    hist_total = weight_histograms_by_flux(hist_spring, hist_fall, hist_2017)
+    hist_total.Sumw2()
+    hist_total.SetLineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['blue']))
+    hist_total.SetTitle(get_binned_kkpi_hist_title(channel, e, t_bin_index))
+    hist_total.GetXaxis().SetTitle('M(K^{+}K^{-}#pi^{+}) [GeV]')
+    hist_total.GetYaxis().SetTitle(f'Events / {(xmax - xmin)/n_bins:.3f} GeV')
+
+    hist_total.SetDirectory(0)
+    return hist_total
+
 
 def get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, nbins=500, xmin = 1.0, xmax = 2.5, cut='all', scale_factor=1):
     hist_spring = get_integrated_signal_mc_hist_for_resolution_fitting(channel, 'spring', nbins, xmin, xmax, cut)
