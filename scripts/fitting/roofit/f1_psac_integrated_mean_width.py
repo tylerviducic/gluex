@@ -1,7 +1,7 @@
 # FIT KKPi INTEGRATED Distribution after phasespace acceptance correction for mean and width check
 
 import ROOT
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 import os
 
 os.nice(18)
@@ -9,69 +9,25 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
-    all_cut = KSTAR_ALL_CUT_PIPKMKS
-    voight_resoltion = F1_PIPKMKS_VOIGHT_SIGMA
-    voight_resolution_error = F1_PIPKMKS_VOIGHT_SIGMA_ERROR
+    all_cut = ct.KSTAR_ALL_CUT_PIPKMKS
+    voight_resoltion = ct.F1_PIPKMKS_VOIGHT_SIGMA
+    voight_resolution_error = ct.F1_PIPKMKS_VOIGHT_SIGMA_ERROR
 elif channel == 'pimkpks' :
-    all_cut = KSTAR_ALL_CUT_PIMKPKS
-    voight_resoltion = F1_PIMKPKS_VOIGHT_SIGMA
-    voight_resolution_error = F1_PIMKPKS_VOIGHT_SIGMA_ERROR
+    all_cut = ct.KSTAR_ALL_CUT_PIMKPKS
+    voight_resoltion = ct.F1_PIMKPKS_VOIGHT_SIGMA
+    voight_resolution_error = ct.F1_PIMKPKS_VOIGHT_SIGMA_ERROR
 
-
-# def get_acceptance_corrected_kkpi(channel, run_period):
-
-#     data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data')
-#     data_df = ROOT.RDataFrame(data_file_and_tree[1], data_file_and_tree[0])
-
-#     recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace')
-#     thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
-
-
-#     recon_df = ROOT.RDataFrame(recon_phasespace_file_and_tree[1], recon_phasespace_file_and_tree[0])
-
-#     thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
-
-#     data_df = data_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-#     recon_df = recon_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-
-#     data_hist = data_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
-#     recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
-#     thrown_hist_name = channel + ';1'
-#     thrown_hist = thrown_file.Get(thrown_hist_name)
-
-#     data_hist.Sumw2()
-#     recon_hist.Sumw2()
-#     thrown_hist.Sumw2()
-
-#     acceptance_hist = recon_hist.Clone()
-#     acceptance_hist.Divide(thrown_hist)
-
-#     ac_data_hist = data_hist.Clone()
-#     ac_data_hist.Divide(acceptance_hist)
-#     ac_data_hist.SetDirectory(0)
-
-#     return ac_data_hist
-
-
-# ac_data_hist_2017 = get_acceptance_corrected_kkpi(channel, '2017')
-# ac_data_hist_spring = get_acceptance_corrected_kkpi(channel, 'spring')
-# ac_data_hist_fall = get_acceptance_corrected_kkpi(channel, 'fall')
-
-
-# ac_data_hist_total = ac_data_hist_spring
-# ac_data_hist_total.Add(ac_data_hist_fall)
-# ac_data_hist_total.Add(ac_data_hist_2017)
-
-ac_data_hist_total = get_integrated_gluex1_acceptance_corrected_data(channel, cut)
+# data_hist = ct.get_integrated_gluex1_acceptance_corrected_data(channel, cut)
+data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
-dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), ac_data_hist_total)
+dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
 # ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
 
@@ -154,7 +110,7 @@ fit_result = minuit.save()
 # fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
-n_bins = ac_data_hist_total.GetNbinsX()
+n_bins = data_hist.GetNbinsX()
 # n_bins = 29
 ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
 chi2_per_ndf = chi2_val / ndf
@@ -172,15 +128,15 @@ chi2ndf = frame.chiSquare(npar)
 dh.plotOn(frame)
 # draw_pdf(kstar_cut, frame, combined_pdf, '1285')
 # combined_pdf.plotOn(frame, ROOT.RooFit.VisualizeError(fit_result), ROOT.RooFit.LineColor(ROOT.kRed))
-combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red'])))
+combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red'])))
 pullHist = frame.pullHist()
 npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
 chi2ndf = frame.chiSquare(npar)
 # fit_result.plotOn(frame, ROOT.RooAbsArg(voight), ROOT.RooFit.LineColor(ROOT.kRed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("bw"), ROOT.RooFit.LineColor(ROOT.kGreen))
-combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
+combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("relbw"), ROOT.RooFit.LineColor(ROOT.kBlue))
-combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue'])))
+combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue'])))
 
 frame.Draw()
 c1.Update()
@@ -202,7 +158,7 @@ print("K-S test = " + str(kstest))
 K-S test = 1 means very high probability of data coming from the 
 distribution described by the model
 """
-ks_test_data.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+ks_test_data.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
 
 
 c2 = ROOT.TCanvas("c2", "c2", 800, 600)
@@ -214,7 +170,7 @@ pullHist.Draw("AP")
 y = 0.0
 
 line= ROOT.TLine(frame.GetXaxis().GetXmin(), y, frame.GetXaxis().GetXmax(), y)
-line.SetLineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red']))
+line.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
 line.SetLineStyle(2)
 line.SetLineWidth(2)
 line.Draw("same")
@@ -233,3 +189,49 @@ print(f"second X2/ndf = {chi2ndf}")
 print(f'f1 yield = {n_f1.getVal()} +/- {n_f1.getError()}')
 
 input("Press enter to close")
+
+
+
+## OLD CODE ### def get_acceptance_corrected_kkpi(channel, run_period):
+
+#     data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data')
+#     data_df = ROOT.RDataFrame(data_file_and_tree[1], data_file_and_tree[0])
+
+#     recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace')
+#     thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
+
+
+#     recon_df = ROOT.RDataFrame(recon_phasespace_file_and_tree[1], recon_phasespace_file_and_tree[0])
+
+#     thrown_file = ROOT.TFile.Open(thrown_phasespace_file_and_tree[0], 'READ')
+
+#     data_df = data_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+#     recon_df = recon_df.Filter(all_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+
+#     data_hist = data_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
+#     recon_hist = recon_df.Histo1D((f'recon_hist_{run_period}', f'recon_hist_{run_period}', 150, 1.0, 2.5), f'{channel}_m').GetValue()
+#     thrown_hist_name = channel + ';1'
+#     thrown_hist = thrown_file.Get(thrown_hist_name)
+
+#     data_hist.Sumw2()
+#     recon_hist.Sumw2()
+#     thrown_hist.Sumw2()
+
+#     acceptance_hist = recon_hist.Clone()
+#     acceptance_hist.Divide(thrown_hist)
+
+#     ac_data_hist = data_hist.Clone()
+#     ac_data_hist.Divide(acceptance_hist)
+#     ac_data_hist.SetDirectory(0)
+
+#     return ac_data_hist
+
+
+# ac_data_hist_2017 = get_acceptance_corrected_kkpi(channel, '2017')
+# ac_data_hist_spring = get_acceptance_corrected_kkpi(channel, 'spring')
+# ac_data_hist_fall = get_acceptance_corrected_kkpi(channel, 'fall')
+
+
+# ac_data_hist_total = ac_data_hist_spring
+# ac_data_hist_total.Add(ac_data_hist_fall)
+# ac_data_hist_total.Add(ac_data_hist_2017)

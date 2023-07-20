@@ -768,7 +768,7 @@ def get_integrated_gluex1_acceptance_corrected_signal_mc(channel, cut):
 
     return acceptance_corrected_data_signal_mc
 
-def get_integrated_kstar_corrected_data_hist(channel):
+def get_integrated_gluex1_kstar_corrected_data_hist(channel):
     data_hist = get_integrated_gluex1_data(channel, 'all')
     kstar_efficiency_df = pd.read_csv('/work/halld/home/viducic/data/ps_dalitz/kstar_cut_efficiency_stepsize_10.csv')
     for i in range(1, data_hist.GetXaxis().GetNbins()+1):
