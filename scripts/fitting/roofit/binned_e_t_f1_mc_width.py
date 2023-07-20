@@ -5,8 +5,8 @@ import my_library.common_analysis_tools as ct
 import numpy as np
 import pandas as pd
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks':
@@ -31,12 +31,12 @@ energy_list = []
 t_bin_list = []
 
 c1 = ROOT.TCanvas()
-c1.Divide(7, 4)
+c1.Divide(7, 5)
 
-for e in range(7, 11):
+for e in range(7, 12):
     for t in range(1, 8):
         c1.cd(t + 7 * (e - 7))
-        signal_mc_hist = ct.get_gluex1_binned_signal_mc_hist_for_resoltion_fitting()
+        signal_mc_hist = ct.get_gluex1_binned_signal_mc_hist_for_resoltion_fitting(channel, e, t)
 
         m_kkpi = ROOT.RooRealVar('m_kkpi', 'm_kkpi', 1.2, 1.5)
         range_min = 1.22
@@ -62,6 +62,8 @@ for e in range(7, 11):
         chi2_per_ndf = chi2_val / ndf
 
         frame = m_kkpi.frame()
+        frame.SetTitle(f"M(KK#pi) for E={e} GeV, t={ct.T_CUT_DICT[t][0]}-{ct.T_CUT_DICT[t][1]}")
+        frame.GetXaxis().SetTitle("M(KK#pi) (GeV)")
         dh.plotOn(frame)
         func.plotOn(frame)
         chi2_ndf_list.append(chi2_per_ndf)
