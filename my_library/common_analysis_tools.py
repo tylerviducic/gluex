@@ -827,6 +827,16 @@ def get_binned_kstar_corrected_data(channel, run_period, e, t_bin_index, cut='al
     corrected_hist.SetDirectory(0)
     return corrected_hist
 
+def get_binned_gluex1_kstar_corrected_data(channel, e, t_bin_index, cut='all'):
+    data_hist = get_gluex1_binned_kkpi_data(channel, cut, e, t_bin_index)
+    data_hist.Sumw2()
+    corrected_hist = correct_data_hist_for_kstar_efficiency(data_hist)
+    corrected_hist.Sumw2()
+    corrected_hist.SetDirectory(0)
+    return corrected_hist
+
+
+
 
 def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nbins=500, xmin=1.0, xmax=2.5, cut='all', scale_factor=1):
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
