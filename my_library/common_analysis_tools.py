@@ -249,12 +249,12 @@ def get_flat_data_file_and_tree(channel, run_period, comboloop=False, filtered=T
     return (file_path, treename)
 
 def get_flat_signal_file_and_tree(channel, run_period, comboloop=False, filtered=True, hist=False):
-    file_path = f'/work/halld/home/viducic/data/{channel}/mc/signal/mc_{channel}_'
+    file_path = f'/work/halld/home/viducic/data/{channel}/mc/signal/{channel}_'
     treename = ''
     if not comboloop:
         if filtered:
             file_path += f'filtered_{RUN_DICT[run_period]}.root'
-            treename = f'mc_{channel}_filtered_{RUN_DICT[run_period]}'
+            treename = f'{channel}_filtered_{RUN_DICT[run_period]}'
         else:
             if hist:
                 file_path += f'flat_result_{RUN_DICT[run_period]}.root'
@@ -266,12 +266,12 @@ def get_flat_signal_file_and_tree(channel, run_period, comboloop=False, filtered
     return (file_path, treename)
 
 def get_flat_phasespace_file_and_tree(channel, run_period, comboloop=False, filtered=True, hist=False):
-    file_path = f'/work/halld/home/viducic/data/{channel}/mc/phasespace/mc_{channel}_phasespace_'
+    file_path = f'/work/halld/home/viducic/data/{channel}/mc/phasespace/{channel}_phasespace_'
     treename = ''
     if not comboloop:
         if filtered:
             file_path += f'filtered_{RUN_DICT[run_period]}.root'
-            treename = f'mc_{channel}_phasespace_filtered_{RUN_DICT[run_period]}'
+            treename = f'{channel}_phasespace_filtered_{RUN_DICT[run_period]}'
         else:
             if hist:
                 file_path += f'flat_result_{RUN_DICT[run_period]}.root'
@@ -825,7 +825,7 @@ def get_binned_signal_mc_hist_for_resoltion_fitting(channel, run_period, e, t_bi
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
     df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
     e_cut = f'e_beam > {BEAM_CUT_DICT[e][0]} && e_beam < {BEAM_CUT_DICT[e][1]}'
-    df = df.Filter(f't_bin = {t_bin_index}').Filter(e_cut)#.Filter(KSTAR_CUT_DICT_PIPKMKS[cut])
+    df = df.Filter(f't_bin == {t_bin_index}').Filter(e_cut)#.Filter(KSTAR_CUT_DICT_PIPKMKS[cut])
     hist = df.Histo1D((f'{channel}_m', f'{channel}_m', n_bins, xmin, xmax), f'{channel}_m')
     hist.Sumw2()
     hist.SetDirectory(0)
