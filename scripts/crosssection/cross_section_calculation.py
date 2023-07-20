@@ -1,7 +1,7 @@
 # calculation of f1(1285) cross section using pyroot
 
 import ROOT
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 import pandas as pd
 import math
 from ctypes import c_double
@@ -12,11 +12,11 @@ channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
-    v_mean = F1_PIPKMKS_VOIGHT_MEAN
-    v_width = F1_PIPKMKS_VOIGHT_SIGMA
+    v_mean = ct.F1_PIPKMKS_VOIGHT_MEAN
+    v_width = ct.F1_PIPKMKS_VOIGHT_SIGMA
 elif channel == 'pimkpks' :
-    v_mean = F1_PIMKPKS_VOIGHT_MEAN
-    v_width = F1_PIMKPKS_VOIGHT_SIGMA
+    v_mean = ct.F1_PIMKPKS_VOIGHT_MEAN
+    v_width = ct.F1_PIMKPKS_VOIGHT_SIGMA
 
 df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
 
@@ -43,17 +43,17 @@ canvas_dict = {}
 fit_range_low = 1.2
 fit_range_high = 1.5
 
-for i in range(7, 11):
+for i in range(7, 12):
     canvas = ROOT.TCanvas(f'canvas_{i}', f'canvas_{i}', 1200, 900)
     canvas.Divide(4, 2)
     canvas_dict[i] = canvas
 
-for e in range(7, 11):
-    luminosity = get_luminosity_gluex_1(e-0.5, e+0.5)
+for e in range(7, 12):
+    luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)
     for t in range(1, 8):
         canvas_dict[e].cd(t)
         
-        hist = acceptance_correct_all_binned_gluex1_kkpi_data(channel, cut, e, t)
+        hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", fit_range_low, fit_range_high)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
@@ -96,8 +96,8 @@ for e in range(7, 11):
         hist_integral = hist.IntegralAndError(hist.FindBin(fit_range_low), hist.FindBin(fit_range_high), hist_error)
         ac_yield = n_signal.getVal()
         ac_yield_error = n_signal.getError()
-        cross_section = calculate_crosssection_from_acceptance_corrected_yield(ac_yield, luminosity, t_width_dict[t], F1_KKPI_BRANCHING_FRACTION)
-        cross_section_error = propogate_error_multiplication(cross_section, [ac_yield, luminosity, F1_KKPI_BRANCHING_FRACTION], [ac_yield_error, math.sqrt(luminosity), F1_KKPI_BRANCHING_FRACTION_ERROR])
+        cross_section = ct.calculate_crosssection_from_acceptance_corrected_yield(ac_yield, luminosity, ct.T_WIDTH_DICT[t], ct.F1_KKPI_BRANCHING_FRACTION)
+        cross_section_error = ct.propogate_error_multiplication(cross_section, [ac_yield, luminosity, ct.F1_KKPI_BRANCHING_FRACTION], [ac_yield_error, math.sqrt(luminosity), ct.F1_KKPI_BRANCHING_FRACTION_ERROR])
 
         chi2_val = chi2_var.getVal()
 
@@ -108,10 +108,10 @@ for e in range(7, 11):
         chi2ndf = chi2_val / ndf
 
         dh.plotOn(frame)
-        combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['red'])))
+        combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red'])))
         # pullHist = frame.pullHist()
-        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"bkg_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
-        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"voight_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(colorblind_hex_dict['blue'])))
+        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"bkg_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
+        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"voight_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue'])))
 
         ks_test_func = combined_pdf.createHistogram(f"ks_test_func_{e}_{t}", m_kkpi, ROOT.RooFit.Binning(1000))
         ks_test_data = dh.createHistogram(f"ks_test_data_{e}_{t}", m_kkpi, ROOT.RooFit.Binning(1000))
@@ -127,8 +127,8 @@ for e in range(7, 11):
         yield_error_list.append(ac_yield_error)
         cross_section_list.append(cross_section)
         cross_section_error_list.append(cross_section_error)
-        t_bin_list.append((t_cut_dict[t][0] + t_cut_dict[t][1])/2.0)
-        t_bin_width_list.append(t_width_dict[t]/2.0)
+        t_bin_list.append((ct.T_CUT_DICT[t][0] + ct.T_CUT_DICT[t][1])/2.0)
+        t_bin_width_list.append(ct.T_WIDTH_DICT[t]/2.0)
         energy_bin_list.append(e)
         
         frame.Draw()
