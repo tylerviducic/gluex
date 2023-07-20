@@ -3,8 +3,8 @@
 import ROOT
 import my_library.common_analysis_tools as ct
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -15,9 +15,6 @@ elif channel == 'pimkpks' :
 
 
 ## n_bins options are 30, 90, 200, 300, 500
-n_bins = 90
-scale_factor = 200
-
 # acc_cor_signal_mc_hist_total = ct.get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=scale_factor)
 signal_mc = ct.get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, scale_factor=100, nbins = 300)
 ct.set_sqrtN_error(signal_mc)
@@ -44,11 +41,12 @@ dh = ROOT.RooDataHist('dh', 'dh', ROOT.RooArgList(m_kkpi), signal_mc)
 
 func = ROOT.RooVoigtian('func', 'func', m_kkpi, mean, width, sigma)
 chi2_var = func.createChi2(dh)
-fit_result = func.FitTo(dh, ROOT.RooFit.Save(), ROOT.RooFit.Range("fit_range"))
+fit_result = func.fitTo(dh, ROOT.RooFit.Save(), ROOT.RooFit.Range("fit_range"))
 
 chi2_val = chi2_var.getVal()
 signal_mc.GetXaxis().SetRangeUser(range_min, range_max)
-n_bins = signal_mc.GetNbinsX()
+
+n_bins = signal_mc.GetXaxis().FindBin(range_max) - signal_mc.GetXaxis().FindBin(range_min)
 ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
 chi2_per_ndf = chi2_val / ndf
 
