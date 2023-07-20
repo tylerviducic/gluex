@@ -44,7 +44,6 @@ chi2_var = func.createChi2(dh)
 fit_result = func.fitTo(dh, ROOT.RooFit.Save(), ROOT.RooFit.Range("fit_range"))
 
 chi2_val = chi2_var.getVal()
-signal_mc.GetXaxis().SetRangeUser(range_min, range_max)
 
 n_bins = signal_mc.GetXaxis().FindBin(range_max) - signal_mc.GetXaxis().FindBin(range_min)
 ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
