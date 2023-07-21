@@ -266,7 +266,7 @@ def get_flat_signal_file_and_tree(channel, run_period, comboloop=False, filtered
     return (file_path, treename)
 
 def get_flat_phasespace_file_and_tree(channel, run_period, comboloop=False, filtered=True, hist=False):
-    file_path = f'/work/halld/home/viducic/data/{channel}/mc/phasespace/{channel}_phasespace_'
+    file_path = f'/work/halld/home/viducic/data/{channel}/mc/phasespace/{channel}_'
     treename = ''
     if not comboloop:
         if filtered:
@@ -441,7 +441,7 @@ def get_integrated_signal_mc_hist(channel, run_period, cut):
     return signal_mc_hist
 
 def get_integrated_phasespace_recon_hist(channel, run_period, cut):
-    hist_name = f'{channel}_cut_kstar_{cut}_cut_beam_full_t_full;1'
+    hist_name = f'{channel}_kstar_{cut}_cut_beam_full_t_full;1'
     recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace', filtered=False, hist=True)
     recon_phasespace_file = ROOT.TFile(recon_phasespace_file_and_tree[0])
     recon_hist = recon_phasespace_file.Get(hist_name)

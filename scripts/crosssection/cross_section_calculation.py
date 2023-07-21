@@ -8,8 +8,8 @@ from ctypes import c_double
 
 #TODO add correct acceptance
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -143,7 +143,7 @@ value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/cross_secti
 pdf_filename = f'/work/halld/home/viducic/plots/kkpi_fits/{channel}_gluex_1_fits.pdf'
 
 canvas_dict[i].Print(pdf_filename +'[')
-for i in range(7, 11):
+for i in range(7, 12):
     canvas_dict[i].Print(pdf_filename)
 
 canvas_dict[i].Print(pdf_filename +']')
