@@ -6,8 +6,6 @@ import pandas as pd
 import math
 from ctypes import c_double
 
-#TODO add correct acceptance
-
 # channel = 'pipkmks'
 channel = 'pimkpks'
 cut = 'all'
@@ -35,9 +33,6 @@ cross_section_error_list = []
 t_bin_list = []
 t_bin_width_list = []
 energy_bin_list = []
-
-
-# print(df)
 
 canvas_dict = {}
 
@@ -90,15 +85,14 @@ for e in range(7, 12):
         minuit.migrad()
         minuit.minos()
         # minuit.hesse()
-
         fit_result = minuit.save()
 
-        hist_error = c_double(0.0)
-        hist_integral = hist.IntegralAndError(hist.FindBin(fit_range_low), hist.FindBin(fit_range_high), hist_error)
-        ac_yield = n_signal.getVal()
-        ac_yield_error = n_signal.getError()
-        cross_section = ct.calculate_crosssection_from_acceptance_corrected_yield(ac_yield, luminosity, ct.T_WIDTH_DICT[t], ct.F1_KKPI_BRANCHING_FRACTION)
-        cross_section_error = ct.propogate_error_multiplication(cross_section, [ac_yield, luminosity, ct.F1_KKPI_BRANCHING_FRACTION], [ac_yield_error, math.sqrt(luminosity), ct.F1_KKPI_BRANCHING_FRACTION_ERROR])
+        data_yield = n_signal.getVal()
+        data_yield_error = n_signal.getError()
+        acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
+
+        cross_section = ct.calculate_crosssection(data_yield, luminosity, ct.T_WIDTH_DICT[t], ct.F1_KKPI_BRANCHING_FRACTION)
+        cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, ct.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, math.sqrt(luminosity), ct.F1_KKPI_BRANCHING_FRACTION_ERROR])
 
         chi2_val = chi2_var.getVal()
 
@@ -124,8 +118,8 @@ for e in range(7, 12):
         width_error_list.append(voight_width.getError())
         chi2ndf_list.append(chi2ndf)
         ks_test_list.append(kstest)
-        ac_yield_list.append(ac_yield)
-        yield_error_list.append(ac_yield_error)
+        ac_yield_list.append(data_yield)
+        yield_error_list.append(data_yield_error)
         cross_section_list.append(cross_section)
         cross_section_error_list.append(cross_section_error)
         t_bin_list.append((ct.T_CUT_DICT[t][0] + ct.T_CUT_DICT[t][1])/2.0)
