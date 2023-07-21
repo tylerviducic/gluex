@@ -287,7 +287,7 @@ def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=Tr
     if not phasespace:
         if not hist:
             return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
-        return (f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
+        return (f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_signal_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
     elif phasespace:
         if not hist:
             return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_phasespace_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
@@ -298,9 +298,9 @@ def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filte
     file_tuple = ()
     if thrown:
         if datatype == 'signal':
-            file_tuple = get_flat_thrown_file_and_tree(channel, run_period, hist=False)
+            file_tuple = get_flat_thrown_file_and_tree(channel, run_period, hist=hist)
         elif datatype == 'phasespace':
-            file_tuple = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True, hist=False)
+            file_tuple = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True, hist=hist)
         else:
             print('invalid thrown datatype')
             return
@@ -425,6 +425,7 @@ def get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index):
     thrown_signal_file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal', filtered=False, hist=True, thrown=True)
     thrown_signal_file = ROOT.TFile(thrown_signal_file_and_tree[0])
     thrown_hist_name = f'{channel}_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    print(thrown_hist_name)
     thrown_hist = thrown_signal_file.Get(thrown_hist_name)
     thrown_hist.SetDirectory(0)
     return thrown_hist
