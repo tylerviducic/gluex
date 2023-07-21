@@ -316,7 +316,7 @@ def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filte
         print(f'filepath: {file_tuple[0]} || treename: {file_tuple[1]}')
     return file_tuple
 
-def get_luminosity(run_period, beam_low=6.5, beam_high=10.5):
+def get_luminosity(run_period, beam_low=6.5, beam_high=11.5):
     filename = '/work/halld/home/viducic/data/flux/'
     if run_period == 'fall':
         filename += 'flux_50685_51768.root'
@@ -332,7 +332,7 @@ def get_luminosity(run_period, beam_low=6.5, beam_high=10.5):
     f.Close()
     return lumi
 
-def get_luminosity_gluex_1(beam_low=6.5, beam_high=10.5):
+def get_luminosity_gluex_1(beam_low=6.5, beam_high=11.5):
     lumi_spring = get_luminosity('spring', beam_low, beam_high)
     lumi_fall = get_luminosity('fall', beam_low, beam_high)
     lumi_2017 = get_luminosity('2017', beam_low, beam_high)
@@ -392,7 +392,7 @@ def propogate_error_addition(input_errors: list):
         err_f2 += (input_errors[i])**2
         return math.sqrt(err_f2)
     
-def get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index):
+def get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index):
     hist_name = f'{channel}_cut_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
     recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace', filtered=False, hist=True)
     recon_phasespace_file = ROOT.TFile(recon_phasespace_file_and_tree[0])
@@ -400,7 +400,7 @@ def get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index):
     recon_hist.SetDirectory(0)
     return recon_hist
 
-def get_phasespace_thrown_hist(channel, run_period, e, t_bin_index):
+def get_binned_phasespace_thrown_hist(channel, run_period, e, t_bin_index):
     thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
     thrown_phasespace_file = ROOT.TFile(thrown_phasespace_file_and_tree[0])
     thrown_hist_name = f'{channel}_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
@@ -408,7 +408,15 @@ def get_phasespace_thrown_hist(channel, run_period, e, t_bin_index):
     thrown_hist.SetDirectory(0)
     return thrown_hist
 
-def get_data_hist(channel, run_period, cut, e, t_bin_index):
+def get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index):
+    thrown_signal_file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal', filtered=False, hist=True, thrown=True)
+    thrown_signal_file = ROOT.TFile(thrown_signal_file_and_tree[0])
+    thrown_hist_name = f'{channel}_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    thrown_hist = thrown_signal_file.Get(thrown_hist_name)
+    thrown_hist.SetDirectory(0)
+    return thrown_hist
+
+def get_binned_data_hist(channel, run_period, cut, e, t_bin_index):
     hist_name = f'{channel}_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
     data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data', filtered=False, hist=True)
     data_hist_file = ROOT.TFile(data_file_and_tree[0])
@@ -416,8 +424,8 @@ def get_data_hist(channel, run_period, cut, e, t_bin_index):
     data_hist.SetDirectory(0)
     return data_hist
 
-def get_signal_mc_hist(channel, run_period, cut, e, t_bin_index):
-    hist_name = f'{channel}_cut_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+def get_binned_signal_mc_hist(channel, run_period, cut, e, t_bin_index):
+    hist_name = f'{channel}_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
     signal_mc_file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal', filtered=False, hist=True)
     signal_mc_hist_file = ROOT.TFile(signal_mc_file_and_tree[0])
     signal_mc_hist = signal_mc_hist_file.Get(hist_name)
@@ -457,6 +465,14 @@ def get_integrated_phasespace_thrown_hist(channel, run_period):
     return thrown_hist
 
 
+def get_integrated_signal_thrown_hist(channel, run_period):
+    thrown_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal', filtered=False, hist=True, thrown=True)
+    thrown_phasespace_file = ROOT.TFile(thrown_phasespace_file_and_tree[0])
+    thrown_hist_name = f'{channel};1'
+    thrown_hist = thrown_phasespace_file.Get(thrown_hist_name)
+    thrown_hist.SetDirectory(0)
+    return thrown_hist
+
     
 def acceptance_correct_histo(data_hist: ROOT.TH1, recon_hist: ROOT.TH1, thrown_hist: ROOT.TH1):
     data_hist.Sumw2()
@@ -481,9 +497,9 @@ def acceptance_correct_binned_kkpi_data(channel, run_period, cut, e, t_bin_index
     validate_e_bin(e)
     validate_t_bin(t_bin_index)
     
-    data_hist = get_data_hist(channel, run_period, cut, e, t_bin_index)
-    recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
-    thrown_hist = get_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
+    data_hist = get_binned_data_hist(channel, run_period, cut, e, t_bin_index)
+    recon_hist = get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
+    thrown_hist = get_binned_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
 
     ac_data_hist = acceptance_correct_histo(data_hist, recon_hist, thrown_hist)
     ac_data_hist.SetDirectory(0)
@@ -491,9 +507,9 @@ def acceptance_correct_binned_kkpi_data(channel, run_period, cut, e, t_bin_index
     return ac_data_hist
 
 def get_gluex1_binned_kkpi_data(channel, cut, e, t_bin_index):
-    hist_spring = get_data_hist(channel, 'spring', cut, e, t_bin_index)
-    hist_fall = get_data_hist(channel, 'fall', cut, e, t_bin_index)
-    hist_2017 = get_data_hist(channel, '2017', cut, e, t_bin_index)
+    hist_spring = get_binned_data_hist(channel, 'spring', cut, e, t_bin_index)
+    hist_fall = get_binned_data_hist(channel, 'fall', cut, e, t_bin_index)
+    hist_2017 = get_binned_data_hist(channel, '2017', cut, e, t_bin_index)
 
     hist_spring.Sumw2()
     hist_fall.Sumw2()
@@ -508,9 +524,9 @@ def get_gluex1_binned_kkpi_data(channel, cut, e, t_bin_index):
     return hist_total
 
 def get_gluex1_binned_kkpi_signal_mc(channel, cut, e, t_bin_index):
-    hist_spring = get_signal_mc_hist(channel, 'spring', cut, e, t_bin_index)
-    hist_fall = get_signal_mc_hist(channel, 'fall', cut, e, t_bin_index)
-    hist_2017 = get_signal_mc_hist(channel, '2017', cut, e, t_bin_index)
+    hist_spring = get_binned_signal_mc_hist(channel, 'spring', cut, e, t_bin_index)
+    hist_fall = get_binned_signal_mc_hist(channel, 'fall', cut, e, t_bin_index)
+    hist_2017 = get_binned_signal_mc_hist(channel, '2017', cut, e, t_bin_index)
 
     hist_spring.Sumw2()
     hist_fall.Sumw2()
@@ -595,8 +611,8 @@ def get_acceptance_corrected_signal_mc(channel, run_period, cut, e, t_bin_index,
     signal_df = signal_df.Range(0, int(signal_df.Count().GetValue() / 10))
 
     signal_hist = signal_df.Histo1D((f'data_hist_{run_period}', f'data_hist_{run_period}', n_bins, 1.0, 2.5), f'{channel}_m').GetValue()
-    recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
-    thrown_hist = get_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
+    recon_hist = get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
+    thrown_hist = get_binned_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
 
     ac_signal_hist = acceptance_correct_histo(signal_hist, recon_hist, thrown_hist)
     ac_signal_hist.SetDirectory(0)
@@ -632,8 +648,8 @@ def get_binned_integrated_phasespace_acceptance(channel, run_period, e, t_bin_in
     validate_e_bin(e)
     validate_t_bin(t_bin_index)
     
-    recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
-    thrown_hist = get_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
+    recon_hist = get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
+    thrown_hist = get_binned_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
 
     acceptance = recon_hist.Integral(recon_hist.FindBin(range_lower), recon_hist.FindBin(range_upper)) / thrown_hist.Integral(thrown_hist.FindBin(range_lower), thrown_hist.FindBin(range_upper))
     return acceptance
@@ -646,8 +662,8 @@ def get_binned_phasespace_acceptance(channel, run_period, e, t_bin_index, cut):
     validate_e_bin(e)
     validate_t_bin(t_bin_index)
     
-    recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
-    thrown_hist = get_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
+    recon_hist = get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
+    thrown_hist = get_binned_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
 
     recon_hist.Sumw2()
     thrown_hist.Sumw2()
@@ -679,8 +695,8 @@ def get_phasespace_acceptance(channel, run_period, cut, e, t_bin_index):
     validate_e_bin(e)
     validate_t_bin(t_bin_index)
     
-    recon_hist = get_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
-    thrown_hist = get_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
+    recon_hist = get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index)
+    thrown_hist = get_binned_phasespace_thrown_hist(channel, run_period, e, t_bin_index)
 
     acceptance = recon_hist.Integral() / thrown_hist.Integral()
     return acceptance
@@ -820,7 +836,7 @@ def get_integrated_gluex1_kstar_corrected_data_hist(channel):
 def get_binned_kstar_corrected_data(channel, run_period, e, t_bin_index, cut='all'):
     validate_e_bin(e)
     validate_t_bin(t_bin_index)
-    data_hist = get_data_hist(channel, run_period, cut, e, t_bin_index)
+    data_hist = get_binned_data_hist(channel, run_period, cut, e, t_bin_index)
     data_hist.Sumw2()
     corrected_hist = correct_data_hist_for_kstar_efficiency(data_hist)
     corrected_hist.Sumw2()
@@ -886,6 +902,33 @@ def get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, nbins=5
     combined_weighted_hist.Sumw2()
     combined_weighted_hist.SetDirectory(0)
     return combined_weighted_hist
+
+
+def get_binned_signal_acceptance(channel, run_period, e, t_bin_index, cut='all'):
+    signal_hist = get_binned_signal_mc_hist(channel, run_period, cut, e, t_bin_index)
+    thrown_hist = get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index)
+    return signal_hist.Integral() / thrown_hist.Integral()
+
+def get_integrated_signal_acceptance(channel, run_period, cut='all'):
+    signal_hist = get_integrated_signal_mc_hist(channel, run_period, cut)
+    thrown_hist = get_integrated_signal_mc_hist(channel, run_period)
+    return signal_hist.Integral() / thrown_hist.Integral()
+
+def get_binned_gluex1_signal_acceptance(channel, e, t_bin_index, cut='all'):
+    weighted_acceptance_spring = get_binned_signal_acceptance(channel, 'spring', e, t_bin_index, cut) * get_luminosity('spring', e-0.5, e+0.5)
+    weighted_acceptance_fall = get_binned_signal_acceptance(channel, 'fall', e, t_bin_index, cut) * get_luminosity('fall', e-0.5, e+0.5)
+    weighted_acceptance_2017 = get_binned_signal_acceptance(channel, '2017', e, t_bin_index, cut) * get_luminosity('2017', e-0.5, e+0.5)
+
+    return (weighted_acceptance_spring + weighted_acceptance_fall + weighted_acceptance_2017)/get_luminosity_gluex_1(beam_low=e-0.5, beam_high=e+0.5)
+
+
+def get_integrated_gluex1_signal_acceptance(channel, cut='all'):
+    weighted_acceptance_spring = get_integrated_signal_acceptance(channel, 'spring', cut) * get_luminosity('spring')
+    weighted_acceptance_fall = get_integrated_signal_acceptance(channel, 'fall', cut) * get_luminosity('fall')
+    weighted_acceptance_2017 = get_integrated_signal_acceptance(channel, '2017', cut) * get_luminosity('2017')
+
+    return (weighted_acceptance_spring + weighted_acceptance_fall + weighted_acceptance_2017)/get_luminosity_gluex_1()
+
 
 def set_sqrtN_error(hist):
     for i in range(1, hist.GetNbinsX()+1):
