@@ -1418,6 +1418,15 @@ def filter_dataframe(df, channel):
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
+def get_dataframe(channel, run_period, datatype, filtered=True):
+    if filtered:
+        file_and_tree = get_flat_file_and_tree(channel, run_period, datatype)
+        return ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
+    else:
+        file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False)
+        return define_columns(ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]), channel)
+
+
 def get_path_for_output_file(channel, datatype, thrown=False):
     if thrown:
         return f'/work/halld/home/viducic/data/{channel}/mc/thrown'
