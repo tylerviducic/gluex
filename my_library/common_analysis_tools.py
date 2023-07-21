@@ -972,20 +972,68 @@ def get_integrated_signal_acceptance(channel, run_period, cut='no', error=True):
     return get_acceptance(signal_hist.Integral(), thrown_hist.Integral(), error)
 
 
-def get_binned_gluex1_signal_acceptance(channel, e, t_bin_index, cut='no'):
-    weighted_acceptance_spring = get_binned_signal_acceptance(channel, 'spring', e, t_bin_index, cut) * get_luminosity('spring', e-0.5, e+0.5)
-    weighted_acceptance_fall = get_binned_signal_acceptance(channel, 'fall', e, t_bin_index, cut) * get_luminosity('fall', e-0.5, e+0.5)
-    weighted_acceptance_2017 = get_binned_signal_acceptance(channel, '2017', e, t_bin_index, cut) * get_luminosity('2017', e-0.5, e+0.5)
+def get_binned_gluex1_signal_acceptance(channel, e, t_bin_index, cut='no', error=True):
+    lumi_spring = get_luminosity('spring', e-0.5, e+0.5)
+    lumi_fall = get_luminosity('fall', e-0.5, e+0.5)
+    lumi_2017 = get_luminosity('2017', e-0.5, e+0.5)
+    lumi_total = lumi_spring + lumi_fall + lumi_2017
 
-    return (weighted_acceptance_spring + weighted_acceptance_fall + weighted_acceptance_2017)/get_luminosity_gluex_1(beam_low=e-0.5, beam_high=e+0.5)
+    if not error:
+        weighted_acceptance_spring = get_binned_signal_acceptance(channel, 'spring', e, t_bin_index, cut, error) * lumi_spring
+        weighted_acceptance_fall = get_binned_signal_acceptance(channel, 'fall', e, t_bin_index, cut, error) * lumi_fall
+        weighted_acceptance_2017 = get_binned_signal_acceptance(channel, '2017', e, t_bin_index, cut, error) * lumi_2017
+
+        return (weighted_acceptance_spring + weighted_acceptance_fall + weighted_acceptance_2017)/lumi_total
+    else:
+        error_spring = 0.0
+        error_fall = 0.0
+        error_2017 = 0.0
+        acceptance_spring, error_spring = get_binned_signal_acceptance(channel, 'spring', e, t_bin_index, cut)
+        acceptance_fall, error_fall = get_binned_signal_acceptance(channel, 'fall', e, t_bin_index, cut)
+        acceptance_2017, error_2017 = get_binned_signal_acceptance(channel, '2017', e, t_bin_index, cut)
+
+        weighted_acceptance_spring = acceptance_spring * lumi_spring
+        weighted_acceptance_fall = acceptance_fall * lumi_fall
+        weighted_acceptance_2017 = acceptance_2017 * lumi_2017
+        total_acceptance = (weighted_acceptance_spring + weighted_acceptance_fall + weighted_acceptance_2017)/lumi_total
+
+        weighted_error_spring = error_spring * lumi_spring
+        weighted_error_fall = error_fall * lumi_fall
+        weighted_error_2017 = error_2017 * lumi_2017
+        total_error = (weighted_error_spring + weighted_error_fall + weighted_error_2017)/lumi_total
+
+        return total_acceptance, total_error
 
 
-def get_integrated_gluex1_signal_acceptance(channel, cut='no', error: float = None):
-    weighted_acceptance_spring = get_integrated_signal_acceptance(channel, 'spring', cut) * get_luminosity('spring')
-    weighted_acceptance_fall = get_integrated_signal_acceptance(channel, 'fall', cut) * get_luminosity('fall')
-    weighted_acceptance_2017 = get_integrated_signal_acceptance(channel, '2017', cut) * get_luminosity('2017')
+def get_integrated_gluex1_signal_acceptance(channel, cut='no', error=True):
+    lumi_spring = get_luminosity('spring')
+    lumi_fall = get_luminosity('fall')
+    lumi_2017 = get_luminosity('2017')
+    lumi_total = lumi_spring + lumi_fall + lumi_2017
 
-    return (weighted_acceptance_spring + weighted_acceptance_fall + weighted_acceptance_2017)/get_luminosity_gluex_1()
+    if not error:
+        weighted_acceptance_spring = get_integrated_signal_acceptance(channel, 'spring', cut) * lumi_spring
+        weighted_acceptance_fall = get_integrated_signal_acceptance(channel, 'fall', cut) * lumi_fall
+        weighted_acceptance_2017 = get_integrated_signal_acceptance(channel, '2017', cut) * lumi_2017
+        return (weighted_acceptance_spring + weighted_acceptance_fall + weighted_acceptance_2017)/lumi_total
+    else:
+        error_spring = 0.0
+        error_fall = 0.0
+        error_2017 = 0.0
+        acceptance_spring, error_spring = get_integrated_signal_acceptance(channel, 'spring', cut)
+        acceptance_fall, error_fall = get_integrated_signal_acceptance(channel, 'fall', cut)
+        acceptance_2017, error_2017 = get_integrated_signal_acceptance(channel, '2017', cut)
+
+        weighted_acceptance_spring = acceptance_spring * lumi_spring
+        weighted_acceptance_fall = acceptance_fall * lumi_fall
+        weighted_acceptance_2017 = acceptance_2017 * lumi_2017
+        total_acceptance = (weighted_acceptance_spring + weighted_acceptance_fall + weighted_acceptance_2017)/lumi_total
+
+        weighted_error_spring = error_spring * lumi_spring
+        weighted_error_fall = error_fall * lumi_fall
+        weighted_error_2017 = error_2017 * lumi_2017
+        total_error = (weighted_error_spring + weighted_error_fall + weighted_error_2017)/lumi_total
+        return total_acceptance, total_error
 
 
 def set_sqrtN_error(hist):
