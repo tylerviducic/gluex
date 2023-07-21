@@ -6,8 +6,21 @@ import pandas as pd
 import math
 from ctypes import c_double
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+def get_title_for_plots(channel, e, t):
+    e_gamma = 'E_{#gamma}'
+    if channel == 'pipkmks':
+        title_kkpi = 'K^{-}K_{s}#pi^{+}'
+    elif channel == 'pimkpks':
+        title_kkpi = '#pi^{-}K^{+}K_{s}'
+    else:
+        return None
+    line1 = f'Fit for {title_kkpi} for {e_gamma} = {e} GeV'
+    line2 = f'{ct.T_CUT_DICT[t][0]} < t < {ct.T_CUT_DICT[t][1]} GeV^{2}'
+    return '#splitline{' + line1 + '}{' + line2 + '}'
+
+
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -25,8 +38,10 @@ width_list = []
 width_error_list = []
 chi2ndf_list = []
 ks_test_list = []
-ac_yield_list = []
+data_yield_list = []
 yield_error_list = []
+acceptance_list = []
+acceptance_error_list = []
 bin_width_list = []
 cross_section_list = []
 cross_section_error_list = []
@@ -36,8 +51,8 @@ energy_bin_list = []
 
 canvas_dict = {}
 
-fit_range_low = 1.2
-fit_range_high = 1.5
+hist_range_low = 1.2
+hist_range_high = 1.5
 
 for i in range(7, 12):
     canvas = ROOT.TCanvas(f'canvas_{i}', f'canvas_{i}', 1200, 900)
@@ -51,7 +66,7 @@ for e in range(7, 12):
         
         hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
 
-        m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", fit_range_low, fit_range_high)
+        m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
         voight_mean = ROOT.RooRealVar(f"voight_mean_{e}_{t}", f"voight_mean_{e}_{t}", v_mean, 1.26, 1.3)
@@ -91,14 +106,17 @@ for e in range(7, 12):
         data_yield_error = n_signal.getError()
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
 
-        cross_section = ct.calculate_crosssection(data_yield, luminosity, ct.T_WIDTH_DICT[t], ct.F1_KKPI_BRANCHING_FRACTION)
+        cross_section = ct.calculate_crosssection(data_yield, acceptance, luminosity, ct.T_WIDTH_DICT[t], ct.F1_KKPI_BRANCHING_FRACTION)
         cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, ct.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, math.sqrt(luminosity), ct.F1_KKPI_BRANCHING_FRACTION_ERROR])
 
         chi2_val = chi2_var.getVal()
 
         frame = m_kkpi.frame()
+        frame.SetTitle(get_title_for_plots(channel, e, t))
+        frame.GetXaxis().SetTitle('M(KK#pi^{+}) GeV')
+        frame.GetYaxis().SetTitle(f'Event/10 MeV')
 
-        n_bins = (fit_range_high-fit_range_low)*100
+        n_bins = (hist_range_high-hist_range_low)*100
         ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
         chi2ndf = chi2_val / ndf
 
@@ -118,8 +136,10 @@ for e in range(7, 12):
         width_error_list.append(voight_width.getError())
         chi2ndf_list.append(chi2ndf)
         ks_test_list.append(kstest)
-        ac_yield_list.append(data_yield)
+        data_yield_list.append(data_yield)
         yield_error_list.append(data_yield_error)
+        acceptance_list.append(acceptance)
+        acceptance_error_list.append(acceptance_error)
         cross_section_list.append(cross_section)
         cross_section_error_list.append(cross_section_error)
         t_bin_list.append((ct.T_CUT_DICT[t][0] + ct.T_CUT_DICT[t][1])/2.0)
@@ -131,7 +151,7 @@ for e in range(7, 12):
         canvas_dict[e].Update()
 
 # make a pandas datframe out of the lists
-value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'ks_test': ks_test_list, 'yield': ac_yield_list, 'yield_error': yield_error_list, 'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list})
+value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'ks_test': ks_test_list, 'yield': data_yield_list, 'yield_error': yield_error_list, 'acceptace': acceptance_list, 'acceptance_error': acceptance_error_list,' cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list})
 value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/cross_section_values.csv', index=False)
 
 pdf_filename = f'/work/halld/home/viducic/plots/kkpi_fits/{channel}_gluex_1_fits.pdf'
