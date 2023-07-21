@@ -7,25 +7,29 @@ import os
 # import pandas as pd
 # import matplotlib.pyplot as plt
 
+def get_dataframe(channel='pipkmks', run_period='spring', datatype='data'):
+    file_and_tree = ct.get_flat_file_and_tree(channel, run_period, datatype, filtered=False)
+
+    df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
+    return ct.define_columns(df, channel)
+
 def save_plot(canvas, filename):
     path_to_thesis_plots = '/work/halld/home/viducic/plots/thesis/'
     canvas.SaveAs(path_to_thesis_plots + filename + '.png')
 
-def build_legend(histograms: list, x1=0.7, y1=0.7, x2=0.9, y2=0.9):
+def build_legend(histograms: list, x1=0.7, y1=0.7, x2=0.9, y2=0.9, labels: list=[]):
+    if len(labels) != len(histograms):
+        labels = [hist.GetTitle() for hist in histograms]
     print("building legend")
     legend = ROOT.TLegend(x1, y1, x2, y2)
     for hist in histograms:
-        legend.AddEntry(hist, hist.GetTitle(), 'l')
+        legend.AddEntry(hist, labels[histograms.index(hist)], 'l')
     return legend
 
 def get_ks_before_after_cut(bin_low=0.3, bin_high=0.7, nbins=500):
     os.nice(18)
     ROOT.EnableImplicitMT()
-    data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
-    file_treename = 'pipkmks__B4_M16'
-
-    df = ROOT.RDataFrame(file_treename, data_file)
-    df = ct.define_columns(df, 'pipkmks')
+    df = get_dataframe()
 
     df.Filter(ct.MX2_PPIPKMKS_CUT)
 
@@ -46,11 +50,7 @@ def get_ks_before_after_cut(bin_low=0.3, bin_high=0.7, nbins=500):
 def get_mpipi_vs_pathlength_sig(bin_lowx=0.3, bin_highx=0.7, bin_lowy=0, bin_highy=10, nbinsx=200, nbinsy=200):
     os.nice(18)
     ROOT.EnableImplicitMT()
-    data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
-    file_treename = 'pipkmks__B4_M16'
-
-    df = ROOT.RDataFrame(file_treename, data_file)
-    df = ct.define_columns(df, 'pipkmks')
+    df = get_dataframe()
     df.Filter(ct.MX2_PPIPKMKS_CUT)
 
     hist = df.Histo2D(('ks_m_vs_pathlength', 'ks_m_vs_pathlength', nbinsx, bin_lowx, bin_highx, nbinsy, bin_lowy, bin_highy), 'ks_m', 'pathlength_sig')
@@ -61,11 +61,7 @@ def get_mpipi_vs_pathlength_sig(bin_lowx=0.3, bin_highx=0.7, bin_lowy=0, bin_hig
     return hist.GetValue()
 
 def result_of_p_p_cut(nbins= 500, xlow=0.0, xhigh=2.0):
-    data_file = '/work/halld/home/viducic/data/pipkmks/data/bestX2/pipkmks_flat_bestX2_2018_spring.root'
-    file_treename = 'pipkmks__B4_M16'
-
-    df = ROOT.RDataFrame(file_treename, data_file)
-    df = ct.define_columns(df, 'pipkmks')
+    df = get_dataframe()
     df = df.Filter(ct.MX2_PPIPKMKS_CUT).Filter(ct.KS_PATHLENGTH_CUT).Filter(ct.KS_MASS_CUT)
     hist_t_mand = df.Histo1D(('mand_t', 'mand_t', nbins, xlow, xhigh), 'mand_t')
     hist_t_mand.SetTitle("-t = M^{2}(p - p^{\\prime}) GeV^{2}")
@@ -110,6 +106,36 @@ def plot_pipkmks_phasespace_with_cuts():
     hist_cut.Draw("SAME")
     c.Update()
     input("Press Enter to continue...")
+
+def plot_delta(bin_low=1.0, bin_high=2.5, nbins=200):
+    df = get_dataframe()
+    df = df.Filter(ct.MX2_PPIPKMKS_CUT).Filter(ct.KS_PATHLENGTH_CUT).Filter(ct.KS_MASS_CUT).Filter(ct.P_P_CUT)
+    hist_delta = df.Histo1D(('ppip_m', 'M(p#pi^{+}) GeV', nbins, bin_low, bin_high), 'ppip_m')
+    hist_delta.SetTitle("M(p#pi^{+}) GeV")
+    hist_delta.GetXaxis().SetTitle("M(p#pi^{+}) GeV")
+    hist_delta.GetYaxis().SetTitle(f"Counts/{1000*((bin_high-bin_low)/nbins):.2f} MeV")
+    hist_delta.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+    hist_delta.SetDirectory(0)
+    return hist_delta.GetValue()
+
+def plot_nstar(bin_low=1.0, bin_high=2.5, nbins=200):
+    df = get_dataframe(channel='pimkpks')
+    df = df.Filter(ct.MX2_PPIMKPKS_CUT).Filter(ct.KS_PATHLENGTH_CUT).Filter(ct.KS_MASS_CUT).Filter(ct.P_P_CUT)
+    hist_nstar = df.Histo1D(('ppim_m', 'M(p#pi^{-}) GeV', nbins, bin_low, bin_high), 'ppim_m')
+    hist_nstar.SetTitle("M(p#pi^{-}) GeV")
+    hist_nstar.GetXaxis().SetTitle("M(p#pi^{-}) GeV")
+    hist_nstar.GetYaxis().SetTitle(f"Counts/{1000*((bin_high-bin_low)/nbins):.2f} MeV")
+    hist_nstar.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+    hist_nstar.SetDirectory(0)
+    return hist_nstar.GetValue()
+
+def plot_baryons():
+    hist_delta = plot_delta()
+    hist_nstar = plot_nstar()
+    hist_nstar.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
+    hist_delta.SetDirectory(0)
+    hist_nstar.SetDirectory(0)
+    return hist_delta, hist_nstar
     
 
 if __name__ == "__main__":
