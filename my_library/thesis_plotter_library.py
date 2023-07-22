@@ -136,6 +136,52 @@ def plot_baryons():
     hist_delta.SetDirectory(0)
     hist_nstar.SetDirectory(0)
     return hist_delta, hist_nstar
+
+
+def plot_ksp(channel, bin_low=1.4, bin_high=2.5, nbins=200):
+    df = get_dataframe(channel)
+    df = df.Filter(ct.KS_PATHLENGTH_CUT).Filter(ct.KS_MASS_CUT).Filter(ct.P_P_CUT)
+    if channel == 'pimkpks':
+        df = df.Filter(ct.MX2_PPIMKPKS_CUT).Filter(ct.PPIM_MASS_CUT)
+    elif channel == 'pipkmks':
+        df = df.Filter(ct.MX2_PPIPKMKS_CUT).Filter(ct.PPIP_MASS_CUT)
+    hist_ksp = df.Histo1D(('ksp_m', 'M(K_{s}p) GeV', nbins, bin_low, bin_high), 'ksp_m')
+    hist_ksp.SetTitle("M(K_{s}p) GeV")
+    hist_ksp.GetXaxis().SetTitle("M(K_{s}p) GeV")
+    hist_ksp.GetYaxis().SetTitle(f"Counts/{1000*((bin_high-bin_low)/nbins):.2f} MeV")
+    hist_ksp.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+    hist_ksp.SetDirectory(0)
+    return hist_ksp.GetValue()
+
+def plot_kmp(bin_low=1.4, bin_high=2.5, nbins=200):
+    df = get_dataframe()
+    df = df.Filter(ct.MX2_PPIPKMKS_CUT).Filter(ct.KS_PATHLENGTH_CUT).Filter(ct.KS_MASS_CUT).Filter(ct.P_P_CUT).Filter(ct.PPIP_MASS_CUT)
+    hist_kmp = df.Histo1D(('kmp_m', 'M(K^{-}p) GeV', nbins, bin_low, bin_high), 'kmp_m')
+    hist_kmp.SetTitle("M(K^{-}p) GeV")
+    hist_kmp.GetXaxis().SetTitle("M(K^{-}p) GeV")
+    hist_kmp.GetYaxis().SetTitle(f"Counts/{1000*((bin_high-bin_low)/nbins):.2f} MeV")
+    hist_kmp.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+    hist_kmp.SetDirectory(0)
+    return hist_kmp.GetValue()
+
+def plot_kpp(bin_low=1.4, bin_high=2.5, nbins=200):
+    df = get_dataframe('pimkpks')
+    df = df.Filter(ct.MX2_PPIMKPKS_CUT).Filter(ct.KS_PATHLENGTH_CUT).Filter(ct.KS_MASS_CUT).Filter(ct.P_P_CUT).Filter(ct.PPIM_MASS_CUT)
+    hist_kpp = df.Histo1D(('kpp_m', 'M(K^{+}p) GeV', nbins, bin_low, bin_high), 'kpp_m')
+    hist_kpp.SetTitle("M(K^{+}p) GeV")
+    hist_kpp.GetXaxis().SetTitle("M(K^{+}p) GeV")
+    hist_kpp.GetYaxis().SetTitle(f"Counts/{1000*((bin_high-bin_low)/nbins):.2f} MeV")
+    hist_kpp.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+    hist_kpp.SetDirectory(0)
+    return hist_kpp.GetValue()
+
+
+def plot_lambdas():
+    hist_kmp = plot_kmp()
+    hist_kpp = plot_kpp()
+    hist_ksp_pipkmks = plot_ksp('pipkmks')
+    hist_ksp_pimkpks = plot_ksp('pimkpks')
+    return hist_kmp, hist_kpp, hist_ksp_pipkmks, hist_ksp_pimkpks
     
 
 if __name__ == "__main__":
