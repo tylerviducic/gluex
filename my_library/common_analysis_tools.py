@@ -148,6 +148,15 @@ KSTAR_CUT_DICT_PIMKPKS = {
     'all': KSTAR_ALL_CUT_PIMKPKS
 }
 
+KSTAR_CUT_TITLE_DICT = {
+    'no': 'No K* Rejection',
+    'plus': 'K*^{+} Rejected',
+    'minus': 'K*^{-} Rejected',
+    'zero': 'K*^{0} Rejected',
+    'all': 'Both K* Rejected'
+}
+
+
 ALLOWED_E_BINS = range(7, 12)
 ALLOWED_T_BINS = range(1, 8)
 ALLOWED_RUN_PERIODS = ['spring', 'fall', '2017']
