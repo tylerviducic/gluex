@@ -28,6 +28,20 @@ def build_legend(histograms: list, x1=0.7, y1=0.7, x2=0.9, y2=0.9, labels: list=
     return legend
 
 
+def build_kkpi_title(channel, cut=None):
+    validate_kstar_cut(channel, cut)
+    if channel == 'pipkmks':
+        title = "M(K^{-}K_{s}#pi^{+})"
+    elif channel == 'pimkpks':
+        title = "M(K^{+}K_{s}#pi^{-})"
+    if not cut or cut == 'no':
+        cut_info = ''
+    else:
+        cut_info = f" with " + ct.KSTAR_CUT_DICT_PIPKMKPS[cut]
+    title += cut_info
+    return title
+
+
 def get_ks_before_after_cut(bin_low=0.3, bin_high=0.7, nbins=500):
     os.nice(18)
     ROOT.EnableImplicitMT()
@@ -236,6 +250,32 @@ def plot_kstars():
     hist_neutral_kstar_pipkmks = plot_neutral_kstar('pipkmks')
     hist_neutral_kstar_pimkpks = plot_neutral_kstar('pimkpks')
     return hist_charged_kstar_pipkmks, hist_charged_kstar_pimkpks, hist_neutral_kstar_pipkmks, hist_neutral_kstar_pimkpks
+
+
+def validate_kstar_cut(channel, cut):
+    if channel == 'pipkmks':
+        if cut not in ct.KSTAR_CUT_DICT_PIPKMKS.keys():
+            raise ValueError("Invalid cut. Valid cuts are: " + str(ct.KSTAR_CUT_DICT_PIPKMKS.keys()))
+    elif channel == 'pimkpks':
+        if cut not in ct.KSTAR_CUT_DICT_PIMKPKS.keys():
+            raise ValueError("Invalid cut. Valid cuts are: " + str(ct.KSTAR_CUT_DICT_PIMKPKS.keys()))
+    return True
+
+
+def plot_kkpi(channel, cut, nbins=150, xlow=1.0, xhigh=2.5):
+    validate_kstar_cut(channel, cut)
+    df = get_dataframe(channel)
+    df = df.Filter(ct.KS_PATHLENGTH_CUT).Filter(ct.KS_MASS_CUT).Filter(ct.P_P_CUT)
+    if channel == 'pimkpks':
+        df = df.Filter(ct.MX2_PPIMKPKS_CUT).Filter(ct.PPIM_MASS_CUT).Filter(ct.KSP_MASS_CUT).Filter(ct.KSTAR_CUT_DICT_PIMKPKS[cut])
+    elif channel == 'pipkmks':
+        df = df.Filter(ct.MX2_PPIPKMKS_CUT).Filter(ct.PPIP_MASS_CUT).Filter(ct.KMP_MASS_CUT).Filter(ct.KSTAR_CUT_DICT_PIPKMKS[cut])
+    hist_kkpi = df.Histo1D(('kkpi_m', build_kkpi_title(channel, cut), nbins, xlow, xhigh), f'{channel}_m')
+    hist_kkpi.GetXaxis().SetTitle(hist_kkpi.GetTitle().split(' ')[0])
+    hist_kkpi.GetYaxis().SetTitle(f"Counts/{1000*((xhigh-xlow)/nbins):.2f} MeV")
+    hist_kkpi.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+    hist_kkpi.SetDirectory(0)
+    return hist_kkpi.GetValue()
 
 
 if __name__ == "__main__":
