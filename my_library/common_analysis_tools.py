@@ -1328,6 +1328,13 @@ def define_pipkmks_columns(df):
 
     new_df = new_df.Define('kmp_m', 'sqrt(kmp_E*kmp_E - kmp_px*kmp_px - kmp_py*kmp_py - kmp_pz*kmp_pz)')
 
+    new_df = new_df.Define('ksp_px', 'p_px + ks_px')
+    new_df = new_df.Define('ksp_py', 'p_py + ks_py')
+    new_df = new_df.Define('ksp_pz', 'p_pz + ks_pz')
+    new_df = new_df.Define('ksp_E', 'p_E + ks_E')
+
+    new_df = new_df.Define('ksp_m', 'sqrt(ksp_E*ksp_E - ksp_px*ksp_px - ksp_py*ksp_py - ksp_pz*ksp_pz)')
+
     new_df = new_df.Define('kspip_px', 'pip1_px + ks_px')
     new_df = new_df.Define('kspip_py', 'pip1_py + ks_py')
     new_df = new_df.Define('kspip_pz', 'pip1_pz + ks_pz')
