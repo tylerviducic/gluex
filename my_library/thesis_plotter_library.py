@@ -37,8 +37,25 @@ def build_kkpi_title(channel, cut=None):
     if not cut or cut == 'no':
         cut_info = ''
     else:
-        cut_info = f" with " + ct.KSTAR_CUT_DICT_PIPKMKPS[cut]
+        cut_info = f" with " + ct.KSTAR_CUT_TITLE_DICT[cut]
     title += cut_info
+    return title
+
+
+def build_f1_1420_title(channel, kept_kstar):
+    if channel == 'pipkmks':
+        title = "M(K^{+}K^{-}#pi^{+}) with "
+        if kept_kstar == 'charged':
+            kept_charge_info = "K*^{+} Selected and K*^{0} Rejected"
+        elif kept_kstar == 'neutral':
+            kept_charge_info = "K*^{0} Selected and K*^{+} Rejected"
+    elif channel == 'pimkpks':
+        title = "M(K^{+}K^{-}#pi^{-}) with "
+        if kept_kstar == 'charged':
+            kept_charge_info = "K*^{-} Selected and K*^{0} Rejected"
+        elif kept_kstar == 'neutral':
+            kept_charge_info = "K*^{0} Selected and K*^{-} Rejected"
+    title += kept_charge_info
     return title
 
 
@@ -276,6 +293,29 @@ def plot_kkpi(channel, cut, nbins=150, xlow=1.0, xhigh=2.5):
     hist_kkpi.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
     hist_kkpi.SetDirectory(0)
     return hist_kkpi.GetValue()
+
+
+def plot_f1_1420(channel, kept_kstar, n_bins=150, xlow=1.0, xhigh=2.5):
+    df = get_dataframe(channel)
+    df = df.Filter(ct.KS_PATHLENGTH_CUT).Filter(ct.KS_MASS_CUT).Filter(ct.P_P_CUT)
+    if channel == 'pimkpks':
+        df = df.Filter(ct.MX2_PPIMKPKS_CUT).Filter(ct.PPIM_MASS_CUT).Filter(ct.KSP_MASS_CUT)
+        if kept_kstar == 'charged':
+            df = df.Filter(ct.KEEP_CHARGED_REJECT_NEUTRAL_PIMKPKS)
+        elif kept_kstar == 'neutral':
+            df = df.Filter(ct.KEEP_NEUTRAL_REJECT_CHARGED_PIMKPKS)
+    elif channel == 'pipkmks':
+        df = df.Filter(ct.MX2_PPIPKMKS_CUT).Filter(ct.PPIP_MASS_CUT).Filter(ct.KMP_MASS_CUT)
+        if kept_kstar == 'charged':
+            df = df.Filter(ct.KEEP_CHARGED_REJECT_NEUTRAL_PIPKMKS)
+        elif kept_kstar == 'neutral':
+            df = df.Filter(ct.KEEP_NEUTRAL_REJECT_CHARGED_PIPKMKS)
+    hist_f1_1420 = df.Histo1D(('pipkmks_1420', build_f1_1420_title(channel, kept_kstar), n_bins, xlow, xhigh), f'{channel}_m')
+    hist_f1_1420.GetXaxis().SetTitle(hist_f1_1420.GetTitle().split(' ')[0] + ' GeV')
+    hist_f1_1420.GetYaxis().SetTitle(f"Counts/{1000*((xhigh-xlow)/n_bins):.2f} MeV")
+    hist_f1_1420.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+    hist_f1_1420.SetDirectory(0)
+    return hist_f1_1420.GetValue()
 
 
 if __name__ == "__main__":
