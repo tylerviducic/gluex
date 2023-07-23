@@ -82,9 +82,14 @@ KSTAR_PLUS_CUT = 'kspip_m < 0.8 || kspip_m > 1.0'
 KSTAR_MINUS_CUT = 'kspim_m < 0.8 || kspim_m > 1.0'
 KSTAR_ZERO_CUT_PIPKMKS = 'kmpip_m < 0.8 || kmpip_m > 1.0'
 KSTAR_ALL_CUT_PIPKMKS = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
+KEEP_NEUTRAL_REJECT_CHARGED_PIPKMKS = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m > 0.8 && kmpip_m < 1.0)'
+KEEP_CHARGED_REJECT_NEUTRAL_PIPKMKS = '(kspip_m > 0.8 && kspip_m < 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
+
 KSTAR_NO_CUT_PIMKPKS = 'kspim_m > 0.0'
 KSTAR_ZERO_CUT_PIMKPKS = 'kppim_m < 0.8 || kppim_m > 1.0'
 KSTAR_ALL_CUT_PIMKPKS = '(kspim_m < 0.8 || kspim_m > 1.0) && (kppim_m < 0.8 || kppim_m > 1.0)'
+KEEP_NEUTRAL_REJECT_CHARGED_PIMKPKS = '(kspim_m < 0.8 || kspim_m > 1.0) && (kppim_m > 0.8 && kppim_m < 1.0)'
+KEEP_CHARGED_REJECT_NEUTRAL_PIMKPKS = '(kspim_m > 0.8 && kspim_m < 1.0) && (kppim_m < 0.8 || kppim_m > 1.0)'
 
 # COLORBLIND HEX CODES #
 COLORBLIND_HEX_DICT = { 
