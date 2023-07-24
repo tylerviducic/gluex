@@ -9,8 +9,8 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -114,13 +114,15 @@ n_bins = data_hist.GetNbinsX()
 # n_bins = 29
 ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
 chi2_per_ndf = chi2_val / ndf
-print("chi2 = " + str(chi2_val))
-print("ndf = " + str(ndf))
-print("chi2/ndf = " + str(chi2_per_ndf))
+
 
 c1 = ROOT.TCanvas("c1", "c1", 800, 600)
 c1.cd()
 frame = m_kkpi.frame()
+title = ct.get_integrated_kkpi_hist_title(channel)
+frame.SetTitle(title)
+frame.GetXaxis().SetTitle(f'{title.split(" ")[0]} GeV') 
+frame.GetYaxis().SetTitle(f'Counts/10MeV')
 
 npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
 chi2ndf = frame.chiSquare(npar)
@@ -140,6 +142,7 @@ combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineCol
 
 frame.Draw()
 c1.Update()
+c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/{channel}_integrated_fit.png')
 
 pullDist = ROOT.TH1I("pullDist", "pullDist", 3, 0, 3)
 for i in range(0, pullHist.GetN()):
@@ -184,7 +187,9 @@ c2.Update()
 
 print(f"f1 mass = {voight_m.getVal() * 1000} +/- {voight_m.getError() * 1000}")
 print(f"f1 width = {voight_width.getVal() * 1000} +/- {voight_width.getError() * 1000}")
-print(f"Fit X2/ndf = {chi2_per_ndf}")
+print("chi2 = " + str(chi2_val))
+print("ndf = " + str(ndf))
+print("chi2/ndf = " + str(chi2_per_ndf))
 print(f"second X2/ndf = {chi2ndf}")
 print(f'f1 yield = {n_f1.getVal()} +/- {n_f1.getError()}')
 
