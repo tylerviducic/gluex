@@ -6,8 +6,21 @@ import pandas as pd
 import math
 from ctypes import c_double
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+def get_title_for_plots(channel, e, t):
+    e_gamma = 'E_{#gamma}'
+    if channel == 'pipkmks':
+        title_kkpi = 'K^{-}K_{s}#pi^{+}'
+    elif channel == 'pimkpks':
+        title_kkpi = '#pi^{-}K^{+}K_{s}'
+    else:
+        return None
+    line1 = f'Fit for {title_kkpi} for {e_gamma} = {e} GeV'
+    line2 = f'{ct.T_CUT_DICT[t][0]} < t < {ct.T_CUT_DICT[t][1]} GeV^{2}'
+    return '#splitline{' + line1 + '}{' + line2 + '}'
+
+
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -17,8 +30,7 @@ elif channel == 'pimkpks' :
     v_mean = ct.F1_PIMKPKS_ACCEPTANCE_CORRECTED_VOIGHT_MEAN
     v_width = ct.F1_PIMKPKS_ACCEPTANCE_CORRECTED_VOIGHT_SIGMA
 
-#TODO make this file by re-running with all the phasespace stuff
-df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width_psac.csv')
+df = pd.read_csv(f'//work/halld/home/viducic/data/fit_params/{channel}/psac_binned_e_t_f1_mc_width.csv')
 
 mean_list = []
 mean_error_list = []
@@ -35,24 +47,20 @@ t_bin_list = []
 t_bin_width_list = []
 energy_bin_list = []
 
-canvas_dict = {}
+hist_range_low = 1.2
+hist_range_high = 1.5
 
-fit_range_low = 1.2
-fit_range_high = 1.5
-
-for i in range(7, 12):
-    canvas = ROOT.TCanvas(f'canvas_{i}', f'canvas_{i}', 1200, 900)
-    canvas.Divide(4, 2)
-    canvas_dict[i] = canvas
+c = ROOT.TCanvas()
+c.Divide(4, 2)
 
 for e in range(7, 12):
     luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)
     for t in range(1, 8):
-        canvas_dict[e].cd(t)
+        c.cd(t)
         
-        hist = ct.acceptance_correct_all_binned_gluex1_kkpi_data(channel, cut, e, t)
+        hist = ct.acceptance_correct_all_binned_gluex1_kkpi_data_with_phasespace(channel, cut, e, t)
 
-        m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", fit_range_low, fit_range_high)
+        m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
         voight_mean = ROOT.RooRealVar(f"voight_mean_{e}_{t}", f"voight_mean_{e}_{t}", v_mean, 1.26, 1.3)
@@ -90,7 +98,7 @@ for e in range(7, 12):
         fit_result = minuit.save()
 
         hist_error = c_double(0.0)
-        hist_integral = hist.IntegralAndError(hist.FindBin(fit_range_low), hist.FindBin(fit_range_high), hist_error)
+        hist_integral = hist.IntegralAndError(hist.FindBin(hist_range_low), hist.FindBin(hist_range_high), hist_error)
         ac_yield = n_signal.getVal()
         ac_yield_error = n_signal.getError()
         cross_section = ct.calculate_crosssection_from_acceptance_corrected_yield(ac_yield, luminosity, ct.T_WIDTH_DICT[t], ct.F1_KKPI_BRANCHING_FRACTION)
@@ -100,7 +108,13 @@ for e in range(7, 12):
 
         frame = m_kkpi.frame()
 
-        n_bins = (fit_range_high-fit_range_low)*100
+        frame = m_kkpi.frame()
+        title = get_title_for_plots(channel, e, t)
+        frame.SetTitle(title)
+        frame.GetXaxis().SetTitle(title.split(" ")[0] + 'GeV')
+        frame.GetYaxis().SetTitle(f'Event/10 MeV')
+
+        n_bins = (hist_range_high-hist_range_low)*100
         ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
         chi2ndf = chi2_val / ndf
 
@@ -129,20 +143,14 @@ for e in range(7, 12):
         energy_bin_list.append(e)
         
         frame.Draw()
+        c.Update()
 
-        canvas_dict[e].Update()
+    c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/psac_{channel}_cross_section_fits_beam_{e}.png')
+    
 
 # make a pandas datframe out of the lists
 value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'ks_test': ks_test_list, 'yield': ac_yield_list, 'yield_error': yield_error_list, 'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list})
 value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/cross_section_values_psac.csv', index=False)
-
-pdf_filename = f'/work/halld/home/viducic/plots/kkpi_fits/{channel}_gluex_1_fits_psac.pdf'
-
-canvas_dict[i].Print(pdf_filename +'[')
-for i in range(7, 12):
-    canvas_dict[i].Print(pdf_filename)
-
-canvas_dict[i].Print(pdf_filename +']')
 
 input('Press enter to exit')
 
