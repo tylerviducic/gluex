@@ -22,8 +22,7 @@ elif channel == 'pimkpks' :
     voight_resoltion = ct.F1_PIMKPKS_VOIGHT_SIGMA
     voight_resolution_error = ct.F1_PIMKPKS_VOIGHT_SIGMA_ERROR
 
-# data_hist = ct.get_integrated_gluex1_acceptance_corrected_data(channel, cut)
-data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
+data_hist = ct.get_integrated_gluex1_acceptance_corrected_data(channel, cut)
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
