@@ -624,7 +624,7 @@ def get_gluex1_binned_avg_phasespace_acceptance(channel, cut, e, t_bin_index):
     return avg_acceptance
 
 
-def acceptance_correcst_all_binned_gluex1_kkpi_data_with_phasespace(channel, cut, e, t_bin_index):
+def acceptance_correct_all_binned_gluex1_kkpi_data_with_phasespace(channel, cut, e, t_bin_index):
 
     data_hist = get_gluex1_binned_kkpi_data(channel, cut, e, t_bin_index)
     acceptance_hist = get_gluex1_binned_avg_phasespace_acceptance(channel, cut, e, t_bin_index)
