@@ -49,13 +49,9 @@ fit_result = func.chi2FitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
 signal_mc.GetXaxis().SetRangeUser(range_min, range_max)
-n_bins_ndf = signal_mc.GetNbinsX()
-print("n_bins = " + str(n_bins))
+n_bins_ndf = signal_mc.GetXaxis().FindBin(range_max) - signal_mc.GetXaxis().FindBin(range_min)
 ndf = n_bins_ndf - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
 chi2_per_ndf = chi2_val / ndf
-print("chi2 = " + str(chi2_val))
-print("ndf = " + str(ndf))
-print("chi2/ndf = " + str(chi2_per_ndf))
 
 
 frame = m_kkpi.frame()
@@ -67,6 +63,7 @@ npar = func.getParameters(dh).selectByAttrib("Constant", False).getSize()
 chi2ndf = frame.chiSquare(npar)
 
 frame.Draw()
+frame.SaveAs(f'/work/halld/home/viducic/plots/thesis/{channel}_voigtian_f1_resolution.png')
 
 # input('press enter to continue')
 
@@ -90,7 +87,11 @@ c.cd(2)
 pullDist.Draw()
 c.Update()
 
-print(f'chi2ndf: {chi2ndf}')
+print("n_bins = " + str(n_bins))
+print("chi2 = " + str(chi2_val))
+print("ndf = " + str(ndf))
+print("chi2/ndf = " + str(chi2_per_ndf))
+print(f"voight sigma =  {sigma.getVal()} +/- {sigma.getError()}")
 input('press enter to continue')
 
 
