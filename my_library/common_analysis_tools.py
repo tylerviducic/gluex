@@ -395,9 +395,9 @@ def get_binned_kkpi_hist_title(channel, e, t_bin_index):
     validate_t_bin(t_bin_index)
     validate_e_bin(e)
     if channel == 'pipkmks':
-        kkpi = 'K^{-}K_{s}#pi^{-}'
+        kkpi = 'K^{-}K_{s}#pi^{+}'
     elif channel == 'pimkpks':
-        kkpi = 'K^{+}K_{s}#pi^{+}'
+        kkpi = 'K^{+}K_{s}#pi^{-}'
     else:
         return None
     return 'M({}) for E_{}={}-{} and t={}-{}'.format(kkpi, '{#gamma}', e-0.5, e+0.5, T_CUT_DICT[t_bin_index][0], T_CUT_DICT[t_bin_index][1])
@@ -427,7 +427,7 @@ def propogate_error_addition(input_errors: list):
 
 
 def get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index):
-    hist_name = f'{channel}_cut_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    hist_name = f'{channel}_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
     recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace', filtered=False, hist=True)
     recon_phasespace_file = ROOT.TFile(recon_phasespace_file_and_tree[0])
     recon_hist = recon_phasespace_file.Get(hist_name)
