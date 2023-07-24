@@ -31,11 +31,11 @@ energy_list = []
 t_bin_list = []
 
 c1 = ROOT.TCanvas()
-c1.Divide(7, 5)
+c1.Divide(4, 2)
 
 for e in range(7, 12):
     for t in range(1, 8):
-        c1.cd(t + 7 * (e - 7))
+        c1.cd(t)
         signal_mc_hist = ct.get_gluex1_binned_signal_mc_hist_for_resoltion_fitting(channel, e, t)
 
         m_kkpi = ROOT.RooRealVar('m_kkpi', 'm_kkpi', 1.2, 1.5)
@@ -62,8 +62,9 @@ for e in range(7, 12):
         chi2_per_ndf = chi2_val / ndf
 
         frame = m_kkpi.frame()
-        frame.SetTitle(f"M(KK#pi) for E={e} GeV, t={ct.T_CUT_DICT[t][0]}-{ct.T_CUT_DICT[t][1]}")
-        frame.GetXaxis().SetTitle("M(KK#pi) (GeV)")
+        title = ct.get_binned_kkpi_hist_title(channel, e, t)
+        frame.SetTitle(title)
+        frame.GetXaxis().SetTitle(title.split(' ')[0] + ' (GeV)')
         dh.plotOn(frame)
         func.plotOn(frame)
         chi2_ndf_list.append(chi2_per_ndf)
@@ -73,7 +74,8 @@ for e in range(7, 12):
         t_bin_list.append(t)
 
         frame.Draw()
-        c1.Update()
+    c1.Update()
+    c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/binned_resolution_fits/{channel}_binned_resolution_fits_beam_{e}.png')
 
 # create a pandas dataframe from the lists in this script
 df = pd.DataFrame({'chi2_ndf': chi2_ndf_list, 'sigma': sigma_list, 'sigma_err': sigma_err_list, 'energy': energy_list, 't_bin': t_bin_list})
