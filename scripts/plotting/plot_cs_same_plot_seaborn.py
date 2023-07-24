@@ -3,7 +3,7 @@
 import pandas
 import numpy
 import matplotlib.pyplot as plt
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 import pandas as pd
 
 channel = 'pipkmks'
@@ -77,8 +77,8 @@ for name, group in grouped:
             ax.plot(theory_df['t'], theory_df['diff_cs'], 'r-')
 
         # Set the axis labels
-        ax.set_xlabel(latex_axis_label_dict['t'])
-        ax.set_ylabel(latex_axis_label_dict[variable])
+        ax.set_xlabel(ct.LATEX_AXIS_LABEL_DICT['t'])
+        ax.set_ylabel(ct.LATEX_AXIS_LABEL_DICT[variable])
 
         # Show or save the plot
         # plt.show()  # or 
