@@ -400,7 +400,7 @@ def get_binned_kkpi_hist_title(channel, e, t_bin_index):
         kkpi = 'K^{+}K_{s}#pi^{+}'
     else:
         return None
-    return 'M({}) for E_{}={}- and t={}-{}'.format(kkpi, '{#gamma}', e-0.5, e+0.5, T_CUT_DICT[t_bin_index][0], T_CUT_DICT[t_bin_index][1])
+    return 'M({}) for E_{}={}-{} and t={}-{}'.format(kkpi, '{#gamma}', e-0.5, e+0.5, T_CUT_DICT[t_bin_index][0], T_CUT_DICT[t_bin_index][1])
 
 def get_integrated_kkpi_hist_title(channel):
     if channel == 'pipkmks':
@@ -693,6 +693,7 @@ def calculate_crosssection(data_yield, acceptance, luminosity, bin_width, branch
     """returns cross section for kkpi with multiplicity of 6"""
     return (data_yield / (acceptance *luminosity * bin_width * branching_fraction * 6))
 
+
 def get_binned_integrated_phasespace_acceptance(channel, run_period, e, t_bin_index, cut='all', range_lower=1.0, range_upper=2.5):
     """
     e should be an integer between 7 and 10 inclusive
@@ -843,7 +844,6 @@ def get_integrated_gluex1_signal_mc(channel, cut):
 
 
 def acceptance_correct_all_binned_gluex1_kkpi_signal_mc_with_phasespace(channel, cut, e, t_bin_index):
-
     signal_mc_hist = get_gluex1_binned_kkpi_signal_mc(channel, cut, e, t_bin_index)
     acceptance_hist = get_gluex1_binned_avg_phasespace_acceptance(channel, cut, e, t_bin_index)
 
