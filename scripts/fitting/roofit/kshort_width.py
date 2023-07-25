@@ -72,12 +72,15 @@ composite.plotOn(frame, ROOT.RooFit.Components("double_gaus"), ROOT.RooFit.LineC
 composite.plotOn(frame, ROOT.RooFit.Components("gaus_1"), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue'])))
 composite.plotOn(frame, ROOT.RooFit.Components("gaus_2"), ROOT.RooFit.LineStyle(ROOT.kDashDotted), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['cyan'])))
 
+c1 = ROOT.TCanvas("c1", "c1", 800, 600)
+c1.cd()
 frame.Draw()
 title = 'Fit of M(#pi^{+}#pi^{-})'
 frame.SetTitle(title)
 frame.GetXaxis().SetTitle('M(#pi^{+}#pi^{-}) [GeV]')
-frame.GetYaxis().SetTitle(f'Events / {(xhigh-xlow)/nbins:3f} GeV')
-frame.SaveAs('/w/halld-scshelf2101/home/viducic/plots/thesis/ks_width.png')
+frame.GetYaxis().SetTitle(f'Events / {(1000*(xhigh-xlow)/nbins):.2f} MeV')
+frame.GetYaxis().SetTitleOffset(1.5)
+c1.SaveAs('/w/halld-scshelf2101/home/viducic/plots/thesis/ks_width.png')
 
 def get_composite_width(sig1, sig2, frac):
     return sig1 * frac + sig2 * (1.0 - frac)
