@@ -404,9 +404,9 @@ def get_binned_kkpi_hist_title(channel, e, t_bin_index):
 
 def get_integrated_kkpi_hist_title(channel):
     if channel == 'pipkmks':
-        kkpi = 'K^{-}K_{s}#pi^{-}'
+        kkpi = 'K^{-}K_{s}#pi^{+}'
     elif channel == 'pimkpks':
-        kkpi = 'K^{+}K_{s}#pi^{+}'
+        kkpi = 'K^{+}K_{s}#pi^{-}'
     else:
         return None
     return 'M({}) for E_{}=6.5-11.5 and t=0.1-1.9'.format(kkpi, '{#gamma}')
@@ -884,6 +884,7 @@ def correct_data_hist_for_kstar_efficiency(hist):
             continue
         bin_eff = bin_ef_df.kstar_cut_efficiency.values[0]
         hist.SetBinContent(i, hist.GetBinContent(i) / bin_eff)
+        hist.SetBinError(i, hist.GetBinError(i) / bin_eff)
     hist.SetDirectory(0)
     return hist
 

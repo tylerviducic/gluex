@@ -16,8 +16,7 @@ def get_title_for_plots(channel, e, t):
         return None
     line1 = f'Fit for {title_kkpi} for {e_gamma} = {e} GeV'
     line2 = f'{ct.T_CUT_DICT[t][0]} < t < {ct.T_CUT_DICT[t][1]} GeV^{2}'
-    return '#splitline{' + line1 + '}{' + line2 + '}'
-
+    return '#splitline{' + line1 + '}{' + line2 + '}'        
 
 # channel = 'pipkmks'
 channel = 'pimkpks'
@@ -49,18 +48,24 @@ t_bin_list = []
 t_bin_width_list = []
 energy_bin_list = []
 
+
 hist_range_low = 1.2
 hist_range_high = 1.5
 
 c = ROOT.TCanvas()
 c.Divide(4, 2)
 
+
 for e in range(7, 12):
+    hist_uncor_list = []
+    hist_cor_list = []
     luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)
     for t in range(1, 8):
         c.cd(t)
         
+        hist_uncor_list.append(ct.get_gluex1_binned_kkpi_data(channel, cut, e, t))
         hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
+        hist_cor_list.append(hist)
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
@@ -147,7 +152,25 @@ for e in range(7, 12):
         c.Update()
 
     c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_cross_section_fits_beam_{e}.png')
+    c1 = ROOT.TCanvas()
+    c1.Divide(4, 2)
+    index = 1
+    for hist_uncor, hist_cor in zip(hist_uncor_list, hist_cor_list):
+        c1.cd(index)
+        index += 1
+        hist_uncor.GetXaxis().SetRangeUser(hist_range_low, hist_range_high)
+        hist_cor.GetXaxis().SetRangeUser(hist_range_low, hist_range_high)
+        hist_cor.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
+        hist_uncor.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+        hist_uncor.Draw()
+        hist_cor.Draw('same')
+        c1.Update()
+    c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_data_hist_correction_comparison_{e}.png')
 
+
+
+
+c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_uncorrected_data_hist_beam_{e}.png')
 # make a pandas datframe out of the lists
 value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'ks_test': ks_test_list, 'yield': data_yield_list, 'yield_error': yield_error_list, 'acceptance': acceptance_list, 'acceptance_error': acceptance_error_list,'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list})
 value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/cross_section_values.csv', index=False)
