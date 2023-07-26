@@ -9,8 +9,8 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -26,7 +26,10 @@ elif channel == 'pimkpks' :
 data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
 
 
-m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
+m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.15, 1.5)
+range_min = 1.17
+range_max = 1.37
+m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
 # ROOT.gROOT.ProcessLineSync(".x /w/halld-scshelf2101/home/viducic/roofunctions/RelBreitWigner.cxx+")
@@ -36,7 +39,7 @@ dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
 # set up a roofit voightian with a mean of 1.285, width of 0.024, and a sigma of 0.013
 voight_m = ROOT.RooRealVar("voight_m", "voight_m", 1.285, 1.2, 1.3)
-voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.024, 0.01, 0.075)
+voight_width = ROOT.RooRealVar("voight_width", "voight_width", 0.023, 0.01, 0.075)
 voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", voight_resoltion, 0.01, 0.5)
 # voight_sigma = ROOT.RooRealVar("voight_sigma", "voight_sigma", 0.0111726, 0.01, 0.5)
 voight_sigma.setError(voight_resolution_error)
@@ -61,7 +64,7 @@ bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -1.0, 1.0)
 bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -1.0, 1.0)
 bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -1.0, 1.0)
 
-bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3, bkg_par4)) 
+bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3)) 
 
 
 ## BERNSTEIN ##
@@ -97,7 +100,7 @@ combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(vo
 
 chi2_var = combined_pdf.createChi2(dh)
 
-c2 = ROOT.RooChi2Var(f"c2", f"c2", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
+c2 = ROOT.RooChi2Var(f"c2", f"c2", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2), ROOT.RooFit.Range("fit_range"))
 minuit = ROOT.RooMinuit(c2)
 minuit.migrad()
 minuit.minos()
@@ -110,9 +113,9 @@ fit_result = minuit.save()
 # fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Save())
 
 chi2_val = chi2_var.getVal()
-n_bins = data_hist.GetNbinsX()
+n_bins_ndf = data_hist.GetXaxis().FindBin(range_max) - data_hist.GetXaxis().FindBin(range_min)
 # n_bins = 29
-ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
+ndf = n_bins_ndf - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
 chi2_per_ndf = chi2_val / ndf
 
 
@@ -148,8 +151,10 @@ pullDist = ROOT.TH1I("pullDist", "pullDist", 3, 0, 3)
 for i in range(0, pullHist.GetN()):
     pullDist.Fill(abs(pullHist.GetY()[i]))
 
-ks_test_func = combined_pdf.createHistogram("ks_test_func", m_kkpi, ROOT.RooFit.Binning(1000))
-ks_test_data = dh.createHistogram("ks_test_data", m_kkpi, ROOT.RooFit.Binning(1000))
+ks_test_func = combined_pdf.createHistogram("ks_test_func", m_kkpi)#, ROOT.RooFit.Binning(1000))
+ks_test_data = dh.createHistogram("ks_test_data", m_kkpi)#, ROOT.RooFit.Binning(1000))
+ks_test_data.Scale(1/ks_test_data.Integral())
+ks_test_func.Scale(1/ks_test_func.Integral())
 
 kstest = ks_test_data.KolmogorovTest(ks_test_func)
 # latex = ROOT.TLatex(); #prepare text in LaTeX format latex->SetTextSize(0.035);
