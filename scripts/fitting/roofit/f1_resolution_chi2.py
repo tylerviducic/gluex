@@ -21,6 +21,7 @@ scale_factor = 200
 # acc_cor_signal_mc_hist_total = ct.get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=scale_factor)
 signal_mc = ct.get_integrated_gluex1_signal_mc_hist_for_resolution_fitting(channel, scale_factor=100, nbins = 300)
 ct.set_sqrtN_error(signal_mc)
+# signal_mc = ct.correct_data_hist_for_kstar_efficiency(signal_mc)
 
 
 # for i in range(1, ac_signal_hist_total.GetNbinsX() + 1):
@@ -32,12 +33,12 @@ m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
 range_min = 1.22
 range_max = 1.35
 m_kkpi.setRange("fit_range", range_min, range_max)
-mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.2, 1.3)
+mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.284, 1.287)
 width = ROOT.RooRealVar('width', 'width', 0.022, 0.001, 0.1)
 sigma = ROOT.RooRealVar('sigma', 'sigma', 0.025, 0.001, 0.1)
 
 width.setConstant(ROOT.kTRUE)
-mean.setConstant(ROOT.kTRUE)
+# mean.setConstant(ROOT.kTRUE)
 
 
 dh = ROOT.RooDataHist('dh', 'dh', ROOT.RooArgList(m_kkpi), signal_mc)
