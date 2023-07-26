@@ -802,7 +802,7 @@ def get_integrated_gluex1_avg_phasespace_acceptance(channel, cut):
     return acceptance_total
 
 
-def get_integrated_gluex1_phaasespace_acceptance_corrected_data(channel, cut):
+def get_integrated_gluex1_phasespace_acceptance_corrected_data(channel, cut):
     data_hist = get_integrated_gluex1_data(channel, cut)
     acceptance = get_integrated_gluex1_avg_phasespace_acceptance(channel, cut)
 
