@@ -7,6 +7,12 @@ import os
 # import pandas as pd
 # import matplotlib.pyplot as plt
 
+def alphabetize_acknowledgements(string_of_names: str):
+    names = sorted(string_of_names.split(', '))
+    for name in names:
+        print(name, end=', ')
+
+
 def get_dataframe(channel='pipkmks', run_period='spring', datatype='data'):
     file_and_tree = ct.get_flat_file_and_tree(channel, run_period, datatype, filtered=False)
     df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
