@@ -27,8 +27,8 @@ data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.15, 1.5)
-range_min = 1.17
-range_max = 1.37
+range_min = 1.18
+range_max = 1.4
 m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
@@ -59,10 +59,10 @@ voight_sigma.setConstant(True)
 
 ## CHEBYCHEV ##
 
-bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -1.0, 1.0)
-bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -1.0, 1.0)
-bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -1.0, 1.0)
-bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -1.0, 1.0)
+bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -2.0, 2.0)
+bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -2.0, 2.0)
+bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -2.0, 2.0)
+bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -2.0, 2.0)
 
 bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
 
@@ -98,7 +98,6 @@ n_bkg = ROOT.RooRealVar("n_bkg", "n_bkg", 10000, 0.0, 1000000000)
 
 combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(n_f1, n_bkg))
 
-chi2_var = combined_pdf.createChi2(dh)
 
 c2 = ROOT.RooChi2Var(f"c2", f"c2", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2), ROOT.RooFit.Range("fit_range"))
 minuit = ROOT.RooMinuit(c2)
@@ -112,7 +111,7 @@ minuit.minos()
 fit_result = minuit.save()
 # fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Save())
 
-chi2_val = chi2_var.getVal()
+chi2_val = c2.getVal()
 n_bins_ndf = data_hist.GetXaxis().FindBin(range_max) - data_hist.GetXaxis().FindBin(range_min)
 # n_bins = 29
 ndf = n_bins_ndf - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
@@ -130,18 +129,18 @@ frame.GetYaxis().SetTitle(f'Counts/10MeV')
 npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
 chi2ndf = frame.chiSquare(npar)
 
-dh.plotOn(frame)
+dh.plotOn(frame, ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
 # draw_pdf(kstar_cut, frame, combined_pdf, '1285')
 # combined_pdf.plotOn(frame, ROOT.RooFit.VisualizeError(fit_result), ROOT.RooFit.LineColor(ROOT.kRed))
-combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red'])))
+combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red'])))
 pullHist = frame.pullHist()
 npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
 chi2ndf = frame.chiSquare(npar)
 # fit_result.plotOn(frame, ROOT.RooAbsArg(voight), ROOT.RooFit.LineColor(ROOT.kRed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("bw"), ROOT.RooFit.LineColor(ROOT.kGreen))
-combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
+combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("relbw"), ROOT.RooFit.LineColor(ROOT.kBlue))
-combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue'])))
+combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue'])))
 
 frame.Draw()
 c1.Update()
@@ -169,10 +168,10 @@ distribution described by the model
 ks_test_data.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
 
 
-c2 = ROOT.TCanvas("c2", "c2", 800, 600)
-c2.cd()
-c2.Divide(3, 1)
-c2.cd(1)
+c3 = ROOT.TCanvas("c2", "c2", 800, 600)
+c3.cd()
+c3.Divide(3, 1)
+c3.cd(1)
 pullHist.Draw("AP")
 
 y = 0.0
@@ -182,20 +181,21 @@ line.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
 line.SetLineStyle(2)
 line.SetLineWidth(2)
 line.Draw("same")
-c2.cd(2)
+c3.cd(2)
 pullDist.Draw()
-c2.cd(3)
+c3.cd(3)
 ks_test_data.Draw()
 ks_test_func.Draw("same")
-c2.Update()
+c3.Update()
 
 
 print(f"f1 mass = {voight_m.getVal() * 1000} +/- {voight_m.getError() * 1000}")
 print(f"f1 width = {voight_width.getVal() * 1000} +/- {voight_width.getError() * 1000}")
-print("chi2 = " + str(chi2_val))
+# print("chi2 = " + str(chi2_val))
+print("chi2 = " + str(c2.getVal()))
 print("ndf = " + str(ndf))
-print("chi2/ndf = " + str(chi2_per_ndf))
-print(f"second X2/ndf = {chi2ndf}")
+print("chi2/ndf (manual calculation) = " + str(chi2_per_ndf))
+print(f"second X2/ndf (frame method) = {chi2ndf}")
 print(f'f1 yield = {n_f1.getVal()} +/- {n_f1.getError()}')
 
 input("Press enter to close")

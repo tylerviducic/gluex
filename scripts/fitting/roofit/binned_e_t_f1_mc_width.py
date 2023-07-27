@@ -5,8 +5,8 @@ import my_library.common_analysis_tools as ct
 import numpy as np
 import pandas as pd
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks':
@@ -42,12 +42,12 @@ for e in range(7, 12):
         range_min = 1.22
         range_max = 1.35
         m_kkpi.setRange("fit_range", range_min, range_max)
-        mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.2, 1.3)
+        mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.283, 1.287)
         width = ROOT.RooRealVar('width', 'width', 0.022, 0.001, 0.1)
         sigma = ROOT.RooRealVar('sigma', 'sigma', voight_resolution, 0.001, 0.1)
 
         width.setConstant(ROOT.kTRUE)
-        mean.setConstant(ROOT.kTRUE)
+        # mean.setConstant(ROOT.kTRUE)
 
         dh = ROOT.RooDataHist('dh', 'dh', ROOT.RooArgList(m_kkpi), signal_mc_hist)
 

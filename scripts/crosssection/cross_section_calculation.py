@@ -49,7 +49,7 @@ t_bin_width_list = []
 energy_bin_list = []
 
 
-hist_range_low = 1.2
+hist_range_low = 1.15
 hist_range_high = 1.5
 
 c = ROOT.TCanvas()
@@ -68,6 +68,9 @@ for e in range(7, 12):
         hist_cor_list.append(hist)
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
+        range_min = 1.18
+        range_max = 1.4
+        m_kkpi.setRange("fit_range", range_min, range_max)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
         voight_mean = ROOT.RooRealVar(f"voight_mean_{e}_{t}", f"voight_mean_{e}_{t}", v_mean, 1.26, 1.3)
@@ -88,7 +91,7 @@ for e in range(7, 12):
         bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -2.0, 2.0)
         bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -2.0, 2.0)
 
-        bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3, bkg_par4)) 
+        bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3)) 
 
         # sig_frac = ROOT.RooRealVar(f"sig_frac_{e}_{t}", f"sig_frac_{e}_{t}", 0.5, 0.0, 1.0)
         n_signal = ROOT.RooRealVar(f"n_signal_{e}_{t}", f"n_signal_{e}_{t}", 100000, 0, 10000000)
@@ -96,7 +99,7 @@ for e in range(7, 12):
 
         combined_pdf = ROOT.RooAddPdf(f'combined_pdf_{e}_{t}', f'combined_pdf_{e}_{t}', ROOT.RooArgList(voight, bkg), ROOT.RooArgList(n_signal, n_bkg))
         chi2_var = combined_pdf.createChi2(dh)
-        c2 = ROOT.RooChi2Var(f"c2_{e}_{t}", f"c2_{e}_{t}", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
+        c2 = ROOT.RooChi2Var(f"c2_{e}_{t}", f"c2_{e}_{t}", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2), ROOT.RooFit.Range("fit_range"))
         minuit = ROOT.RooMinuit(c2)
         minuit.migrad()
         minuit.minos()
@@ -110,7 +113,7 @@ for e in range(7, 12):
         cross_section = ct.calculate_crosssection(data_yield, acceptance, luminosity, ct.T_WIDTH_DICT[t], ct.F1_KKPI_BRANCHING_FRACTION)
         cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, ct.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, math.sqrt(luminosity), ct.F1_KKPI_BRANCHING_FRACTION_ERROR])
 
-        chi2_val = chi2_var.getVal()
+        chi2_val = c2.getVal()
 
         frame = m_kkpi.frame()
         title = get_title_for_plots(channel, e, t)

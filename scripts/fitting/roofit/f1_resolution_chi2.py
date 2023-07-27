@@ -33,7 +33,7 @@ m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.2, 1.5)
 range_min = 1.22
 range_max = 1.35
 m_kkpi.setRange("fit_range", range_min, range_max)
-mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.284, 1.287)
+mean = ROOT.RooRealVar('mean', 'mean', 1.285, 1.283, 1.287)
 width = ROOT.RooRealVar('width', 'width', 0.022, 0.001, 0.1)
 sigma = ROOT.RooRealVar('sigma', 'sigma', 0.025, 0.001, 0.1)
 
