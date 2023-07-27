@@ -18,8 +18,8 @@ def get_title_for_plots(channel, e, t):
     line2 = f'{ct.T_CUT_DICT[t][0]} < t < {ct.T_CUT_DICT[t][1]} GeV^{2}'
     return '#splitline{' + line1 + '}{' + line2 + '}'        
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -69,7 +69,7 @@ for e in range(7, 12):
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
         range_min = 1.18
-        range_max = 1.45
+        range_max = 1.4
         m_kkpi.setRange("fit_range", range_min, range_max)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
