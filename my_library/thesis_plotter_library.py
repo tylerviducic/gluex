@@ -325,9 +325,20 @@ def plot_f1_1420(channel, kept_kstar, n_bins=150, xlow=1.0, xhigh=2.5):
 
 
 if __name__ == "__main__":
-    ROOT.gStyle.SetOptStat(0)
-    # get_ks_before_after_cut
-    #()
-    # result_of_p_p_cut()
-    # plot_mx2_all()
-    plot_pipkmks_phasespace_with_cuts()
+    import time
+    
+    df = get_dataframe()
+    start = time.time()
+    df.Filter(ct.KS_PATHLENGTH_CUT)
+    end = time.time()
+    print(f"Time to filter with compiliation: {end-start}")
+
+    start = time.time()
+    df.Filter('pathlength_sig > 5')
+    end = time.time()
+    print(f"Time to filter using string: {end-start}")
+
+    start = time.time()
+    df.Filter(ct.KS_PATHLENGTH_CUT)
+    end = time.time()
+    print(f"Time to filter after compiliation: {end-start}")

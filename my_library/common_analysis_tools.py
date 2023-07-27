@@ -60,9 +60,10 @@ F1_PIPKMKS_ACCETPANCE_CORRECTED_VOIGHT_WIDTH_ERROR = 0.002782548323692978
 # CUT STRINGS AND FUNCTIONS # 
 
 @ROOT.Numba.Declare(['float'], 'bool')
-def KS_PATHLENGTH_CUT_FUNC(pathlength_sig, cut=5):
-    return pathlength_sig > cut
-KS_PATHLENGTH_CUT = 'Numba::KS_PATHLENGTH_CUT_FUNC(ks_m)'
+def KS_PATHLENGTH_CUT_FUNC(pathlength_sig):
+    return pathlength_sig > 5
+KS_PATHLENGTH_CUT = 'Numba::KS_PATHLENGTH_CUT_FUNC(pathlength_sig)'
+
 KS_COLIN_CUT = 'cos_colin > 0.99'
 KS_VERTEX_CUT = ' vertex_distance > 3'
 OLD_KS_MASS_CUT = 'ks_m > 0.475 && ks_m < 0.525'
