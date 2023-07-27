@@ -19,9 +19,9 @@ def get_dataframe(channel='pipkmks', run_period='spring', datatype='data'):
     return ct.define_columns(df, channel)
 
 
-def save_plot(canvas, filename):
+def save_plot(canvas, filename, filetype='png'):
     path_to_thesis_plots = '/work/halld/home/viducic/plots/thesis/'
-    canvas.SaveAs(path_to_thesis_plots + filename + '.png')
+    canvas.SaveAs(f'{path_to_thesis_plots}{filename}.{filetype}')
 
 
 def build_legend(histograms: list, x1=0.7, y1=0.7, x2=0.9, y2=0.9, labels: list=[]):
