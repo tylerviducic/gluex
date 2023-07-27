@@ -110,9 +110,23 @@ LATEX_AXIS_LABEL_DICT = {
     't': '$-t$ (GeV$^2$)',
     'cross_section': '$\\frac{d\\sigma}{dt}$ $\\frac{nb}{GeV^2}$',
     'yield': 'counts',
+    'flux_corrected_yield': 'counts',
+    'acceptance': 'acceptance',
     'mean': 'mean (GeV)',
     'width': 'width (GeV)',
-    'chi2ndf': '$\\chi^2$/ndf',
+    'chi2ndf': '$\\frac{\\chi^2}{ndf}$',
+    'pipkmks': '$\\pi^+K^-K_s$',
+    'pimkpks': '$\\pi^-K^+K_s$'
+}
+
+LATEX_PLOT_TITLE_DICT = {
+    'cross_section': 'Cross Section',
+    'yield': 'Yields',
+    'flux_corrected_yield': 'Flux Normalized Yields',
+    'acceptance': 'Acceptance',
+    'mean': 'BW Mean',
+    'width': 'BW Width',
+    'chi2ndf': 'Fit $\\chi^2$/ndf',
     'pipkmks': '$\\pi^+K^-K_s$',
     'pimkpks': '$\\pi^-K^+K_s$'
 }

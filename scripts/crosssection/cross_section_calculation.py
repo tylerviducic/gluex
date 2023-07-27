@@ -18,8 +18,8 @@ def get_title_for_plots(channel, e, t):
     line2 = f'{ct.T_CUT_DICT[t][0]} < t < {ct.T_CUT_DICT[t][1]} GeV^{2}'
     return '#splitline{' + line1 + '}{' + line2 + '}'        
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -69,7 +69,7 @@ for e in range(7, 12):
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
         range_min = 1.18
-        range_max = 1.4
+        range_max = 1.45
         m_kkpi.setRange("fit_range", range_min, range_max)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
@@ -155,25 +155,25 @@ for e in range(7, 12):
         c.Update()
 
     c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_cross_section_fits_beam_{e}.png')
-    c1 = ROOT.TCanvas()
-    c1.Divide(4, 2)
-    index = 1
-    for hist_uncor, hist_cor in zip(hist_uncor_list, hist_cor_list):
-        c1.cd(index)
-        index += 1
-        hist_uncor.GetXaxis().SetRangeUser(hist_range_low, hist_range_high)
-        hist_cor.GetXaxis().SetRangeUser(hist_range_low, hist_range_high)
-        hist_cor.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
-        hist_uncor.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
-        hist_uncor.Draw()
-        hist_cor.Draw('same')
-        c1.Update()
-    c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_data_hist_correction_comparison_{e}.png')
+    # c1 = ROOT.TCanvas()
+    # c1.Divide(4, 2)
+    # index = 1
+    # for hist_uncor, hist_cor in zip(hist_uncor_list, hist_cor_list):
+    #     c1.cd(index)
+    #     index += 1
+    #     hist_uncor.GetXaxis().SetRangeUser(hist_range_low, hist_range_high)
+    #     hist_cor.GetXaxis().SetRangeUser(hist_range_low, hist_range_high)
+    #     hist_cor.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
+    #     hist_uncor.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue']))
+    #     hist_uncor.Draw()
+    #     hist_cor.Draw('same')
+    #     c1.Update()
+    # c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_data_hist_correction_comparison_{e}.png')
 
 
 
 
-c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_uncorrected_data_hist_beam_{e}.png')
+# c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_uncorrected_data_hist_beam_{e}.png')
 # make a pandas datframe out of the lists
 value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'ks_test': ks_test_list, 'yield': data_yield_list, 'yield_error': yield_error_list, 'acceptance': acceptance_list, 'acceptance_error': acceptance_error_list,'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list})
 value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/cross_section_values.csv', index=False)
