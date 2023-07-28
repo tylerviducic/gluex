@@ -1171,8 +1171,8 @@ def define_pipkmks_columns(df):
     new_df = new_df.Define('kmks_E', 'km_E + ks_E')
     new_df = new_df.Define('kmks_m', 'sqrt(kmks_E*kmks_E - kmks_px*kmks_px - kmks_py*kmks_py - kmks_pz*kmks_pz)')
 
-    new_df = new_df.Define('e_bin', 'get_beam_bin_index(e_beam)')
-    new_df = new_df.Define('t_bin', 'get_t_bin_index(mand_t)')
+    new_df = new_df.Define('e_bin', kcuts.BEAM_BIN_FILTER)
+    new_df = new_df.Define('t_bin', kcuts.T_BIN_FILTER)
     return new_df
 
 
