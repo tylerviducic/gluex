@@ -81,18 +81,18 @@ MX2_PPIPKMKS_CUT_STRING = 'abs(mx2_ppipkmks) < 0.01'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
-def mx2_ppimkpks(mx2_ppimkpks):
+def mx2_ppimkpks_cut(mx2_ppimkpks):
     return abs(mx2_ppimkpks) < 0.01
-MX2_PPIMKPKS_CUT = 'Numba::mx2_ppimkpks(mx2_ppimkpks)'
+MX2_PPIMKPKS_CUT = 'Numba::mx2_ppimkpks_cut(mx2_ppimkpks)'
 MX2_PPIMKPKS_CUT_STRING = 'abs(mx2_ppimkpks) < 0.01'
 
 
 # PPIM_MASS_CUT = 'ppim_m > 1.8'
 @ROOT.Numba.Declare(['float'], 'bool')
 def ppim_mass_cut(ppim_m):
-    return ppim_m > 1.8
+    return ppim_m > 1.4
 PPIM_MASS_CUT = 'Numba::ppim_mass_cut(ppim_m)'
-PPIM_MASS_CUT_STRING = 'ppim_m > 1.8'
+PPIM_MASS_CUT_STRING = 'ppim_m > 1.4'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
