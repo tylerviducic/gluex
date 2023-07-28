@@ -4,7 +4,7 @@ it is broken down into compiled funcitons and string cuts
 """
 
 import ROOT
-from constants import KSHORT_FIT_MEAN, KSHORT_FIT_WIDTH
+from my_library.constants import KSHORT_FIT_MEAN, KSHORT_FIT_WIDTH
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
