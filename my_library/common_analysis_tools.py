@@ -67,19 +67,70 @@ KS_PATHLENGTH_CUT = 'Numba::KS_PATHLENGTH_CUT_FUNC(pathlength_sig)'
 KS_COLIN_CUT = 'cos_colin > 0.99'
 KS_VERTEX_CUT = ' vertex_distance > 3'
 OLD_KS_MASS_CUT = 'ks_m > 0.475 && ks_m < 0.525'
-KS_MASS_CUT = f'abs(ks_m - {KSHORT_FIT_MEAN}) < {2 * KSHORT_FIT_WIDTH}'
-PPIP_MASS_CUT = 'ppip_m > 1.4'
-KMP_MASS_CUT = 'kmp_m > 1.95'
-F1_SIGNAL_REGION_PIPKMKS = 'pipkmks_m > 1.2 && pipkmks_m < 1.5'
-F1_SIGNAL_REGION_PIMKPKS = 'pimkpks_m > 1.2 && pimkpks_m < 1.5'
-BEAM_RANGE = 'e_beam >= 6.50000000000 && e_beam <= 11.5'
-T_RANGE = 'mand_t >= 0.1 && mand_t <= 1.9'
-P_P_CUT = 'p_p > 0.4'
-MX2_PPIPKMKS_CUT = 'abs(mx2_ppipkmks) < 0.01'
-MX2_PPIMKPKS_CUT = 'abs(mx2_ppimkpks) < 0.01'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def KSHORT_MASS_CUT_FUNC(ks_m):
+    return abs(ks_m - KSHORT_FIT_MEAN) < 2 * KSHORT_FIT_WIDTH
+KS_MASS_CUT = 'Numba::KSHORT_MASS_CUT_FUNC(ks_m)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def PPIP_MASS_CUT_FUNC(ppip_m):
+    return ppip_m > 1.4
+PPIP_MASS_CUT = 'Numba::PPIP_MASS_CUT_FUNC(ppip_m)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def KMP_MASS_CUT_FUNC(kmp_m):
+    return kmp_m > 1.95
+KMP_MASS_CUT = 'numba::KMP_MASS_CUT_FUNC(kmp_m)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def F1_SIGNAL_REGION_PIPKMKS_FUNC(pipkmks_m):
+    return pipkmks_m > 1.2 and pipkmks_m < 1.5
+F1_SIGNAL_REGION_PIPKMKS = 'Numba::F1_SIGNAL_REGION_PIPKMKS_FUNC(pipkmks_m)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def F1_SIGNAL_REGION_PIMKPKS_FUNC(pimkpks_m):
+    return pimkpks_m > 1.2 and pimkpks_m < 1.5
+F1_SIGNAL_REGION_PIMKPKS = 'Numba::F1_SIGNAL_REGION_PIMKPKS_FUNC(pimkpks_m)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def BEAM_RANGE_FUNC(e_beam):
+    return e_beam >= 6.5 and e_beam <= 11.5
+BEAM_RANGE = 'Numba::BEAM_RANGE_FUNC(e_beam)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def T_RANGE_FUNC(mand_t):
+    return mand_t >= 0.1 and mand_t <= 1.9
+T_RANGE = 'Numba::T_RANGE_FUNC(mand_t)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def P_P_CUT_FUNC(p_p):
+    return p_p > 0.4
+P_P_CUT = 'Numba::P_P_CUT_FUNC(p_p)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def MX2_PPIPKMKS_CUT_FUNC(mx2_ppipkmks):
+    return abs(mx2_ppipkmks) < 0.01
+MX2_PPIPKMKS_CUT = 'Numba::MX2_PPIPKMKS_CUT_FUNC(mx2_ppipkmks)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def MX2_PPIMKPKS_CUT_FUNC(mx2_ppimkpks):
+    return abs(mx2_ppimkpks) < 0.01
+MX2_PPIMKPKS_CUT = 'Numba::MX2_PPIMKPKS_CUT_FUNC(mx2_ppimkpks)'
+
+
 # PPIM_MASS_CUT = 'ppim_m > 1.8'
-PPIM_MASS_CUT = 'ppim_m > 1.4'
-KSP_MASS_CUT = 'ksp_m > 1.95'
+@ROOT.Numba.Declare(['float'], 'bool')
+def PPIM_MASS_CUT_FUNC(ppim_m):
+    return ppim_m > 1.8
+PPIM_MASS_CUT = 'Numba::PPIM_MASS_CUT_FUNC(ppim_m)'
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def KSP_MASS_CUT_FUNC(ksp_m):
+    return ksp_m > 1.95
+KSP_MASS_CUT = 'Numba::KSP_MASS_CUT_FUNC(ksp_m)'
+
+#TODO compile these with numba too
 
 KSTAR_NO_CUT_PIPKMKS = 'kspip_m > 0.0'
 KSTAR_PLUS_CUT = 'kspip_m < 0.8 || kspip_m > 1.0'
