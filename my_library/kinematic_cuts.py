@@ -89,7 +89,7 @@ MX2_PPIMKPKS_CUT_STRING = 'abs(mx2_ppimkpks) < 0.01'
 
 # PPIM_MASS_CUT = 'ppim_m > 1.8'
 @ROOT.Numba.Declare(['float'], 'bool')
-def ppip_mass_cut(ppim_m):
+def ppim_mass_cut(ppim_m):
     return ppim_m > 1.8
 PPIM_MASS_CUT = 'Numba::ppip_mass_cut(ppim_m)'
 PPIM_MASS_CUT_STRING = 'ppim_m > 1.8'
@@ -215,4 +215,23 @@ T_BIN_FILTER = 'Numba::t_bin_filter(t)'
 def select_t_bin(t_bin, t_index):
     return t_bin == t_index
 SELECT_T_BIN = 'Numba::select_t_bin(t_bin, {})'
+
+
+
+# DICTIONARY FOR CALLING THESE FUNCTIONS
+
+KSTAR_CUT_DICT_PIPKMKS = {
+    'no': KSTAR_NO_CUT_PIPKMKS,
+    'plus': KSTAR_PLUS_CUT,
+    'zero': KSTAR_ZERO_CUT_PIPKMKS,
+    'all': KSTAR_ALL_CUT_PIPKMKS
+}
+
+
+KSTAR_CUT_DICT_PIMKPKS = {
+    'no': KSTAR_NO_CUT_PIMKPKS,
+    'minus': KSTAR_MINUS_CUT,
+    'zero': KSTAR_ZERO_CUT_PIMKPKS,
+    'all': KSTAR_ALL_CUT_PIMKPKS
+}
 

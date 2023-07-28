@@ -90,9 +90,9 @@ def run_analysis(channel, run_period, data_type):
 
         
     if channel == 'pipkmks':
-        cut_dict = constants.KSTAR_CUT_DICT_PIPKMKS
+        cut_dict = kcuts.KSTAR_CUT_DICT_PIPKMKS
     elif channel == 'pimkpks':
-        cut_dict = constants.KSTAR_CUT_DICT_PIMKPKS
+        cut_dict = kcuts.KSTAR_CUT_DICT_PIMKPKS
 
     for cut in cut_dict:
         cut_df = df.Filter(cut_dict[cut])
