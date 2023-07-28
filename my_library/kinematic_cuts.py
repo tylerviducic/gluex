@@ -186,7 +186,7 @@ KEEP_CHARGED_REJECT_NEUTRAL_PIMKPKS = 'Numba::keep_charged_reject_neutral_pimkpk
 KEEP_CHARGED_REJECT_NEUTRAL_PIMKPKS_STRING = '(kspim_m > 0.8 && kspim_m < 1.0) && (kppim_m < 0.8 || kppim_m > 1.0)'
 
 
-@ROOT.Numba.Declare(['float'], 'bool')
+@ROOT.Numba.Declare(['float'], 'int')
 def beam_bin_filter(e_beam):
     return int(e_beam-6.5) + 1
 BEAM_BIN_FILTER = 'Numba::beam_bin_filter(e_beam)'
@@ -198,7 +198,7 @@ def select_beam_bin(e_bin, energy_index):
 SELECT_BEAM_BIN = 'Numba::select_beam_bin(e_bin, {})'
 
 
-@ROOT.Numba.Declare(['float'], 'bool')
+@ROOT.Numba.Declare(['float'], 'int')
 def t_bin_filter(t):
     if t <= 0.4:
         return int(t/0.1)
