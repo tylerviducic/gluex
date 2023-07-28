@@ -1219,13 +1219,17 @@ def filter_dataframe(df, channel):
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
-def get_dataframe(channel, run_period, datatype, filtered=True):
-    if filtered:
-        file_and_tree = get_flat_file_and_tree(channel, run_period, datatype)
-        return ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
-    else:
-        file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False)
-        return define_columns(ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]), channel)
+def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False):
+    if not thrown:
+        if filtered:
+            file_and_tree = get_flat_file_and_tree(channel, run_period, datatype)
+            return ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
+        else:
+            file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False)
+            return define_columns(ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]), channel)
+    elif thrown and datatype != 'data' and not filtered:
+        file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False, thrown=True)
+        return define_columns(ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]), channel, thrown=True)
 
 
 def get_path_for_output_file(channel, datatype, thrown=False):
@@ -1237,4 +1241,36 @@ def get_path_for_output_file(channel, datatype, thrown=False):
         return f'/work/halld/home/viducic/data/{channel}/mc/{datatype}'
     else:
         raise ValueError('Unknown datatype: {}'.format(datatype))
-    
+
+
+def get_filename_for_output_file(channel, run_period, datatype, thrown=False):
+    if thrown:
+        return f'mc_{channel}_thrown_{datatype}_flat_results_{constants.RUN_DICT[run_period]}.root'
+    return f'{channel}_flat_result_{constants.RUN_DICT[run_period]}.root'
+
+def get_hist_name_for_flat_analysis(channel, cut=None, beam_index=0, t_index=0, thrown=False):
+    if not thrown:
+        if channel == 'pipkmks':
+            cut_name = cut
+        elif channel == 'pimkpks':
+            cut_name = cut
+        hist_name = f'{channel}_kstar_{cut_name}_cut_'
+    else:
+        hist_name = f'{channel}_'
+    beam_name = 'beam_full_'
+    t_name = 't_full'
+    if beam_index >= 0:
+        beam_low = constants.BEAM_INDEX_DICT[beam_index][0]
+        beam_high = constants.BEAM_INDEX_DICT[beam_index][1]
+        beam_name = f'beam_{beam_low}_{beam_high}_'
+    if t_index >= 0:
+        t_low = constants.T_CUT_DICT[t_index][0]
+        t_high = constants.T_CUT_DICT[t_index][1]
+        t_name = f't_{t_low}_{t_high}'
+    hist_name += beam_name + t_name
+    return hist_name
+
+
+def fill_histos(cut_df, histo_array, channel, cut=None, beam_index=0, t_index=0, thrown=False):
+    hist_name = get_hist_name_for_flat_analysis(channel, cut, beam_index, t_index, thrown)
+    histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), f'{channel}_m'))
