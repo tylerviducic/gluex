@@ -34,7 +34,7 @@ PPIP_MASS_CUT_STRING = 'ppip_m > 1.4'
 @ROOT.Numba.Declare(['float'], 'bool')
 def kmp_mass_cut(kmp_m):
     return kmp_m > 1.95
-KMP_MASS_CUT = 'numba::kmp_mass_cut(kmp_m)'
+KMP_MASS_CUT = 'Numba::kmp_mass_cut(kmp_m)'
 KMP_MASS_CUT_STRING = 'kmp_m > 1.95'
 
 
