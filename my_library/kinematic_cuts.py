@@ -208,7 +208,7 @@ def t_bin_filter(t):
         return int((t-0.9)/0.5)+6
     else:
         return -1
-T_BIN_FILTER = 'Numba::t_bin_filter(t)'
+T_BIN_FILTER = 'Numba::t_bin_filter(mand_t)'
 
 
 @ROOT.Numba.Declare(['float', 'float'], 'bool')
