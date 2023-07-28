@@ -2,7 +2,7 @@
 this file contains constants and fit parameters used throughout the analysis
 """
 
-import my_library.kinematic_cuts as cuts
+
 ## KSHORT FIT PARAMETERS ##
 
 KSHORT_FIT_WIDTH = 0.01035
@@ -98,21 +98,6 @@ RUN_DICT = {
 F1_CUT_LIST_PIPKMKS = ['no', 'plus', 'zero', 'all']
 F1_CUT_LIST_PIMKPKS = ['no', 'minus', 'zero', 'all']
 
-
-KSTAR_CUT_DICT_PIPKMKS = {
-    'no': cuts.KSTAR_NO_CUT_PIPKMKS,
-    'plus': cuts.KSTAR_PLUS_CUT,
-    'zero': cuts.KSTAR_ZERO_CUT_PIPKMKS,
-    'all': cuts.KSTAR_ALL_CUT_PIPKMKS
-}
-
-
-KSTAR_CUT_DICT_PIMKPKS = {
-    'no': cuts.KSTAR_NO_CUT_PIMKPKS,
-    'minus': cuts.KSTAR_MINUS_CUT,
-    'zero': cuts.KSTAR_ZERO_CUT_PIMKPKS,
-    'all': cuts.KSTAR_ALL_CUT_PIMKPKS
-}
 
 KSTAR_CUT_TITLE_DICT = {
     'no': 'No K* Rejection',
