@@ -75,7 +75,7 @@ def run_analysis(channel, run_period, data_type):
         t_name = 't_full'
         if beam_index > 0:
             beam_low = constants.BEAM_INDEX_DICT[beam_index][0]
-            beam_high = ct.BEAM_INDEX_DICT[beam_index][1]
+            beam_high = constants.BEAM_INDEX_DICT[beam_index][1]
             beam_name = f'beam_{beam_low}_{beam_high}_'
         if t_index > 0:
             t_low = constants.T_CUT_DICT[t_index][0]
