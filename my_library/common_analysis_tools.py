@@ -989,8 +989,6 @@ def verify_thrown_args(channel, run_period, datatype):
 
 
 def define_pimkpks_columns(df):
-    ROOT.gInterpreter.Declare(kcuts.T_BIN_FILTER)
-    ROOT.gInterpreter.Declare(kcuts.BEAM_BIN_FILTER)
     new_df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
     new_df = new_df.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
 
@@ -1074,8 +1072,8 @@ def define_pimkpks_columns(df):
     new_df = new_df.Define('kpks_E', 'kp_E + ks_E')
     new_df = new_df.Define('kpks_m', 'sqrt(kpks_E*kpks_E - kpks_px*kpks_px - kpks_py*kpks_py - kpks_pz*kpks_pz)')
 
-    new_df = new_df.Define('e_bin', 'get_beam_bin_index(e_beam)')
-    new_df = new_df.Define('t_bin', 'get_t_bin_index(mand_t)')
+    new_df = new_df.Define('e_bin', kcuts.BEAM_BIN_FILTER)
+    new_df = new_df.Define('t_bin', kcuts.T_BIN_FILTER)
 
     new_df = new_df.Define('ppip_px', 'p_px + pip_px')
     new_df = new_df.Define('ppip_py', 'p_py + pip_py')
@@ -1086,8 +1084,6 @@ def define_pimkpks_columns(df):
 
 
 def define_pipkmks_columns(df):
-    ROOT.gInterpreter.Declare(kcuts.T_BIN_FILTER)
-    ROOT.gInterpreter.Declare(kcuts.BEAM_BIN_FILTER)
     new_df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
     new_df = new_df.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
 
