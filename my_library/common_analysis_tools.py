@@ -11,10 +11,8 @@ import ROOT
 import pandas as pd
 import numpy as np
 
-
-
-F1_CUT_LIST_PIPKMKS = ['no', 'plus', 'zero', 'all']
-F1_CUT_LIST_PIMKPKS = ['no', 'minus', 'zero', 'all']
+import my_library.constants as constants
+import my_library.kinematic_cuts as kcuts
 
 ###################
 ##### METHODS #####
@@ -27,16 +25,16 @@ def get_flat_data_file_and_tree(channel, run_period, comboloop=False, filtered=T
     if not comboloop:
         file_path += f'/bestX2/{channel}_'
         if filtered:
-            file_path += f'filtered_{RUN_DICT[run_period]}.root'
-            treename = f'{channel}_filtered_{RUN_DICT[run_period]}'
+            file_path += f'filtered_{constants.RUN_DICT[run_period]}.root'
+            treename = f'{channel}_filtered_{constants.RUN_DICT[run_period]}'
         else:
             if hist:
-                file_path += f'flat_result_{RUN_DICT[run_period]}.root'
+                file_path += f'flat_result_{constants.RUN_DICT[run_period]}.root'
             else:
-                file_path += f'flat_bestX2_{RUN_DICT[run_period]}.root'
+                file_path += f'flat_bestX2_{constants.RUN_DICT[run_period]}.root'
                 treename = f'{channel}__B4_M16'
     else:
-        file_path += f'/comboloop/{channel}_comboloop_flat_{RUN_DICT[run_period]}.root'
+        file_path += f'/comboloop/{channel}_comboloop_flat_{constants.RUN_DICT[run_period]}.root'
         treename = f'{channel}__B4_M16'
     return (file_path, treename)
 
@@ -46,13 +44,13 @@ def get_flat_signal_file_and_tree(channel, run_period, comboloop=False, filtered
     treename = ''
     if not comboloop:
         if filtered:
-            file_path += f'filtered_{RUN_DICT[run_period]}.root'
-            treename = f'{channel}_filtered_{RUN_DICT[run_period]}'
+            file_path += f'filtered_{constants.RUN_DICT[run_period]}.root'
+            treename = f'{channel}_filtered_{constants.RUN_DICT[run_period]}'
         else:
             if hist:
-                file_path += f'flat_result_{RUN_DICT[run_period]}.root'
+                file_path += f'flat_result_{constants.RUN_DICT[run_period]}.root'
             else:
-                file_path += f'flat_bestX2_{RUN_DICT[run_period]}.root'
+                file_path += f'flat_bestX2_{constants.RUN_DICT[run_period]}.root'
                 treename = f'{channel}__ks_pippim__B4_M16'
     else:
         print('no comboloop signal mc file yet')
@@ -64,13 +62,13 @@ def get_flat_phasespace_file_and_tree(channel, run_period, comboloop=False, filt
     treename = ''
     if not comboloop:
         if filtered:
-            file_path += f'filtered_{RUN_DICT[run_period]}.root'
-            treename = f'{channel}_phasespace_filtered_{RUN_DICT[run_period]}'
+            file_path += f'filtered_{constants.RUN_DICT[run_period]}.root'
+            treename = f'{channel}_phasespace_filtered_{constants.RUN_DICT[run_period]}'
         else:
             if hist:
-                file_path += f'flat_result_{RUN_DICT[run_period]}.root'
+                file_path += f'flat_result_{constants.RUN_DICT[run_period]}.root'
             else:
-                file_path += f'flat_bestX2_{RUN_DICT[run_period]}.root'
+                file_path += f'flat_bestX2_{constants.RUN_DICT[run_period]}.root'
                 treename = f'{channel}__ks_pippim__B4_M16'
     else:
         print('no comboloop phasespace mc file yet')
@@ -80,12 +78,12 @@ def get_flat_phasespace_file_and_tree(channel, run_period, comboloop=False, filt
 def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=True):
     if not phasespace:
         if not hist:
-            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
-        return (f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_signal_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
+            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_thrown_{constants.RUN_DICT[run_period]}.root', f'{channel}_thrown')
+        return (f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_signal_flat_result_{constants.RUN_DICT[run_period]}.root', 'pipkmks_thrown')
     elif phasespace:
         if not hist:
-            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_phasespace_thrown_{RUN_DICT[run_period]}.root', f'{channel}_thrown')
-        return(f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_phasespace_flat_result_{RUN_DICT[run_period]}.root', 'pipkmks_thrown')
+            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_phasespace_thrown_{constants.RUN_DICT[run_period]}.root', f'{channel}_thrown')
+        return(f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_phasespace_flat_result_{constants.RUN_DICT[run_period]}.root', 'pipkmks_thrown')
 
 
 def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False, thrown=False, verbose=False):
@@ -160,13 +158,13 @@ def weight_histograms_by_flux(hist_spring: ROOT.TH1, hist_fall: ROOT.TH1, hist_2
 
 
 def validate_t_bin(t):
-    if t not in ALLOWED_T_BINS:
+    if t not in constants.ALLOWED_T_BINS:
         raise ValueError('invalid t bin number')
     return True
 
 
 def validate_e_bin(e):
-    if e not in ALLOWED_E_BINS:
+    if e not in constants.ALLOWED_E_BINS:
         raise ValueError('invalid e bin number')
     return True
 
@@ -180,7 +178,7 @@ def get_binned_kkpi_hist_title(channel, e, t_bin_index):
         kkpi = 'K^{+}K_{s}#pi^{-}'
     else:
         return None
-    return 'M({}) for E_{}={}-{} and t={}-{}'.format(kkpi, '{#gamma}', e-0.5, e+0.5, T_CUT_DICT[t_bin_index][0], T_CUT_DICT[t_bin_index][1])
+    return 'M({}) for E_{}={}-{} and t={}-{}'.format(kkpi, '{#gamma}', e-0.5, e+0.5, constants.T_CUT_DICT[t_bin_index][0], constants.T_CUT_DICT[t_bin_index][1])
 
 def get_integrated_kkpi_hist_title(channel):
     if channel == 'pipkmks':
@@ -207,7 +205,7 @@ def propogate_error_addition(input_errors: list):
 
 
 def get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index):
-    hist_name = f'{channel}_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    hist_name = f'{channel}_kstar_{cut}_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     recon_phasespace_file_and_tree = get_flat_file_and_tree(channel, run_period, 'phasespace', filtered=False, hist=True)
     recon_phasespace_file = ROOT.TFile(recon_phasespace_file_and_tree[0])
     recon_hist = recon_phasespace_file.Get(hist_name)
@@ -218,7 +216,7 @@ def get_binned_phasespace_recon_hist(channel, run_period, cut, e, t_bin_index):
 def get_binned_phasespace_thrown_hist(channel, run_period, e, t_bin_index):
     thrown_phasespace_file_and_tree = get_flat_thrown_file_and_tree(channel, run_period, phasespace=True)
     thrown_phasespace_file = ROOT.TFile(thrown_phasespace_file_and_tree[0])
-    thrown_hist_name = f'{channel}_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    thrown_hist_name = f'{channel}_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     thrown_hist = thrown_phasespace_file.Get(thrown_hist_name)
     thrown_hist.SetDirectory(0)
     return thrown_hist
@@ -227,14 +225,14 @@ def get_binned_phasespace_thrown_hist(channel, run_period, e, t_bin_index):
 def get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index):
     thrown_signal_file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal', filtered=False, hist=True, thrown=True)
     thrown_signal_file = ROOT.TFile(thrown_signal_file_and_tree[0])
-    thrown_hist_name = f'{channel}_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    thrown_hist_name = f'{channel}_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     thrown_hist = thrown_signal_file.Get(thrown_hist_name)
     thrown_hist.SetDirectory(0)
     return thrown_hist
 
 
 def get_binned_data_hist(channel, run_period, cut, e, t_bin_index):
-    hist_name = f'{channel}_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    hist_name = f'{channel}_kstar_{cut}_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data', filtered=False, hist=True)
     data_hist_file = ROOT.TFile(data_file_and_tree[0])
     data_hist = data_hist_file.Get(hist_name)
@@ -243,7 +241,7 @@ def get_binned_data_hist(channel, run_period, cut, e, t_bin_index):
 
 
 def get_binned_signal_mc_hist(channel, run_period, cut, e, t_bin_index):
-    hist_name = f'{channel}_kstar_{cut}_cut_beam_{BEAM_DICT[e]}_t_{T_BIN_DICT[t_bin_index]};1'
+    hist_name = f'{channel}_kstar_{cut}_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     signal_mc_file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal', filtered=False, hist=True)
     signal_mc_hist_file = ROOT.TFile(signal_mc_file_and_tree[0])
     signal_mc_hist = signal_mc_hist_file.Get(hist_name)
@@ -426,12 +424,12 @@ def get_acceptance_corrected_signal_mc(channel, run_period, cut, e, t_bin_index,
     signal_df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]) 
 
     if channel == 'pipkmks':
-        kstar_cut_dict = KSTAR_CUT_DICT_PIPKMKS
+        kstar_cut_dict = kcuts.KSTAR_CUT_DICT_PIPKMKS
     elif channel == 'pimkpks':
-        kstar_cut_dict = KSTAR_CUT_DICT_PIMKPKS
+        kstar_cut_dict = kcuts.KSTAR_CUT_DICT_PIMKPKS
 
     signal_df = (signal_df.Filter(kstar_cut_dict[cut]).
-                 Filter(f'mand_t > {T_CUT_DICT[t_bin_index][0]} && mand_t < {T_CUT_DICT[t_bin_index][1]}').
+                 Filter(f'mand_t > {constants.T_CUT_DICT[t_bin_index][0]} && mand_t < {constants.T_CUT_DICT[t_bin_index][1]}').
                  Filter(f'e_beam > {e - 0.5} && e_beam < {e + 0.5}'))
     # reduce signal_df to 0.5% of it's size for error bar handling
     signal_df = signal_df.Range(0, int(signal_df.Count().GetValue() / 10))
@@ -701,7 +699,7 @@ def get_binned_gluex1_kstar_corrected_data(channel, e, t_bin_index, cut='all'):
 def get_integrated_signal_mc_hist_for_resolution_fitting(channel, run_period, nbins=500, xmin=1.0, xmax=2.5, cut='all', scale_factor=1):
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
     df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
-    df = df.Filter(T_RANGE).Filter(BEAM_RANGE)#.Filter(KSTAR_CUT_DICT_PIPKMKS[cut])
+    df = df.Filter(kcuts.T_RANGE).Filter(kcuts.BEAM_RANGE)#.Filter(KSTAR_CUT_DICT_PIPKMKS[cut])
     hist = df.Histo1D((f'{channel}_m', f'{channel}_m', nbins, 1.0, 2.5), f'{channel}_m')
     hist.Sumw2()
     hist.SetDirectory(0)
@@ -714,7 +712,7 @@ def get_binned_signal_mc_hist_for_resolution_fitting(channel, run_period, e, t_b
 
     file_and_tree = get_flat_file_and_tree(channel, run_period, 'signal')
     df = ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
-    e_cut = f'e_beam > {BEAM_CUT_DICT[e][0]} && e_beam < {BEAM_CUT_DICT[e][1]}'
+    e_cut = f'e_beam > {constants.BEAM_CUT_DICT[e][0]} && e_beam < {constants.BEAM_CUT_DICT[e][1]}'
     df = df.Filter(f't_bin == {t_bin_index}').Filter(e_cut)#.Filter(KSTAR_CUT_DICT_PIPKMKS[cut])
     hist = df.Histo1D((f'{channel}_m', f'{channel}_m', n_bins, xmin, xmax), f'{channel}_m')
     hist.Sumw2()
@@ -733,7 +731,7 @@ def get_gluex1_binned_signal_mc_hist_for_resoltion_fitting(channel, e, t_bin_ind
 
     hist_total = weight_histograms_by_flux(hist_spring, hist_fall, hist_2017)
     hist_total.Sumw2()
-    hist_total.SetLineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['blue']))
+    hist_total.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['blue']))
     hist_total.SetTitle(get_binned_kkpi_hist_title(channel, e, t_bin_index))
     hist_total.GetXaxis().SetTitle('M(K^{+}K^{-}#pi^{+}) [GeV]')
     hist_total.GetYaxis().SetTitle(f'Events / {(xmax - xmin)/n_bins:.3f} GeV')
@@ -849,9 +847,9 @@ def set_sqrtN_error(hist):
 # this is legit awful code. im sorry if anyone in the future needs to use this
 def get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel, n_bins, cut, scale_factor=1):
     if channel == 'pipkmks':
-        kstar_cut = KSTAR_CUT_DICT_PIPKMKS[cut]
+        kstar_cut = kcuts.KSTAR_CUT_DICT_PIPKMKS[cut]
     elif channel == 'pimkpks':
-        kstar_cut = KSTAR_CUT_DICT_PIMKPKS[cut]
+        kstar_cut = kcuts.KSTAR_CUT_DICT_PIMKPKS[cut]
 
     file_and_tree_spring = get_flat_file_and_tree(channel, "spring", 'signal')
     file_and_tree_fall = get_flat_file_and_tree(channel, "fall", 'signal')
@@ -879,18 +877,18 @@ def get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel
     thrown_file_2017 = ROOT.TFile.Open(thrown_phasespace_file_and_tree_2017[0], 'READ')
     # print(thrown_phasespace_file_and_tree[0])
 
-    signal_df_spring = signal_df_spring.Filter(kstar_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-    signal_df_fall = signal_df_fall.Filter(kstar_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-    signal_df_2017 = signal_df_2017.Filter(kstar_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+    signal_df_spring = signal_df_spring.Filter(kstar_cut).Filter(kcuts.T_RANGE).Filter(kcuts.BEAM_RANGE)
+    signal_df_fall = signal_df_fall.Filter(kstar_cut).Filter(kcuts.T_RANGE).Filter(kcuts.BEAM_RANGE)
+    signal_df_2017 = signal_df_2017.Filter(kstar_cut).Filter(kcuts.T_RANGE).Filter(kcuts.BEAM_RANGE)
     # reduce signal_df size
 
     signal_df_spring = signal_df_spring.Range(0, int(signal_df_spring.Count().GetValue() / scale_factor))
     signal_df_fall = signal_df_fall.Range(0, int(signal_df_fall.Count().GetValue() / scale_factor))
     signal_df_2017 = signal_df_2017.Range(0, int(signal_df_2017.Count().GetValue() / scale_factor))
 
-    recon_df_spring = recon_df_spring.Filter(kstar_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-    recon_df_fall = recon_df_fall.Filter(kstar_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
-    recon_df_2017 = recon_df_2017.Filter(kstar_cut).Filter(T_RANGE).Filter(BEAM_RANGE)
+    recon_df_spring = recon_df_spring.Filter(kstar_cut).Filter(kcuts.T_RANGE).Filter(kcuts.BEAM_RANGE)
+    recon_df_fall = recon_df_fall.Filter(kstar_cut).Filter(kcuts.T_RANGE).Filter(kcuts.BEAM_RANGE)
+    recon_df_2017 = recon_df_2017.Filter(kstar_cut).Filter(kcuts.T_RANGE).Filter(kcuts.BEAM_RANGE)
 
     signal_hist_spring = signal_df_spring.Histo1D(('data_hist_"spring"', 'data_hist_"spring"', n_bins, 1.2, 1.5), f'{channel}_m').GetValue()
     signal_hist_fall = signal_df_fall.Histo1D(('data_hist_"fall"', 'data_hist_"fall"', n_bins, 1.2, 1.5), f'{channel}_m').GetValue()
@@ -952,27 +950,27 @@ def get_integrated_acceptance_corrected_signal_mc_for_resolution_fitting(channel
 
 
 def check_run_period(run_period):
-    if run_period not in ALLOWED_RUN_PERIODS:
-        error_message = f"Run period {run_period} not allowed. Allowed run periods are: {ALLOWED_RUN_PERIODS}"
+    if run_period not in constants.ALLOWED_RUN_PERIODS:
+        error_message = f"Run period {run_period} not allowed. Allowed run periods are: {constants.ALLOWED_RUN_PERIODS}"
         raise ValueError(error_message)
     return True 
 
 
 def check_channel(channel):
-    if channel not in ALLOWED_CHANNELS:
-        error_message = f"Channel {channel} not allowed. Allowed channels are: {ALLOWED_CHANNELS}"
+    if channel not in constants.ALLOWED_CHANNELS:
+        error_message = f"Channel {channel} not allowed. Allowed channels are: {constants.ALLOWED_CHANNELS}"
         raise ValueError(error_message)
 
 
 def check_datatype_recon(datatype):
-    if datatype not in ALLOWED_DATATYPES_RECON:
-        error_message = f"Datatype {datatype} not allowed. Allowed datatypes are: {ALLOWED_DATATYPES_RECON}"
+    if datatype not in constants.ALLOWED_DATATYPES_RECON:
+        error_message = f"Datatype {datatype} not allowed. Allowed datatypes are: {constants.ALLOWED_DATATYPES_RECON}"
         raise ValueError(error_message)
 
 
 def check_datatype_thrown(datatype):
-    if datatype not in ALLOWED_DATATYPES_THROWN:
-        error_message = f"Datatype {datatype} not allowed. Allowed datatypes are: {ALLOWED_DATATYPES_THROWN}"
+    if datatype not in constants.ALLOWED_DATATYPES_THROWN:
+        error_message = f"Datatype {datatype} not allowed. Allowed datatypes are: {constants.ALLOWED_DATATYPES_THROWN}"
         raise ValueError(error_message)
 
 
@@ -991,8 +989,8 @@ def verify_thrown_args(channel, run_period, datatype):
 
 
 def define_pimkpks_columns(df):
-    ROOT.gInterpreter.Declare(T_BIN_FILTER)
-    ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
+    ROOT.gInterpreter.Declare(kcuts.T_BIN_FILTER)
+    ROOT.gInterpreter.Declare(kcuts.BEAM_BIN_FILTER)
     new_df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
     new_df = new_df.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
 
@@ -1088,8 +1086,8 @@ def define_pimkpks_columns(df):
 
 
 def define_pipkmks_columns(df):
-    ROOT.gInterpreter.Declare(T_BIN_FILTER)
-    ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
+    ROOT.gInterpreter.Declare(kcuts.T_BIN_FILTER)
+    ROOT.gInterpreter.Declare(kcuts.BEAM_BIN_FILTER)
     new_df = df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
     new_df = new_df.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
 
@@ -1179,8 +1177,8 @@ def define_pipkmks_columns(df):
 
 
 def define_pipkmks_thrown_columns(df):
-    ROOT.gInterpreter.Declare(T_BIN_FILTER)
-    ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
+    ROOT.gInterpreter.Declare(kcuts.T_BIN_FILTER)
+    ROOT.gInterpreter.Declare(kcuts.BEAM_BIN_FILTER)
     new_df = df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + Ks_px')
     new_df = new_df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + Ks_py')
     new_df = new_df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + Ks_pz')
@@ -1192,8 +1190,8 @@ def define_pipkmks_thrown_columns(df):
 
 
 def define_pimkpks_thrown_columns(df):
-    ROOT.gInterpreter.Declare(T_BIN_FILTER)
-    ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
+    ROOT.gInterpreter.Declare(kcuts.T_BIN_FILTER)
+    ROOT.gInterpreter.Declare(kcuts.BEAM_BIN_FILTER)
     new_df = df.Define('pimkpks_px', 'PiMinus1_px + KPlus_px + Ks_px')
     new_df = new_df.Define('pimkpks_py', 'PiMinus1_py + KPlus_py + Ks_py')
     new_df = new_df.Define('pimkpks_pz', 'PiMinus1_pz + KPlus_pz + Ks_pz')
@@ -1222,9 +1220,9 @@ def define_columns(df, channel, thrown=False):
 
 def filter_dataframe(df, channel):
     if channel == 'pipkmks':
-        return df.Filter(MX2_PPIPKMKS_CUT).Filter(KS_PATHLENGTH_CUT).Filter(KS_MASS_CUT).Filter(PPIP_MASS_CUT).Filter(KMP_MASS_CUT).Filter(P_P_CUT)
+        return df.Filter(kcuts.MX2_PPIPKMKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.PPIP_MASS_CUT).Filter(kcuts.KMP_MASS_CUT).Filter(kcuts.P_P_CUT)
     elif channel == 'pimkpks':
-        return df.Filter(MX2_PPIMKPKS_CUT).Filter(KS_PATHLENGTH_CUT).Filter(KS_MASS_CUT).Filter(PPIM_MASS_CUT).Filter(KSP_MASS_CUT).Filter(P_P_CUT)
+        return df.Filter(kcuts.MX2_PPIMKPKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.PPIM_MASS_CUT).Filter(kcuts.KSP_MASS_CUT).Filter(kcuts.P_P_CUT)
     else:
         raise ValueError('Unknown channel: {}'.format(channel))
 
