@@ -20,8 +20,8 @@ def save_plot(canvas, filename, filetype='png'):
     canvas.SaveAs(f'{path_to_thesis_plots}{filename}.{filetype}')
 
 
-def build_legend(histograms: list, x1=0.7, y1=0.7, x2=0.9, y2=0.9, labels: list=[]):
-    if len(labels) != len(histograms):
+def build_legend(histograms: list, x1=0.7, y1=0.7, x2=0.9, y2=0.9, labels: list = None):
+    if (len(labels) != len(histograms)) or not labels:
         labels = [hist.GetTitle() for hist in histograms]
     print("building legend")
     legend = ROOT.TLegend(x1, y1, x2, y2)
