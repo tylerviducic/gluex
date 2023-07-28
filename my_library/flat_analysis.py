@@ -62,8 +62,8 @@ def run_analysis(channel, run_period, data_type):
 
     ## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
 
-    n_e_bins = len(ct.ALLOWED_E_BINS)
-    n_t_bins = len(ct.ALLOWED_T_BINS)
+    n_e_bins = len(constants.ALLOWED_E_BINS)
+    n_t_bins = len(constants.ALLOWED_T_BINS)
 
     def fill_histos(cut_df, histo_array, cut, channel, beam_index=0, t_index=0):
         if channel == 'pipkmks':
