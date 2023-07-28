@@ -1173,28 +1173,24 @@ def define_pipkmks_columns(df):
 
 
 def define_pipkmks_thrown_columns(df):
-    ROOT.gInterpreter.Declare(kcuts.T_BIN_FILTER)
-    ROOT.gInterpreter.Declare(kcuts.BEAM_BIN_FILTER)
     new_df = df.Define('pipkmks_px', 'PiPlus1_px + KMinus_px + Ks_px')
     new_df = new_df.Define('pipkmks_py', 'PiPlus1_py + KMinus_py + Ks_py')
     new_df = new_df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + Ks_pz')
     new_df = new_df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + Ks_E')
     new_df = new_df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
-    new_df = new_df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
-    new_df = new_df.Define('t_bin', 'get_t_bin_index(men_t)')
+    new_df = new_df.Define('e_bin', kcuts.BEAM_BIN_FILTER)
+    new_df = new_df.Define('t_bin', kcuts.T_BIN_FILTER)
     return new_df
 
 
 def define_pimkpks_thrown_columns(df):
-    ROOT.gInterpreter.Declare(kcuts.T_BIN_FILTER)
-    ROOT.gInterpreter.Declare(kcuts.BEAM_BIN_FILTER)
     new_df = df.Define('pimkpks_px', 'PiMinus1_px + KPlus_px + Ks_px')
     new_df = new_df.Define('pimkpks_py', 'PiMinus1_py + KPlus_py + Ks_py')
     new_df = new_df.Define('pimkpks_pz', 'PiMinus1_pz + KPlus_pz + Ks_pz')
     new_df = new_df.Define('pimkpks_E', 'PiMinus1_E + KPlus_E + Ks_E')
     new_df = new_df.Define('pimkpks_m', 'sqrt(pimkpks_E*pimkpks_E - pimkpks_px*pimkpks_px - pimkpks_py*pimkpks_py - pimkpks_pz*pimkpks_pz)')
-    new_df = new_df.Define('e_bin', 'get_beam_bin_index(Beam_E)')
-    new_df = new_df.Define('t_bin', 'get_t_bin_index(men_t)')
+    new_df = new_df.Define('e_bin', kcuts.BEAM_BIN_FILTER)
+    new_df = new_df.Define('t_bin', kcuts.T_BIN_FILTER)
     return new_df
 
 
