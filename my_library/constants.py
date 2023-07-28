@@ -2,7 +2,7 @@
 this file contains constants and fit parameters used throughout the analysis
 """
 
-import kinematic_cuts as cuts
+import my_library.kinematic_cuts as cuts
 ## KSHORT FIT PARAMETERS ##
 
 KSHORT_FIT_WIDTH = 0.01035
