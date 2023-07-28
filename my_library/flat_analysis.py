@@ -17,10 +17,6 @@ def run_analysis(channel, run_period, data_type):
     ROOT.gStyle.SetOptStat(0)
     start_time = time.time()
 
-    channel = sys.argv[1]
-    run_period = sys.argv[2]
-    data_type = sys.argv[3]
-
     ct.verify_args(channel, run_period, data_type)
 
     file_and_tree = ct.get_flat_file_and_tree(channel, run_period, data_type, filtered=False)
