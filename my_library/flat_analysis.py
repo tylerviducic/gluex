@@ -21,6 +21,11 @@ def run_analysis(channel, run_period, data_type, thrown=False):
 
     df = ct.get_dataframe(channel, run_period, data_type, filtered=False, thrown=thrown)
 
+    output_path = ct.get_path_for_output_file(channel, data_type, thrown=thrown)
+    result_filename = ct.get_filename_for_output_file(channel, run_period, data_type, thrown=thrown)
+
+
+
     # if run_period == '2019_unconstrained':
     #     treename = 'pimkpks__T1_S2_M16'
     # elif run_period == '2019_constrained':
@@ -35,8 +40,6 @@ def run_analysis(channel, run_period, data_type, thrown=False):
 
         ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
         ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-        output_path = ct.get_path_for_output_file(channel, data_type, thrown=thrown)
-        result_filename = ct.get_filename_for_output_file(channel, run_period, data_type, thrown=thrown)
         df.Snapshot(f'{channel}_filtered_{constants.RUN_DICT[run_period]}', f'{output_path}/{channel}_filtered_{constants.RUN_DICT[run_period]}.root')
 
         # ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
