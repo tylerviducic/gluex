@@ -1263,7 +1263,7 @@ def get_hist_name_for_flat_analysis(channel, cut=None, beam_index=0, t_index=0, 
         hist_name = f'{channel}_'
     beam_name = 'beam_full_'
     t_name = 't_full'
-    if beam_index >= 0:
+    if beam_index > 0:
         beam_low = constants.BEAM_INDEX_DICT[beam_index][0]
         beam_high = constants.BEAM_INDEX_DICT[beam_index][1]
         beam_name = f'beam_{beam_low}_{beam_high}_'
