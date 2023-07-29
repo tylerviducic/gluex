@@ -2,6 +2,7 @@
 
 import os
 from my_library.flat_analysis import run_analysis
+
 import time
 
 #TODO STATUS BAR OR TIMER OR BOTH
@@ -33,3 +34,4 @@ if __name__ == '__main__':
 
     overall_end = time.time()
     print(f'Overall analysis took {overall_end-overall_start} seconds')
+
