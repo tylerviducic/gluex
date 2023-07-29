@@ -25,7 +25,6 @@ if __name__ == '__main__':
 
     overall_start = time.time()
     channels = ['pipkmks', 'pimkpks']
-    # channels = ['pimkpks']
     run_periods = ['spring', 'fall', '2017']
     recon_data_types = ['data', 'signal', 'phasespace']
     thrown_data_types = ['signal', 'phasespace']
