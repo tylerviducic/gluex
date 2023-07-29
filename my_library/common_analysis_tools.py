@@ -1178,6 +1178,8 @@ def define_pipkmks_thrown_columns(df):
     new_df = new_df.Define('pipkmks_pz', 'PiPlus1_pz + KMinus_pz + Ks_pz')
     new_df = new_df.Define('pipkmks_E', 'PiPlus1_E + KMinus_E + Ks_E')
     new_df = new_df.Define('pipkmks_m', 'sqrt(pipkmks_E*pipkmks_E - pipkmks_px*pipkmks_px - pipkmks_py*pipkmks_py - pipkmks_pz*pipkmks_pz)')
+    new_df = new_df.Alias('e_beam', 'Beam_E')
+    new_df = new_df.Alias('mand_t', 'men_t')
     new_df = new_df.Define('e_bin', kcuts.BEAM_BIN_FILTER)
     new_df = new_df.Define('t_bin', kcuts.T_BIN_FILTER)
     return new_df
@@ -1189,6 +1191,8 @@ def define_pimkpks_thrown_columns(df):
     new_df = new_df.Define('pimkpks_pz', 'PiMinus1_pz + KPlus_pz + Ks_pz')
     new_df = new_df.Define('pimkpks_E', 'PiMinus1_E + KPlus_E + Ks_E')
     new_df = new_df.Define('pimkpks_m', 'sqrt(pimkpks_E*pimkpks_E - pimkpks_px*pimkpks_px - pimkpks_py*pimkpks_py - pimkpks_pz*pimkpks_pz)')
+    new_df = new_df.Alias('e_beam', 'Beam_E')
+    new_df = new_df.Alias('mand_t', 'men_t')
     new_df = new_df.Define('e_bin', kcuts.BEAM_BIN_FILTER)
     new_df = new_df.Define('t_bin', kcuts.T_BIN_FILTER)
     return new_df
