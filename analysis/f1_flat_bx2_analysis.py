@@ -1,13 +1,13 @@
 # script for making histograms from flat best chi2/ndf trees for any datatype
-
 import ROOT
 import time
 import os
 import my_library.common_analysis_tools as ct
 import sys
 
+
 """
-usage of this file is as follows:
+usage of this function is as follows:
 python3 f1_flat_bx2_analysis.py <channel> <run_period> <data_type>
 """
 
@@ -105,10 +105,10 @@ for cut in cut_list:
         for t_index in range(1, n_t_bins+1):
             e_t_cut_df = e_cut_df.Filter(f't_bin == {t_index}')
             fill_histos(e_t_cut_df, histo_array, cut, channel, beam_index=energy_index, t_index=t_index)
-         
+        
     for t_index in range(1, n_t_bins+1):
-       t_cut_df = cut_df.Filter(f't_bin == {t_index}')
-       fill_histos(t_cut_df, histo_array, cut, channel, t_index=t_index)
+        t_cut_df = cut_df.Filter(f't_bin == {t_index}')
+        fill_histos(t_cut_df, histo_array, cut, channel, t_index=t_index)
 
 print("histos done in {} seconds".format(time.time() - start_time))
 
