@@ -99,3 +99,6 @@ mc/analysis/pipkmks/DSelector_mc_pipkmks_thrown_C.so
 my_library/__pycache__/__init__.cpython-36.pyc
 my_library/__pycache__/common_analysis_tools.cpython-36.pyc
 my_library/__pycache__/thesis_plotter_library.cpython-36.pyc
+my_library/__pycache__/constants.cpython-36.pyc
+my_library/__pycache__/flat_analysis.cpython-36.pyc
+.gitignore
