@@ -3,7 +3,7 @@
 import ROOT
 import pandas as pd
 import matplotlib.pyplot as plt
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
 import seaborn as sns
 
 sns.set_theme()
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     df['beam_lower'] = df['beam_energy'] - 0.5
     df['beam_higher'] = df['beam_energy'] + 0.5
-    df['lumi'] = df.apply(lambda row: get_luminosity_gluex_1(row['beam_lower'], row['beam_higher']), axis=1)
+    df['lumi'] = df.apply(lambda row: ct.get_luminosity_gluex_1(row['beam_lower'], row['beam_higher']), axis=1)
 
     df['flux_corrected_yield'] = df['yield'] * df['acceptance']/(df['lumi'] * df['t_bin_width'])
 

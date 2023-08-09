@@ -3,7 +3,9 @@
 import ROOT
 import time
 import os
-from common_analysis_tools import *
+import my_library.common_analysis_tools as ct
+import my_library.constants as constants
+import my_library.kinematic_cuts as kcuts
 import sys
 
 
@@ -16,10 +18,10 @@ start_time = time.time()
 
 run_period = sys.argv[1]
 
-if run_period not in ALLOWED_RUN_PERIODS:
+if run_period not in constants.ALLOWED_RUN_PERIODS:
     raise ValueError('Invalid run period')
 
-filename = f'/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_flat_bestX2_{RUN_DICT[run_period]}.root'
+filename = f'/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_flat_bestX2_{constants.RUN_DICT[run_period]}.root'
 treename = 'pimkpks__B4_M16'
 
 if run_period == '2019_unconstrained':
@@ -28,9 +30,6 @@ elif run_period == '2019_constrained':
     treename = 'pimkpks__T1_S2'
 
 histo_array = []
-
-ROOT.gInterpreter.Declare(T_BIN_FILTER)
-ROOT.gInterpreter.Declare(BEAM_BIN_FILTER)
 
 ## LOAD IN DATA ##
 
@@ -135,7 +134,7 @@ df = df.Define('ppip_m', 'sqrt(ppip_E*ppip_E - ppip_px*ppip_px - ppip_py*ppip_py
 
 ## FILTER DATAFRAME AFTER DATA IS DEFINED ##
 
-df = df.Filter(MX2_PPIMKPKS_CUT).Filter(KS_PATHLENGTH_CUT).Filter(KS_MASS_CUT).Filter(PPIM_MASS_CUT).Filter(KSP_MASS_CUT).Filter(P_P_CUT)
+df = df.Filter(kcuts.MX2_PPIMKPKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.PPIM_MASS_CUT).Filter(kcuts.KSP_MASS_CUT).Filter(kcuts.P_P_CUT)
 print('cuts done in {} seconds'.format(time.time() - start_time))
 
 
@@ -145,38 +144,38 @@ ks_m = df.Histo1D(('ks_m', 'ks_m', 100, 0.3, 0.7), 'ks_m')
 
 ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
 ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-df.Snapshot(f'pimkpks_filtered_{RUN_DICT[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_filtered_{RUN_DICT[run_period]}.root')
+df.Snapshot(f'pimkpks_filtered_{constants.RUN_DICT[run_period]}', f'/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_filtered_{constants.RUN_DICT[run_period]}.root')
 
 
 # ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
-df = df.Filter(BEAM_RANGE).Filter(T_RANGE)
+df = df.Filter(kcuts.BEAM_RANGE).Filter(kcuts.T_RANGE)
 
 print('cut file written in {} seconds'.format(time.time() - start_time))
 
 ## LOOP OVER K* CUTS AND EXECUTE HISTO FILLING FUNCTION ##
 
-n_e_bins = len(ALLOWED_E_BINS)
-n_t_bins = len(ALLOWED_T_BINS)
+n_e_bins = len(constants.ALLOWED_E_BINS)
+n_t_bins = len(constants.ALLOWED_T_BINS)
 
 def fill_histos(cut_df, histo_array, cut, beam_index=0, t_index=0):
-    cut_name = KSTAR_CUT_NAME_DICT_PIMKPKS[cut]
+    cut_name = kcuts.KSTAR_CUT_NAME_DICT_PIMKPKS[cut]
     hist_name = f'pimkpks_kstar_{cut_name}_cut_'
     beam_name = 'beam_full_'
     t_name = 't_full'
     if beam_index > 0:
-        beam_low = BEAM_CUT_DICT[beam_index][0]
-        beam_high = BEAM_CUT_DICT[beam_index][1]
+        beam_low = constants.BEAM_CUT_DICT[beam_index][0]
+        beam_high = constants.BEAM_CUT_DICT[beam_index][1]
         beam_name = f'beam_{beam_low}_{beam_high}_'
     if t_index > 0:
-        t_low = T_CUT_DICT[t_index][0]
-        t_high = T_CUT_DICT[t_index][1]
+        t_low = constants.T_CUT_DICT[t_index][0]
+        t_high = constants.T_CUT_DICT[t_index][1]
         t_name = f't_{t_low}_{t_high}'
     hist_name += beam_name + t_name
     histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), 'pimkpks_m'))
 
     
 
-for cut in F1_CUT_LIST_PIMKPKS:
+for cut in constants.F1_CUT_LIST_PIMKPKS:
     cut_df = df.Filter(cut)
     fill_histos(cut_df, histo_array, cut)
         
@@ -197,7 +196,7 @@ print("histos done in {} seconds".format(time.time() - start_time))
 
 ## WRITE HISTOGRAMS TO FILE ##
 
-target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_flat_result_{RUN_DICT[run_period]}.root", 'RECREATE')
+target_file = ROOT.TFile(f"/w/halld-scshelf2101/home/viducic/data/pimkpks/data/bestX2/pimkpks_flat_result_{constants.RUN_DICT[run_period]}.root", 'RECREATE')
 print('file created in {} seconds'.format(time.time() - start_time))
 
 
@@ -210,7 +209,7 @@ for histo in histo_array:
 print("histos written in {} seconds".format(time.time() - start_time))
 target_file.Close()
 
-ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/pimkpks_graph_{RUN_DICT[run_period]}.dot")
+ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/pimkpks_graph_{constants.RUN_DICT[run_period]}.dot")
     
 ######################
 ## DEPRECIATED CODE ##
