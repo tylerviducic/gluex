@@ -61,6 +61,21 @@ COLORBLIND_HEX_DICT = {
     'cyan': '#56B4E9'
 }
 
+TWELVE_COLORBLIND_HEX_DICT = {
+    'deep magenta': '#9F0162',
+    'jungle green': '#009F81',
+    'hot pink': '#FF5AAF',
+    'aqua': '#00FCCF',
+    'purple': '#8400CD',
+    'navy blue': '#008DF9',
+    'cyan': '#00C2F9',
+    'plum': '#FFB2FD',
+    'ruby red': '#A40122',
+    'red': '#E20134',
+    'orange': '#FF6E3A',
+    'yellow': '#FFC33B'
+}
+
 # MATPLOTLIB LATEX AXIS LABEL STRING #
 LATEX_AXIS_LABEL_DICT = {
     't': '$-t$ (GeV$^2$)',
