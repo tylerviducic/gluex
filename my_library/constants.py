@@ -67,7 +67,7 @@ TWELVE_COLORBLIND_HEX_DICT = {
     'hot pink': '#FF5AAF',
     'aqua': '#00FCCF',
     'purple': '#8400CD',
-    'navy blue': '#008DF9',
+    'blue': '#008DF9',
     'cyan': '#00C2F9',
     'plum': '#FFB2FD',
     'ruby red': '#A40122',
