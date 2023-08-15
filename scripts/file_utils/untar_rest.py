@@ -4,8 +4,8 @@ import os
 import tarfile
 
 # get list of files in the directory
-topdir = '/cache/halld/gluex_simulations/REQUESTED_MC/pimkpks_phasespace_s18_100m_v50_rt_t29_3252/hddm/'
-target_dir = '/lustre19/expphy/volatile/halld/home/viducic/REST/pimkpks_phasespace_2018_spring/'
+topdir = '/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_f18_100m_v16_rt_t29_3239/hddm/'
+target_dir = '/lustre19/expphy/volatile/halld/home/viducic/REST/pipkmks_signal_2017'
 files = os.listdir(topdir)
 
 # loop over files
