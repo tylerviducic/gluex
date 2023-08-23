@@ -1,17 +1,26 @@
-void RunF1MC_KsKmPip(){
+void RunF1MC_KsKmPip(string filename){
 
-    gROOT->ProcessLine("TChain* ch = new TChain(\"pipkmks__ks_pippim__B4_M16_Tree\")");
+    // gROOT->ProcessLine("TChain* ch = new TChain(\"pipkmks__ks_pippim__B4_M16_Tree\")");
     // TChain* ch = new TChain("pipkmks__ks_pippim__B4_M16_Tree");
     // ch->Add("/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/04*"); //spring 18
-    gROOT->ProcessLine("ch->Add(\"/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/04*"); //spring 18
+    // gROOT->ProcessLine("ch->Add(\"/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/04*/*.root"); //spring 18
     // ch->Add("/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/05*") //fall 18
     // ch->Add("/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/03*") // 17 spring
-    gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
-    gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_flat.C++\", 6)");
-    // ch.Process("DSelector_mc_pipkmks_flat.C++", 6)
+    // gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
+    // gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_flat.C++\", 6)");
+    #include "TProof.h"
+    #include "TProofDebug.h"
+    R__LOAD_LIBRARY(libDSelector);
 
-    // DPROOFLiteManager *dproof = new DPROOFLiteManager();
-    // dproof->Process_Chain(&ch, "DSelector_mc_pipkmks_flat.C++", 6, "outfilehist.root", "outfiletree.root"); 
+    TChain* ch = new TChain("pipkmks__ks_pippim__B4_M16_Tree");
+    // ch->Add("/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/04*/*"); //spring 18
+    ch->Add("/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/spring_2018/*"); //spring 18
+    ch->Add("/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/fall_2018/*"); //spring 18
+    cout<<"ch->ls()"<<endl;
+    ch->ls();
+    gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
+    DPROOFLiteManager *dproof = new DPROOFLiteManager();
+    dproof->Process_Chain(ch, "DSelector_mc_pipkmks_flat.C++", 6);//, "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfilehist.root", "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfiletree.root"); 
 
     // PHASESPACE MC ONLY
 

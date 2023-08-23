@@ -2,7 +2,7 @@
 # DO NOT DELETE
 
 ./DSelector_mc_pipkmks_flat_C.so: DSelector_mc_pipkmks_flat.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DSelector.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DSelector.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TROOT.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TDirectory.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TNamed.h
@@ -110,7 +110,7 @@
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TApplicationImp.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TProofQueryResult.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TQueryResult.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/halld_recon/halld_recon-4.40.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/particleType.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/halld_recon/halld_recon-4.41.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/particleType.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TLorentzVector.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TMath.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TError.h
@@ -126,24 +126,24 @@
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TMatrixFUtilsfwd.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TRotation.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TClonesArray.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DBeamParticle.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DTreeInterface.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DBeamParticle.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DTreeInterface.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TMap.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/THashTable.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TObjString.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DKinematicData.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DMCThrown.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DChargedTrackHypothesis.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/halld_recon/halld_recon-4.40.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/GlueX.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DNeutralParticleHypothesis.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DParticleCombo.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DParticleComboStep.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DAnalysisUtilities.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DAnalysisAction.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DHistogramActions.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DKinematicData.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DMCThrown.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DChargedTrackHypothesis.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/halld_recon/halld_recon-4.41.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/GlueX.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DNeutralParticleHypothesis.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DParticleCombo.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DParticleComboStep.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DAnalysisUtilities.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DAnalysisAction.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DHistogramActions.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TH1I.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TH2I.h
-./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DCutActions.h
+./DSelector_mc_pipkmks_flat_C.so: /group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/gluex_root_analysis/gluex_root_analysis-1.24.0^hdr441/Linux_CentOS7.7-x86_64-gcc4.8.5/include/DSelector/DCutActions.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TF1.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/TFormula.h
 ./DSelector_mc_pipkmks_flat_C.so: /u/group/halld/Software/builds/Linux_CentOS7.7-x86_64-gcc4.8.5/root/root-6.24.04/include/Math/Types.h
