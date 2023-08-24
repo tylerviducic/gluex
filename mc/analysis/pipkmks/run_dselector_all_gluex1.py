@@ -6,6 +6,7 @@ directories_pipkmks = {
     "2017": "2017"
 }
 
+
 def run_selector_macro(run_period: str):
     top_dir =  '/lustre19/expphy/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/'
     print(f"RUNNING DSELECTOR FOR PI+K-Ks OVER {run_period.upper()} SIGNAL MC")
@@ -13,6 +14,7 @@ def run_selector_macro(run_period: str):
     ds_command = f"root -l -b -q \'RunF1MC_KsKmPip.C(\"{filepath_for_selector}\")\'"
     print(ds_command)
     os.system(ds_command)
+
 
 def rename_file(run_period: str):
     outfile =  '/work/halld/home/viducic/data/pipkmks/mc/signal/pipkmks_flat_bestX2.root'
@@ -22,7 +24,6 @@ def rename_file(run_period: str):
 
 
 if __name__ == "__main__":
-    # run_selector_macro("spring")
     for run_period in directories_pipkmks:
         run_selector_macro(run_period)
         rename_file(run_period)
