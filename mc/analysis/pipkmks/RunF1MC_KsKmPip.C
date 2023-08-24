@@ -8,7 +8,6 @@ void RunF1MC_KsKmPip(string filename){
     char *cstr = new char[filename.length() + 1];
     strcpy(cstr, filename.c_str());
     ch->Add(cstr);
-    // ch->Add(filename);
     gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
     DPROOFLiteManager *dproof = new DPROOFLiteManager();
     dproof->Process_Chain(ch, "DSelector_mc_pipkmks_flat.C++", 6);//, "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfilehist.root", "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfiletree.root"); 
