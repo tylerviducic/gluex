@@ -6,6 +6,11 @@ directories_pipkmks = {
     "2017": "2017"
 }
 
+filenames_pipkmks = {
+    "spring": "2018_spring",
+    "fall": "2018_fall",
+    "2017": "2017"
+}
 
 def run_selector_macro(run_period: str):
     top_dir =  '/lustre19/expphy/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/'
@@ -18,7 +23,7 @@ def run_selector_macro(run_period: str):
 
 def rename_file(run_period: str):
     outfile =  '/work/halld/home/viducic/data/pipkmks/mc/signal/pipkmks_flat_bestX2.root'
-    mv_command = f'mv {outfile} /work/halld/home/viducic/data/pipkmks/mc/signal/pipkmks_flat_bestX2_{directories_pipkmks[run_period]}.root'
+    mv_command = f'mv {outfile} /work/halld/home/viducic/data/pipkmks/mc/signal/pipkmks_flat_bestX2_{filenames_pipkmks[run_period]}.root'
     print(mv_command)
     os.system(mv_command)
 
