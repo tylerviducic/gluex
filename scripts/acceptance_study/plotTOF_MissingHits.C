@@ -15,7 +15,7 @@ void plotTOF_MissingHits(int period = 0, TString path = "/cache/halld/gluex_simu
 		//TODO FIGURE OUT WHY HIST IS MISSING
 
 		// replace with the filename specific to your generator
-		TString fileName = Form("%s/hd_root_0%d_000.root", path.Data(), irun);
+		TString fileName = Form("%s/hd_root_gen_amp_0%d.root", path.Data(), irun);
 		TFile *f = TFile::Open(fileName);
 		if(f == NULL) continue;
 
