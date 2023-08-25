@@ -12,11 +12,12 @@ void plotTOF_MissingHits(int period = 0, TString path = "/cache/halld/gluex_simu
 
 	for(int irun=minRun; irun<=maxRun; irun++) {
 
+		//TODO FIGURE OUT WHY HIST IS MISSING
+
 		// replace with the filename specific to your generator
 		TString fileName = Form("%s/hd_root_0%d_000.root", path.Data(), irun);
 		TFile *f = TFile::Open(fileName);
 		if(f == NULL) continue;
-		// TODO figure out why this is null
 
 		TH1F *hTOFPoints = (TH1F*)f->Get("/Independent/Hist_NumReconstructedObjects/NumTOFPoints");
 		TH1F *hTOFHits = (TH1F*)f->Get("/Independent/Hist_NumReconstructedObjects/NumTOFHits");
