@@ -2,11 +2,12 @@
 
 import ROOT 
 import my_library.common_analysis_tools as ct
+import my_library.constants as constants
 import numpy as np
 import pandas as pd
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks':
@@ -14,15 +15,13 @@ if channel == 'pipkmks':
 #     voight_mean_error = ct.F1_PIPKMKS_VOIGHT_MEAN_ERROR
 #     voight_width = ct.F1_PIPKMKS_VOIGHT_WIDTH
 #     voight_width_error = ct.F1_PIPKMKS_VOIGHT_WIDTH_ERROR
-    voight_resolution = ct.F1_PIPKMKS_VOIGHT_SIGMA
+    voight_resolution = constants.F1_PIPKMKS_VOIGHT_SIGMA
 elif channel == 'pimkpks':
 #     voight_mean = ct.F1_PIMKPKS_VOIGHT_MEAN
 #     voight_mean_error = ct.F1_PIMKPKS_VOIGHT_MEAN_ERROR
 #     voight_width = ct.F1_PIMKPKS_VOIGHT_WIDTH
 #     voight_width_error = ct.F1_PIMKPKS_VOIGHT_WIDTH_ERROR
-    voight_resolution = ct.F1_PIMKPKS_VOIGHT_SIGMA
-
-beam_energy = 10
+    voight_resolution = constants.F1_PIMKPKS_VOIGHT_SIGMA
 
 chi2_ndf_list = []
 sigma_list = []

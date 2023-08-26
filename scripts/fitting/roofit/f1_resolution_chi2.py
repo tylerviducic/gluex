@@ -2,16 +2,12 @@
 
 import ROOT
 import my_library.common_analysis_tools as ct
+import my_library.constants as constants
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
-
-if channel == 'pipkmks' :
-    all_cut = ct.KSTAR_ALL_CUT_PIPKMKS
-elif channel == 'pimkpks' :
-    all_cut = ct.KSTAR_ALL_CUT_PIMKPKS
-
 
 
 ## n_bins options are 30, 90, 200, 300, 500
@@ -80,7 +76,7 @@ pullHist.Draw("AP")
 y = 0.0
 
 line= ROOT.TLine(frame.GetXaxis().GetXmin(), y, frame.GetXaxis().GetXmax(), y)
-line.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
+line.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red']))
 line.SetLineStyle(2)
 line.SetLineWidth(2)
 line.Draw("same")

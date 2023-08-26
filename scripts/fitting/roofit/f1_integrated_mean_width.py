@@ -2,6 +2,7 @@
 
 import ROOT
 import my_library.common_analysis_tools as ct
+import my_library.constants as constants
 import os
 
 os.nice(18)
@@ -9,18 +10,18 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
-    all_cut = ct.KSTAR_ALL_CUT_PIPKMKS
-    voight_resoltion = ct.F1_PIPKMKS_VOIGHT_SIGMA
-    voight_resolution_error = ct.F1_PIPKMKS_VOIGHT_SIGMA_ERROR
+    # all_cut = ct.KSTAR_ALL_CUT_PIPKMKS
+    voight_resoltion = constants.F1_PIPKMKS_VOIGHT_SIGMA
+    voight_resolution_error = constants.F1_PIPKMKS_VOIGHT_SIGMA_ERROR
 elif channel == 'pimkpks' :
-    all_cut = ct.KSTAR_ALL_CUT_PIMKPKS
-    voight_resoltion = ct.F1_PIMKPKS_VOIGHT_SIGMA
-    voight_resolution_error = ct.F1_PIMKPKS_VOIGHT_SIGMA_ERROR
+    # all_cut = ct.KSTAR_ALL_CUT_PIMKPKS
+    voight_resoltion = constants.F1_PIMKPKS_VOIGHT_SIGMA
+    voight_resolution_error = constants.F1_PIMKPKS_VOIGHT_SIGMA_ERROR
 
 # data_hist = ct.get_integrated_gluex1_acceptance_corrected_data(channel, cut)
 data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
@@ -132,15 +133,15 @@ chi2ndf = frame.chiSquare(npar)
 dh.plotOn(frame, ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
 # draw_pdf(kstar_cut, frame, combined_pdf, '1285')
 # combined_pdf.plotOn(frame, ROOT.RooFit.VisualizeError(fit_result), ROOT.RooFit.LineColor(ROOT.kRed))
-combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red'])))
+combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red'])))
 pullHist = frame.pullHist()
 npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
 chi2ndf = frame.chiSquare(npar)
 # fit_result.plotOn(frame, ROOT.RooAbsArg(voight), ROOT.RooFit.LineColor(ROOT.kRed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("bw"), ROOT.RooFit.LineColor(ROOT.kGreen))
-combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
+combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("relbw"), ROOT.RooFit.LineColor(ROOT.kBlue))
-combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue'])))
+combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['blue'])))
 
 frame.Draw()
 c1.Update()
@@ -165,7 +166,7 @@ print("K-S test = " + str(kstest))
 K-S test = 1 means very high probability of data coming from the 
 distribution described by the model
 """
-ks_test_data.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
+ks_test_data.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red']))
 
 
 c3 = ROOT.TCanvas("c2", "c2", 800, 600)
@@ -177,7 +178,7 @@ pullHist.Draw("AP")
 y = 0.0
 
 line= ROOT.TLine(frame.GetXaxis().GetXmin(), y, frame.GetXaxis().GetXmax(), y)
-line.SetLineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red']))
+line.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red']))
 line.SetLineStyle(2)
 line.SetLineWidth(2)
 line.Draw("same")
