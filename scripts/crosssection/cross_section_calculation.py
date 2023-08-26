@@ -2,6 +2,7 @@
 
 import ROOT
 import my_library.common_analysis_tools as ct
+import my_library.constants as constants
 import pandas as pd
 import math
 from ctypes import c_double
@@ -15,7 +16,7 @@ def get_title_for_plots(channel, e, t):
     else:
         return None
     line1 = f'Fit for {title_kkpi} for {e_gamma} = {e} GeV'
-    line2 = f'{ct.T_CUT_DICT[t][0]} < t < {ct.T_CUT_DICT[t][1]} GeV^{2}'
+    line2 = f'{constants.T_CUT_DICT[t][0]} < t < {constants.T_CUT_DICT[t][1]} GeV^{2}'
     return '#splitline{' + line1 + '}{' + line2 + '}'        
 
 # channel = 'pipkmks'
@@ -23,11 +24,11 @@ channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
-    v_mean = ct.F1_PIPKMKS_VOIGHT_MEAN
-    v_width = ct.F1_PIPKMKS_VOIGHT_SIGMA
+    v_mean = constants.F1_PIPKMKS_VOIGHT_MEAN
+    v_width = constants.F1_PIPKMKS_VOIGHT_SIGMA
 elif channel == 'pimkpks' :
-    v_mean = ct.F1_PIMKPKS_VOIGHT_MEAN
-    v_width = ct.F1_PIMKPKS_VOIGHT_SIGMA
+    v_mean = constants.F1_PIMKPKS_VOIGHT_MEAN
+    v_width = constants.F1_PIMKPKS_VOIGHT_SIGMA
 
 df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
 
@@ -110,8 +111,8 @@ for e in range(7, 12):
         data_yield_error = n_signal.getError()
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
 
-        cross_section = ct.calculate_crosssection(data_yield, acceptance, luminosity, ct.T_WIDTH_DICT[t], ct.F1_KKPI_BRANCHING_FRACTION)
-        cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, ct.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, math.sqrt(luminosity), ct.F1_KKPI_BRANCHING_FRACTION_ERROR])
+        cross_section = ct.calculate_crosssection(data_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
+        cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, math.sqrt(luminosity), constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
 
         chi2_val = c2.getVal()
 
@@ -126,10 +127,10 @@ for e in range(7, 12):
         chi2ndf = chi2_val / ndf
 
         dh.plotOn(frame)
-        combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['red'])))
+        combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red'])))
         # pullHist = frame.pullHist()
-        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"bkg_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
-        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"voight_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue'])))
+        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"bkg_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
+        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"voight_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['blue'])))
 
         ks_test_func = combined_pdf.createHistogram(f"ks_test_func_{e}_{t}", m_kkpi, ROOT.RooFit.Binning(1000))
         ks_test_data = dh.createHistogram(f"ks_test_data_{e}_{t}", m_kkpi, ROOT.RooFit.Binning(1000))
@@ -147,8 +148,8 @@ for e in range(7, 12):
         acceptance_error_list.append(acceptance_error)
         cross_section_list.append(cross_section)
         cross_section_error_list.append(cross_section_error)
-        t_bin_list.append((ct.T_CUT_DICT[t][0] + ct.T_CUT_DICT[t][1])/2.0)
-        t_bin_width_list.append(ct.T_WIDTH_DICT[t]/2.0)
+        t_bin_list.append((constants.T_CUT_DICT[t][0] + constants.T_CUT_DICT[t][1])/2.0)
+        t_bin_width_list.append(constants.T_WIDTH_DICT[t]/2.0)
         energy_bin_list.append(e)
         
         frame.Draw()
