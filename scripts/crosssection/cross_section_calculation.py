@@ -19,8 +19,8 @@ def get_title_for_plots(channel, e, t):
     line2 = f'{constants.T_CUT_DICT[t][0]} < t < {constants.T_CUT_DICT[t][1]} GeV^{2}'
     return '#splitline{' + line1 + '}{' + line2 + '}'        
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
