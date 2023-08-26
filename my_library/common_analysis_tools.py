@@ -192,7 +192,7 @@ def get_integrated_kkpi_hist_title(channel):
 
 def propogate_error_multiplication(target_datapoint, input_datapoints: list, input_errors: list):
     err_f2 = 0
-    for datapoint, i in enumerate(input_datapoints):
+    for i, datapoint in enumerate(input_datapoints):
         err_f2 += (input_errors[i]/datapoint)**2
         return target_datapoint * math.sqrt(err_f2)
 
