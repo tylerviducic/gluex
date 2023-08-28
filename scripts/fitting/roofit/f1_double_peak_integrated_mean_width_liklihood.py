@@ -55,8 +55,8 @@ for i in range(1, data_hist.GetNbinsX() + 1):
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.15, 1.8)
-range_min = 1.18
-range_max = 1.7
+range_min = 1.2
+range_max = 1.58
 m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
@@ -93,12 +93,12 @@ voight_sigma_1420.setConstant(True)
 
 ## CHEBYCHEV ##
 
-bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -2.0, 2.0)
-bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -2.0, 2.0)
-bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -2.0, 2.0)
-bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -2.0, 2.0)
+# bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -2.0, 2.0)
+# bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -2.0, 2.0)
+# bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -2.0, 2.0)
+# bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -2.0, 2.0)
 
-bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
+# bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
 
 
 ## BERNSTEIN ##
@@ -108,15 +108,15 @@ bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2
 # bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -1.0, 1.0)
 # bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -1.0, 1.0)
 
-# bkg = ROOT.RooBernstein("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3, bkg_par4))
+# bkg = ROOT.RooBernstein("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2))
 
 # POLYNOMIAL ##
-# bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -100, 100)
-# bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -100, 100)
-# bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -100, 100)
-# bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -100, 100)
+bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -100, 100)
+bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -100, 100)
+bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -100, 100)
+bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -100, 100)
 
-# bkg = ROOT.RooPolynomial("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3, bkg_par4))
+bkg = ROOT.RooPolynomial("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
 
 
 ## COMBINED PDF ##
