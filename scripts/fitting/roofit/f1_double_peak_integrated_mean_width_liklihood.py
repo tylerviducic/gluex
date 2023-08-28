@@ -55,8 +55,8 @@ for i in range(1, data_hist.GetNbinsX() + 1):
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.15, 1.8)
-range_min = 1.19
-range_max = 1.5
+range_min = 1.18
+range_max = 1.7
 m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
@@ -134,23 +134,23 @@ n_bkg = ROOT.RooRealVar("n_bkg", "n_bkg", 10000, 0.0, 1000000000)
 combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(voight_1285, voight_1420, bkg), ROOT.RooArgList(n_f1_1285, n_f1_1420, n_bkg))
 
 
-c2 = ROOT.RooChi2Var(f"c2", f"c2", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2), ROOT.RooFit.Range("fit_range"))
-minuit = ROOT.RooMinuit(c2)
-minuit.migrad()
-minuit.minos()
+# c2 = ROOT.RooChi2Var(f"c2", f"c2", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2), ROOT.RooFit.Range("fit_range"))
+# minuit = ROOT.RooMinuit(c2)
+# minuit.migrad()
+# minuit.minos()
 
 # combined_pdf.fitTo(dh, ROOT.RooFit.Range("signal"))
 # combined_pdf.fitTo(dh)
-# fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
+fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
 # fit_result = combined_pdf.chi2FitTo(dh, ROOT.RooFit.Save())
-fit_result = minuit.save()
+# fit_result = minuit.save()
 # fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Save())
 
-chi2_val = c2.getVal()
-n_bins_ndf = data_hist.GetXaxis().FindBin(range_max) - data_hist.GetXaxis().FindBin(range_min)
-# n_bins = 29
-ndf = n_bins_ndf - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
-chi2_per_ndf = chi2_val / ndf
+# chi2_val = c2.getVal()
+# n_bins_ndf = data_hist.GetXaxis().FindBin(range_max) - data_hist.GetXaxis().FindBin(range_min)
+# # n_bins = 29
+# ndf = n_bins_ndf - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
+# chi2_per_ndf = chi2_val / ndf
 
 
 c1 = ROOT.TCanvas("c1", "c1", 800, 600)
@@ -161,16 +161,16 @@ frame.SetTitle(title)
 frame.GetXaxis().SetTitle(f'{title.split(" ")[0]} GeV') 
 frame.GetYaxis().SetTitle(f'Counts/10MeV')
 
-npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
-chi2ndf = frame.chiSquare(npar)
+# npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
+# chi2ndf = frame.chiSquare(npar)
 
 dh.plotOn(frame, ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
 # draw_pdf(kstar_cut, frame, combined_pdf, '1285')
 # combined_pdf.plotOn(frame, ROOT.RooFit.VisualizeError(fit_result), ROOT.RooFit.LineColor(ROOT.kRed))
 combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red'])))
 pullHist = frame.pullHist()
-npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
-chi2ndf = frame.chiSquare(npar)
+# npar = combined_pdf.getParameters(dh).selectByAttrib("Constant", False).getSize()
+# chi2ndf = frame.chiSquare(npar)
 # fit_result.plotOn(frame, ROOT.RooAbsArg(voight), ROOT.RooFit.LineColor(ROOT.kRed))
 # combined_pdf.plotOn(frame, ROOT.RooFit.Components("bw"), ROOT.RooFit.LineColor(ROOT.kGreen))
 combined_pdf.plotOn(frame, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
@@ -188,8 +188,10 @@ for i in range(0, pullHist.GetN()):
 
 ks_test_func = combined_pdf.createHistogram("ks_test_func", m_kkpi)#, ROOT.RooFit.Binning(1000))
 ks_test_data = dh.createHistogram("ks_test_data", m_kkpi)#, ROOT.RooFit.Binning(1000))
-ks_test_data.Scale(1/ks_test_data.Integral())
-ks_test_func.Scale(1/ks_test_func.Integral())
+ks_test_data.GetXaxis().SetRangeUser(range_min, range_max)
+ks_test_func.GetXaxis().SetRangeUser(range_min, range_max)
+# ks_test_data.Scale(1/ks_test_data.Integral())
+# ks_test_func.Scale(1/ks_test_func.Integral())
 
 kstest = ks_test_data.KolmogorovTest(ks_test_func)
 # latex = ROOT.TLatex(); #prepare text in LaTeX format latex->SetTextSize(0.035);
@@ -230,10 +232,10 @@ print(f"f1 width = {voight_width_1285.getVal() * 1000} +/- {voight_width_1285.ge
 print(f"1420 mass = {voight_m_1420.getVal() * 1000} +/- {voight_m_1420.getError() * 1000}")
 print(f"1420 width = {voight_width_1420.getVal() * 1000} +/- {voight_width_1420.getError() * 1000}")
 # print("chi2 = " + str(chi2_val))
-print("chi2 = " + str(c2.getVal()))
-print("ndf = " + str(ndf))
-print("chi2/ndf (manual calculation) = " + str(chi2_per_ndf))
-print(f"second X2/ndf (frame method) = {chi2ndf}")
+# print("chi2 = " + str(c2.getVal()))
+# print("ndf = " + str(ndf))
+# print("chi2/ndf (manual calculation) = " + str(chi2_per_ndf))
+# print(f"second X2/ndf (frame method) = {chi2ndf}")
 print(f'f1 yield = {n_f1_1285.getVal()} +/- {n_f1_1285.getError()}')
 
 input("Press enter to close")
