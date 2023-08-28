@@ -55,7 +55,7 @@ for i in range(1, data_hist.GetNbinsX() + 1):
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.15, 1.8)
-range_min = 1.2
+range_min = 1.19
 range_max = 1.5
 m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
