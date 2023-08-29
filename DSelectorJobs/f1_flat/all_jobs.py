@@ -42,6 +42,7 @@ for channel in channels:
         print(add_job_command)
         os.system(add_job_command)
 
+# 3.) run the workflow
 run_workflow_command = 'swif2 run -workflow f1_flat'
 print(run_workflow_command)
 os.system(run_workflow_command)
