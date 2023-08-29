@@ -116,6 +116,8 @@ void DSelector_pimkpks_flat_bestchi2::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam_measured"); //fundamental = char, int, float, double, etc.
 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("rftime"); //fundamental = char, int, float, double, etc.
+
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_px"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_py"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_pz"); //fundamental = char, int, float, double, etc.
@@ -621,6 +623,7 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam", locBeamP4.E()); 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam_measured", locBeamP4_Measured.E()); 
 	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("rftime", dComboWrapper->Get_RFTime()); 
 	
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_px", locPiMinus1P4.Px());
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_py", locPiMinus1P4.Py());
