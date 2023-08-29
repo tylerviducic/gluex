@@ -116,6 +116,8 @@ void DSelector_pipkmks_flat_bestchi2::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam_measured"); //fundamental = char, int, float, double, etc.
 	
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("rftime"); //fundamental = char, int, float, double, etc.
+	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_pz"); //fundamental = char, int, float, double, etc.
@@ -323,7 +325,6 @@ Bool_t DSelector_pipkmks_flat_bestchi2::Process(Long64_t locEntry)
 		dComboWrapper->Set_IsComboCut(true);
 		return kTRUE;
 	}
-
 
 		/********************************************** GET PARTICLE INDICES *********************************************/
 
@@ -632,6 +633,8 @@ Bool_t DSelector_pipkmks_flat_bestchi2::Process(Long64_t locEntry)
 	// dFlatTreeInterface->Fill_Fundamental<Double_t>("accidweight", locHistAccidWeightFactor);
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam", locBeamP4.E()); 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam_measured", locBeamP4_Measured.E()); 
+
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("rftime", dComboWrapper->Get_RFTime()); 
 	
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px", locPiPlus1P4.Px());
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_py", locPiPlus1P4.Py());
