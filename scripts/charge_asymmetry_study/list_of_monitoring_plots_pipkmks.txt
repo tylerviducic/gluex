@@ -1,0 +1,1830 @@
+Directory: Independent
+  Directory: Hist_NumReconstructedObjects
+    NumHighLevelObjects
+    NumChargedTracks
+    NumPosChargedTracks
+    NumNegChargedTracks
+    NumTimeBasedTracks
+    NumPosTimeBasedTracks
+    NumNegTimeBasedTracks
+    NumWireBasedTracks
+    NumPosWireBasedTracks
+    NumNegWireBasedTracks
+    NumTrackCandidates
+    NumPosTrackCandidates
+    NumNegTrackCandidates
+    NumPosTrackCandidates_CDC
+    NumNegTrackCandidates_CDC
+    NumPosTrackCandidates_FDC
+    NumNegTrackCandidates_FDC
+    NumBeamPhotons
+    NumFCALShowers
+    NumBCALShowers
+    NumNeutralShowers
+    NumTOFPoints
+    NumSCHits
+    NumTAGMHits
+    NumTAGHHits
+    NumTrackBCALMatches
+    NumTrackFCALMatches
+    NumTrackTOFMatches
+    NumTrackSCMatches
+    NumCDCHits
+    NumFDCWireHits
+    NumFDCCathodeHits
+    NumFDCPseudoHits
+    NumTOFHits
+    NumBCALHits
+    NumFCALHits
+    NumRFSignals
+  Directory: Hist_Reconstruction
+    Directory: Tracking
+      Directory: q-
+        PVsTheta_Candidates_q-
+        PVsTheta_WireBased_q-
+        PVsTheta_TimeBased_q-
+        PVsTheta_TimeBased_GoodTrackFOM_q-
+        PVsTheta_TimeBased_LowTrackFOM_q-
+        PVsTheta_TimeBased_HighTrackFOM_q-
+        PVsTheta_GoodWireBased_GoodTimeBased_q-
+        PVsTheta_GoodWireBased_BadTimeBased_q-
+      Directory: q+
+        PVsTheta_Candidates_q+
+        PVsTheta_WireBased_q+
+        PVsTheta_TimeBased_q+
+        PVsTheta_TimeBased_GoodTrackFOM_q+
+        PVsTheta_TimeBased_LowTrackFOM_q+
+        PVsTheta_TimeBased_HighTrackFOM_q+
+        PVsTheta_GoodWireBased_GoodTimeBased_q+
+        PVsTheta_GoodWireBased_BadTimeBased_q+
+      NumDCHitsPerTrack
+      NumPossDCHitsPerTrack
+      TrackHitFraction
+      NumDCHitsPerTrackVsTheta
+      NumPossDCHitsPerTrackVsTheta
+      TrackHitFractionVsTheta
+      TrackingFOM_WireBased
+      TrackingFOM
+      TrackingFOMVsP
+      TrackingFOMVsTheta
+      TrackingFOMVsNumHits
+      CDCRingVsTheta_Candidates
+      CDCRingVsTheta_WireBased
+      CDCRingVsTheta_TimeBased
+      CDCRingVsTheta_TimeBased_GoodTrackFOM
+      FDCPlaneVsTheta_Candidates
+      FDCPlaneVsTheta_WireBased
+      FDCPlaneVsTheta_TimeBased
+      FDCPlaneVsTheta_TimeBased_GoodTrackFOM
+      MCMatchedHitsVsTheta
+      MCMatchedHitsVsP
+    FCALShowerYVsX
+    FCALShowerEnergy
+    BCALShowerEnergy
+    BCALShowerPhi
+    BCALShowerPhiVsZ
+    TOFPointEnergy
+    TOFPointYVsX
+    SCHitSector
+    SCHitEnergy
+    SCHitEnergyVsSector
+    SCRFDeltaTVsSector
+    TAGMRFDeltaTVsColumn
+    TAGHRFDeltaTVsCounter
+  Directory: Hist_EventVertex
+    Directory: AllEvents
+      EventVertexZ
+      EventVertexYVsX
+      EventVertexT
+    Directory: 2+GoodTracks
+      Directory: Pulls_Pi+
+        Pull_Px
+        Pull_Py
+        Pull_Pz
+        Pull_Xx
+        Pull_Xy
+        Pull_Xz
+      Directory: Pulls_Proton
+        Pull_Px
+        Pull_Py
+        Pull_Pz
+        Pull_Xx
+        Pull_Xy
+        Pull_Xz
+      Directory: Pulls_Pi-
+        Pull_Px
+        Pull_Py
+        Pull_Pz
+        Pull_Xx
+        Pull_Xy
+        Pull_Xz
+      EventVertexZ
+      EventVertexYVsX
+      EventVertexT
+      ConfidenceLevel
+    RFTrackDeltaT
+  Directory: Hist_DetectorMatching
+    Directory: TimeBased
+      Directory: SC
+        PVsTheta_HasHit
+        PVsTheta_NoHit
+        PhiVsTheta_HasHit
+        PhiVsTheta_NoHit
+        SCPaddleVsTheta_HasHit
+        SCPaddleVsTheta_NoHit
+        SCPaddleVsZ_HasHit
+        SCPaddleVsZ_NoHit
+        SCPaddle_BarrelRegion_HasHit
+        SCPaddle_BarrelRegion_NoHit
+        SCPaddle_NoseRegion_HasHit
+        SCPaddle_NoseRegion_NoHit
+        SCTrackDeltaPhiVsP
+        SCTrackDeltaPhiVsTheta
+        SCTrackDeltaPhiVsZ
+      Directory: BCAL
+        PVsTheta_HasHit
+        PVsTheta_NoHit
+        PhiVsTheta_HasHit
+        PhiVsTheta_NoHit
+        TrackBCALModuleVsZ_HasHit
+        TrackBCALModuleVsZ_NoHit
+        TrackBCALPhiVsZ_HasHit
+        TrackBCALPhiVsZ_NoHit
+        BCALDeltaPhiVsP
+        BCALDeltaPhiVsZ
+        BCALDeltaZVsTheta
+        BCALDeltaZVsZ
+      Directory: TOFPoint
+        PVsTheta_HasHit
+        PVsTheta_NoHit
+        PhiVsTheta_HasHit
+        PhiVsTheta_NoHit
+        TrackTOFYVsX_HasHit
+        TrackTOFYVsX_NoHit
+        TrackTOF2DPaddles_HasHit
+        TrackTOF2DPaddles_NoHit
+        TrackTOFP_HasHit
+        TrackTOFP_NoHit
+        TrackTOFR_HasHit
+        TrackTOFR_NoHit
+        TOFTrackDistanceVsP
+        TOFTrackDistanceVsTheta
+        TOFTrackDeltaXVsHorizontalPaddle
+        TOFTrackDeltaXVsVerticalPaddle
+        TOFTrackDeltaYVsHorizontalPaddle
+        TOFTrackDeltaYVsVerticalPaddle
+        TOFTrackDistance_BothPlanes
+        TOFTrackDistance_OnePlane
+      Directory: FCAL
+        PVsTheta_HasHit
+        PVsTheta_NoHit
+        PhiVsTheta_HasHit
+        PhiVsTheta_NoHit
+        TrackFCALYVsX_HasHit
+        TrackFCALYVsX_NoHit
+        TrackFCALP_HasHit
+        TrackFCALP_NoHit
+        TrackFCALR_HasHit
+        TrackFCALR_NoHit
+        TrackFCALRowVsColumn_HasHit
+        TrackFCALRowVsColumn_NoHit
+        FCALTrackDistanceVsP
+        FCALTrackDistanceVsTheta
+      Directory: TOFPaddle
+        VerticalPaddleTrackDeltaX
+        HorizontalPaddleTrackDeltaY
+        TrackYVsVerticalPaddle_HasHit
+        TrackYVsVerticalPaddle_NoHit
+        HorizontalPaddleVsTrackX_HasHit
+        HorizontalPaddleVsTrackX_NoHit
+      PVsTheta_NoHitMatch
+      PVsTheta_HitMatch
+    Directory: WireBased
+      Directory: SC
+        PVsTheta_HasHit
+        PVsTheta_NoHit
+        PhiVsTheta_HasHit
+        PhiVsTheta_NoHit
+        SCPaddleVsTheta_HasHit
+        SCPaddleVsTheta_NoHit
+        SCPaddleVsZ_HasHit
+        SCPaddleVsZ_NoHit
+        SCPaddle_BarrelRegion_HasHit
+        SCPaddle_BarrelRegion_NoHit
+        SCPaddle_NoseRegion_HasHit
+        SCPaddle_NoseRegion_NoHit
+        SCTrackDeltaPhiVsP
+        SCTrackDeltaPhiVsTheta
+        SCTrackDeltaPhiVsZ
+      Directory: BCAL
+        PVsTheta_HasHit
+        PVsTheta_NoHit
+        PhiVsTheta_HasHit
+        PhiVsTheta_NoHit
+        TrackBCALModuleVsZ_HasHit
+        TrackBCALModuleVsZ_NoHit
+        TrackBCALPhiVsZ_HasHit
+        TrackBCALPhiVsZ_NoHit
+        BCALDeltaPhiVsP
+        BCALDeltaPhiVsZ
+        BCALDeltaZVsTheta
+        BCALDeltaZVsZ
+      Directory: TOFPoint
+        PVsTheta_HasHit
+        PVsTheta_NoHit
+        PhiVsTheta_HasHit
+        PhiVsTheta_NoHit
+        TrackTOFYVsX_HasHit
+        TrackTOFYVsX_NoHit
+        TrackTOF2DPaddles_HasHit
+        TrackTOF2DPaddles_NoHit
+        TrackTOFP_HasHit
+        TrackTOFP_NoHit
+        TrackTOFR_HasHit
+        TrackTOFR_NoHit
+        TOFTrackDistanceVsP
+        TOFTrackDistanceVsTheta
+        TOFTrackDeltaXVsHorizontalPaddle
+        TOFTrackDeltaXVsVerticalPaddle
+        TOFTrackDeltaYVsHorizontalPaddle
+        TOFTrackDeltaYVsVerticalPaddle
+        TOFTrackDistance_BothPlanes
+        TOFTrackDistance_OnePlane
+      Directory: FCAL
+        PVsTheta_HasHit
+        PVsTheta_NoHit
+        PhiVsTheta_HasHit
+        PhiVsTheta_NoHit
+        TrackFCALYVsX_HasHit
+        TrackFCALYVsX_NoHit
+        TrackFCALP_HasHit
+        TrackFCALP_NoHit
+        TrackFCALR_HasHit
+        TrackFCALR_NoHit
+        TrackFCALRowVsColumn_HasHit
+        TrackFCALRowVsColumn_NoHit
+        FCALTrackDistanceVsP
+        FCALTrackDistanceVsTheta
+      Directory: TOFPaddle
+        VerticalPaddleTrackDeltaX
+        HorizontalPaddleTrackDeltaY
+        TrackYVsVerticalPaddle_HasHit
+        TrackYVsVerticalPaddle_NoHit
+        HorizontalPaddleVsTrackX_HasHit
+        HorizontalPaddleVsTrackX_NoHit
+      PVsTheta_NoHitMatch
+      PVsTheta_HitMatch
+  Directory: Hist_DetectorMatchParams
+    Directory: ReconstructedPID
+      Directory: q-
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: q+
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: Pi+
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: K+
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: Proton
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: Pi-
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: K-
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+    Directory: TruePID
+      Directory: q-
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: q+
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: Pi+
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: K+
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: Proton
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: Pi-
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+      Directory: K-
+        BCALShowerEnergy
+        BCALShowerTrackDepth
+        BCALShowerTrackDepthVsP
+        FCALShowerEnergy
+        FCALShowerTrackDepth
+        FCALShowerTrackDepthVsP
+        SCEnergyVsTheta
+        SCPhiVsTheta
+  Directory: Hist_Neutrals
+    BCALTrackDOCA
+    BCALTrackDeltaPhi
+    BCALTrackDeltaZ
+    BCALNeutralShowerEnergy
+    BCALNeutralShowerDeltaT
+    BCALNeutralShowerDeltaTVsE
+    BCALNeutralShowerDeltaTVsZ
+    FCALTrackDOCA
+    FCALNeutralShowerEnergy
+    FCALNeutralShowerDeltaT
+    FCALNeutralShowerDeltaTVsE
+  Directory: Hist_DetectorPID
+    Directory: BCAL
+      BetaVsP_q0
+      DeltaTVsShowerE_Photon
+      BetaVsP_q-
+      EOverPVsP_q-
+      EOverPVsTheta_q-
+      BetaVsP_q+
+      EOverPVsP_q+
+      EOverPVsTheta_q+
+      DeltaBetaVsP_Pi+
+      DeltaTVsP_Pi+
+      DeltaBetaVsP_K+
+      DeltaTVsP_K+
+      DeltaBetaVsP_Proton
+      DeltaTVsP_Proton
+      DeltaBetaVsP_Pi-
+      DeltaTVsP_Pi-
+      DeltaBetaVsP_K-
+      DeltaTVsP_K-
+    Directory: FCAL
+      BetaVsP_q0
+      DeltaTVsShowerE_Photon
+      BetaVsP_q-
+      EOverPVsP_q-
+      EOverPVsTheta_q-
+      BetaVsP_q+
+      EOverPVsP_q+
+      EOverPVsTheta_q+
+      DeltaBetaVsP_Pi+
+      DeltaTVsP_Pi+
+      DeltaBetaVsP_K+
+      DeltaTVsP_K+
+      DeltaBetaVsP_Proton
+      DeltaTVsP_Proton
+      DeltaBetaVsP_Pi-
+      DeltaTVsP_Pi-
+      DeltaBetaVsP_K-
+      DeltaTVsP_K-
+    Directory: SC
+      dEdXVsP_q-
+      BetaVsP_q-
+      dEdXVsP_q+
+      BetaVsP_q+
+      DeltadEdXVsP_Pi+
+      DeltaBetaVsP_Pi+
+      DeltaTVsP_Pi+
+      DeltadEdXVsP_K+
+      DeltaBetaVsP_K+
+      DeltaTVsP_K+
+      DeltadEdXVsP_Proton
+      DeltaBetaVsP_Proton
+      DeltaTVsP_Proton
+      DeltadEdXVsP_Pi-
+      DeltaBetaVsP_Pi-
+      DeltaTVsP_Pi-
+      DeltadEdXVsP_K-
+      DeltaBetaVsP_K-
+      DeltaTVsP_K-
+    Directory: TOF
+      dEdXVsP_q-
+      BetaVsP_q-
+      dEdXVsP_q+
+      BetaVsP_q+
+      DeltadEdXVsP_Pi+
+      DeltaBetaVsP_Pi+
+      DeltaTVsP_Pi+
+      DeltadEdXVsP_K+
+      DeltaBetaVsP_K+
+      DeltaTVsP_K+
+      DeltadEdXVsP_Proton
+      DeltaBetaVsP_Proton
+      DeltaTVsP_Proton
+      DeltadEdXVsP_Pi-
+      DeltaBetaVsP_Pi-
+      DeltaTVsP_Pi-
+      DeltadEdXVsP_K-
+      DeltaBetaVsP_K-
+      DeltaTVsP_K-
+    Directory: CDC
+      dEdXVsP_Int_q-
+      dEdXVsP_Amp_q-
+      dEdXVsP_Int_q+
+      dEdXVsP_Amp_q+
+      DeltadEdXVsP_Int_Pi+
+      DeltadEdXVsP_Amp_Pi+
+      DeltadEdXVsP_Int_K+
+      DeltadEdXVsP_Amp_K+
+      DeltadEdXVsP_Int_Proton
+      DeltadEdXVsP_Amp_Proton
+      DeltadEdXVsP_Int_Pi-
+      DeltadEdXVsP_Amp_Pi-
+      DeltadEdXVsP_Int_K-
+      DeltadEdXVsP_Amp_K-
+    Directory: FDC
+      dEdXVsP_q-
+      dEdXVsP_q+
+      DeltadEdXVsP_Pi+
+      DeltadEdXVsP_K+
+      DeltadEdXVsP_Proton
+      DeltadEdXVsP_Pi-
+      DeltadEdXVsP_K-
+    Directory: DIRC
+      NumPhotons_Pi+
+      ThetaCVsP_Pi+
+      Ldiff_kpiVsP_Pi+
+      Ldiff_pkVsP_Pi+
+      NumPhotons_K+
+      ThetaCVsP_K+
+      Ldiff_kpiVsP_K+
+      Ldiff_pkVsP_K+
+      NumPhotons_Proton
+      ThetaCVsP_Proton
+      Ldiff_kpiVsP_Proton
+      Ldiff_pkVsP_Proton
+      NumPhotons_Pi-
+      ThetaCVsP_Pi-
+      Ldiff_kpiVsP_Pi-
+      Ldiff_pkVsP_Pi-
+      NumPhotons_K-
+      ThetaCVsP_K-
+      Ldiff_kpiVsP_K-
+      Ldiff_pkVsP_K-
+  Directory: Hist_TrackMultiplicity
+    NumReconstructedParticles
+    NumGoodReconstructedParticles
+  Directory: Hist_DetectedParticleKinematics
+    Directory: Beam_Photon
+      Momentum
+    Directory: PID
+      BetaVsP_Q+
+      BetaVsP_Q-
+    Directory: Photon
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      BetaVsP
+      DeltaBetaVsP
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Pi+
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      BetaVsP
+      DeltaBetaVsP
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: K+
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      BetaVsP
+      DeltaBetaVsP
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Proton
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      BetaVsP
+      DeltaBetaVsP
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Pi-
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      BetaVsP
+      DeltaBetaVsP
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: K-
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      BetaVsP
+      DeltaBetaVsP
+      VertexZ
+      VertexYVsX
+      VertexT
+  Directory: Hist_TrackShowerErrors
+    Directory: Pi+
+      PxErrorVsP
+      PxErrorVsTheta
+      PxErrorVsPhi
+      PyErrorVsP
+      PyErrorVsTheta
+      PyErrorVsPhi
+      PzErrorVsP
+      PzErrorVsTheta
+      PzErrorVsPhi
+      XErrorVsP
+      XErrorVsTheta
+      XErrorVsPhi
+      YErrorVsP
+      YErrorVsTheta
+      YErrorVsPhi
+      ZErrorVsP
+      ZErrorVsTheta
+      ZErrorVsPhi
+    Directory: Pi-
+      PxErrorVsP
+      PxErrorVsTheta
+      PxErrorVsPhi
+      PyErrorVsP
+      PyErrorVsTheta
+      PyErrorVsPhi
+      PzErrorVsP
+      PzErrorVsTheta
+      PzErrorVsPhi
+      XErrorVsP
+      XErrorVsTheta
+      XErrorVsPhi
+      YErrorVsP
+      YErrorVsTheta
+      YErrorVsPhi
+      ZErrorVsP
+      ZErrorVsTheta
+      ZErrorVsPhi
+    Directory: Proton
+      PxErrorVsP
+      PxErrorVsTheta
+      PxErrorVsPhi
+      PyErrorVsP
+      PyErrorVsTheta
+      PyErrorVsPhi
+      PzErrorVsP
+      PzErrorVsTheta
+      PzErrorVsPhi
+      XErrorVsP
+      XErrorVsTheta
+      XErrorVsPhi
+      YErrorVsP
+      YErrorVsTheta
+      YErrorVsPhi
+      ZErrorVsP
+      ZErrorVsTheta
+      ZErrorVsPhi
+    Directory: Photon_FCAL
+      EErrorVsP
+      EErrorVsTheta
+      EErrorVsPhi
+      XErrorVsP
+      XErrorVsTheta
+      XErrorVsPhi
+      YErrorVsP
+      YErrorVsTheta
+      YErrorVsPhi
+      ZErrorVsP
+      ZErrorVsTheta
+      ZErrorVsPhi
+      TErrorVsP
+      TErrorVsTheta
+      TErrorVsPhi
+    Directory: Photon_BCAL
+      EErrorVsP
+      EErrorVsTheta
+      EErrorVsPhi
+      XErrorVsP
+      XErrorVsTheta
+      XErrorVsPhi
+      YErrorVsP
+      YErrorVsTheta
+      YErrorVsPhi
+      ZErrorVsP
+      ZErrorVsTheta
+      ZErrorVsPhi
+      TErrorVsP
+      TErrorVsTheta
+      TErrorVsPhi
+  Directory: Hist_ThrownParticleKinematics
+    Directory: MCGENBeamParticle_Photon
+      Momentum
+      Time
+    Directory: TRUTHBeamParticles_Photon
+      Momentum
+      Time
+    Directory: Photon
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Neutron
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Pi+
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: K+
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Proton
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Pi-
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: K-
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+  Directory: Hist_ReconnedThrownKinematics
+    Directory: Beam_Photon
+      Momentum
+    Directory: PID
+      BetaVsP_Q+
+      BetaVsP_Q-
+    Directory: Photon
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Neutron
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Pi+
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: K+
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Proton
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: Pi-
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+    Directory: K-
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      VertexT
+  Directory: Hist_GenReconTrackComparison
+    Directory: Photon
+      Directory: Pulls
+        EPull
+        EPullVsP
+        EPullVsTheta
+        XxPull
+        XxPullVsP
+        XxPullVsTheta
+        XyPull
+        XyPullVsP
+        XyPullVsTheta
+        XzPull
+        XzPullVsP
+        XzPullVsTheta
+        TPull
+        TPullVsP
+        TPullVsTheta
+        TimePull_BCAL
+        TimePullVsTheta_BCAL
+        TimePullVsP_BCAL
+        TimePull_FCAL
+        TimePullVsP_FCAL
+      MatchFOM
+      DeltaPOverP
+      DeltaTheta
+      DeltaPhi
+      DeltaT
+      DeltaT_BCAL
+      DeltaT_FCAL
+      DeltaVertexZ
+      DeltaPOverPVsP
+      DeltaPOverPVsTheta
+      DeltaThetaVsP
+      DeltaThetaVsTheta
+      DeltaPhiVsP
+      DeltaPhiVsTheta
+      DeltaTVsTheta
+      DeltaTVsP
+      DeltaVertexZVsTheta
+      PVsTheta_LargeDeltaT
+    Directory: Neutron
+      Directory: Pulls
+        EPull
+        EPullVsP
+        EPullVsTheta
+        XxPull
+        XxPullVsP
+        XxPullVsTheta
+        XyPull
+        XyPullVsP
+        XyPullVsTheta
+        XzPull
+        XzPullVsP
+        XzPullVsTheta
+        TPull
+        TPullVsP
+        TPullVsTheta
+        TimePull_BCAL
+        TimePullVsTheta_BCAL
+        TimePullVsP_BCAL
+        TimePull_FCAL
+        TimePullVsP_FCAL
+      MatchFOM
+      DeltaPOverP
+      DeltaTheta
+      DeltaPhi
+      DeltaT
+      DeltaT_BCAL
+      DeltaT_FCAL
+      DeltaVertexZ
+      DeltaPOverPVsP
+      DeltaPOverPVsTheta
+      DeltaThetaVsP
+      DeltaThetaVsTheta
+      DeltaPhiVsP
+      DeltaPhiVsTheta
+      DeltaTVsTheta
+      DeltaTVsP
+      DeltaVertexZVsTheta
+      PVsTheta_LargeDeltaT
+    Directory: Pi+
+      Directory: Pulls
+        PxPull
+        PxPullVsP
+        PxPullVsTheta
+        PyPull
+        PyPullVsP
+        PyPullVsTheta
+        PzPull
+        PzPullVsP
+        PzPullVsTheta
+        XxPull
+        XxPullVsP
+        XxPullVsTheta
+        XyPull
+        XyPullVsP
+        XyPullVsTheta
+        XzPull
+        XzPullVsP
+        XzPullVsTheta
+        TPull
+        TPullVsP
+        TPullVsTheta
+        TimePull_CDC
+        TimePullVsTheta_CDC
+        TimePullVsP_CDC
+        TimePull_ST
+        TimePullVsTheta_ST
+        TimePullVsP_ST
+        TimePull_BCAL
+        TimePullVsTheta_BCAL
+        TimePullVsP_BCAL
+        TimePull_TOF
+        TimePullVsP_TOF
+        TimePull_FCAL
+        TimePullVsP_FCAL
+      MatchFOM
+      DeltaPOverP
+      DeltaTheta
+      DeltaPhi
+      DeltaT
+      DeltaT_BCAL
+      DeltaT_TOF
+      DeltaVertexZ
+      DeltaPOverPVsP
+      DeltaPOverPVsTheta
+      DeltaThetaVsP
+      DeltaThetaVsTheta
+      DeltaPhiVsP
+      DeltaPhiVsTheta
+      DeltaTVsTheta
+      DeltaTVsP
+      DeltaVertexZVsTheta
+      PVsTheta_LargeDeltaT
+    Directory: K+
+      Directory: Pulls
+        PxPull
+        PxPullVsP
+        PxPullVsTheta
+        PyPull
+        PyPullVsP
+        PyPullVsTheta
+        PzPull
+        PzPullVsP
+        PzPullVsTheta
+        XxPull
+        XxPullVsP
+        XxPullVsTheta
+        XyPull
+        XyPullVsP
+        XyPullVsTheta
+        XzPull
+        XzPullVsP
+        XzPullVsTheta
+        TPull
+        TPullVsP
+        TPullVsTheta
+        TimePull_CDC
+        TimePullVsTheta_CDC
+        TimePullVsP_CDC
+        TimePull_ST
+        TimePullVsTheta_ST
+        TimePullVsP_ST
+        TimePull_BCAL
+        TimePullVsTheta_BCAL
+        TimePullVsP_BCAL
+        TimePull_TOF
+        TimePullVsP_TOF
+        TimePull_FCAL
+        TimePullVsP_FCAL
+      MatchFOM
+      DeltaPOverP
+      DeltaTheta
+      DeltaPhi
+      DeltaT
+      DeltaT_BCAL
+      DeltaT_TOF
+      DeltaVertexZ
+      DeltaPOverPVsP
+      DeltaPOverPVsTheta
+      DeltaThetaVsP
+      DeltaThetaVsTheta
+      DeltaPhiVsP
+      DeltaPhiVsTheta
+      DeltaTVsTheta
+      DeltaTVsP
+      DeltaVertexZVsTheta
+      PVsTheta_LargeDeltaT
+    Directory: Proton
+      Directory: Pulls
+        PxPull
+        PxPullVsP
+        PxPullVsTheta
+        PyPull
+        PyPullVsP
+        PyPullVsTheta
+        PzPull
+        PzPullVsP
+        PzPullVsTheta
+        XxPull
+        XxPullVsP
+        XxPullVsTheta
+        XyPull
+        XyPullVsP
+        XyPullVsTheta
+        XzPull
+        XzPullVsP
+        XzPullVsTheta
+        TPull
+        TPullVsP
+        TPullVsTheta
+        TimePull_CDC
+        TimePullVsTheta_CDC
+        TimePullVsP_CDC
+        TimePull_ST
+        TimePullVsTheta_ST
+        TimePullVsP_ST
+        TimePull_BCAL
+        TimePullVsTheta_BCAL
+        TimePullVsP_BCAL
+        TimePull_TOF
+        TimePullVsP_TOF
+        TimePull_FCAL
+        TimePullVsP_FCAL
+      MatchFOM
+      DeltaPOverP
+      DeltaTheta
+      DeltaPhi
+      DeltaT
+      DeltaT_BCAL
+      DeltaT_TOF
+      DeltaVertexZ
+      DeltaPOverPVsP
+      DeltaPOverPVsTheta
+      DeltaThetaVsP
+      DeltaThetaVsTheta
+      DeltaPhiVsP
+      DeltaPhiVsTheta
+      DeltaTVsTheta
+      DeltaTVsP
+      DeltaVertexZVsTheta
+      PVsTheta_LargeDeltaT
+    Directory: Pi-
+      Directory: Pulls
+        PxPull
+        PxPullVsP
+        PxPullVsTheta
+        PyPull
+        PyPullVsP
+        PyPullVsTheta
+        PzPull
+        PzPullVsP
+        PzPullVsTheta
+        XxPull
+        XxPullVsP
+        XxPullVsTheta
+        XyPull
+        XyPullVsP
+        XyPullVsTheta
+        XzPull
+        XzPullVsP
+        XzPullVsTheta
+        TPull
+        TPullVsP
+        TPullVsTheta
+        TimePull_CDC
+        TimePullVsTheta_CDC
+        TimePullVsP_CDC
+        TimePull_ST
+        TimePullVsTheta_ST
+        TimePullVsP_ST
+        TimePull_BCAL
+        TimePullVsTheta_BCAL
+        TimePullVsP_BCAL
+        TimePull_TOF
+        TimePullVsP_TOF
+        TimePull_FCAL
+        TimePullVsP_FCAL
+      MatchFOM
+      DeltaPOverP
+      DeltaTheta
+      DeltaPhi
+      DeltaT
+      DeltaT_BCAL
+      DeltaT_TOF
+      DeltaVertexZ
+      DeltaPOverPVsP
+      DeltaPOverPVsTheta
+      DeltaThetaVsP
+      DeltaThetaVsTheta
+      DeltaPhiVsP
+      DeltaPhiVsTheta
+      DeltaTVsTheta
+      DeltaTVsP
+      DeltaVertexZVsTheta
+      PVsTheta_LargeDeltaT
+    Directory: K-
+      Directory: Pulls
+        PxPull
+        PxPullVsP
+        PxPullVsTheta
+        PyPull
+        PyPullVsP
+        PyPullVsTheta
+        PzPull
+        PzPullVsP
+        PzPullVsTheta
+        XxPull
+        XxPullVsP
+        XxPullVsTheta
+        XyPull
+        XyPullVsP
+        XyPullVsTheta
+        XzPull
+        XzPullVsP
+        XzPullVsTheta
+        TPull
+        TPullVsP
+        TPullVsTheta
+        TimePull_CDC
+        TimePullVsTheta_CDC
+        TimePullVsP_CDC
+        TimePull_ST
+        TimePullVsTheta_ST
+        TimePullVsP_ST
+        TimePull_BCAL
+        TimePullVsTheta_BCAL
+        TimePullVsP_BCAL
+        TimePull_TOF
+        TimePullVsP_TOF
+        TimePull_FCAL
+        TimePullVsP_FCAL
+      MatchFOM
+      DeltaPOverP
+      DeltaTheta
+      DeltaPhi
+      DeltaT
+      DeltaT_BCAL
+      DeltaT_TOF
+      DeltaVertexZ
+      DeltaPOverPVsP
+      DeltaPOverPVsTheta
+      DeltaThetaVsP
+      DeltaThetaVsTheta
+      DeltaPhiVsP
+      DeltaPhiVsTheta
+      DeltaTVsTheta
+      DeltaTVsP
+      DeltaVertexZVsTheta
+      PVsTheta_LargeDeltaT
+    DeltaT_RFBeamBunch
+  Directory: Combo_Construction
+    Directory: Invariant_Mass
+      InvariantMass_2Gamma_BCAL
+      InvariantMass_2Gamma_FCAL
+      InvariantMass_2Gamma_BCALFCAL
+      InvariantMass_Pi0
+      InvariantMass_KShort
+      InvariantMass_Eta
+      InvariantMass_Lambda
+      InvariantMass_Sigma+
+      InvariantMass_Sigma0
+      InvariantMass_Sigma-
+      InvariantMass_Xi0
+      InvariantMass_Xi-
+      InvariantMass_Omega-
+      InvariantMass_AntiLambda
+      InvariantMass_Omega
+      InvariantMass_Phi
+      InvariantMass_EtaPrime
+      InvariantMass_D0
+      InvariantMass_LambdaC
+      InvariantMass_AntiD0
+    Directory: Missing_Mass
+      MissingMassVsBeamEnergy_None
+      MissingMassVsBeamEnergy_Photon
+      MissingMassVsBeamEnergy_Positron
+      MissingMassVsBeamEnergy_Electron
+      MissingMassVsBeamEnergy_Pi0
+      MissingMassVsBeamEnergy_Pi+
+      MissingMassVsBeamEnergy_Pi-
+      MissingMassVsBeamEnergy_KLong
+      MissingMassVsBeamEnergy_K+
+      MissingMassVsBeamEnergy_K-
+      MissingMassVsBeamEnergy_Neutron
+      MissingMassVsBeamEnergy_Proton
+      MissingMassVsBeamEnergy_KShort
+      NoneMissing_MissingEVsBeamEnergy_PreMissMassSqCut
+      NoneMissing_MissingEVsBeamEnergy_PostMissMassSqCut
+      NoneMissing_MissingPtVsMissingE_PreMissMassSqCut
+      NoneMissing_MissingPtVsMissingE_PostMissMassSqCut
+    Directory: PID
+      Directory: Photons_PreVertex
+        All_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+      Directory: Photon
+        Best_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_FCAL
+      Directory: Electron
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: Positron
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: Muon+
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: Muon-
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: Pi+
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: Pi-
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: K+
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: K-
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: Proton
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+      Directory: AntiProton
+        All_RFDeltaTVsP_TOF
+        Best_RFDeltaTVsP_TOF
+        All_RFDeltaTVsP_BCAL
+        Best_RFDeltaTVsP_BCAL
+        All_RFDeltaTVsP_FCAL
+        Best_RFDeltaTVsP_FCAL
+        All_RFDeltaTVsP_ST
+        Best_RFDeltaTVsP_ST
+        dEdxVsP_CDC
+        dEdxVsP_FDC
+        dEdxVsP_ST
+        dEdxVsP_TOF
+        EOverP_BCAL
+        EOverP_FCAL
+    BeamRFDeltaTVsBeamE
+  IsEvent
+Directory: pipkmks__ks_pippim__B4_M16
+  Directory: Hist_InvariantMass_KShort_PreKinFit
+    InvariantMass
+    InvariantMassVsBeamE
+  Directory: Hist_MissingMassSquared_KShort_PreKinFit
+    MissingMassSquared
+    MissingMassSquaredVsBeamE
+    MissingMassSquaredVsMissingP
+  Directory: Hist_MissingMassSquared_PreKinFit
+    MissingMassSquared
+    MissingMassSquaredVsBeamE
+    MissingMassSquaredVsMissingP
+  Directory: Hist_KinFitResults
+    Directory: Beam
+      Pull_Px
+      DeltaTheta
+      Pull_Py
+      DeltaPhi
+      Pull_Pz
+      DeltaPOverP
+    Directory: Step0__Photon_Proton__Pi+_K-_KShort_Proton
+      Directory: Pi+
+        Pull_Px
+        DeltaTheta
+        Pull_Py
+        DeltaPhi
+        Pull_Pz
+        DeltaPOverP
+        Pull_Xx
+        DeltaX
+        Pull_Xy
+        DeltaY
+        Pull_Xz
+        DeltaZ
+      Directory: K-
+        Pull_Px
+        DeltaTheta
+        Pull_Py
+        DeltaPhi
+        Pull_Pz
+        DeltaPOverP
+        Pull_Xx
+        DeltaX
+        Pull_Xy
+        DeltaY
+        Pull_Xz
+        DeltaZ
+      Directory: Proton
+        Pull_Px
+        DeltaTheta
+        Pull_Py
+        DeltaPhi
+        Pull_Pz
+        DeltaPOverP
+        Pull_Xx
+        DeltaX
+        Pull_Xy
+        DeltaY
+        Pull_Xz
+        DeltaZ
+    Directory: Step1__KShort__Pi+_Pi-
+      Directory: Pi+
+        Pull_Px
+        DeltaTheta
+        Pull_Py
+        DeltaPhi
+        Pull_Pz
+        DeltaPOverP
+        Pull_Xx
+        DeltaX
+        Pull_Xy
+        DeltaY
+        Pull_Xz
+        DeltaZ
+      Directory: Pi-
+        Pull_Px
+        DeltaTheta
+        Pull_Py
+        DeltaPhi
+        Pull_Pz
+        DeltaPOverP
+        Pull_Xx
+        DeltaX
+        Pull_Xy
+        DeltaY
+        Pull_Xz
+        DeltaZ
+    ConfidenceLevel
+  Directory: Hist_PID
+    Directory: Pi+
+      Directory: SC
+        dEdXVsP
+        DeltadEdXVsP
+        DeltaBetaVsP
+        BetaVsP
+        DeltaTVsP
+        TimePullVsP_Pi+
+        TimeFOMVsP_Pi+
+      Directory: TOF
+        dEdXVsP
+        DeltadEdXVsP
+        DeltaBetaVsP
+        BetaVsP
+        DeltaTVsP
+        TimePullVsP_Pi+
+        TimeFOMVsP_Pi+
+      Directory: BCAL
+        BetaVsP
+        DeltaBetaVsP
+        DeltaTVsP
+        TimePullVsP_Pi+
+        TimeFOMVsP_Pi+
+        EOverPVsP
+        EOverPVsTheta
+      Directory: FCAL
+        BetaVsP
+        DeltaBetaVsP
+        DeltaTVsP
+        TimePullVsP_Pi+
+        TimeFOMVsP_Pi+
+        EOverPVsP
+        EOverPVsTheta
+      Directory: CDC
+        dEdXVsP_Int
+        dEdXVsP_Amp
+        DeltadEdXVsP_Int
+        DeltadEdXVsP_Amp
+        dEdXPullVsP_Int_Pi+
+        dEdXPullVsP_Amp_Pi+
+        dEdXFOMVsP_Int_Pi+
+        dEdXFOMVsP_Amp_Pi+
+      Directory: FDC
+        dEdXVsP
+        DeltadEdXVsP
+        dEdXPullVsP_Pi+
+        dEdXFOMVsP_Pi+
+      Directory: DIRC
+        NumPhotons_Pi+
+        ThetaCVsP_Pi+
+        Ldiff_kpiVsP_Pi+
+        Ldiff_pkVsP_Pi+
+      Directory: Throwns
+        PIDConfidenceLevel_ForThrownPID_Pi+
+        PIDConfidenceLevel_ForThrownPID_K+
+        PIDConfidenceLevel_ForThrownPID_Proton
+      PIDConfidenceLevel
+      PVsTheta_NaNPIDFOM
+    Directory: Pi-
+      Directory: SC
+        dEdXVsP
+        DeltadEdXVsP
+        DeltaBetaVsP
+        BetaVsP
+        DeltaTVsP
+        TimePullVsP_Pi-
+        TimeFOMVsP_Pi-
+      Directory: TOF
+        dEdXVsP
+        DeltadEdXVsP
+        DeltaBetaVsP
+        BetaVsP
+        DeltaTVsP
+        TimePullVsP_Pi-
+        TimeFOMVsP_Pi-
+      Directory: BCAL
+        BetaVsP
+        DeltaBetaVsP
+        DeltaTVsP
+        TimePullVsP_Pi-
+        TimeFOMVsP_Pi-
+        EOverPVsP
+        EOverPVsTheta
+      Directory: FCAL
+        BetaVsP
+        DeltaBetaVsP
+        DeltaTVsP
+        TimePullVsP_Pi-
+        TimeFOMVsP_Pi-
+        EOverPVsP
+        EOverPVsTheta
+      Directory: CDC
+        dEdXVsP_Int
+        dEdXVsP_Amp
+        DeltadEdXVsP_Int
+        DeltadEdXVsP_Amp
+        dEdXPullVsP_Int_Pi-
+        dEdXPullVsP_Amp_Pi-
+        dEdXFOMVsP_Int_Pi-
+        dEdXFOMVsP_Amp_Pi-
+      Directory: FDC
+        dEdXVsP
+        DeltadEdXVsP
+        dEdXPullVsP_Pi-
+        dEdXFOMVsP_Pi-
+      Directory: DIRC
+        NumPhotons_Pi-
+        ThetaCVsP_Pi-
+        Ldiff_kpiVsP_Pi-
+        Ldiff_pkVsP_Pi-
+      Directory: Throwns
+        PIDConfidenceLevel_ForThrownPID_Pi-
+        PIDConfidenceLevel_ForThrownPID_K-
+      PIDConfidenceLevel
+      PVsTheta_NaNPIDFOM
+    Directory: K-
+      Directory: SC
+        dEdXVsP
+        DeltadEdXVsP
+        DeltaBetaVsP
+        BetaVsP
+        DeltaTVsP
+        TimePullVsP_K-
+        TimeFOMVsP_K-
+      Directory: TOF
+        dEdXVsP
+        DeltadEdXVsP
+        DeltaBetaVsP
+        BetaVsP
+        DeltaTVsP
+        TimePullVsP_K-
+        TimeFOMVsP_K-
+      Directory: BCAL
+        BetaVsP
+        DeltaBetaVsP
+        DeltaTVsP
+        TimePullVsP_K-
+        TimeFOMVsP_K-
+        EOverPVsP
+        EOverPVsTheta
+      Directory: FCAL
+        BetaVsP
+        DeltaBetaVsP
+        DeltaTVsP
+        TimePullVsP_K-
+        TimeFOMVsP_K-
+        EOverPVsP
+        EOverPVsTheta
+      Directory: CDC
+        dEdXVsP_Int
+        dEdXVsP_Amp
+        DeltadEdXVsP_Int
+        DeltadEdXVsP_Amp
+        dEdXPullVsP_Int_K-
+        dEdXPullVsP_Amp_K-
+        dEdXFOMVsP_Int_K-
+        dEdXFOMVsP_Amp_K-
+      Directory: FDC
+        dEdXVsP
+        DeltadEdXVsP
+        dEdXPullVsP_K-
+        dEdXFOMVsP_K-
+      Directory: DIRC
+        NumPhotons_K-
+        ThetaCVsP_K-
+        Ldiff_kpiVsP_K-
+        Ldiff_pkVsP_K-
+      Directory: Throwns
+        PIDConfidenceLevel_ForThrownPID_Pi-
+        PIDConfidenceLevel_ForThrownPID_K-
+      PIDConfidenceLevel
+      PVsTheta_NaNPIDFOM
+    Directory: Proton
+      Directory: SC
+        dEdXVsP
+        DeltadEdXVsP
+        DeltaBetaVsP
+        BetaVsP
+        DeltaTVsP
+        TimePullVsP_Proton
+        TimeFOMVsP_Proton
+      Directory: TOF
+        dEdXVsP
+        DeltadEdXVsP
+        DeltaBetaVsP
+        BetaVsP
+        DeltaTVsP
+        TimePullVsP_Proton
+        TimeFOMVsP_Proton
+      Directory: BCAL
+        BetaVsP
+        DeltaBetaVsP
+        DeltaTVsP
+        TimePullVsP_Proton
+        TimeFOMVsP_Proton
+        EOverPVsP
+        EOverPVsTheta
+      Directory: FCAL
+        BetaVsP
+        DeltaBetaVsP
+        DeltaTVsP
+        TimePullVsP_Proton
+        TimeFOMVsP_Proton
+        EOverPVsP
+        EOverPVsTheta
+      Directory: CDC
+        dEdXVsP_Int
+        dEdXVsP_Amp
+        DeltadEdXVsP_Int
+        DeltadEdXVsP_Amp
+        dEdXPullVsP_Int_Proton
+        dEdXPullVsP_Amp_Proton
+        dEdXFOMVsP_Int_Proton
+        dEdXFOMVsP_Amp_Proton
+      Directory: FDC
+        dEdXVsP
+        DeltadEdXVsP
+        dEdXPullVsP_Proton
+        dEdXFOMVsP_Proton
+      Directory: DIRC
+        NumPhotons_Proton
+        ThetaCVsP_Proton
+        Ldiff_kpiVsP_Proton
+        Ldiff_pkVsP_Proton
+      Directory: Throwns
+        PIDConfidenceLevel_ForThrownPID_Pi+
+        PIDConfidenceLevel_ForThrownPID_K+
+        PIDConfidenceLevel_ForThrownPID_Proton
+      PIDConfidenceLevel
+      PVsTheta_NaNPIDFOM
+  Directory: Hist_InvariantMass_KShort_PostKinFit
+    InvariantMass
+    InvariantMassVsBeamE
+  Directory: Hist_MissingMassSquared_KShort_PostKinFit
+    MissingMassSquared
+    MissingMassSquaredVsBeamE
+    MissingMassSquaredVsMissingP
+  Directory: Hist_MissingMassSquared_PostKinFit
+    MissingMassSquared
+    MissingMassSquaredVsBeamE
+    MissingMassSquaredVsMissingP
+  Directory: Hist_InvariantMass_KShort_PostKinFit_KinFit
+    InvariantMass
+    InvariantMassVsBeamE
+  Directory: Hist_MissingMassSquared_KShort_PostKinFit_KinFit
+    MissingMassSquared
+    MissingMassSquaredVsBeamE
+    MissingMassSquaredVsMissingP
+  Directory: Hist_ParticleComboKinematics
+    Directory: Beam_Photon
+      Momentum
+      Theta
+      Phi
+      PVsTheta
+      PhiVsTheta
+      VertexZ
+      VertexYVsX
+      DeltaTRF
+      DeltaTRFVsBeamE
+    Directory: Step0__Photon_Proton__Pi+_K-_KShort_Proton
+      Directory: Pi+
+        Momentum
+        Theta
+        Phi
+        PVsTheta
+        PhiVsTheta
+        BetaVsP
+        DeltaBetaVsP
+        VertexZ
+        VertexYVsX
+      Directory: K-
+        Momentum
+        Theta
+        Phi
+        PVsTheta
+        PhiVsTheta
+        BetaVsP
+        DeltaBetaVsP
+        VertexZ
+        VertexYVsX
+      Directory: Proton
+        Momentum
+        Theta
+        Phi
+        PVsTheta
+        PhiVsTheta
+        BetaVsP
+        DeltaBetaVsP
+        VertexZ
+        VertexYVsX
+      Directory: KShort
+        Momentum
+        Theta
+        Phi
+        PVsTheta
+        PhiVsTheta
+        BetaVsP
+        DeltaBetaVsP
+        VertexZ
+        VertexYVsX
+      StepVertexZ
+      StepVertexYVsX
+    Directory: Step1__KShort__Pi+_Pi-
+      Directory: KShort
+        Momentum
+        Theta
+        Phi
+        PVsTheta
+        PhiVsTheta
+        BetaVsP
+        DeltaBetaVsP
+        VertexZ
+        VertexYVsX
+      Directory: Pi+
+        Momentum
+        Theta
+        Phi
+        PVsTheta
+        PhiVsTheta
+        BetaVsP
+        DeltaBetaVsP
+        VertexZ
+        VertexYVsX
+      Directory: Pi-
+        Momentum
+        Theta
+        Phi
+        PVsTheta
+        PhiVsTheta
+        BetaVsP
+        DeltaBetaVsP
+        VertexZ
+        VertexYVsX
+      StepVertexZ
+      StepVertexYVsX
+      KShortPathLength
+      KShortLifetime
+      KShortLifetime_RestFrame
+  NumParticleCombos
+  NumEventsSurvivedAction
+  NumEventsWhereTrueComboSurvivedAction
+  NumCombosSurvivedAction
+  NumCombosSurvivedAction1D
+  ComboConstruction_NumEventsSurvived
+  ComboConstruction_NumCombosSurvived
+  ComboConstruction_NumCombosSurvived2D
