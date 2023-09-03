@@ -2,7 +2,7 @@ import os
 
 topdir_gluex1 = '/lustre19/expphy/volatile/halld/home/viducic/selector_output/f1_{}_flat_bx2/{}_flat_bestX2/'
 topdir_2019 = '/lustre19/expphy/volatile/halld/home/viducic/selector_output/f1_pipkmks_flat_bx2/pipkmks_flat_bestX2_unconstrained/'
-target_path = '/work/halld/home/viducic/data/{}/data/bestX2'
+target_path = '/work/halld/home/viducic/data/{}/data/bestX2/'
 
 
 file_suffix = {
@@ -33,7 +33,7 @@ for channel in ['pipkmks', 'pimkpks']:
             topdir = topdir_2019
             sources = f'{topdir}{channel}_flat_bestX2_unconstrained_0{i}*.root'
 
-        add_command = f'hadd {filename} {sources}'
+        add_command = f'hadd {target_path.format(channel)}{filename} {sources}'
         print('adding new file')
         print(add_command)
         os.system(add_command)
