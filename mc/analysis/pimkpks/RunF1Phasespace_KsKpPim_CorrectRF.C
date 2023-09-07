@@ -1,5 +1,5 @@
 // pimkpks__ks_pippim__B4_M16_Tree
-void RunF1Phasespace_KsKpPim_CorrectRF(){
+void RunF1Phasespace_KsKpPim_CorrectRF(string filename){
 
     #include "TProof.h"
     #include "TProofDebug.h"
