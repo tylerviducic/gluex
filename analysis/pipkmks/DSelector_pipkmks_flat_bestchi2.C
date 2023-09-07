@@ -116,7 +116,8 @@ void DSelector_pipkmks_flat_bestchi2::Init(TTree *locTree)
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam_measured"); //fundamental = char, int, float, double, etc.
 	
-	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("rftime"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("rf_time"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("kinfit_cl"); //fundamental = char, int, float, double, etc.
 	
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py"); //fundamental = char, int, float, double, etc.
@@ -306,7 +307,7 @@ Bool_t DSelector_pipkmks_flat_bestchi2::Process(Long64_t locEntry)
 		double chi2 = dComboWrapper->Get_ChiSq_KinFit();
 		double ndf = dComboWrapper->Get_NDF_KinFit();
 
-		if (chi2/ndf <= best_chi2) {
+		if (chi2/ndf < best_chi2) {
 			best_chi2 = chi2/ndf;
 			best_combo = loc_i;
 		}
@@ -321,10 +322,10 @@ Bool_t DSelector_pipkmks_flat_bestchi2::Process(Long64_t locEntry)
 
 	double locKinFit_CL = dComboWrapper->Get_ConfidenceLevel_KinFit("");
 
-	if(locKinFit_CL < 1E-3){
-		dComboWrapper->Set_IsComboCut(true);
-		return kTRUE;
-	}
+	// if(locKinFit_CL < 1E-3){
+	// 	dComboWrapper->Set_IsComboCut(true);
+	// 	return kTRUE;
+	// }
 
 		/********************************************** GET PARTICLE INDICES *********************************************/
 
@@ -634,7 +635,9 @@ Bool_t DSelector_pipkmks_flat_bestchi2::Process(Long64_t locEntry)
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam", locBeamP4.E()); 
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam_measured", locBeamP4_Measured.E()); 
 
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("rftime", dComboWrapper->Get_RFTime()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("rf_time", dComboWrapper->Get_RFTime()); 
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("kinfit_cl", locKinFit_CL); 
+
 	
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px", locPiPlus1P4.Px());
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_py", locPiPlus1P4.Py());
