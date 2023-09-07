@@ -14,17 +14,17 @@ filenames_pimkpks = {
 
 
 def run_selector_macro(run_period: str):
-    top_dir =  '/lustre19/expphy/volatile/halld/home/viducic/pimkpks_mc/signal/tree_pimkpks__ks_pippim__B4_M16/'
-    print(f"RUNNING DSELECTOR FOR PI+K-Ks OVER {run_period.upper()} SIGNAL MC")
+    top_dir =  '/lustre19/expphy/volatile/halld/home/viducic/pimkpks_mc/phasespace/tree_pimkpks__ks_pippim__B4_M16/'
+    print(f"RUNNING DSELECTOR FOR PI+K-Ks OVER {run_period.upper()} PHASESPACE MC")
     filepath_for_selector = f'{top_dir}{directories_pimkpks[run_period]}/*'
-    ds_command = f"root -l -b -q \'RunF1MC_KsKpPim_CorrectRF.C(\"{filepath_for_selector}\")\'"
+    ds_command = f"root -l -b -q \'RunF1Phasespace_KsKpPim_CorrectRF.C(\"{filepath_for_selector}\")\'"
     print(ds_command)
     os.system(ds_command)
 
 
 def rename_file(run_period: str):
-    outfile =  '/work/halld/home/viducic/data/pimkpks/mc/signal/pimkpks_flat_bestX2.root'
-    mv_command = f'mv {outfile} /work/halld/home/viducic/data/pimkpks/mc/signal/pimkpks_flat_bestX2_{filenames_pimkpks[run_period]}.root'
+    outfile =  '/work/halld/home/viducic/data/pimkpks/mc/phasespace/pimkpks_flat_bestX2.root'
+    mv_command = f'mv {outfile} /work/halld/home/viducic/data/pimkpks/mc/phasespace/pimkpks_flat_bestX2_{filenames_pimkpks[run_period]}.root'
     print(mv_command)
     os.system(mv_command)
 
