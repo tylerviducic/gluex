@@ -115,6 +115,9 @@ void DSelector_pimkpks_phasespace_flat_correct_rf::Init(TTree *locTree)
 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); // fundamental = char, int, float, double, etc.
 
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("rf_time"); //fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("kinfit_cl"); //fundamental = char, int, float, double, etc.
+
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_px"); // fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_py"); // fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pim1_pz"); // fundamental = char, int, float, double, etc.
@@ -344,11 +347,11 @@ dComboWrapper->Set_ComboIndex(best_combo);
 
 double locKinFit_CL = dComboWrapper->Get_ConfidenceLevel_KinFit("");
 
-if (locKinFit_CL < 1E-3)
-{
-	dComboWrapper->Set_IsComboCut(true);
-	return kTRUE;
-}
+// if (locKinFit_CL < 1E-3)
+// {
+// 	dComboWrapper->Set_IsComboCut(true);
+// 	return kTRUE;
+// }
 		/********************************************** GET PARTICLE INDICES *********************************************/
 
 		//Used for tracking uniqueness when filling histograms, and for determining unused particles
@@ -531,6 +534,9 @@ if (locKinFit_CL < 1E-3)
 		*/
 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam", locBeamP4.E());
+
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("rf_time", dComboWrapper->Get_RFTime()); 
+		dFlatTreeInterface->Fill_Fundamental<Double_t>("kinfit_cl", locKinFit_CL); 
 
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_px", locPiMinus1P4.Px());
 		dFlatTreeInterface->Fill_Fundamental<Double_t>("pim1_py", locPiMinus1P4.Py());
