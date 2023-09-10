@@ -114,7 +114,10 @@ void DSelector_mc_pipkmks_flat::Init(TTree *locTree)
 	*/
 
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("e_beam"); //fundamental = char, int, float, double, etc.
-	
+
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("rf_time");	  // fundamental = char, int, float, double, etc.
+	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("kinfit_cl"); // fundamental = char, int, float, double, etc.
+
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_px"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_py"); //fundamental = char, int, float, double, etc.
 	dFlatTreeInterface->Create_Branch_Fundamental<Double_t>("pip1_pz"); //fundamental = char, int, float, double, etc.
@@ -344,10 +347,10 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 
 	double locKinFit_CL = dComboWrapper->Get_ConfidenceLevel_KinFit("");
 
-	if(locKinFit_CL < 1E-3){
-		dComboWrapper->Set_IsComboCut(true);
-		return kTRUE;
-	}
+	// if(locKinFit_CL < 1E-3){
+	// 	dComboWrapper->Set_IsComboCut(true);
+	// 	return kTRUE;
+	// }
 
 
 		/********************************************** GET PARTICLE INDICES *********************************************/
@@ -669,8 +672,11 @@ Bool_t DSelector_mc_pipkmks_flat::Process(Long64_t locEntry)
 		}
 		*/
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("accidweight", locHistAccidWeightFactor);
-	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam", locBeamP4.E()); 
-	
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("e_beam", locBeamP4.E());
+
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("rf_time", dComboWrapper->Get_RFTime());
+	dFlatTreeInterface->Fill_Fundamental<Double_t>("kinfit_cl", locKinFit_CL);
+
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_px", locPiPlus1P4.Px());
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_py", locPiPlus1P4.Py());
 	dFlatTreeInterface->Fill_Fundamental<Double_t>("pip1_pz", locPiPlus1P4.Pz()); 
