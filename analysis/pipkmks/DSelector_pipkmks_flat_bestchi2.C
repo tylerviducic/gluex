@@ -322,7 +322,12 @@ Bool_t DSelector_pipkmks_flat_bestchi2::Process(Long64_t locEntry)
 
 	double locKinFit_CL = dComboWrapper->Get_ConfidenceLevel_KinFit("");
 
-	if(locKinFit_CL < 1E-6){
+	// if(locKinFit_CL < 1E-6){
+	// 	dComboWrapper->Set_IsComboCut(true);
+	// 	return kTRUE;
+	// }
+
+	if(chi2/ndf > 20){
 		dComboWrapper->Set_IsComboCut(true);
 		return kTRUE;
 	}
