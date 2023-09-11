@@ -105,3 +105,8 @@ my_library/__pycache__/constants.cpython-36.pyc
 
 
 scripts/acceptance_study/list_of_monitoring_plots_pipkmks.txt
+mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C.so
+mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C_ACLiC_dict_rdict.pcm
+.gitignore
+.gitignore
+.gitignore
