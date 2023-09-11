@@ -1,4 +1,4 @@
-void RunF1MC_KsKmPip(string filename){
+void RunF1MCPhasespace_KsKmPip(string filename){
 
     #include "TProof.h"
     #include "TProofDebug.h"

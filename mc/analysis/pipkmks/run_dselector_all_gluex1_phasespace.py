@@ -14,7 +14,7 @@ filenames_pipkmks = {
 
 def run_selector_macro(run_period: str):
     top_dir =  '/lustre19/expphy/volatile/halld/home/viducic/pipkmks_mc/phasespace/tree_pipkmks__ks_pippim__B4_M16/'
-    print(f"RUNNING DSELECTOR FOR PI+K-Ks OVER {run_period.upper()} SIGNAL MC")
+    print(f"RUNNING DSELECTOR FOR PI+K-Ks OVER {run_period.upper()} PHASESPACE MC")
     filepath_for_selector = f'{top_dir}{directories_pipkmks[run_period]}/*'
     ds_command = f"root -l -b -q \'RunF1MCPhasespace_KsKmPip.C(\"{filepath_for_selector}\")\'"
     print(ds_command)
