@@ -327,6 +327,9 @@ Bool_t DSelector_pipkmks_flat_bestchi2::Process(Long64_t locEntry)
 	// 	return kTRUE;
 	// }
 
+	double chi2 = dComboWrapper->Get_ChiSq_KinFit();
+	double ndf = dComboWrapper->Get_NDF_KinFit();
+
 	if(chi2/ndf > 20){
 		dComboWrapper->Set_IsComboCut(true);
 		return kTRUE;

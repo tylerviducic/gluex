@@ -300,9 +300,6 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 		// Grab combo Chi^2/NDF and see if it's the best. 
 		// If it is, save the combo index
 
-		double chi2 = dComboWrapper->Get_ChiSq_KinFit();
-		double ndf = dComboWrapper->Get_NDF_KinFit();
-
 		if (chi2/ndf < best_chi2) {
 			best_chi2 = chi2/ndf;
 			best_combo = loc_i;
@@ -322,6 +319,9 @@ Bool_t DSelector_pimkpks_flat_bestchi2::Process(Long64_t locEntry)
 	// 	dComboWrapper->Set_IsComboCut(true);
 	// 	return kTRUE;
 	// }
+
+	double chi2 = dComboWrapper->Get_ChiSq_KinFit();
+	double ndf = dComboWrapper->Get_NDF_KinFit();
 
 	if(chi2/ndf > 20){
 		dComboWrapper->Set_IsComboCut(true);
