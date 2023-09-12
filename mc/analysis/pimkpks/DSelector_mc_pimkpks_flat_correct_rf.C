@@ -353,6 +353,15 @@ Bool_t DSelector_mc_pimkpks_flat_correct_rf::Process(Long64_t locEntry)
 	// 	dComboWrapper->Set_IsComboCut(true);
 	// 	return kTRUE;
 	// }
+
+	double chi2 = dComboWrapper->Get_ChiSq_KinFit();
+	double ndf = dComboWrapper->Get_NDF_KinFit();
+
+	if (chi2 / ndf > 20)
+	{
+		dComboWrapper->Set_IsComboCut(true);
+		return kTRUE;
+	}
 		/********************************************** GET PARTICLE INDICES *********************************************/
 
 		//Used for tracking uniqueness when filling histograms, and for determining unused particles
