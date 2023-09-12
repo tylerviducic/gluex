@@ -12,6 +12,8 @@ filenames_pimkpks = {
     "2017": "2017"
 }
 
+# TODO change to full path for file to run
+path_to_runfile = '/work/halld/home/viducic/mc/analysis/pimkpks/RunF1MC_KsKpPim_CorrectRF.C'
 
 def run_selector_macro(run_period: str):
     top_dir =  '/lustre19/expphy/volatile/halld/home/viducic/pimkpks_mc/signal/tree_pimkpks__ks_pippim__B4_M16/'
