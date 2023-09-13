@@ -1,7 +1,8 @@
 # script for testing the thrown energy vs recon energy for different beam ranges
 
 import ROOT
-from common_analysis_tools import *
+from my_library.common_analysis_tools import get_flat_phasespace_file_and_tree
+from my_library.constants import COLORBLIND_HEX_DICT as colorblind_hex_dict
 
 
 channel = 'pipkmks'
