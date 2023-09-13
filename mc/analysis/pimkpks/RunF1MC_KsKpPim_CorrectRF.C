@@ -11,7 +11,7 @@ void RunF1MC_KsKpPim_CorrectRF(string filename){
     ch->Add(cstr);
     gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
     DPROOFLiteManager *dproof = new DPROOFLiteManager();
-    dproof->Process_Chain(ch, "DSelector_mc_pimkpks_flat_correct_rf.C++", 6);
+    dproof->Process_Chain(ch, "/work/halld/home/viducic/mc/analysis/pimkpks/DSelector_mc_pimkpks_flat_correct_rf.C++", 6);
 
 }
 

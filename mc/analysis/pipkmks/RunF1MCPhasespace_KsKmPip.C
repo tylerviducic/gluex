@@ -10,7 +10,7 @@ void RunF1MCPhasespace_KsKmPip(string filename){
     ch->Add(cstr);
     gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
     DPROOFLiteManager *dproof = new DPROOFLiteManager();
-    dproof->Process_Chain(ch, "DSelector_mc_pipkmks_phasespace_flat.C++", 6);//, "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfilehist.root", "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfiletree.root"); 
+    dproof->Process_Chain(ch, "/work/halld/home/viducic/mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat.C++", 6); //, "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfilehist.root", "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfiletree.root");
 
     // PHASESPACE MC ONLY
 
