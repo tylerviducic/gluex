@@ -110,3 +110,11 @@ mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C_ACLiC_dict_rdict.pcm
 .gitignore
 .gitignore
 .gitignore
+analysis/pipkmks/DSelector_pipkmks_flat_bestchi2_C.d
+analysis/pipkmks/DSelector_pipkmks_flat_bestchi2_C.so
+mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C_ACLiC_dict_rdict.pcm
+mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C.d
+mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C.so
+mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C_ACLiC_dict_rdict.pcm
+mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C.d
+mc/analysis/pipkmks/DSelector_mc_pipkmks_phasespace_flat_C.so
