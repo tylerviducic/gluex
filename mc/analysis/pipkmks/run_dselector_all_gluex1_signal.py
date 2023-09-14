@@ -12,11 +12,14 @@ filenames_pipkmks = {
     "2017": "2017"
 }
 
+runfile = '/work/halld/home/viducic/mc/analysis/pipkmks/RunF1MC_KsKmPip.C'
+
+
 def run_selector_macro(run_period: str):
     top_dir =  '/lustre19/expphy/volatile/halld/home/viducic/pipkmks_mc/signal/tree_pipkmks__ks_pippim__B4_M16/'
     print(f"RUNNING DSELECTOR FOR PI+K-Ks OVER {run_period.upper()} SIGNAL MC")
     filepath_for_selector = f'{top_dir}{directories_pipkmks[run_period]}/*'
-    ds_command = f"root -l -b -q \'RunF1MC_KsKmPip.C(\"{filepath_for_selector}\")\'"
+    ds_command = f"root -l -b -q \'{runfile}(\"{filepath_for_selector}\")\'"
     print(ds_command)
     os.system(ds_command)
 
