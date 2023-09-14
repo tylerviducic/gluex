@@ -124,3 +124,4 @@ analysis/pipkmks/ver_test_dselectors/DSelector_pipkmks_flat_bestX2_ver23_C.d
 analysis/pipkmks/ver_test_dselectors/DSelector_pipkmks_flat_bestX2_ver23_C.so
 mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C_ACLiC_dict_rdict.pcm
 mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C_ACLiC_dict_rdict.pcm
+scripts/file_utils/DSelector
