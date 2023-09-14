@@ -1,4 +1,4 @@
-void RunVerTest(string filename){
+void RunVerTest23(string filename){
 
     #include "TProof.h"
     #include "TProofDebug.h"
