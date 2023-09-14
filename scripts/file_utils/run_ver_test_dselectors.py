@@ -9,11 +9,14 @@ runfile_datafile_dict = {
 }
 
 result_filenames = ['pipkmks_v16', 'pipkmks_v23', 'pimkpks_v16', 'pimkpks_v23']
-outfiles = ['pipkmks_flat_bestX2.root,' 'pipkmks_flat_bestX2_ver23.root', 'pimkpks_flat_bestX2.root,' 'pimkpks_flat_bestX2_ver23.root']
+outfiles = ['pipkmks_flat_bestX2.root', 'pipkmks_flat_bestX2_ver23.root', 'pimkpks_flat_bestX2.root', 'pimkpks_flat_bestX2_ver23.root']
 
-for i, runfile in runfile_datafile_dict.keys():
+#this is a shitty hack. 
+for i, runfile in enumerate(runfile_datafile_dict.keys()):
     command = f'root -l -b -q \'{runfile}("{runfile_datafile_dict[runfile]}")\''
     print(command)
-    # os.system(command)
+    os.system(command)
     outpath = f'/work/halld/home/viducic/data/{outfiles[i].split("_")[0]}/data/ver_test/{result_filenames[i]}.root'
     mv_command = f'mv {outfiles[i]} {outpath}'
+    print(mv_command)
+    os.system(mv_command)
