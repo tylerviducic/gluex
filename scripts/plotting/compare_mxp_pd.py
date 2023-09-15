@@ -1,7 +1,8 @@
 # script to compare the MXP and PD data
 
 import ROOT
-from common_analysis_tools import *
+from my_library.kinematic_cuts import KSTAR_ALL_CUT_PIPKMKS
+from my_library.constants import COLORBLIND_HEX_DICT as colorblind_hex_dict
 
 ROOT.gStyle.SetOptStat(0)
 
@@ -35,10 +36,10 @@ df_mxp_ksc_unfiltered = ROOT.RDataFrame(mxp_ksc_unfiltered_treename, mxp_ksc_unf
 df_pd_unfiltered = ROOT.RDataFrame(pd_unfiltered_treename, pd_unfiltered_filename)
 df_pd_ksc_unfiltered = ROOT.RDataFrame(pd_ksc_unfiltered_treename, pd_ksc_unfiltered_filename)
 
-df_mxp = df_mxp.Filter(KSTAR_ALL_CUT)
-df_mxp_ksc = df_mxp_ksc.Filter(KSTAR_ALL_CUT)
-df_pd = df_pd.Filter(KSTAR_ALL_CUT)
-df_pd_ksc = df_pd_ksc.Filter(KSTAR_ALL_CUT)
+df_mxp = df_mxp.Filter(KSTAR_ALL_CUT_PIPKMKS)
+df_mxp_ksc = df_mxp_ksc.Filter(KSTAR_ALL_CUT_PIPKMKS)
+df_pd = df_pd.Filter(KSTAR_ALL_CUT_PIPKMKS)
+df_pd_ksc = df_pd_ksc.Filter(KSTAR_ALL_CUT_PIPKMKS)
 
 hist_mxp_pipkmks = df_mxp.Histo1D(('pipkmks_mxp', 'pipkmks_mxp', 50, 1.0, 1.8), 'pipkmks_m').GetValue()
 hist_mxp_ksc_pipkmks = df_mxp_ksc.Histo1D(('pipkmks_mxp_ksc', 'pipkmks_mxp_ksc', 50, 1.0, 1.8), 'pipkmks_m').GetValue()
