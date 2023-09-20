@@ -289,14 +289,3 @@ for i in range(len(data_histogram_array)):
     data_histogram_array[i].Draw()
     func_relbw.Draw("same")
     func_voigt.Draw("same")
-
-
-
-
-
-
-
-
-
-    # TODO: test fits
-    # TODO: plot integral results 
