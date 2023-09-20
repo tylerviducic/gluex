@@ -1278,3 +1278,46 @@ def get_hist_name_for_flat_analysis(channel, cut=None, beam_index=0, t_index=0, 
 def fill_histos(cut_df, histo_array, channel, cut=None, beam_index=0, t_index=0, thrown=False):
     hist_name = get_hist_name_for_flat_analysis(channel, cut, beam_index, t_index, thrown)
     histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), f'{channel}_m'))
+
+# TODO: refactor this. this is a quick hack for the collaboraton meeting
+def get_reduced_2d_chi2_hists(df_pipkmks, df_pimkpks, particle):
+    particles = {
+        'pion': ('pip1', 'pim1'),
+        'kaon': ('km', 'kp'),
+        'proton': ('p', 'p')
+    }
+
+    hist_pipkmks_track = df_pipkmks.Define(f'{particles[particle][0]}_chi2ndf_trk', f'{particles[particle][0]}_chisq_trk/{particles[particle][0]}_ndf_trk') \
+        .Histo2D((f'pipkmks_{particles[particle][0]}_chi2ndf_trk', 'Track #Chi^{2}/ndf vs M(K^{-}K_{s}#pi^{+}) for ' + particles[particle][0], 40, 1.1, 1.5, 200, 0.0, 20.0), 'pipkmks_m',  f'{particles[particle][0]}_chi2ndf_trk')
+    hist_pimkpks_track = df_pimkpks.Define(f'{particles[particle][1]}_chi2ndf_trk', f'{particles[particle][1]}_chisq_trk/{particles[particle][1]}_ndf_trk') \
+        .Histo2D((f'pimkpks_{particles[particle][1]}_chi2ndf_trk', 'Track #Chi^{2}/ndf vs M(#pi^{-}K_{s}K^{+}) for ' + particles[particle][1], 40, 1.1, 1.5, 200, 0.0, 20.0), 'pimkpks_m',  f'{particles[particle][1]}_chi2ndf_trk')
+    hist_pipkmks_time = df_pipkmks.Define(f'{particles[particle][0]}_chi2ndf_time', f'{particles[particle][0]}_chisq_time/{particles[particle][0]}_ndf_time') \
+        .Histo2D((f'pipkmks_{particles[particle][0]}_chi2ndf_trk', 'Time #Chi^{2}/ndf vs M(K^{-}K_{s}#pi^{+}) for ' + particles[particle][0], 40, 1.1, 1.5, 200, 0.0, 20.0),  'pipkmks_m', f'{particles[particle][0]}_chi2ndf_time')    
+    hist_pimkpks_time = df_pimkpks.Define(f'{particles[particle][1]}_chi2ndf_time', f'{particles[particle][1]}_chisq_time/{particles[particle][1]}_ndf_time') \
+        .Histo2D((f'pimkpks_{particles[particle][1]}_chi2ndf_trk', 'Time #Chi^{2}/ndf vs M(#pi^{-}K_{s}K^{+}) for ' + particles[particle][1], 40, 1.1, 1.5, 200, 0.0, 20.0),  'pimkpks_m', f'{particles[particle][1]}_chi2ndf_time')
+    
+    return hist_pipkmks_track, hist_pimkpks_track, hist_pipkmks_time, hist_pimkpks_time
+
+
+def get_reduced_1d_chi2_hists(df_pipkmks, df_pimkpks, particle):
+    particles = {
+        'pion': ('pip1', 'pim1'),
+        'kaon': ('km', 'kp'),
+        'proton': ('p', 'p')
+    }
+
+    hist_pipkmks_track = df_pipkmks.Define(f'{particles[particle][0]}_chi2ndf_trk', f'{particles[particle][0]}_chisq_trk/{particles[particle][0]}_ndf_trk') \
+        .Histo1D((f'pipkmks_{particles[particle][0]}_chi2ndf_trk', 'Track #Chi^{2}/ndf vs M(K^{-}K_{s}#pi^{+}) for ' + particles[particle][0], 200, 0.0, 8.0), f'{particles[particle][0]}_chi2ndf_trk')
+    hist_pimkpks_track = df_pimkpks.Define(f'{particles[particle][1]}_chi2ndf_trk', f'{particles[particle][1]}_chisq_trk/{particles[particle][1]}_ndf_trk') \
+        .Histo1D((f'pimkpks_{particles[particle][1]}_chi2ndf_trk', 'Track #Chi^{2}/ndf vs M(#pi^{-}K_{s}K^{+}) for ' + particles[particle][1], 200, 0.0, 8.0), f'{particles[particle][1]}_chi2ndf_trk')
+    hist_pipkmks_time = df_pipkmks.Define(f'{particles[particle][0]}_chi2ndf_time', f'{particles[particle][0]}_chisq_time/{particles[particle][0]}_ndf_time') \
+        .Histo1D((f'pipkmks_{particles[particle][0]}_chi2ndf_trk', 'Time #Chi^{2}/ndf vs M(K^{-}K_{s}#pi^{+}) for ' + particles[particle][0], 200, 0.0, 8.0), f'{particles[particle][0]}_chi2ndf_time')    
+    hist_pimkpks_time = df_pimkpks.Define(f'{particles[particle][1]}_chi2ndf_time', f'{particles[particle][1]}_chisq_time/{particles[particle][1]}_ndf_time') \
+        .Histo1D((f'pimkpks_{particles[particle][1]}_chi2ndf_trk', 'Time #Chi^{2}/ndf vs M(#pi^{-}K_{s}K^{+}) for ' + particles[particle][1], 200, 0.0, 8.0), f'{particles[particle][1]}_chi2ndf_time')
+
+    hist_pipkmks_track.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['blue']))
+    hist_pipkmks_time.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['blue']))
+    hist_pimkpks_track.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red']))
+    hist_pimkpks_time.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red']))
+
+    return hist_pipkmks_track, hist_pimkpks_track, hist_pipkmks_time, hist_pimkpks_time
