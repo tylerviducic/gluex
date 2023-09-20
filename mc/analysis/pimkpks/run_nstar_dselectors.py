@@ -19,5 +19,7 @@ for nstar_dir in nstar_dirs:
     path_to_files = f'{common_path}{nstar_dir}/root/trees/tree_pimkpks__ks_pippim__B4_M16_genr8/'
     run_command = f'root -l -b -q \'RunNstarMC_KsKpPim.C("{path_to_files}*.root")\''
     print(run_command)
+    os.system(run_command)
     mv_command = f'mv {ds_output_file} {nstar_dir}/nstar_{nstar_dir.split("_")[1]}_flat_bestX2.root'
     print(mv_command)
+    os.system(mv_command)
