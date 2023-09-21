@@ -5,8 +5,8 @@ from my_library.flat_analysis import run_analysis
 
 import time
 
-#TODO STATUS BAR OR TIMER OR BOTH
-#TODO options for smaller-scale running (maybe pass lists as arguments?)
+#TODO:  STATUS BAR OR TIMER OR BOTH
+#TODO:  options for smaller-scale running (maybe pass lists as arguments?)
 
 
 if __name__ == '__main__':
