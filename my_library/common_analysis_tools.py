@@ -253,7 +253,9 @@ def get_integrated_data_hist(channel, run_period, cut):
     hist_name = f'{channel}_kstar_{cut}_cut_beam_full_t_full;1'
     data_file_and_tree = get_flat_file_and_tree(channel, run_period, 'data', filtered=False, hist=True)
     data_hist_file = ROOT.TFile(data_file_and_tree[0])
+    print(data_file_and_tree[0])
     data_hist = data_hist_file.Get(hist_name)
+    print(hist_name)
     data_hist.SetDirectory(0)
     return data_hist
 
@@ -1271,7 +1273,7 @@ def get_hist_name_for_flat_analysis(channel, cut=None, beam_index=0, t_index=0, 
         beam_low = constants.BEAM_INDEX_DICT[beam_index][0]
         beam_high = constants.BEAM_INDEX_DICT[beam_index][1]
         beam_name = f'beam_{beam_low}_{beam_high}_'
-    if t_index >= 0:
+    if t_index > 0:
         t_low = constants.T_CUT_DICT[t_index][0]
         t_high = constants.T_CUT_DICT[t_index][1]
         t_name = f't_{t_low}_{t_high}'
