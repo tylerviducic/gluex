@@ -60,7 +60,7 @@ def run_analysis(channel, run_period, data_type, thrown=False):
     if not thrown:
         for cut in cut_dict:
             cut_df = df.Filter(cut_dict[cut])
-            ct.fill_histos(cut_df, histo_array, channel, cut)
+            ct.fill_histos(cut_df, histo_array, channel, cut, beam_index=0, t_index=0)
                 
             for energy_index in range(1, n_e_bins+1):
                 e_cut_df = cut_df.Filter(kcuts.SELECT_BEAM_BIN.format(energy_index))
