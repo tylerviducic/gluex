@@ -8,6 +8,13 @@ from my_library.constants import KSHORT_FIT_MEAN, KSHORT_FIT_WIDTH
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
+def kinfit_cl_cut(kinfit_cl):
+    return kinfit_cl > 1e-5
+KINFIT_CL_CUT = 'Numba::kinfit_cl_cut(kinfit_cl)'
+KINFIT_CL_CUT_STRING = 'kinfit_cl > 1e-5'
+
+
+@ROOT.Numba.Declare(['float'], 'bool')
 def ks_pathlength_cut(pathlength_sig):
     return pathlength_sig > 5
 KS_PATHLENGTH_CUT = 'Numba::ks_pathlength_cut(pathlength_sig)'
