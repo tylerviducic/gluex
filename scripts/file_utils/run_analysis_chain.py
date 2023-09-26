@@ -27,12 +27,12 @@ if __name__ == '__main__':
                 run_analysis(channel, run_period, data_type)
                 end = time.time()
                 print(f'Analysis for {channel} {data_type} {run_period} took {end-start} seconds')
-                # if data_type in thrown_data_types:
-                #     print(f'running thrown analysis for {channel} {data_type} {run_period}')
-                #     thrown_start = time.time()
-                #     run_analysis(channel, run_period, data_type, thrown=True)
-                #     thrown_end = time.time()
-                #     print(f'Thrown analysis for {channel} {data_type} {run_period} took {thrown_end-thrown_start} seconds')
+                if data_type in thrown_data_types:
+                    print(f'running thrown analysis for {channel} {data_type} {run_period}')
+                    thrown_start = time.time()
+                    run_analysis(channel, run_period, data_type, thrown=True)
+                    thrown_end = time.time()
+                    print(f'Thrown analysis for {channel} {data_type} {run_period} took {thrown_end-thrown_start} seconds')
 
     overall_end = time.time()
     print(f'Overall analysis took {overall_end-overall_start} seconds')
