@@ -112,7 +112,7 @@ for e in range(7, 12):
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
 
         cross_section = ct.calculate_crosssection(data_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
-        cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, math.sqrt(luminosity), constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
+        cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, luminosity * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
 
         chi2_val = c2.getVal()
 
