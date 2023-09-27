@@ -147,7 +147,7 @@ frame.Draw()
 c1.Update()
 c1.SaveAs(f'/work/halld/home/viducic/plots/thesis/{channel}_integrated_fit.png')
 
-pullDist = ROOT.TH1I("pullDist", "pullDist", 3, 0, 3)
+pullDist = ROOT.TH1I("pullDist", "pullDist", 5, 0, 5)
 for i in range(0, pullHist.GetN()):
     pullDist.Fill(abs(pullHist.GetY()[i]))
 
