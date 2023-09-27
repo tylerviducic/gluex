@@ -357,7 +357,7 @@ Bool_t DSelector_mc_pimkpks_flat_correct_rf::Process(Long64_t locEntry)
 	double chi2 = dComboWrapper->Get_ChiSq_KinFit();
 	double ndf = dComboWrapper->Get_NDF_KinFit();
 
-	if (chi2 / ndf > 20)
+	if (chi2 / ndf > 5)
 	{
 		dComboWrapper->Set_IsComboCut(true);
 		return kTRUE;

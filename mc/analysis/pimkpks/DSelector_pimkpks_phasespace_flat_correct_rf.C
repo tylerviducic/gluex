@@ -356,7 +356,7 @@ double locKinFit_CL = dComboWrapper->Get_ConfidenceLevel_KinFit("");
 double chi2 = dComboWrapper->Get_ChiSq_KinFit();
 double ndf = dComboWrapper->Get_NDF_KinFit();
 
-if (chi2 / ndf > 20)
+if (chi2 / ndf > 5)
 {
 	dComboWrapper->Set_IsComboCut(true);
 	return kTRUE;
