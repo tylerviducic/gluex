@@ -4,8 +4,6 @@ runs dselector for pi-K+Ks over the Nstar mc files
 
 import os
 
-# TODO: debug how many events get reconstructed
-
 common_path = '/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/'
 nstar_dirs = [
     'nstar_1440_pimkpks_3393'
