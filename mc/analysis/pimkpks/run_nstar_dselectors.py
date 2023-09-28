@@ -8,9 +8,10 @@ import os
 
 common_path = '/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/'
 nstar_dirs = [
-    #'nstar_1440_pimkpks_3393',
-    'nstar_1520_pimkpks_3394'
+    'nstar_1440_pimkpks_3393'
+    #'nstar_1520_pimkpks_3394'
     #'nstar_1535_pimkpks_3395' ADD THE COMMA TO PROCEDING LINE WHEN UNCOMMENTING
+    #'nstar_1675_pimkpks_3397'
 ]
 
 ds_output_file = "/work/halld/home/viducic/data/pimkpks/mc/signal/pimkpks_flat_bestX2.root" 
