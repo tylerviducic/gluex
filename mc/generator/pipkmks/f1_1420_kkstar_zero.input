@@ -56,12 +56,12 @@
 % particle# 0&1 are always the X&Y 
 %part#  chld1#  chld2#  parent# Id     nchild   mass        width   charge  flag
  0      2       3       *       0      2        1.426       0.055   0       00
- 1      *       *       *       0      0        0.938272    0.0     +1      11
+ 1      *       *       *       14     0        0.938272    0.0     +1      11
 % baryon (Y) decay
 %*      *       *       *       *      *        *           *       *       *
 % meson (X) decay
  2      4       5       0       0      2        0.89555     0.047   0       01 % k* -> k-pi+
- 3      *       *       0       16     0        0.497611    0.0     0       01 % ks
+ 3      *       *       0       16     0        0.497611    0.0     0       11 % ks
  4      *       *       1       12     0        0.493677    0.0     -1      11 % k-
  5      *       *       1       8      0        0.139570    0.0     +1      11 % pi+
 !EOI
