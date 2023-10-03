@@ -49,7 +49,7 @@
 % targetp.x targetp.y targetp.z targetMass
 0 0 0 0.938272
 % t-channelSlope
-      2.9
+      3.9
 % number of particles needed to describe the isobar decay of X
 6
 %   
