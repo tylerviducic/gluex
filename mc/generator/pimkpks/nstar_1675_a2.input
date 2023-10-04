@@ -53,16 +53,16 @@
 % number of particles needed to describe the isobar decay of X
 6
 %   
-% particle# 0&1 are always the X&Y 
+% particle# 0&1 are always the Y(Baryon) and X(Meson) respectively
 %part#  chld1#  chld2#  parent# Id     nchild   mass        width   charge  flag
- 0      4       5       *       0      2        1.3181      0.108   +1      01
- 1      2       3       *       0      2        1.675       0.145   0       00
 % baryon (Y) decay
- 2      *       *       1       14     0        0.938272    0.0     +1      11
- 3      *       *       1       9      0        0.139570    0.0     -1      11
+ 0      2       3       *       0      2        1.675       0.145   0       00
+ 2      *       *       0       14     0        0.938272    0.0     +1      11
+ 3      *       *       0       9      0        0.139570    0.0     -1      11
 % meson (X) decay
- 4      *       *       0       11     0        0.493677    0.0     +1      11
- 5      *       *       0       16     0        0.497611    0.0     0       11
+ 1      4       5       *       0      2        1.3181      0.108   +1      01
+ 4      *       *       1       11     0        0.493677    0.0     +1      11
+ 5      *       *       1       16     0        0.497611    0.0     0       11
 !EOI
 %%%%%%%%%%%%%%%%%%%%% End Input Values %%%%%%%%%%%%%%%%%%%%%%%
 % for narrow widths particles(stable to strong interactions) 
