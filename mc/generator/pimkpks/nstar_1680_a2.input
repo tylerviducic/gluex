@@ -45,7 +45,7 @@
 % beamp.x beamp.y beamp.z beamMass (old style mono-energetic)
 % 0       0       9.0     0
 % beam configuration file
-  TEMPBEAMCONFIG
+TEMPBEAMCONFIG
 % targetp.x targetp.y targetp.z targetMass
 0 0 0 0.938272
 % t-channelSlope
