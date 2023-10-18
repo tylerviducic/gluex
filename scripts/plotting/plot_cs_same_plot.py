@@ -3,7 +3,7 @@
 import pandas
 import numpy
 import matplotlib.pyplot as plt
-from common_analysis_tools import *
+from my_library.common_analysis_tools import *
 import pandas as pd
 
 channel = 'pipkmks'
