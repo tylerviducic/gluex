@@ -26,6 +26,9 @@ if __name__ == "__main__":
     df_pipkmks = df_pipkmks.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIPKMKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.KMP_MASS_CUT).Filter(kcuts.P_P_CUT).Filter(kcuts.KSTAR_ALL_CUT_PIPKMKS)
     df_pimkpks = df_pimkpks.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIMKPKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.KSP_MASS_CUT).Filter(kcuts.P_P_CUT).Filter(kcuts.KSTAR_ALL_CUT_PIMKPKS)
 
+    hist_pipkmks_ppi_low = df_pipkmks.Filter('ppip_m < 1.4').Histo1D(("pipkmks_ppi_low", "M(K^{-}K_{s}#pi^{+}) for p_{#pi^{+}} < 1.4", 50, 1.0, 1.5), "pipkmks_m")
+    hist_pimkpks_ppi_low = df_pimkpks.Filter('ppim_m < 1.4').Histo1D(("pimkpks_ppi_low", "M(K^{+}K_{s}#pi^{-}) for p_{#pi^{-}} < 1.4", 50, 1.0, 1.5), "pimkpks_m")
+
     c = ROOT.TCanvas("c", "c", 800, 600)
     c.Print("vary_ppi_cut.pdf[", "pdf")
 
@@ -33,11 +36,11 @@ if __name__ == "__main__":
         cut_value = i/10
         cut_string_pipkmks = f'Numba::ppip_cut(ppip_m, {cut_value})'
         cut_string_pimkpks = f'Numba::ppim_cut(ppim_m, {cut_value})'
-        hist_pipkmks = df_pipkmks.Filter(cut_string_pipkmks).Histo1D((f"pipkmks_cut_ppip_{cut_value}", "M(K^{-}K_{s}#pi^{+}) for M(p#pi^{+}) < " + str(cut_value), 50, 1.0, 1.5), "pipkmks_m")
-        hist_pimkpks = df_pimkpks.Filter(cut_string_pimkpks).Histo1D((f"pimkpks_cut_ppim_{cut_value}", "M(K^{+}K_{s}#pi^{-}) for M(p#pi^{-}) < " + str(cut_value), 50, 1.0, 1.5), "pimkpks_m")
+        hist_pipkmks = df_pipkmks.Filter(cut_string_pipkmks).Histo1D((f"pipkmks_cut_ppip_{cut_value}", "M(K^{-}K_{s}#pi^{+}) for M(p#pi^{+}) > " + str(cut_value), 50, 1.0, 1.5), "pipkmks_m")
+        hist_pimkpks = df_pimkpks.Filter(cut_string_pimkpks).Histo1D((f"pimkpks_cut_ppim_{cut_value}", "M(K^{+}K_{s}#pi^{-}) for M(p#pi^{-}) > " + str(cut_value), 50, 1.0, 1.5), "pimkpks_m")
 
         peak_ratio = hist_pimkpks.GetMaximum()/hist_pipkmks.GetMaximum()
-        text = ROOT.TPaveText(0.6, 0.2, 0.9, 0.4, "NDC")
+        text = ROOT.TPaveText(0.1, 0.2, 0.9, 0.4, "NDC")
         text.AddText(f'ratio of peak heights: {peak_ratio:.2f}')
 
         hist_pipkmks.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['blue']))
@@ -53,5 +56,10 @@ if __name__ == "__main__":
         text.Draw()
         c.Draw()
         c.Print("vary_ppi_cut.pdf", "pdf")
+
+    hist_pimkpks_ppi_low.Draw()
+    hist_pipkmks_ppi_low.Draw('same')
+    c.Draw()
+    c.Print("vary_ppi_cut.pdf", "pdf")
 
     c.Print("vary_ppi_cut.pdf]", "pdf")
