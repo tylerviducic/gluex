@@ -25,6 +25,6 @@ for nstar_dir in nstar_dirs:
     run_command = f'root -l -b -q \'RunNstarMC_KsKpPim.C("{path_to_files}*.root")\''
     print(run_command)
     os.system(run_command)
-    mv_command = f'mv {ds_output_file} {nstar_output_dir}/nstar_{nstar_dir.split("_")[1]}_flat_bestX2.root'
+    mv_command = f'mv {ds_output_file} {nstar_output_dir}/nstar_{nstar_dir.split("_")[2]}_flat_bestX2.root'
     print(mv_command)
     os.system(mv_command)
