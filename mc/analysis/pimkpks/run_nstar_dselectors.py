@@ -8,7 +8,7 @@ common_path = '/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/'
 nstar_dirs = [
     'pimkpks_nstar_1440_a0_3415',
     'pimkpks_nstar_1520_a0_3417',
-    'pimkpks_nstar_1535_a0_3418',
+    'pimkpks_nstar_1535_a2_3418',
     'pimkpks_nstar_1650_a2_3419',
     'pimkpks_nstar_1675_a3_3420',
     'pimkpks_nstar_1680_a2_3421',
@@ -25,6 +25,6 @@ for nstar_dir in nstar_dirs:
     run_command = f'root -l -b -q \'RunNstarMC_KsKpPim.C("{path_to_files}*.root")\''
     print(run_command)
     os.system(run_command)
-    mv_command = f'mv {ds_output_file} {nstar_output_dir}/nstar_{nstar_dir.split("_")[3]}_flat_bestX2.root'
+    mv_command = f'mv {ds_output_file} {nstar_output_dir}/nstar_{nstar_dir.split("_")[2]}_flat_bestX2.root'
     print(mv_command)
     os.system(mv_command)
