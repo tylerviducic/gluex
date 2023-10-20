@@ -1274,7 +1274,7 @@ def get_path_for_output_file(channel, datatype, thrown=False):
         return f'/work/halld/home/viducic/data/{channel}/mc/thrown'
     if datatype == 'data':
         return f'/work/halld/home/viducic/data/{channel}/data/bestX2'
-    elif datatype == 'signal' or datatype == 'phasespace':
+    elif datatype in ['signal', 'phasespace', 'nstar']:
         return f'/work/halld/home/viducic/data/{channel}/mc/{datatype}'
     else:
         raise ValueError('Unknown datatype: {}'.format(datatype))
@@ -1360,5 +1360,7 @@ def get_reduced_1d_chi2_hists(df_pipkmks, df_pimkpks, particle):
 ############################
 
 if __name__ == '__main__':
-    df = get_dataframe('pimkpks', 'spring', 'nstar', filtered=False, nstar_mass=1440)
-    print(df.GetColumnNames())
+    print('testing:')
+    # df = get_dataframe('pimkpks', 'spring', 'nstar', filtered=False, nstar_mass=1440)
+    # print(df.GetColumnNames())
+    # print(get_path_for_output_file('pimkpks', 'nstar'))
