@@ -75,6 +75,33 @@ def get_flat_phasespace_file_and_tree(channel, run_period, comboloop=False, filt
     return (file_path, treename)
 
 
+def get_flat_nstar_file_and_tree(channel, run_period, nstar_mass, comboloop=False, filtered=True, hist=False):
+    # TODO: add hist and filtered options when ready
+    if channel != 'pimkpks' or run_period != 'spring':
+        raise ValueError('Only pi-K+Ks for Spring 2018 is avialable for N* MC')
+    if comboloop:
+        raise ValueError('No comboloop N* MC')
+    if nstar_mass not in constants.ALLOWED_NSTAR_MASSES:
+        print(f"Valid N* masses are {constants.ALLOWED_NSTAR_MASSES}")
+        raise ValueError('Invalid N* mass')
+    file_path = '/work/halld/home/viducic/data/pimkpks/mc/nstar/'
+    treename = ''
+    if filtered:
+        raise ValueError('No filtered N* MC yet')
+    else:
+        if hist:
+            raise ValueError('No N* MC hist files yet')
+        else: 
+            file_path += f'nstar_{nstar_mass}_flat_bestX2.root'
+            treename = f'pimkpks__ks_pippim__B4_M16'
+    return (file_path, treename)
+
+
+def get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop=False, filtered=True, hist=False):
+    return
+            
+
+
 def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=True):
     if not phasespace:
         if not hist:
@@ -86,7 +113,7 @@ def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=Tr
         return(f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_phasespace_flat_result_{constants.RUN_DICT[run_period]}.root', 'pipkmks_thrown')
 
 
-def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False, thrown=False, verbose=False):
+def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False, thrown=False, verbose=False, nstar_mass=None, kstar_charge=None):
     file_tuple = ()
     if thrown:
         if datatype == 'signal':
@@ -103,6 +130,10 @@ def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filte
             file_tuple = get_flat_signal_file_and_tree(channel, run_period, comboloop, filtered, hist)
         elif datatype == 'phasespace':
             file_tuple = get_flat_phasespace_file_and_tree(channel, run_period, comboloop, filtered, hist)
+        elif datatype == 'nstar':
+            file_tuple = get_flat_nstar_file_and_tree(channel, run_period, nstar_mass, comboloop, filtered, hist)
+        elif datatype == 'f1_1420':
+            file_tupe = get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop, filtered, hist)
         else:
             print('invalid datatype')
             return
@@ -1229,14 +1260,15 @@ def filter_dataframe(df, channel):
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
-def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False):
-    """adding datatypes: nstar, f1_1420"""
+def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, nstar_mass=None):
+    if datatype == 'nstar' and not nstar_mass:
+        raise ValueError('N* mass not provided')    
     if not thrown:
         if filtered:
             file_and_tree = get_flat_file_and_tree(channel, run_period, datatype)
             return ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
         else:
-            file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False)
+            file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False, nstar_mass=nstar_mass)
             return define_columns(ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]), channel)
     elif thrown and datatype != 'data' and not filtered:
         file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False, thrown=True)
@@ -1248,7 +1280,7 @@ def get_path_for_output_file(channel, datatype, thrown=False):
         return f'/work/halld/home/viducic/data/{channel}/mc/thrown'
     if datatype == 'data':
         return f'/work/halld/home/viducic/data/{channel}/data/bestX2'
-    elif datatype == 'signal' or datatype == 'phasespace':
+    elif datatype in ['signal', 'phasespace', 'nstar']:
         return f'/work/halld/home/viducic/data/{channel}/mc/{datatype}'
     else:
         raise ValueError('Unknown datatype: {}'.format(datatype))
@@ -1286,7 +1318,7 @@ def fill_histos(cut_df, histo_array, channel, cut=None, beam_index=0, t_index=0,
     hist_name = get_hist_name_for_flat_analysis(channel, cut, beam_index, t_index, thrown)
     histo_array.append(cut_df.Histo1D((hist_name, hist_name, 150, 1.0, 2.5), f'{channel}_m'))
 
-# TODO: refactor this. this is a quick hack for the collaboraton meeting
+
 def get_reduced_2d_chi2_hists(df_pipkmks, df_pimkpks, particle):
     particles = {
         'pion': ('pip1', 'pim1'),
@@ -1328,3 +1360,13 @@ def get_reduced_1d_chi2_hists(df_pipkmks, df_pimkpks, particle):
     hist_pimkpks_time.SetLineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red']))
 
     return hist_pipkmks_track, hist_pimkpks_track, hist_pipkmks_time, hist_pimkpks_time
+
+############################
+#### CONDUCT TESTS HERE ####
+############################
+
+if __name__ == '__main__':
+    print('testing:')
+    # df = get_dataframe('pimkpks', 'spring', 'nstar', filtered=False, nstar_mass=1440)
+    # print(df.GetColumnNames())
+    # print(get_path_for_output_file('pimkpks', 'nstar'))

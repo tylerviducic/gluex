@@ -127,8 +127,9 @@ ALLOWED_E_BINS = range(7, 12)
 ALLOWED_T_BINS = range(1, 8)
 ALLOWED_RUN_PERIODS = ['spring', 'fall', '2017']
 ALLOWED_CHANNELS = ['pipkmks', 'pimkpks']
-ALLOWED_DATATYPES_RECON = ['data', 'signal', 'phasespace']
+ALLOWED_DATATYPES_RECON = ['data', 'signal', 'phasespace', 'nstar', 'f1_1420']
 ALLOWED_DATATYPES_THROWN = ['signal', 'phasespace']
+ALLOWED_NSTAR_MASSES = [1440, 1520, 1535, 1650, 1675, 1680, 1700, 1710, 1720]
 
 T_BIN_DICT = {1: '0.1_0.2', 2: '0.2_0.3', 3: '0.3_0.4',
               4: '0.4_0.65', 5: '0.65_0.9', 
