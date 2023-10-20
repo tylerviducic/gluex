@@ -95,6 +95,10 @@ def get_flat_nstar_file_and_tree(channel, run_period, nstar_mass, comboloop=Fals
             file_path += f'nstar_{nstar_mass}_flat_bestX2.root'
             treename = f'pimkpks__ks_pippim__B4_M16'
     return (file_path, treename)
+
+
+def get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop=False, filtered=True, hist=False):
+    return
             
 
 
@@ -109,7 +113,7 @@ def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=Tr
         return(f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_phasespace_flat_result_{constants.RUN_DICT[run_period]}.root', 'pipkmks_thrown')
 
 
-def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False, thrown=False, verbose=False, nstar_mass=None):
+def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filtered=True, hist=False, thrown=False, verbose=False, nstar_mass=None, kstar_charge=None):
     file_tuple = ()
     if thrown:
         if datatype == 'signal':
@@ -128,6 +132,8 @@ def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filte
             file_tuple = get_flat_phasespace_file_and_tree(channel, run_period, comboloop, filtered, hist)
         elif datatype == 'nstar':
             file_tuple = get_flat_nstar_file_and_tree(channel, run_period, nstar_mass, comboloop, filtered, hist)
+        elif datatype == 'f1_1420':
+            file_tupe = get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop, filtered, hist)
         else:
             print('invalid datatype')
             return
