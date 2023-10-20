@@ -98,8 +98,29 @@ def get_flat_nstar_file_and_tree(channel, run_period, nstar_mass, comboloop=Fals
 
 
 def get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop=False, filtered=True, hist=False):
-    return
-            
+    # TODO: add filter and hist when ready 
+    if run_period != 'spring':
+        raise ValueError('Only Spring 2018 is avialable for f1_1420 MC')
+    if comboloop:
+        raise ValueError('No comboloop f1_1420 MC')
+    if channel == 'pipkmks' and kstar_charge not in ['zero', 'minus']:
+        print(f"Valid K* charges for pipkmks are ['zero', 'minus']")
+        raise ValueError('Invalid K* charge')
+    elif channel == 'pimkpks' and kstar_charge not in ['zero', 'plus']:
+        print(f"Valid K* charges for pimkpks are ['zero', 'plus']")
+        raise ValueError('Invalid K* charge')
+    filepath = f'/work/halld/home/viducic/data/{channel}/mc/f1_1420/'
+    treename = ''
+    if filtered:
+        raise ValueError('No filtered f1_1420 MC yet')
+    else:
+        if hist:
+            raise ValueError('No f1_1420 MC hist files yet')
+        else:
+            filepath += f'f1_1420_{kstar_charge}_flat_bestX2.root'
+            treename += f'{channel}__ks_pippim__B4_M16'
+    return (filepath, treename)
+
 
 
 def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=True):
@@ -133,7 +154,7 @@ def get_flat_file_and_tree(channel, run_period, datatype, comboloop=False, filte
         elif datatype == 'nstar':
             file_tuple = get_flat_nstar_file_and_tree(channel, run_period, nstar_mass, comboloop, filtered, hist)
         elif datatype == 'f1_1420':
-            file_tupe = get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop, filtered, hist)
+            file_tuple = get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop, filtered, hist)
         else:
             print('invalid datatype')
             return
@@ -1001,16 +1022,35 @@ def check_datatype_recon(datatype):
         raise ValueError(error_message)
 
 
+def check_nstar_mass(nstar_mass):
+    if nstar_mass not in constants.ALLOWED_NSTAR_MASSES:
+        error_message = f"Nstar mass {nstar_mass} not allowed. Allowed nstar masses are: {constants.ALLOWED_NSTAR_MASSES}"
+        raise ValueError(error_message)
+
+
+def check_kstar_charge(channel, kstar_charge):
+    if channel == 'pipkmks' and kstar_charge not in ['zero', 'minus']:
+        error_message = f'Kstar charge {kstar_charge} not allowed for channel {channel}. Allowed kstar charges are: ["zero", "minus"]'
+        raise ValueError(error_message)
+    elif channel == 'pimkpks' and kstar_charge not in ['zero', 'plus']:
+        error_message = f'Kstar charge {kstar_charge} not allowed for channel {channel}. Allowed kstar charges are: ["zero", "plus"]'
+        raise ValueError(error_message)
+
+
 def check_datatype_thrown(datatype):
     if datatype not in constants.ALLOWED_DATATYPES_THROWN:
         error_message = f"Datatype {datatype} not allowed. Allowed datatypes are: {constants.ALLOWED_DATATYPES_THROWN}"
         raise ValueError(error_message)
 
 
-def verify_args(channel, run_period, datatype):
+def verify_args(channel, run_period, datatype, nstar_mass=None, kstar_charge=None):
     check_run_period(run_period)
     check_channel(channel)
     check_datatype_recon(datatype)
+    if datatype == 'nstar':
+        check_nstar_mass(nstar_mass)
+    if datatype == 'f1_1420':
+        check_kstar_charge(channel, kstar_charge)
     return True
 
 
@@ -1260,7 +1300,7 @@ def filter_dataframe(df, channel):
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
-def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, nstar_mass=None):
+def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, nstar_mass=None, kstar_charge=None):
     if datatype == 'nstar' and not nstar_mass:
         raise ValueError('N* mass not provided')    
     if not thrown:
@@ -1268,7 +1308,7 @@ def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, ns
             file_and_tree = get_flat_file_and_tree(channel, run_period, datatype)
             return ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
         else:
-            file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False, nstar_mass=nstar_mass)
+            file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
             return define_columns(ROOT.RDataFrame(file_and_tree[1], file_and_tree[0]), channel)
     elif thrown and datatype != 'data' and not filtered:
         file_and_tree = get_flat_file_and_tree(channel, run_period, datatype, filtered=False, thrown=True)
@@ -1280,16 +1320,29 @@ def get_path_for_output_file(channel, datatype, thrown=False):
         return f'/work/halld/home/viducic/data/{channel}/mc/thrown'
     if datatype == 'data':
         return f'/work/halld/home/viducic/data/{channel}/data/bestX2'
-    elif datatype in ['signal', 'phasespace', 'nstar']:
+    elif datatype in ['signal', 'phasespace', 'nstar', 'f1_1420']:
         return f'/work/halld/home/viducic/data/{channel}/mc/{datatype}'
     else:
         raise ValueError('Unknown datatype: {}'.format(datatype))
 
 
-def get_filename_for_output_file(channel, run_period, datatype, thrown=False):
+def get_filename_for_output_file(channel, run_period, datatype, thrown=False, nstar_mass=None, kstar_charge=None):
     if thrown:
         return f'mc_{channel}_thrown_{datatype}_flat_results_{constants.RUN_DICT[run_period]}.root'
-    return f'{channel}_flat_result_{constants.RUN_DICT[run_period]}.root'
+    output = f'{channel}'
+    if datatype == 'nstar':
+        check_nstar_mass(nstar_mass)
+        output += f'nstar_{nstar_mass}'
+    if datatype == 'f1_1420':
+        check_kstar_charge(channel, kstar_charge)
+        output += f'f1_1420_{kstar_charge}'
+    output += f'_flat_result_{constants.RUN_DICT[run_period]}.root'
+    return output
+
+def get_filtered_file_and_tree_output_name(channel, run_period, datatype, nstar_mass=None, kstar_charge=None):
+    # TODO: write this method
+    return 
+
 
 def get_hist_name_for_flat_analysis(channel, cut=None, beam_index=0, t_index=0, thrown=False):
     if not thrown:

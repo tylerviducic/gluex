@@ -7,7 +7,7 @@ import my_library.constants as constants
 import my_library.kinematic_cuts as kcuts
 import sys
 
-def run_analysis(channel, run_period, data_type, thrown=False):
+def run_analysis(channel, run_period, data_type, thrown=False, nstar_mass=None, kstar_charge=None):
     """
     Function to run analysis over a given channel, run period, and data type.
     """
@@ -17,12 +17,12 @@ def run_analysis(channel, run_period, data_type, thrown=False):
     ROOT.gStyle.SetOptStat(0)
     start_time = time.time()
 
-    ct.verify_args(channel, run_period, data_type)
+    ct.verify_args(channel, run_period, data_type, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
 
-    df = ct.get_dataframe(channel, run_period, data_type, filtered=False, thrown=thrown)
+    df = ct.get_dataframe(channel, run_period, data_type, filtered=False, thrown=thrown, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
 
     output_path = ct.get_path_for_output_file(channel, data_type, thrown=thrown)
-    result_filename = ct.get_filename_for_output_file(channel, run_period, data_type, thrown=thrown)
+    result_filename = ct.get_filename_for_output_file(channel, run_period, data_type, thrown=thrown, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
 
 
 
