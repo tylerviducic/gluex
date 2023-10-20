@@ -1230,6 +1230,7 @@ def filter_dataframe(df, channel):
 
 
 def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False):
+    """adding datatypes: nstar, f1_1420"""
     if not thrown:
         if filtered:
             file_and_tree = get_flat_file_and_tree(channel, run_period, datatype)
