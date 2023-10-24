@@ -104,4 +104,5 @@ def run_analysis(channel, run_period, data_type, thrown=False, nstar_mass=None, 
     target_file.Close()
 
     if not thrown:
-        ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/{channel}_{data_type}_graph_{constants.RUN_DICT[run_period]}.dot")
+        graph_output_location = ct.get_graph_filename
+        ROOT.RDF.SaveGraph(df, graph_output_location)

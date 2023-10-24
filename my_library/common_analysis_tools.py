@@ -1349,6 +1349,17 @@ def get_filtered_file_and_tree_output_name(channel, run_period, datatype, nstar_
     return output_file
 
 
+def get_graph_filename(channel, run_period, datatype, nstar_mass=None, kstar_charge=None):
+    output_dir = '/work/halld/home/viducic/plots/analysis_graphs/'
+    filename = f'{channel}_{datatype}_':
+    if datatype == 'nstar':
+        filename += f'{nstar_mass}_'
+    if datatype == 'f1_1420':
+        filename += f'{kstar_charge}_'
+    filename += f'{constants.RUN_DICT[run_period]}.dot'
+    return output_dir + filename
+
+
 def get_hist_name_for_flat_analysis(channel, cut=None, beam_index=0, t_index=0, thrown=False):
     if not thrown:
         if channel == 'pipkmks':
