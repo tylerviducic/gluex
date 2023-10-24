@@ -7,7 +7,7 @@ import my_library.constants as constants
 import my_library.kinematic_cuts as kcuts
 import sys
 
-def run_analysis(channel, run_period, data_type, thrown=False):
+def run_analysis(channel, run_period, data_type, thrown=False, nstar_mass=None, kstar_charge=None):
     """
     Function to run analysis over a given channel, run period, and data type.
     """
@@ -17,12 +17,12 @@ def run_analysis(channel, run_period, data_type, thrown=False):
     ROOT.gStyle.SetOptStat(0)
     start_time = time.time()
 
-    ct.verify_args(channel, run_period, data_type)
+    ct.verify_args(channel, run_period, data_type, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
 
-    df = ct.get_dataframe(channel, run_period, data_type, filtered=False, thrown=thrown)
+    df = ct.get_dataframe(channel, run_period, data_type, filtered=False, thrown=thrown, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
 
     output_path = ct.get_path_for_output_file(channel, data_type, thrown=thrown)
-    result_filename = ct.get_filename_for_output_file(channel, run_period, data_type, thrown=thrown)
+    result_filename = ct.get_filename_for_output_file(channel, run_period, data_type, thrown=thrown, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
 
 
 
@@ -40,7 +40,8 @@ def run_analysis(channel, run_period, data_type, thrown=False):
 
         ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
         ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-        df.Snapshot(f'{channel}_filtered_{constants.RUN_DICT[run_period]}', f'{output_path}/{channel}_filtered_{constants.RUN_DICT[run_period]}.root')
+        output_file_and_treename = ct.get_filtered_file_and_tree_output_name(channel, run_period, data_type, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
+        df.Snapshot(output_file_and_treename, f'{output_path}/{output_file_and_treename}')
 
         # ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
         df = df.Filter(kcuts.BEAM_RANGE).Filter(kcuts.T_RANGE)
@@ -103,4 +104,5 @@ def run_analysis(channel, run_period, data_type, thrown=False):
     target_file.Close()
 
     if not thrown:
-        ROOT.RDF.SaveGraph(df, f"/work/halld/home/viducic/plots/analysis_graphs/{channel}_{data_type}_graph_{constants.RUN_DICT[run_period]}.dot")
+        graph_output_location = ct.get_graph_filename(channel, run_period, data_type, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
+        ROOT.RDF.SaveGraph(df, graph_output_location)
