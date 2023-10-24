@@ -1,5 +1,6 @@
 from my_library.flat_analysis import run_analysis
+from my_library.constants import ALLOWED_NSTAR_MASSES
 
-'/work/halld/home/viducic/data/pimkpks/mc/nstar'
-
-# TODO: write in same was as f1_1420 file 
+for mass in ALLOWED_NSTAR_MASSES:
+    print(f'running analysis for nstar({mass})')
+    run_analysis('pimkpks', 'spring', 'nstar', nstar_mass=mass)
