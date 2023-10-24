@@ -40,7 +40,8 @@ def run_analysis(channel, run_period, data_type, thrown=False, nstar_mass=None, 
 
         ## SAVE FILTERED DATA FOR USE ELSEWHERE IF NEEDED ##
         ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
-        df.Snapshot(f'{channel}_filtered_{constants.RUN_DICT[run_period]}', f'{output_path}/{channel}_filtered_{constants.RUN_DICT[run_period]}.root')
+        output_file_and_treename = ct.get_filtered_file_and_tree_output_name(channel, run_period, data_type, thrown=thrown, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
+        df.Snapshot(output_file_and_treename, f'{output_path}/{output_file_and_treename}')
 
         # ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
         df = df.Filter(kcuts.BEAM_RANGE).Filter(kcuts.T_RANGE)

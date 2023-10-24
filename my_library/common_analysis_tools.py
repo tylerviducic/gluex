@@ -1340,8 +1340,13 @@ def get_filename_for_output_file(channel, run_period, datatype, thrown=False, ns
     return output
 
 def get_filtered_file_and_tree_output_name(channel, run_period, datatype, nstar_mass=None, kstar_charge=None):
-    # TODO: write this method
-    return 
+    output_file = f'{channel}_'
+    if datatype == 'nstar':
+        output_file += f'nstar_{nstar_mass}_'
+    if datatype == 'f1_1420':
+        output_file += f'f1_1420_{kstar_charge}_'
+    output_file += f'flat_filtered_{constants.RUN_DICT[run_period]}.root'
+    return output_file
 
 
 def get_hist_name_for_flat_analysis(channel, cut=None, beam_index=0, t_index=0, thrown=False):
