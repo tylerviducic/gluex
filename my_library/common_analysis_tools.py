@@ -1332,10 +1332,10 @@ def get_filename_for_output_file(channel, run_period, datatype, thrown=False, ns
     output = f'{channel}'
     if datatype == 'nstar':
         check_nstar_mass(nstar_mass)
-        output += f'nstar_{nstar_mass}'
+        output += f'_nstar_{nstar_mass}'
     if datatype == 'f1_1420':
         check_kstar_charge(channel, kstar_charge)
-        output += f'f1_1420_{kstar_charge}'
+        output += f'_f1_1420_{kstar_charge}'
     output += f'_flat_result_{constants.RUN_DICT[run_period]}.root'
     return output
 
