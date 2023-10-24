@@ -1351,7 +1351,7 @@ def get_filtered_file_and_tree_output_name(channel, run_period, datatype, nstar_
 
 def get_graph_filename(channel, run_period, datatype, nstar_mass=None, kstar_charge=None):
     output_dir = '/work/halld/home/viducic/plots/analysis_graphs/'
-    filename = f'{channel}_{datatype}_':
+    filename = f'{channel}_{datatype}_'
     if datatype == 'nstar':
         filename += f'{nstar_mass}_'
     if datatype == 'f1_1420':
