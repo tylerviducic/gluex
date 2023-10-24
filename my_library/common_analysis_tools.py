@@ -103,11 +103,11 @@ def get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop=Fal
         raise ValueError('Only Spring 2018 is avialable for f1_1420 MC')
     if comboloop:
         raise ValueError('No comboloop f1_1420 MC')
-    if channel == 'pipkmks' and kstar_charge not in ['zero', 'minus']:
-        print(f"Valid K* charges for pipkmks are ['zero', 'minus']")
+    if channel == 'pipkmks' and kstar_charge not in ['zero', 'plus']:
+        print(f"Valid K* charges for pipkmks are ['zero', 'plus']")
         raise ValueError('Invalid K* charge')
-    elif channel == 'pimkpks' and kstar_charge not in ['zero', 'plus']:
-        print(f"Valid K* charges for pimkpks are ['zero', 'plus']")
+    elif channel == 'pimkpks' and kstar_charge not in ['zero', 'minus']:
+        print(f"Valid K* charges for pimkpks are ['zero', 'minus']")
         raise ValueError('Invalid K* charge')
     filepath = f'/work/halld/home/viducic/data/{channel}/mc/f1_1420/'
     treename = ''
@@ -117,7 +117,7 @@ def get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop=Fal
         if hist:
             raise ValueError('No f1_1420 MC hist files yet')
         else:
-            filepath += f'f1_1420_{kstar_charge}_flat_bestX2.root'
+            filepath += f'f1_1420_kstar_{kstar_charge}_flat_bestX2.root'
             treename += f'{channel}__ks_pippim__B4_M16'
     return (filepath, treename)
 
@@ -1029,11 +1029,11 @@ def check_nstar_mass(nstar_mass):
 
 
 def check_kstar_charge(channel, kstar_charge):
-    if channel == 'pipkmks' and kstar_charge not in ['zero', 'minus']:
-        error_message = f'Kstar charge {kstar_charge} not allowed for channel {channel}. Allowed kstar charges are: ["zero", "minus"]'
-        raise ValueError(error_message)
-    elif channel == 'pimkpks' and kstar_charge not in ['zero', 'plus']:
+    if channel == 'pipkmks' and kstar_charge not in ['zero', 'plus']:
         error_message = f'Kstar charge {kstar_charge} not allowed for channel {channel}. Allowed kstar charges are: ["zero", "plus"]'
+        raise ValueError(error_message)
+    elif channel == 'pimkpks' and kstar_charge not in ['zero', 'minus']:
+        error_message = f'Kstar charge {kstar_charge} not allowed for channel {channel}. Allowed kstar charges are: ["zero", "minus"]'
         raise ValueError(error_message)
 
 
