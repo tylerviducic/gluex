@@ -1,5 +1,6 @@
 from my_library.flat_analysis import run_analysis
 
+# TODO: re-run with updated output names 
 charge_dict = {
     'pipkmks': ('plus', 'zero'),
     'pimkpks': ('minus', 'zero')
