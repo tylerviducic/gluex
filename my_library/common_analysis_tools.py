@@ -1430,6 +1430,28 @@ def get_reduced_1d_chi2_hists(df_pipkmks, df_pimkpks, particle):
 
     return hist_pipkmks_track, hist_pimkpks_track, hist_pipkmks_time, hist_pimkpks_time
 
+
+def get_tallest(hist_list: list):
+    if len(hist_list) < 2:
+        return 0
+    tallest_index = -1
+    tallest = -1
+    for i in range(len(hist_list)):
+        if hist_list[i].GetMaximum() > tallest:
+            tallest = hist_list[i].GetMaximum()
+            tallest_index = i
+    return tallest_index
+
+
+def sort_hists_by_max(hists: list):
+    sorted_hists = []
+    sorted_index = []
+    while len(hists) > 0:
+        tallest = get_tallest(hists)
+        sorted_index.append(tallest)
+        sorted_hists.append(hists.pop(tallest))
+    return sorted_hists
+
 ############################
 #### CONDUCT TESTS HERE ####
 ############################
