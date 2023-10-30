@@ -1508,3 +1508,5 @@ if __name__ == '__main__':
     # df = get_dataframe('pimkpks', 'spring', 'nstar', filtered=False, nstar_mass=1440)
     # print(df.GetColumnNames())
     # print(get_path_for_output_file('pimkpks', 'nstar'))
+    # df_pipkmks = get_dataframe('pipkmks', 'spring', 'data')
+    # df_pimkpks = get_dataframe('pimkpks', 'spring', 'data')
