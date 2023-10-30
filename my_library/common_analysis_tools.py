@@ -1084,20 +1084,40 @@ def get_m(px, py, pz, E):
 def define_pimkpks_columns(df):
     new_df = df.Define('chi2ndf', 'kin_chisq/kin_ndf')
 
-    new_df = new_df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
     new_df = new_df.Define('p_p', 'Numba::get_p(p_px, p_py, p_pz)')
+    new_df = new_df.Define('pim1_p', 'Numba::get_p(pim1_px, pim1_py, pim1_pz)')
+    new_df = new_df.Define('pim2_p', 'Numba::get_p(pim2_px, pim2_py, pim2_pz)')
+    new_df = new_df.Define('pip_p', 'Numba::get_p(pip_px, pip_py, pip_pz)')
+    new_df = new_df.Define('kp_p', 'Numba::get_p(kp_px, kp_py, kp_pz)')
 
+    new_df = new_df.Define('p_theta', 'Numba::get_theta(p_px, p_py, p_pz)')
+    new_df = new_df.Define('pim1_theta', 'Numba::get_theta(pim1_px, pim1_py, pim1_pz)')
+    new_df = new_df.Define('pim2_theta', 'Numba::get_theta(pim2_px, pim2_py, pim2_pz)')
+    new_df = new_df.Define('pip_theta', 'Numba::get_theta(pip_px, pip_py, pip_pz)')
+    new_df = new_df.Define('kp_theta', 'Numba::get_theta(kp_px, kp_py, kp_pz)')
+
+    new_df = new_df.Define('p_phi', 'Numba::get_phi(p_px, p_py)')
+    new_df = new_df.Define('pim1_phi', 'Numba::get_phi(pim1_px, pim1_py)')
+    new_df = new_df.Define('pim2_phi', 'Numba::get_phi(pim2_px, pim2_py)')
+    new_df = new_df.Define('pip_phi', 'Numba::get_phi(pip_px, pip_py)')
+    new_df = new_df.Define('kp_phi', 'Numba::get_phi(kp_px, kp_py)')
+
+    new_df = new_df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
+    
     new_df = new_df.Define('ks_px', "pim2_px + pip_px")
     new_df = new_df.Define('ks_py', "pim2_py + pip_py")
     new_df = new_df.Define('ks_pz', "pim2_pz + pip_pz")
     new_df = new_df.Define('ks_E', "pim2_E + pip_E")
-    new_df = new_df.Define('ks_m', "sqrt(ks_E*ks_E - ks_px*ks_px - ks_py*ks_py - ks_pz*ks_pz)")
+    new_df = new_df.Define('ks_p', 'Numba::get_p(ks_px, ks_py, ks_pz)')
+    new_df = new_df.Define('ks_theta', 'Numba::get_theta(ks_px, ks_py, ks_pz)')
+    new_df = new_df.Define('ks_phi', 'Numba::get_phi(ks_px, ks_py)')
+    new_df = new_df.Define('ks_m', "Numba::get_m(ks_px, ks_py, ks_pz, ks_E)")
 
     new_df = new_df.Define('ks_px_measured', "pim2_px_measured + pip_px_measured")
     new_df = new_df.Define('ks_py_measured', "pim2_py_measured + pip_py_measured")
     new_df = new_df.Define('ks_pz_measured', "pim2_pz_measured + pip_pz_measured")
     new_df = new_df.Define('ks_E_measured', "pim2_E_measured + pip_E_measured")
-    new_df = new_df.Define('ks_m_measured', "sqrt(ks_E_measured*ks_E_measured - ks_px_measured*ks_px_measured - ks_py_measured*ks_py_measured - ks_pz_measured*ks_pz_measured)")
+    new_df = new_df.Define('ks_m_measured', "Numba::get_m(ks_px_measured, ks_py_measured, ks_pz_measured, ks_E_measured)")
 
     new_df = new_df.Define('mxpx_ppimkpks', '-p_px_measured - pim1_px_measured - kp_px_measured - ks_px_measured')
     new_df = new_df.Define('mxpy_ppimkpks', '-p_py_measured - pim1_py_measured - kp_py_measured - ks_py_measured')
@@ -1109,7 +1129,7 @@ def define_pimkpks_columns(df):
     new_df = new_df.Define('ppim_py', 'pim1_py + p_py')
     new_df = new_df.Define('ppim_pz', 'pim1_pz + p_pz')
     new_df = new_df.Define('ppim_E', 'pim1_E + p_E')
-    new_df = new_df.Define('ppim_m', 'sqrt(ppim_E*ppim_E - ppim_px*ppim_px - ppim_py*ppim_py - ppim_pz*ppim_pz)')
+    new_df = new_df.Define('ppim_m', 'Numba::get_m(ppim_px, ppim_py, ppim_pz, ppim_E)')
 
 
     new_df = new_df.Define('missing_px', '-p_px - pim1_px - ks_px - kp_px')
@@ -1123,29 +1143,25 @@ def define_pimkpks_columns(df):
     new_df = new_df.Define('kpp_py', 'p_py + kp_py')
     new_df = new_df.Define('kpp_pz', 'p_pz + kp_pz')
     new_df = new_df.Define('kpp_E', 'p_E + kp_E')
-
-    new_df = new_df.Define('kpp_m', 'sqrt(kpp_E*kpp_E - kpp_px*kpp_px - kpp_py*kpp_py - kpp_pz*kpp_pz)')
+    new_df = new_df.Define('kpp_m', 'Numba::get_m(kpp_px, kpp_py, kpp_pz, kpp_E)')
 
     new_df = new_df.Define('ksp_px', 'p_px + ks_px')
     new_df = new_df.Define('ksp_py', 'p_py + ks_py')
     new_df = new_df.Define('ksp_pz', 'p_pz + ks_pz')
     new_df = new_df.Define('ksp_E', 'p_E + ks_E')
-
-    new_df = new_df.Define('ksp_m', 'sqrt(ksp_E*ksp_E - ksp_px*ksp_px - ksp_py*ksp_py - ksp_pz*ksp_pz)')
+    new_df = new_df.Define('ksp_m', 'Numba::get_m(ksp_px, ksp_py, ksp_pz, ksp_E)')
 
     new_df = new_df.Define('kspim_px', 'pim1_px + ks_px')
     new_df = new_df.Define('kspim_py', 'pim1_py + ks_py')
     new_df = new_df.Define('kspim_pz', 'pim1_pz + ks_pz')
     new_df = new_df.Define('kspim_E', 'pim1_E + ks_E')
-
-    new_df = new_df.Define('kspim_m', 'sqrt(kspim_E*kspim_E - kspim_px*kspim_px - kspim_py*kspim_py - kspim_pz*kspim_pz)')
+    new_df = new_df.Define('kspim_m', 'Numba::get_m(kspim_px, kspim_py, kspim_pz, kspim_E)')
 
     new_df = new_df.Define('kppim_px', 'pim1_px + kp_px')
     new_df = new_df.Define('kppim_py', 'pim1_py + kp_py')
     new_df = new_df.Define('kppim_pz', 'pim1_pz + kp_pz')
     new_df = new_df.Define('kppim_E', 'pim1_E + kp_E')
-
-    new_df = new_df.Define('kppim_m', 'sqrt(kppim_E*kppim_E - kppim_px*kppim_px - kppim_py*kppim_py - kppim_pz*kppim_pz)')
+    new_df = new_df.Define('kppim_m', 'Numba::get_m(kppim_px, kppim_py, kppim_pz, kppim_E)')
 
     new_df = new_df.Define('pimkpks_px', 'pim1_px + kp_px + ks_px')
     new_df = new_df.Define('pimkpks_py', 'pim1_py + kp_py + ks_py')
@@ -1156,16 +1172,14 @@ def define_pimkpks_columns(df):
     new_df = new_df.Define('pimkpks_py_measured', "pim1_py_measured + kp_py_measured + ks_py_measured")
     new_df = new_df.Define('pimkpks_pz_measured', "pim1_pz_measured + kp_pz_measured + ks_pz_measured")
     new_df = new_df.Define('pimkpks_pt', 'sqrt(pimkpks_px_measured*pimkpks_px_measured + pimkpks_py_measured*pimkpks_py_measured)')
-
     new_df = new_df.Define('pimkpks_p_pt_diff', 'pimkpks_pt - p_pt')
-
-    new_df = new_df.Define('pimkpks_m', 'sqrt(pimkpks_E*pimkpks_E - pimkpks_px*pimkpks_px - pimkpks_py*pimkpks_py - pimkpks_pz*pimkpks_pz)')
+    new_df = new_df.Define('pimkpks_m', 'Numba::get_m(pimkpks_px, pimkpks_py, pimkpks_pz, pimkpks_E)')
 
     new_df = new_df.Define('kpks_px', 'kp_px + ks_px')
     new_df = new_df.Define('kpks_py', 'kp_py + ks_py')
     new_df = new_df.Define('kpks_pz', 'kp_pz + ks_pz')
     new_df = new_df.Define('kpks_E', 'kp_E + ks_E')
-    new_df = new_df.Define('kpks_m', 'sqrt(kpks_E*kpks_E - kpks_px*kpks_px - kpks_py*kpks_py - kpks_pz*kpks_pz)')
+    new_df = new_df.Define('kpks_m', 'Numba::get_m(kpks_px, kpks_py, kpks_pz, kpks_E)')
 
     new_df = new_df.Define('e_bin', kcuts.BEAM_BIN_FILTER)
     new_df = new_df.Define('t_bin', kcuts.T_BIN_FILTER)
@@ -1174,7 +1188,7 @@ def define_pimkpks_columns(df):
     new_df = new_df.Define('ppip_py', 'p_py + pip_py')
     new_df = new_df.Define('ppip_pz', 'p_pz + pip_pz')
     new_df = new_df.Define('ppip_E', 'p_E + pip_E')
-    new_df = new_df.Define('ppip_m', 'sqrt(ppip_E*ppip_E - ppip_px*ppip_px - ppip_py*ppip_py - ppip_pz*ppip_pz)')
+    new_df = new_df.Define('ppip_m', 'Numba::get_m(ppip_px, ppip_py, ppip_pz, ppip_E)')
     return new_df
 
 
