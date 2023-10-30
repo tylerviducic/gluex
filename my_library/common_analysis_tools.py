@@ -1061,6 +1061,15 @@ def verify_thrown_args(channel, run_period, datatype):
     return True
 
 
+@ROOT.Numba.Declare(['float', 'float', 'float'], 'float')
+def get_theta(px, py, pz):
+    return np.degrees(np.arctan2(np.sqrt(px**2 + py**2), pz))
+
+@ROOT.Numba.Declare(['float', 'float'], 'float')
+def get_phi(px, py):
+    return np.degrees(np.arctan2(py, px))
+
+
 def define_pimkpks_columns(df):
     new_df = df.Define('chi2ndf', 'kin_chisq/kin_ndf')
 
