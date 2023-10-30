@@ -1070,6 +1070,17 @@ def get_phi(px, py):
     return np.degrees(np.arctan2(py, px))
 
 
+@ROOT.Numba.Declare(['float', 'float', 'float'], 'float')
+def get_p(px, py, pz):
+    return np.sqrt(px*px + py*py + pz*pz)
+
+
+# TODO: INTEGRATE THIS INTO DEFINE COLUMNS
+@ROOT.Numba.Declare(['float', 'float', 'float', 'float'], 'float')
+def get_m(px, py, pz, E):
+    return np.sqrt(E*E - px*px - py*py - pz*pz)
+
+
 def define_pimkpks_columns(df):
     new_df = df.Define('chi2ndf', 'kin_chisq/kin_ndf')
 
