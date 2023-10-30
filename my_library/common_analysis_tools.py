@@ -1075,7 +1075,6 @@ def get_p(px, py, pz):
     return np.sqrt(px*px + py*py + pz*pz)
 
 
-# TODO: INTEGRATE THIS INTO DEFINE COLUMNS
 @ROOT.Numba.Declare(['float', 'float', 'float', 'float'], 'float')
 def get_m(px, py, pz, E):
     return np.sqrt(E*E - px*px - py*py - pz*pz)
@@ -1199,19 +1198,19 @@ def define_pipkmks_columns(df):
     new_df = new_df.Define('pip1_p', 'Numba::get_p(pip1_px, pip1_py, pip1_pz)')
     new_df = new_df.Define('pip2_p', 'Numba::get_p(pip2_px, pip2_py, pip2_pz)')
     new_df = new_df.Define('pim_p', 'Numba::get_p(pim_px, pim_py, pim_pz)')
-    new_df = new_df.Define('kp_p', 'Numba::get_p(kp_px, kp_py, kp_pz)')
+    new_df = new_df.Define('km_p', 'Numba::get_p(km_px, km_py, km_pz)')
 
     new_df = new_df.Define('p_theta', 'Numba::get_theta(p_px, p_py, p_pz)')
     new_df = new_df.Define('pip1_theta', 'Numba::get_theta(pip1_px, pip1_py, pip1_pz)')
     new_df = new_df.Define('pip2_theta', 'Numba::get_theta(pip2_px, pip2_py, pip2_pz)')
     new_df = new_df.Define('pim_theta', 'Numba::get_theta(pim_px, pim_py, pim_pz)')
-    new_df = new_df.Define('kp_theta', 'Numba::get_theta(kp_px, kp_py, kp_pz)')
+    new_df = new_df.Define('km_theta', 'Numba::get_theta(km_px, km_py, km_pz)')
 
     new_df = new_df.Define('p_phi', 'Numba::get_phi(p_px, p_py)')
     new_df = new_df.Define('pip1_phi', 'Numba::get_phi(pip1_px, pip1_py)')
     new_df = new_df.Define('pip2_phi', 'Numba::get_phi(pip2_px, pip2_py)')
     new_df = new_df.Define('pim_phi', 'Numba::get_phi(pim_px, pim_py)')
-    new_df = new_df.Define('kp_phi', 'Numba::get_phi(kp_px, kp_py)')
+    new_df = new_df.Define('km_phi', 'Numba::get_phi(km_px, km_py)')
 
     new_df = new_df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
 
