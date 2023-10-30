@@ -221,10 +221,7 @@ T_BIN_FILTER = 'Numba::t_bin_filter(mand_t)'
 
 
 # TODO: should this be an int?
-@ROOT.Numba.Declare(['float', 'float'], 'bool')
-"""
-Use this method by calling it and using str.format() to insert the t_index
-"""
+@ROOT.Numba.Declare(['int', 'int'], 'bool')
 def select_t_bin(t_bin, t_index):
     return t_bin == t_index
 SELECT_T_BIN = 'Numba::select_t_bin(t_bin, {})'
