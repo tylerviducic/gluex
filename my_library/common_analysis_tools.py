@@ -1085,7 +1085,7 @@ def define_pimkpks_columns(df):
     new_df = df.Define('chi2ndf', 'kin_chisq/kin_ndf')
 
     new_df = new_df.Define('p_pt', 'sqrt(p_px_measured*p_px_measured + p_py_measured*p_py_measured)')
-    new_df = new_df.Define('p_p', 'sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz)')
+    new_df = new_df.Define('p_p', 'Numba::get_p(p_px, p_py, p_pz)')
 
     new_df = new_df.Define('ks_px', "pim2_px + pip_px")
     new_df = new_df.Define('ks_py', "pim2_py + pip_py")
