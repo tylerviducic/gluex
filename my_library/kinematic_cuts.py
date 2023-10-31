@@ -44,7 +44,14 @@ PPIP_MASS_CUT_STRING = 'ppip_m > 1.4'
 def kmp_mass_cut(kmp_m):
     return kmp_m > 1.95
 KMP_MASS_CUT = 'Numba::kmp_mass_cut(kmp_m)'
-KMP_MASS_CUT_STRING = 'kmp_m > 1.95'
+KMP_MASS_CUT_STRING = 'kmp_m > 2.0'
+
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def kpp_mass_cut(kpp_m):
+    return kpp_m > 1.95
+KPP_MASS_CUT = 'Numba::kpp_mass_cut(kpp_m)'
+KPP_MASS_CUT_STRING = 'kpp_m > 2.0'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
@@ -108,7 +115,7 @@ PPIM_MASS_CUT_STRING = 'ppim_m > 1.4'
 def ksp_mass_cut(ksp_m):
     return ksp_m > 1.95
 KSP_MASS_CUT = 'Numba::ksp_mass_cut(ksp_m)'
-KSP_MASS_CUT_STRING = 'ksp_m > 1.95'
+KSP_MASS_CUT_STRING = 'ksp_m > 2.0'
 
 ## KSTAR CUTS ##
 
