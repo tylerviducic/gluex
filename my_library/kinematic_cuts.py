@@ -220,7 +220,6 @@ def t_bin_filter(t):
 T_BIN_FILTER = 'Numba::t_bin_filter(mand_t)'
 
 
-# TODO: should this be an int?
 @ROOT.Numba.Declare(['int', 'int'], 'bool')
 def select_t_bin(t_bin, t_index):
     return t_bin == t_index
