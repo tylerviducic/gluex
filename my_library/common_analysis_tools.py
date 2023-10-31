@@ -1337,6 +1337,7 @@ def define_columns(df, channel, thrown=False):
     return new_df
 
 
+# TODO: add identical kp mass cuts 
 def filter_dataframe(df, channel):
     if channel == 'pipkmks':
         return df.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIPKMKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.PPIP_MASS_CUT).Filter(kcuts.KMP_MASS_CUT).Filter(kcuts.P_P_CUT)
