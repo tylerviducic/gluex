@@ -58,14 +58,14 @@ KPP_MASS_CUT_STRING = 'kpp_m > 2.0'
 def f1_signal_region_pipkmks(pipkmks_m):
     return pipkmks_m > 1.2 and pipkmks_m < 1.35
 F1_SIGNAL_REGION_PIPKMKS = 'Numba::f1_signal_region_pipkmks(pipkmks_m)'
-F1_SIGNAL_REGION_PIPKMKS_STRING = 'pipkmks_m > 1.2 && pipkmks_m < 1.35'
+F1_SIGNAL_REGION_PIPKMKS_STRING = 'pipkmks_m > 1.24 && pipkmks_m < 1.35'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
 def f1_signal_region_pimkpks(pimkpks_m):
     return pimkpks_m > 1.2 and pimkpks_m < 1.35
 F1_SIGNAL_REGION_PIMKPKS = 'Numba::f1_signal_region_pimkpks(pimkpks_m)'
-F1_SIGNAL_REGION_PIMKPKS_STRING = 'pimkpks_m > 1.2 && pimkpks_m < 1.35'
+F1_SIGNAL_REGION_PIMKPKS_STRING = 'pimkpks_m > 1.24 && pimkpks_m < 1.35'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
