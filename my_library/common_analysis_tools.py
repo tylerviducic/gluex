@@ -1508,7 +1508,6 @@ def filter_dataframe(df, channel):
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
-# TODO: make all filtered dataframes the same tree name?
 def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, nstar_mass=None, kstar_charge=None):
     if datatype == 'nstar' and not nstar_mass:
         raise ValueError('N* mass not provided')
