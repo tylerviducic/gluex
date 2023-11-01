@@ -42,7 +42,7 @@ def run_analysis(channel, run_period, data_type, thrown=False, nstar_mass=None, 
         ## COMMENT/UNCOMMENT AS NEEDED WHEN CHANGING THINGS ABOVE THIS LINE ##
         output_filename = ct.get_filtered_file_output_name(channel, run_period, data_type, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
         output_treename = ct.get_filtered_tree_output_name(channel, data_type)
-        df.Snapshot(output_treename, f'{output_path}/{output_filename}')
+        df.Snapshot(output_treename, f'{output_path}/{output_filename}', fLazy=True)
 
         # ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
         df = df.Filter(kcuts.BEAM_RANGE).Filter(kcuts.T_RANGE)
