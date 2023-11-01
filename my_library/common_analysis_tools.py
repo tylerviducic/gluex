@@ -1567,7 +1567,7 @@ def get_filename_for_output_file(channel, run_period, datatype, thrown=False, ns
     return output
 
 
-def get_filtered_file_and_tree_output_name(channel, run_period, datatype, nstar_mass=None, kstar_charge=None):
+def get_filtered_file_output_name(channel, run_period, datatype, nstar_mass=None, kstar_charge=None):
     output_file = f'{channel}_'
     if datatype == 'nstar':
         output_file += f'nstar_{nstar_mass}_'
@@ -1575,6 +1575,11 @@ def get_filtered_file_and_tree_output_name(channel, run_period, datatype, nstar_
         output_file += f'f1_1420_{kstar_charge}_'
     output_file += f'flat_filtered_{constants.RUN_DICT[run_period]}.root'
     return output_file
+
+
+def get_filtered_tree_output_name(channel, datatype):
+    output_tree = f'{channel}_filtered_{datatype}'
+    return output_tree
 
 
 def get_graph_filename(channel, run_period, datatype, nstar_mass=None, kstar_charge=None):
