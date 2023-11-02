@@ -31,7 +31,9 @@ if __name__ == '__main__':
                     run_analysis(channel, run_period, data_type, thrown=True)
                     thrown_end = time.time()
                     print(f'Thrown analysis for {channel} {data_type} {run_period} took {thrown_end-thrown_start} seconds')
+                    print("")
 
     overall_end = time.time()
-    print(f'Overall analysis took {overall_end-overall_start} seconds')
+    print(f'Overall analysis took {(overall_end-overall_start)/60} minutes'.upper())
+    print("")
 
