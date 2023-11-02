@@ -25,8 +25,8 @@ def get_flat_data_file_and_tree(channel, run_period, comboloop=False, filtered=T
     if not comboloop:
         file_path += f'/bestX2/{channel}_'
         if filtered:
-            file_path += f'filtered_{constants.RUN_DICT[run_period]}.root'
-            treename = f'{channel}_filtered_{constants.RUN_DICT[run_period]}'
+            file_path += f'flat_filtered_{constants.RUN_DICT[run_period]}.root'
+            treename = f'{channel}_filtered_data'
         else:
             if hist:
                 file_path += f'flat_result_{constants.RUN_DICT[run_period]}.root'
@@ -1509,6 +1509,7 @@ def filter_dataframe(df, channel):
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
+# TODO: just make full gluex1 trees for unfiltered
 def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, nstar_mass=None, kstar_charge=None):
     if datatype == 'nstar' and not nstar_mass:
         raise ValueError('N* mass not provided')
@@ -1519,8 +1520,10 @@ def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, ns
                     channel, 'fall', datatype), get_flat_file_and_tree(channel, '2017', datatype)]
                 files = ROOT.std.vector('string')()
                 for file_and_tree in file_and_trees:
-                    files.push_back(file_and_tree[1])
-                return ROOT.RDataFrame(file_and_trees[0][0], files)
+                    print(f'file:{file_and_tree[0]}')
+                    files.push_back(file_and_tree[0])
+                print(f'tree: {file_and_trees[0][1]}')
+                return ROOT.RDataFrame(file_and_trees[0][1], files)
             file_and_tree = get_flat_file_and_tree(
                 channel, run_period, datatype)
             return ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
