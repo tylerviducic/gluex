@@ -4,8 +4,8 @@ import os
 from my_library.flat_analysis import run_analysis
 import time
 
-#TODO:  STATUS BAR OR TIMER OR BOTH
-def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
+# TODO:  STATUS BAR OR TIMER OR BOTH
+# TODO: COLORED prints?
 
 
 if __name__ == '__main__':
@@ -35,6 +35,6 @@ if __name__ == '__main__':
                 print("")
 
     overall_end = time.time()
-    prGreen(f'Overall analysis took {(overall_end-overall_start)/60} minutes'.upper())
+    print(f'Overall analysis took {(overall_end-overall_start)/60} minutes'.upper())
     print("")
 
