@@ -1499,17 +1499,16 @@ def define_columns(df, channel, thrown=False):
     return new_df
 
 
-# TODO: add identical kp mass cuts 
 def filter_dataframe(df, channel):
     if channel == 'pipkmks':
-        return df.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIPKMKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.PPIP_MASS_CUT).Filter(kcuts.KMP_MASS_CUT).Filter(kcuts.P_P_CUT)
+        return df.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIPKMKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.PPIP_MASS_CUT).Filter(kcuts.KMP_MASS_CUT).Filter(kcuts.KSP_MASS_CUT).Filter(kcuts.P_P_CUT)
     elif channel == 'pimkpks':
-        return df.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIMKPKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.PPIM_MASS_CUT).Filter(kcuts.KSP_MASS_CUT).Filter(kcuts.P_P_CUT)
+        return df.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIMKPKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.PPIM_MASS_CUT).Filter(kcuts.KPP_MASS_CUT).Filter(kcuts.KSP_MASS_CUT).Filter(kcuts.P_P_CUT)
     else:
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
-# TODO: just make full gluex1 trees for unfiltered
+
 def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, nstar_mass=None, kstar_charge=None):
     if datatype == 'nstar' and not nstar_mass:
         raise ValueError('N* mass not provided')
@@ -1529,11 +1528,11 @@ def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, ns
             return ROOT.RDataFrame(file_and_tree[1], file_and_tree[0])
         else:
             if run_period == 'gluex1':
-                file_and_trees = [get_flat_file_and_tree(channel, 'spring', datatype), get_flat_file_and_tree(
-                    channel, 'fall', datatype), get_flat_file_and_tree(channel, '2017', datatype)]
+                file_and_trees = [get_flat_file_and_tree(channel, 'spring', datatype, filtered=False), get_flat_file_and_tree(
+                    channel, 'fall', datatype, filtered=False), get_flat_file_and_tree(channel, '2017', datatype, filtered=False)]
                 files = ROOT.std.vector('string')()
                 for file_and_tree in file_and_trees:
-                    files.push_back(file_and_tree[1])
+                    files.push_back(file_and_tree[0])
                 return define_columns(ROOT.RDataFrame(file_and_trees[0][1], files), channel)
             else:
                 file_and_tree = get_flat_file_and_tree(
