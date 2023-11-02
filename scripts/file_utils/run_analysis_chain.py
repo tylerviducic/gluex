@@ -5,6 +5,7 @@ from my_library.flat_analysis import run_analysis
 import time
 
 #TODO:  STATUS BAR OR TIMER OR BOTH
+def prGreen(skk): print("\033[92m {}\033[00m" .format(skk))
 
 
 if __name__ == '__main__':
@@ -31,9 +32,9 @@ if __name__ == '__main__':
                     run_analysis(channel, run_period, data_type, thrown=True)
                     thrown_end = time.time()
                     print(f'Thrown analysis for {channel} {data_type} {run_period} took {thrown_end-thrown_start} seconds')
-                    print("")
+                print("")
 
     overall_end = time.time()
-    print(f'Overall analysis took {(overall_end-overall_start)/60} minutes'.upper())
+    prGreen(f'Overall analysis took {(overall_end-overall_start)/60} minutes'.upper())
     print("")
 
