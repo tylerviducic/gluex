@@ -1,5 +1,7 @@
 import ROOT
 
+
+# TODO: font size 
 # define a default style for GlueX plots
 gluex_style = ROOT.TStyle("gluex", "Default GlueX Style")
 
@@ -48,6 +50,8 @@ gluex_style.SetHistFillColor(920) # grey
 # pick a palette for 2D plots
 # gluex_style.SetPalette(ROOT.kViridis) 
 # #gluex_style.SetPalette(ROOT.kBird) # default
-gluex_style.SetPalette(ROOT.kDarkBodyRadiator) # I like this one better...
+gluex_style.SetPalette(ROOT.kCividis) # default
+# gluex_style.SetPalette(ROOT.kColorPrintableOnGrey) 
+# gluex_style.SetPalette(ROOT.kDarkBodyRadiator) # I like this one better...
 
 gluex_style.cd()

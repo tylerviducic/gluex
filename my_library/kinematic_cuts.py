@@ -20,6 +20,7 @@ def ks_pathlength_cut(pathlength_sig):
 KS_PATHLENGTH_CUT = 'Numba::ks_pathlength_cut(pathlength_sig)'
 KS_PATHLENGTH_CUT_STRING = 'pathlength_sig > 5'
 
+
 KS_COLIN_CUT_STRING = 'cos_colin > 0.99'
 KS_VERTEX_CUT_STRING = ' vertex_distance > 3'
 OLD_KS_MASS_CUT_STRING = 'ks_m > 0.475 && ks_m < 0.525'
