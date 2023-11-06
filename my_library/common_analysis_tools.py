@@ -1508,7 +1508,7 @@ def filter_dataframe(df, channel):
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
-
+# TODO: remove print statement for gluex1 fetch
 def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, nstar_mass=None, kstar_charge=None):
     if datatype == 'nstar' and not nstar_mass:
         raise ValueError('N* mass not provided')
