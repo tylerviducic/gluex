@@ -19,8 +19,8 @@ def get_title_for_plots(channel, e, t):
     line2 = f'{constants.T_CUT_DICT[t][0]} < t < {constants.T_CUT_DICT[t][1]} GeV^{2}'
     return '#splitline{' + line1 + '}{' + line2 + '}'        
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -57,7 +57,7 @@ c = ROOT.TCanvas()
 c.Divide(4, 2)
 
 
-for e in range(7, 12):
+for e in range(8, 12):
     hist_uncor_list = []
     hist_cor_list = []
     luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)
@@ -92,7 +92,7 @@ for e in range(7, 12):
         bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -2.0, 2.0)
         bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -2.0, 2.0)
 
-        bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3)) 
+        bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1) )
 
         # sig_frac = ROOT.RooRealVar(f"sig_frac_{e}_{t}", f"sig_frac_{e}_{t}", 0.5, 0.0, 1.0)
         n_signal = ROOT.RooRealVar(f"n_signal_{e}_{t}", f"n_signal_{e}_{t}", 100000, 0, 10000000)
@@ -103,8 +103,8 @@ for e in range(7, 12):
         c2 = ROOT.RooChi2Var(f"c2_{e}_{t}", f"c2_{e}_{t}", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2), ROOT.RooFit.Range("fit_range"))
         minuit = ROOT.RooMinuit(c2)
         minuit.migrad()
-        minuit.minos()
-        # minuit.hesse()
+        # minuit.minos()
+        minuit.hesse()
         fit_result = minuit.save()
 
         data_yield = n_signal.getVal()
@@ -156,6 +156,7 @@ for e in range(7, 12):
         c.Update()
 
     c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/{channel}_cross_section_fits_beam_{e}.png')
+    c.SaveAs(f'/work/halld/home/viducic/scripts/plotting/dnp_maui/plots/{channel}_cross_section_fits_beam_{e}.png')
     # c1 = ROOT.TCanvas()
     # c1.Divide(4, 2)
     # index = 1
