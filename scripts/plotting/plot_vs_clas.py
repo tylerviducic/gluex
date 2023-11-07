@@ -80,40 +80,40 @@ clas_350 = clas_df[(clas_df['w'] == 2.75)]
 
 # print(clas_250)
 
-gluex_7_df = pd.read_csv('cs_dataframe_7.csv')
-gluex_8_df = pd.read_csv('cs_dataframe_8.csv')
-gluex_9_df = pd.read_csv('cs_dataframe_9.csv')
-gluex_10_df = pd.read_csv('cs_dataframe_10.csv')
+# gluex_7_df = pd.read_csv('cs_dataframe_7.csv')
+# gluex_8_df = pd.read_csv('cs_dataframe_8.csv')
+# gluex_9_df = pd.read_csv('cs_dataframe_9.csv')
+# gluex_10_df = pd.read_csv('cs_dataframe_10.csv')
 
-gluex_8_df['acceptance'] = [0.002214, 0.002216, 0.002384, 0.002338, 0.002213, 0.002364, 0.002587, 0.002421, 0.001853, 0.001882, 0.001647]
-gluex_9_df['acceptance'] = [0.002417, 0.002489, 0.002532, 0.002344, 0.002728, 0.002455, 0.002208, 0.002204, 0.002450, 0.002161, 0.002133]
+# gluex_8_df['acceptance'] = [0.002214, 0.002216, 0.002384, 0.002338, 0.002213, 0.002364, 0.002587, 0.002421, 0.001853, 0.001882, 0.001647]
+# gluex_9_df['acceptance'] = [0.002417, 0.002489, 0.002532, 0.002344, 0.002728, 0.002455, 0.002208, 0.002204, 0.002450, 0.002161, 0.002133]
 
-gluex_8_df['yield'] = [635.333867, 555.083820, 489.691353, 419.347608, 635.462639, 566.107510, 334.218194, 212.526919, 138.599223, 210.110430, 118.737893]
-gluex_9_df['yield'] = [624.338253, 557.093599, 476.607482, 361.240174, 569.031236, 360.780601, 308.491354, 205.882647, 112.896585, 175.463157, 77.242692]
+# gluex_8_df['yield'] = [635.333867, 555.083820, 489.691353, 419.347608, 635.462639, 566.107510, 334.218194, 212.526919, 138.599223, 210.110430, 118.737893]
+# gluex_9_df['yield'] = [624.338253, 557.093599, 476.607482, 361.240174, 569.031236, 360.780601, 308.491354, 205.882647, 112.896585, 175.463157, 77.242692]
 
-gluex_7_df['acy'] = gluex_7_df['yield'] / (gluex_7_df['acceptance'] * gluex_7_df['bin_width'] * 100000)
-gluex_8_df['acy'] = gluex_8_df['yield'] / (gluex_8_df['acceptance'] * gluex_8_df['bin_width']* 100000)
-gluex_9_df['acy'] = gluex_9_df['yield'] / (gluex_9_df['acceptance'] * gluex_9_df['bin_width']* 100000)
-gluex_10_df['acy'] = gluex_10_df['yield'] / (gluex_10_df['acceptance'] * gluex_10_df['bin_width'] * 100000)
+# gluex_7_df['acy'] = gluex_7_df['yield'] / (gluex_7_df['acceptance'] * gluex_7_df['bin_width'] * 100000)
+# gluex_8_df['acy'] = gluex_8_df['yield'] / (gluex_8_df['acceptance'] * gluex_8_df['bin_width']* 100000)
+# gluex_9_df['acy'] = gluex_9_df['yield'] / (gluex_9_df['acceptance'] * gluex_9_df['bin_width']* 100000)
+# gluex_10_df['acy'] = gluex_10_df['yield'] / (gluex_10_df['acceptance'] * gluex_10_df['bin_width'] * 100000)
 
-gluex_7_df['error'] = gluex_7_df['acy'] * gluex_7_df['yield_percent_error'] / 100
-gluex_8_df['error'] = gluex_8_df['acy'] * gluex_8_df['yield_percent_error'] / 100
-gluex_9_df['error'] = gluex_9_df['acy'] * gluex_9_df['yield_percent_error'] / 100
-gluex_10_df['error'] = gluex_10_df['acy'] * gluex_10_df['yield_percent_error'] / 100
+# gluex_7_df['error'] = gluex_7_df['acy'] * gluex_7_df['yield_percent_error'] / 100
+# gluex_8_df['error'] = gluex_8_df['acy'] * gluex_8_df['yield_percent_error'] / 100
+# gluex_9_df['error'] = gluex_9_df['acy'] * gluex_9_df['yield_percent_error'] / 100
+# gluex_10_df['error'] = gluex_10_df['acy'] * gluex_10_df['yield_percent_error'] / 100
 
-gluex_8_df.drop(gluex_8_df.index[-1], inplace=True)
-gluex_9_df.drop(gluex_9_df.index[-1], inplace=True)
+# gluex_8_df.drop(gluex_8_df.index[-1], inplace=True)
+# gluex_9_df.drop(gluex_9_df.index[-1], inplace=True)
 
-theory_filename8 = '/Users/tylerviducic/research/gluex/theory_predictions/t-slope-8GeVnew.dat'
-theory_filename9 = '/Users/tylerviducic/research/gluex/theory_predictions/t-slope-9GeVnew.dat'
-theory_df8 = pd.read_csv(theory_filename8, delim_whitespace=True)
-theory_df9 = pd.read_csv(theory_filename9, delim_whitespace=True)
-theory_df8.columns = ['minus_t', 'diff_cs']
-theory_df9.columns = ['minus_t', 'diff_cs']
+# theory_filename8 = '/Users/tylerviducic/research/gluex/theory_predictions/t-slope-8GeVnew.dat'
+# theory_filename9 = '/Users/tylerviducic/research/gluex/theory_predictions/t-slope-9GeVnew.dat'
+# theory_df8 = pd.read_csv(theory_filename8, delim_whitespace=True)
+# theory_df9 = pd.read_csv(theory_filename9, delim_whitespace=True)
+# theory_df8.columns = ['minus_t', 'diff_cs']
+# theory_df9.columns = ['minus_t', 'diff_cs']
 
-print(gluex_9_df)
-print(theory_df9[theory_df9['minus_t'] == 0.45])
-norm_factor = 20.858916/650.626283 
+# print(gluex_9_df)
+# print(theory_df9[theory_df9['minus_t'] == 0.45])
+# norm_factor = 20.858916/650.626283 
 
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
@@ -129,12 +129,12 @@ ax1.errorbar(clas_300['t'], clas_300['dsigma_domega'], yerr=clas_300['clas_error
 # ax1.errorbar(gluex_10_df['t'], gluex_10_df['acy'], yerr=gluex_10_df['error'], label='10.0 GeV', marker='o', color='slateblue')
 # ax1.scatter(theory_df8['minus_t'], theory_df8['diff_cs'].multiply(norm_factor), marker='*' ,color='limegreen', s=3,label='8.0 GeV theory')
 # ax1.scatter(theory_df9['minus_t'], theory_df9['diff_cs'].multiply(norm_factor), marker='+' ,color='darkgreen', label='9.0 GeV theory')
-ax1.set_xlim([0.1, 1.5])
+ax1.set_xlim([0.1, 2.0])
 ax1.set_ylim([0, 15])
 # ax2.set_xlim([0.1, 1.5])
 # ax2.set_ylim([0, 60])
 # ax1.set_yscale('log')
 ax1.legend()
 
-
-plt.show()
+plt.savefig('clas_vs_t.png')
+# plt.show()
