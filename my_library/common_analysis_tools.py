@@ -1695,6 +1695,7 @@ def remove_zero_datapoints(hist: ROOT.TH1):
     for i in range(hist.GetNbinsX()):
         if hist.GetBinContent(i) == 0:
             hist.SetBinContent(i, 1e-10)
+    return hist
     
 
 ############################
