@@ -1691,10 +1691,12 @@ def sort_hists_by_max(hists: list):
     return sorted_hists
 
 
-def remove_zero_datapoints(hist: ROOT.TH1):
+def remove_zero_datapoints(og_hist: ROOT.TH1):
+    hist = og_hist.Clone()
     for i in range(hist.GetNbinsX()):
         if hist.GetBinContent(i) == 0:
             hist.SetBinContent(i, 1e-10)
+    hist.SetDirectory(0)
     return hist
     
 
