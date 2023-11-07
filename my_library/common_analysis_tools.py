@@ -554,8 +554,8 @@ def calculate_crosssection_from_acceptance_corrected_yield(ac_yield, luminosity,
 
 
 def calculate_crosssection(data_yield, acceptance, luminosity, bin_width, branching_fraction):
-    """returns cross section for kkpi with multiplicity of 6"""
-    return (data_yield / (acceptance * luminosity * bin_width * branching_fraction * 6))
+    """returns cross section for kkpi with multiplicity of 6 in nb"""
+    return (6 * data_yield / (acceptance * luminosity * bin_width * branching_fraction))
 
 
 def get_binned_integrated_phasespace_acceptance(channel, run_period, e, t_bin_index, cut='all', range_lower=1.0, range_upper=2.5):
