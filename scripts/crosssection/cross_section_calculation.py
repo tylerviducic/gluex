@@ -53,7 +53,7 @@ c.Divide(4, 2)
 for e in range(8, 12):
     hist_uncor_list = []
     hist_cor_list = []
-    luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)
+    luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)/1000
     for t in range(1, 8):
         c.cd(t)
         
@@ -107,11 +107,8 @@ for e in range(8, 12):
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
 
         cross_section = ct.calculate_crosssection(data_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
-        print(f'DATA_YIELD = {data_yield} +/- {data_yield_error}')
-        try:
-            cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, luminosity * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
-        except ZeroDivisionError:
-            input('Press enter to continue')
+        cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, luminosity * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
+
         chi2_val = c2.getVal()
 
         frame = m_kkpi.frame()

@@ -54,17 +54,18 @@ c.Divide(4, 2)
 for e in range(8, 12):
     hist_uncor_list = []
     hist_cor_list = []
-    luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)
+    luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
     for t in range(1, 8):
         c.cd(t)
         
         hist_uncor_list.append(ct.get_gluex1_binned_kkpi_data(channel, cut, e, t))
-        hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
+        cor_hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
+        hist = ct.remove_zero_datapoints(cor_hist)
         hist_cor_list.append(hist)
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
         range_min = 1.2
-        range_max = 1.45
+        range_max = 1.4
         m_kkpi.setRange("fit_range", range_min, range_max)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
@@ -75,16 +76,16 @@ for e in range(8, 12):
 
         voight_sigma.setConstant(True)
         voight_width.setConstant(True)
-        # voight_mean.setConstant(True)
+        voight_mean.setConstant(True)
 
         voight = ROOT.RooVoigtian(f"voight_{e}_{t}", f"voight_{e}_{t}", m_kkpi, voight_mean, voight_width, voight_sigma)
 
         ## CHEBYCHEV ##
 
-        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", -1.0, 1.0)
-        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", -1.0, 1.0)
-        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -1.0, 1.0)
-        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -1.0, 1.0)
+        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", 0.0, 1.0)
+        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", 0.0, 1.0)
+        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", 0.0, 1.0)
+        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", 0.0, 1.0)
 
         bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1) )
 
