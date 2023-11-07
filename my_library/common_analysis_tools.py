@@ -1519,9 +1519,7 @@ def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, ns
                     channel, 'fall', datatype), get_flat_file_and_tree(channel, '2017', datatype)]
                 files = ROOT.std.vector('string')()
                 for file_and_tree in file_and_trees:
-                    print(f'file:{file_and_tree[0]}')
                     files.push_back(file_and_tree[0])
-                print(f'tree: {file_and_trees[0][1]}')
                 return ROOT.RDataFrame(file_and_trees[0][1], files)
             file_and_tree = get_flat_file_and_tree(
                 channel, run_period, datatype)
