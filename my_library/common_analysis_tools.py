@@ -1508,7 +1508,6 @@ def filter_dataframe(df, channel):
         raise ValueError('Unknown channel: {}'.format(channel))
 
 
-# TODO: remove print statement for gluex1 fetch
 def get_dataframe(channel, run_period, datatype, filtered=True, thrown=False, nstar_mass=None, kstar_charge=None):
     if datatype == 'nstar' and not nstar_mass:
         raise ValueError('N* mass not provided')
@@ -1690,6 +1689,13 @@ def sort_hists_by_max(hists: list):
         sorted_index.append(tallest)
         sorted_hists.append(hists.pop(tallest))
     return sorted_hists
+
+
+def remove_zero_datapoints(hist: ROOT.TH1):
+    for i in range(hist.GetNbinsX()):
+        if hist.GetBinContent(i) == 0:
+            hist.SetBinContent(i, 1e-10)
+    
 
 ############################
 #### CONDUCT TESTS HERE ####
