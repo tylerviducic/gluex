@@ -87,7 +87,7 @@ for e in range(8, 12):
 
         voight = ROOT.RooVoigtian(f"voight_{e}_{t}", f"voight_{e}_{t}", m_kkpi, voight_mean, voight_width, voight_sigma)
 
-        gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.37, 1.35, 1.43)
+        gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.37, 1.325, 1.5)
         gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.034, 0.025, 0.05)
         gaus = ROOT.RooGaussian("gaus", "gaus", m_kkpi, gaus_m, gaus_width)
         # gaus_m.setConstant(True)
@@ -95,10 +95,10 @@ for e in range(8, 12):
 
         ## CHEBYCHEV ##
 
-        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", -2.0, 2.0)
-        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", -2.0, 2.0)
-        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -2.0, 2.0)
-        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -2.0, 2.0)
+        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", 0.0, 2.0)
+        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", 0.0, 2.0)
+        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", 0.0, 2.0)
+        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", 0.0, 2.0)
 
         bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1) )
 
@@ -133,7 +133,7 @@ for e in range(8, 12):
         chi2ndf = chi2_val / ndf
 
         dh.plotOn(frame)
-        combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(total_fit_color), ROOT.RooFit.Name("full_fit"))        # pullHist = frame.pullHist()
+        combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(total_fit_color), ROOT.RooFit.Name("full_fit"))
         combined_pdf.plotOn(frame, ROOT.RooFit.Components("voight"), ROOT.RooFit.LineColor(f1_color), ROOT.RooFit.DrawOption("F"), ROOT.RooFit.FillColor(f1_color), ROOT.RooFit.LineWidth(5), ROOT.RooFit.Name("f1_signal"))
         combined_pdf.plotOn(frame, ROOT.RooFit.Components("gaus"), ROOT.RooFit.LineColor(gaus_color), ROOT.RooFit.LineWidth(4), ROOT.RooFit.Name("1420_tail"))
         combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(background_color), ROOT.RooFit.MarkerColor(background_color), ROOT.RooFit.LineWidth(4), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.Name("bkg"))
