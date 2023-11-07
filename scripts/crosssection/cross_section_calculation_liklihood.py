@@ -13,8 +13,8 @@ def get_title_for_plots(e, t):
     tbin = f'{constants.T_CUT_DICT[t][0]} < t < {constants.T_CUT_DICT[t][1]} GeV^{2}'
     return f'{e_gamma} = {e} GeV, {tbin}'
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -63,8 +63,8 @@ for e in range(8, 12):
         hist_cor_list.append(hist)
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
-        range_min = 1.18
-        range_max = 1.4
+        range_min = 1.2
+        range_max = 1.45
         m_kkpi.setRange("fit_range", range_min, range_max)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
@@ -75,16 +75,16 @@ for e in range(8, 12):
 
         voight_sigma.setConstant(True)
         voight_width.setConstant(True)
-        voight_mean.setConstant(True)
+        # voight_mean.setConstant(True)
 
         voight = ROOT.RooVoigtian(f"voight_{e}_{t}", f"voight_{e}_{t}", m_kkpi, voight_mean, voight_width, voight_sigma)
 
         ## CHEBYCHEV ##
 
-        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", -2.0, 2.0)
-        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", -2.0, 2.0)
-        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -2.0, 2.0)
-        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -2.0, 2.0)
+        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", -1.0, 1.0)
+        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", -1.0, 1.0)
+        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -1.0, 1.0)
+        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -1.0, 1.0)
 
         bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1) )
 
