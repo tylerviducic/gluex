@@ -132,7 +132,7 @@ n_f1_1420 = ROOT.RooRealVar("n_f1_1420", "n_f1_1420", 10000, 0.0, 1000000000)
 n_bkg = ROOT.RooRealVar("n_bkg", "n_bkg", 10000, 0.0, 1000000000)
 
 combined_pdf = ROOT.RooAddPdf('combined_pdf', 'combined_pdf', ROOT.RooArgList(voight_1285, voight_1420, bkg), ROOT.RooArgList(n_f1_1285, n_f1_1420, n_bkg))
-
+chi2 = combined_pdf.createChi2(dh, ROOT.RooFit.Range("fit_range"))
 
 # c2 = ROOT.RooChi2Var(f"c2", f"c2", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2), ROOT.RooFit.Range("fit_range"))
 # minuit = ROOT.RooMinuit(c2)
