@@ -28,6 +28,19 @@ def cosTheta_to_t(w, cosTheta):
     return t
 
 
+def t_over_cosTheta(w, cosTheta):
+    m1 = 0.93827**2
+    m3 = 0.93827**2
+    m2 = 0
+    m4 = 1.285**2
+    s = w*w
+    qi = sqrt(tri(s, m1, m2)/4/s)
+    qf = sqrt(tri(s, m3, m4)/4/s)
+    som = m1 + m2 + m3 + m4
+
+    return -1/(2 * qi * qf + (som/2 - s/2 - (m1 - m2) * (m3 - m4) / 2 / s)/cosTheta)
+
+
 
 list_W = [2.35, 2.35, 2.35, 2.35, 2.35, 2.35, 2.35, 2.35, 2.35,
           2.45, 2.45, 2.45, 2.45, 2.45, 2.45, 2.45, 2.45, 2.45,
@@ -61,6 +74,7 @@ list_sys_error = [1.57, 0.66, 0.90, 1.26, 1.17, 1.26, 1.05, 0.7, 0.45,
 
 list_e_gam = [w_to_egamma(w) for w in list_W]
 list_t = [cosTheta_to_t(w, cosTheta) for w, cosTheta in zip(list_W, list_cosThetaCM)]
+list_dsigma_dt = [dsigma_domega * 2*np.pi * t_over_cosTheta(w, cosTheta) for dsigma_domega, w, cosTheta in zip(list_dsigma_domega, list_W, list_cosThetaCM)]
 list_clas_error = [sqrt(stat * stat + sys * sys) for stat, sys in zip(list_stat_error, list_sys_error)]
 
 clas_df = pd.DataFrame()
@@ -69,6 +83,7 @@ clas_df['cosThetaCM'] = list_cosThetaCM
 clas_df['e_gam'] = list_e_gam
 clas_df['t'] = list_t
 clas_df['dsigma_domega'] = list_dsigma_domega
+clas_df['dsigma_dt'] = list_dsigma_dt
 clas_df['clas_error'] = list_clas_error
 
 # print(clas_df)
@@ -121,6 +136,8 @@ ax1 = fig.add_subplot(111)
 # ax1.errorbar(clas_250['t'], clas_250['dsigma_domega'], yerr=clas_250['clas_error'], label='2.50 GeV', marker='o', color='lightcoral')
 ax1.errorbar(clas_275['t'], clas_275['dsigma_domega'], yerr=clas_275['clas_error'], label='2.75 GeV', marker='o', color='red')
 ax1.errorbar(clas_300['t'], clas_300['dsigma_domega'], yerr=clas_300['clas_error'],label='3.00 GeV', marker='*', color='brown')
+ax1.errorbar(clas_275['t'], clas_275['dsigma_dt'], yerr=clas_275['clas_error'], label='2.75 GeV', marker='o', color='red')
+ax1.errorbar(clas_300['t'], clas_300['dsigma_dt'], yerr=clas_300['clas_error'],label='3.00 GeV', marker='*', color='brown')
 # ax1.errorbar(clas_325['t'], clas_325['dsigma_domega'], yerr=clas_325['clas_error'],label='3.25 GeV', marker='o', color='maroon')
 # ax1.errorbar(clas_350['t'], clas_350['dsigma_domega'], yerr=clas_350['clas_error'],label='3.50 GeV', marker='o', color='orangered')
 # ax1.errorbar(gluex_7_df['t'], gluex_7_df['acy'], yerr=gluex_7_df['error'], label='7.0 GeV', marker='o', color='cornflowerblue')
@@ -130,7 +147,7 @@ ax1.errorbar(clas_300['t'], clas_300['dsigma_domega'], yerr=clas_300['clas_error
 # ax1.scatter(theory_df8['minus_t'], theory_df8['diff_cs'].multiply(norm_factor), marker='*' ,color='limegreen', s=3,label='8.0 GeV theory')
 # ax1.scatter(theory_df9['minus_t'], theory_df9['diff_cs'].multiply(norm_factor), marker='+' ,color='darkgreen', label='9.0 GeV theory')
 ax1.set_xlim([0.1, 2.0])
-ax1.set_ylim([0, 15])
+# ax1.set_ylim([0, 15])
 # ax2.set_xlim([0.1, 1.5])
 # ax2.set_ylim([0, 60])
 # ax1.set_yscale('log')
