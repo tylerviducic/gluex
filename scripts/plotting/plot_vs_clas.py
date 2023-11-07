@@ -28,19 +28,6 @@ def cosTheta_to_t(w, cosTheta):
     return t
 
 
-def t_over_cosTheta(w, cosTheta):
-    m1 = 0.93827**2
-    m3 = 0.93827**2
-    m2 = 0
-    m4 = 1.285**2
-    s = w*w
-    qi = sqrt(tri(s, m1, m2)/4/s)
-    qf = sqrt(tri(s, m3, m4)/4/s)
-    som = m1 + m2 + m3 + m4
-
-    return -1/(2 * qi * qf + (som/2 - s/2 - (m1 - m2) * (m3 - m4) / 2 / s)/cosTheta)
-
-
 
 list_W = [2.35, 2.35, 2.35, 2.35, 2.35, 2.35, 2.35, 2.35, 2.35,
           2.45, 2.45, 2.45, 2.45, 2.45, 2.45, 2.45, 2.45, 2.45,
@@ -53,6 +40,12 @@ list_cosThetaCM = [-0.70, -0.50, -0.30, -0.10, 0.10, 0.30, 0.50, 0.70, 0.85,
                    -0.70, -0.50, -0.30, -0.10, 0.10, 0.30, 0.50, 0.70, 0.85,
                    -0.70, -0.50, -0.30, -0.10, 0.10, 0.30, 0.50, 0.70, 0.85,
                    -0.70, -0.50, -0.30, -0.10, 0.10, 0.30, 0.50, 0.70, 0.85]
+
+list_dcosTheta = [20, 20, 20, 20, 20, 20, 20, 20, 10,
+                  20, 20, 20, 20, 20, 20, 20, 20, 10,
+                  20, 20, 20, 20, 20, 20, 20, 20, 10,
+                  20, 20, 20, 20, 20, 20, 20, 20, 10,
+                  20, 20, 20, 20, 20, 20, 20, 20, 10]
 
 list_dsigma_domega = [5.96, 4.70, 6.24, 8.37, 8.29, 7.81, 7.42, 5.01, 3.18,
                       2.80, 6.42, 6.39, 5.73, 7.29, 8.10, 6.58, 6.68, 2.16,
@@ -74,8 +67,10 @@ list_sys_error = [1.57, 0.66, 0.90, 1.26, 1.17, 1.26, 1.05, 0.7, 0.45,
 
 list_e_gam = [w_to_egamma(w) for w in list_W]
 list_t = [cosTheta_to_t(w, cosTheta) for w, cosTheta in zip(list_W, list_cosThetaCM)]
-list_dsigma_dt = [dsigma_domega * 2*np.pi * t_over_cosTheta(w, cosTheta) for dsigma_domega, w, cosTheta in zip(list_dsigma_domega, list_W, list_cosThetaCM)]
+list_dt = [cosTheta_to_t(w, dcosTheta) for w, dcosTheta in zip(list_W, list_dcosTheta)]
+list_dsigma_dt = [-1*dsigma_domega * 2 * np.pi * dcosTheta/dt for dsigma_domega, dcosTheta, dt in zip(list_dsigma_domega, list_dcosTheta, list_dt)]
 list_clas_error = [sqrt(stat * stat + sys * sys) for stat, sys in zip(list_stat_error, list_sys_error)]
+list_error_t = [t*err/cosTheta for t, err, cosTheta in zip(list_t, list_clas_error, list_cosThetaCM)]
 
 clas_df = pd.DataFrame()
 clas_df['w'] = list_W
@@ -85,6 +80,7 @@ clas_df['t'] = list_t
 clas_df['dsigma_domega'] = list_dsigma_domega
 clas_df['dsigma_dt'] = list_dsigma_dt
 clas_df['clas_error'] = list_clas_error
+clas_df['error_t'] = list_error_t
 
 clas_df.to_csv('/work/halld/home/viducic/scripts/plotting/dnp_maui/clas_data.csv')
 
