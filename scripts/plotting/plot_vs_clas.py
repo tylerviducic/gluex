@@ -86,6 +86,8 @@ clas_df['dsigma_domega'] = list_dsigma_domega
 clas_df['dsigma_dt'] = list_dsigma_dt
 clas_df['clas_error'] = list_clas_error
 
+clas_df.to_csv('/work/halld/home/viducic/scripts/plotting/dnp_maui/clas_data.csv')
+
 # print(clas_df)
 clas_250 = clas_df[(clas_df['w'] == 2.35)]
 clas_275 = clas_df[(clas_df['w'] == 2.45)]
