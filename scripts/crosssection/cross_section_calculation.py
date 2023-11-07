@@ -7,17 +7,10 @@ import pandas as pd
 import math
 from ctypes import c_double
 
-def get_title_for_plots(channel, e, t):
+def get_title_for_plots(e, t):
     e_gamma = 'E_{#gamma}'
-    if channel == 'pipkmks':
-        title_kkpi = 'K^{-}K_{s}#pi^{+}'
-    elif channel == 'pimkpks':
-        title_kkpi = '#pi^{-}K^{+}K_{s}'
-    else:
-        return None
-    line1 = f'Fit for {title_kkpi} for {e_gamma} = {e} GeV'
-    line2 = f'{constants.T_CUT_DICT[t][0]} < t < {constants.T_CUT_DICT[t][1]} GeV^{2}'
-    return '#splitline{' + line1 + '}{' + line2 + '}'        
+    tbin = f'{constants.T_CUT_DICT[t][0]} < t < {constants.T_CUT_DICT[t][1]} GeV^{2}'
+    return f'{e_gamma} = {e} GeV, {tbin}'    
 
 # channel = 'pipkmks'
 channel = 'pimkpks'
@@ -65,11 +58,13 @@ for e in range(8, 12):
         c.cd(t)
         
         hist_uncor_list.append(ct.get_gluex1_binned_kkpi_data(channel, cut, e, t))
-        hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
+        cor_hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
+        hist = ct.remove_zero_datapoints(cor_hist)
+
         hist_cor_list.append(hist)
 
         m_kkpi = ROOT.RooRealVar(f"m_kkpi_{e}_{t}", f"m_kkpi_{e}_{t}", hist_range_low, hist_range_high)
-        range_min = 1.18
+        range_min = 1.2
         range_max = 1.4
         m_kkpi.setRange("fit_range", range_min, range_max)
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
@@ -87,10 +82,10 @@ for e in range(8, 12):
 
         ## CHEBYCHEV ##
 
-        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", -2.0, 2.0)
-        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", -2.0, 2.0)
-        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", -2.0, 2.0)
-        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", -2.0, 2.0)
+        bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", 0.0, 2.0)
+        bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", 0.0, 2.0)
+        bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", 0.0, 2.0)
+        bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", 0.0, 2.0)
 
         bkg = ROOT.RooChebychev(f"bkg_{e}_{t}", f"bkg_{e}_{t}", m_kkpi, ROOT.RooArgList(bkg_par1) )
 
@@ -112,12 +107,15 @@ for e in range(8, 12):
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
 
         cross_section = ct.calculate_crosssection(data_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
-        cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, luminosity * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
-
+        print(f'DATA_YIELD = {data_yield} +/- {data_yield_error}')
+        try:
+            cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, luminosity * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
+        except ZeroDivisionError:
+            input('Press enter to continue')
         chi2_val = c2.getVal()
 
         frame = m_kkpi.frame()
-        title = get_title_for_plots(channel, e, t)
+        title = get_title_for_plots(e, t)
         frame.SetTitle(title)
         frame.GetXaxis().SetTitle(title.split(" ")[0] + 'GeV')
         frame.GetYaxis().SetTitle(f'Event/10 MeV')
