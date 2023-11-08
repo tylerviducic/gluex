@@ -14,8 +14,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -115,10 +115,10 @@ legend.Draw()
 # fit_params.Draw()
 
 fit_params = ROOT.TLatex()
-fit_params.SetTextSize(0.045)
-fit_params.DrawLatexNDC(0.425, 0.875, f"Mean = {voight_m.getVal() * 1000:.2f} #pm {voight_m.getError() * 1000:.2f} MeV")
-fit_params.DrawLatexNDC(0.425, 0.825, f"Width = {voight_width.getVal() * 1000:.2f} #pm {voight_width.getError() * 1000:.2f} MeV")
-fit_params.DrawLatexNDC(0.425, 0.775, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
+fit_params.SetTextSize(0.06)
+# fit_params.DrawLatexNDC(0.425, 0.875, f"Mean = {voight_m.getVal() * 1000:.2f} #pm {voight_m.getError() * 1000:.2f} MeV")
+# fit_params.DrawLatexNDC(0.425, 0.825, f"Width = {voight_width.getVal() * 1000:.2f} #pm {voight_width.getError() * 1000:.2f} MeV")
+fit_params.DrawLatexNDC(0.5, 0.775, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
 
 
 c1.Update()
