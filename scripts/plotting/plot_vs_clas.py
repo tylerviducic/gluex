@@ -70,7 +70,7 @@ list_t = [cosTheta_to_t(w, cosTheta) for w, cosTheta in zip(list_W, list_cosThet
 list_dt = [cosTheta_to_t(w, dcosTheta) for w, dcosTheta in zip(list_W, list_dcosTheta)]
 list_dsigma_dt = [-1*dsigma_domega * 2 * np.pi * dcosTheta/dt for dsigma_domega, dcosTheta, dt in zip(list_dsigma_domega, list_dcosTheta, list_dt)]
 list_clas_error = [sqrt(stat * stat + sys * sys) for stat, sys in zip(list_stat_error, list_sys_error)]
-list_error_t = [t*err/cosTheta for t, err, cosTheta in zip(list_t, list_clas_error, list_cosThetaCM)]
+list_error_t = [t*err/cosTheta for t, err, cosTheta in zip(list_dsigma_dt, list_clas_error, list_dsigma_domega)]
 
 clas_df = pd.DataFrame()
 clas_df['w'] = list_W
