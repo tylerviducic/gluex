@@ -63,7 +63,7 @@ def get_flat_phasespace_file_and_tree(channel, run_period, comboloop=False, filt
     if not comboloop:
         if filtered:
             file_path += f'filtered_{constants.RUN_DICT[run_period]}.root'
-            treename = f'{channel}_phasespace_filtered_{constants.RUN_DICT[run_period]}'
+            treename = f'{channel}_filtered_{constants.RUN_DICT[run_period]}'
         else:
             if hist:
                 file_path += f'flat_result_{constants.RUN_DICT[run_period]}.root'
