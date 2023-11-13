@@ -55,8 +55,8 @@ for i in range(1, data_hist.GetNbinsX() + 1):
 
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.15, 1.8)
-range_min = 1.2
-range_max = 1.58
+range_min = 1.18
+range_max = 1.6
 m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
@@ -66,23 +66,25 @@ dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 # relbw_width = ROOT.RooRealVar("relbw_width", "relbw_width", 0.025, 0.001, 0.1)
 
 # set up a roofit voightian with a mean of 1.285, width of 0.024, and a sigma of 0.013
-voight_m_1285 = ROOT.RooRealVar("voight_m_1285", "voight_m_1285", 1.285, 1.2, 1.3)
+voight_m_1285 = ROOT.RooRealVar("voight_m_1285", "voight_m_1285", 1.281, 1.2, 1.3)
 voight_width_1285 = ROOT.RooRealVar("voight_width_1285", "voight_width_1285", 0.023, 0.01, 0.075)
 voight_sigma_1285 = ROOT.RooRealVar("voight_sigma_1285", "voight_sigma_1285", voight_resoltion, 0.01, 0.5)
 voight_sigma_1285.setError(voight_resolution_error)
 voight_1285 = ROOT.RooVoigtian("voight_1285", "voight_1285", m_kkpi, voight_m_1285, voight_width_1285, voight_sigma_1285)
 
 voight_m_1420 = ROOT.RooRealVar("voight_m_1420", "voight_m_1420", 1.420, 1.35, 1.45)
-voight_width_1420 = ROOT.RooRealVar("voight_width_1420", "voight_width_1420", 0.0525, 0.04, 0.075)
+voight_width_1420 = ROOT.RooRealVar("voight_width_1420", "voight_width_1420", 0.07, 0.04, 0.075)
 voight_sigma_1420 = ROOT.RooRealVar("voight_sigma_1420", "voight_sigma_1420", voight_resoltion, 0.01, 0.5)
 voight_sigma_1420.setError(voight_resolution_error)
 voight_1420 = ROOT.RooVoigtian("voight_1420", "voight_1420", m_kkpi, voight_m_1420, voight_width_1420, voight_sigma_1420)
 
 # hold the voight parameters fixed
-# voight_m.setConstant(True)
-# voight_width.setConstant(True)
 voight_sigma_1285.setConstant(True)
+voight_m_1285.setConstant(True)
+voight_width_1285.setConstant(True)
 voight_sigma_1420.setConstant(True)
+voight_m_1420.setConstant(True)
+voight_width_1420.setConstant(True)
 
 # relbw = ROOT.RelBreitWigner("relbw", "relbw", m_kkpi, relbw_m, relbw_width)
 
@@ -93,12 +95,12 @@ voight_sigma_1420.setConstant(True)
 
 ## CHEBYCHEV ##
 
-# bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -2.0, 2.0)
-# bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -2.0, 2.0)
-# bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -2.0, 2.0)
-# bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -2.0, 2.0)
+bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -2.0, 2.0)
+bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -2.0, 2.0)
+bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -2.0, 2.0)
+bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -2.0, 2.0)
 
-# bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
+bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
 
 
 ## BERNSTEIN ##
@@ -111,12 +113,12 @@ voight_sigma_1420.setConstant(True)
 # bkg = ROOT.RooBernstein("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2))
 
 # POLYNOMIAL ##
-bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -100, 100)
-bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -100, 100)
-bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -100, 100)
-bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -100, 100)
+# bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -100, 100)
+# bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -100, 100)
+# bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -100, 100)
+# bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -100, 100)
 
-bkg = ROOT.RooPolynomial("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
+# bkg = ROOT.RooPolynomial("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
 
 
 ## COMBINED PDF ##
