@@ -11,8 +11,8 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -56,7 +56,7 @@ for i in range(1, data_hist.GetNbinsX() + 1):
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.15, 1.8)
 range_min = 1.18
-range_max = 1.8
+range_max = 1.6
 m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
