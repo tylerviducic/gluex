@@ -11,8 +11,8 @@ ROOT.EnableImplicitMT()
 
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -56,7 +56,7 @@ for i in range(1, data_hist.GetNbinsX() + 1):
 
 m_kkpi = ROOT.RooRealVar("m_kkpi", "m_kkpi", 1.15, 1.8)
 range_min = 1.18
-range_max = 1.6
+range_max = 1.8
 m_kkpi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), data_hist)
 
@@ -100,7 +100,7 @@ bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -2.0, 2.0)
 bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", -2.0, 2.0)
 bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", -2.0, 2.0)
 
-bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3))
+bkg = ROOT.RooChebychev("bkg", "bkg", m_kkpi, ROOT.RooArgList(bkg_par1, bkg_par2, bkg_par3, bkg_par4))
 
 
 ## BERNSTEIN ##
