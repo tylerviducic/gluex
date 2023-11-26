@@ -56,7 +56,7 @@ TEMPBEAMCONFIG
 % particle# 0&1 are always the Y(Baryon) and X(Meson) respectively
 %part#  chld1#  chld2#  parent# Id     nchild   mass        width   charge  flag
 % baryon (Y) decay
-0       *       *       *       0      0        0.938272    0.0     +1      11 % p
+0       *       *       *       14      0       0.938272    0.0     +1      11 % p
 % meson (X) decay
 1       2       3       *       0      2        1.2819      0.0227   0      00 % f1(1285) -> a0(980) pi+
 2       4       5       1       0      2        0.980       0.0928   -1     00 % a0(980) -> Ks K-
