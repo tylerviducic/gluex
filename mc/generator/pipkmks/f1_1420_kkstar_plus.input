@@ -49,20 +49,20 @@ TEMPBEAMCONFIG
 % targetp.x targetp.y targetp.z targetMass
 0 0 0 0.938272
 % t-channelSlope
-      3.9
+3.9
 % number of particles needed to describe the isobar decay of X
 6
 %   
 % particle# 0&1 are always the Y(Baryon) and X(Meson) respectively
 %part#  chld1#  chld2#  parent# Id     nchild   mass        width   charge  flag
 % baryon (Y) decay
- 0      *       *       *       0      0        0.938272    0.0     +1      11
+0       *       *       *       14      0        0.938272    0.0     +1      11
 % meson (X) decay
- 1      2       3       *       0      2        1.426       0.055   0       00
- 2      4       5       1       0      2        0.89167     0.051   +1      00 % k* -> kspi+
- 3      *       *       1       11     0        0.493677    0.0     -1      11 % k-
- 4      *       *       2       16     0        0.497611    0.0     0       11 % ks
- 5      *       *       2       8      0        0.139570    0.0     +1      11 % pi+
+1       2       3       *       0      2        1.426       0.055   0       00
+2       4       5       1       0      2        0.89167     0.051   +1      00 % k* -> kspi+
+3       *       *       1       12     0        0.493677    0.0     -1      11 % k-
+4       *       *       2       16     0        0.497611    0.0     0       11 % ks
+5       *       *       2       8      0        0.139570    0.0     +1      11 % pi+
 !EOI
 %%%%%%%%%%%%%%%%%%%%% End Input Values %%%%%%%%%%%%%%%%%%%%%%%
 % for narrow widths particles(stable to strong interactions) 
