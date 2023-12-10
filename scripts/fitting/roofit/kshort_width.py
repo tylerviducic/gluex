@@ -1,5 +1,5 @@
 # script to test width of kshort
-
+# TODO: redo this. 
 
 """
 An effective resolution is computed as σ = f σ1 + (1 − f )σ2 where f is the fraction 
@@ -11,17 +11,23 @@ of the first Gaussian contribution. The resulting effective resolutions for the 
 import ROOT
 import my_library.common_analysis_tools as ct
 import my_library.thesis_plotter_library as plotter
+from my_library.kinematic_cuts import KS_PATHLENGTH_CUT, MX2_PPIPKMKS_CUT, P_P_CUT
+from my_library.constants import KSHORT_FIT_MEAN, KSHORT_FIT_WIDTH, COLORBLIND_HEX_DICT
 
-df = plotter.get_dataframe('pipkmks', 'spring', 'data')
+df = ct.get_dataframe('pipkmks', 'spring', 'data')
+df = df.Filter(KS_PATHLENGTH_CUT).Filter(MX2_PPIPKMKS_CUT).Filter(P_P_CUT)
 
-nbins, xlow, xhigh = 500, 0.35, 0.65
-data_hist = df.Filter(ct.KS_PATHLENGTH_CUT).Histo1D(('ks_m', 'ks_m', nbins, xlow, xhigh), 'ks_m').GetValue()
+nbins, xlow, xhigh = 1000, 0.35, 0.65
+data_hist = df.Histo1D(('ks_m', 'ks_m', nbins, xlow, xhigh), 'ks_m').GetValue()
 
 
 signal_yield = ROOT.RooRealVar("signal_yield", "Signal Yield", 0, 10000000)
 background_yield = ROOT.RooRealVar("background_yield", "Background Yield", 0, 10000000)
 
 m_pipi = ROOT.RooRealVar("m_pipi", "m_pipi", xlow, xhigh)
+# range_min = 0.45
+# range_max = 0.55
+# m_pipi.setRange("fit_range", range_min, range_max)
 dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_pipi), data_hist)
 
 # m_pipi.setRange("signal", KSHORT_FIT_MEAN - (2*KSHORT_FIT_WIDTH), KSHORT_FIT_MEAN + (2*KSHORT_FIT_WIDTH))
@@ -46,8 +52,8 @@ double_gaus = ROOT.RooAddPdf("double_gaus", "double_gaus", ROOT.RooArgList(gaus_
 # gaus.fitTo(dh, ROOT.RooFit.Range("signal"))
 # gaus.fitTo(dh, ROOT.RooFit.SumCoefRange("signal"))
 
-bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", 1.0, -10., 100000.)
-bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", 1.0, -10., 100000.)
+bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", 1.0, 0., 1000000.)
+bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", 1.0, -10., 1000000.)
 bkg = ROOT.RooPolynomial("bkg", "bkg", m_pipi, ROOT.RooArgList(bkg_par1))
 
 sig_frac = ROOT.RooRealVar("sig_frac", "sig_frac", 0.5, 0.0, 1.0)
@@ -56,21 +62,22 @@ bkg_frac = ROOT.RooRealVar("bkg_frac", "bkg_frac", 0.5, 0.0, 1.0)
 composite = ROOT.RooAddPdf("composite", "composite", ROOT.RooArgList(double_gaus, bkg), ROOT.RooArgList(sig_frac))
 # composite = ROOT.RooAddPdf("composite", "composite", ROOT.RooArgList(double_gaus, bkg), ROOT.RooArgList(signal_yield, background_yield))
 # composite.chi2FitTo(dh)
+# composite.fitTo(dh, ROOT.RooFit.Range("fit_range"))
 composite.fitTo(dh)
 # composite.fitTo(dh,ROOT.RooFit.SumCoefRange("signal"))
 
-signal_integral = double_gaus.createIntegral(ROOT.RooArgSet(m_pipi), ROOT.RooFit.Range(ct.KSHORT_FIT_MEAN - (2*ct.KSHORT_FIT_WIDTH), ct.KSHORT_FIT_MEAN + (2*ct.KSHORT_FIT_WIDTH)))
-background_integral = bkg.createIntegral(ROOT.RooArgSet(m_pipi), ROOT.RooFit.Range(ct.KSHORT_FIT_MEAN - (2*ct.KSHORT_FIT_WIDTH), ct.KSHORT_FIT_MEAN + (2*ct.KSHORT_FIT_WIDTH)))
+signal_integral = double_gaus.createIntegral(ROOT.RooArgSet(m_pipi), ROOT.RooFit.Range(KSHORT_FIT_MEAN - (2*KSHORT_FIT_WIDTH), KSHORT_FIT_MEAN + (2*KSHORT_FIT_WIDTH)))
+background_integral = bkg.createIntegral(ROOT.RooArgSet(m_pipi), ROOT.RooFit.Range(KSHORT_FIT_MEAN - (2*KSHORT_FIT_WIDTH), KSHORT_FIT_MEAN + (2*KSHORT_FIT_WIDTH)))
 
 signal_to_background = signal_integral.getVal() / background_integral.getVal()
 
 frame = m_pipi.frame()
 dh.plotOn(frame)
 composite.plotOn(frame)
-composite.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.LineColor(ROOT.TColor.GetColor((ct.COLORBLIND_HEX_DICT['purple']))))
-composite.plotOn(frame, ROOT.RooFit.Components("double_gaus"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor((ct.COLORBLIND_HEX_DICT['red']))))
-composite.plotOn(frame, ROOT.RooFit.Components("gaus_1"), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['blue'])))
-composite.plotOn(frame, ROOT.RooFit.Components("gaus_2"), ROOT.RooFit.LineStyle(ROOT.kDashDotted), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(ct.COLORBLIND_HEX_DICT['cyan'])))
+composite.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.LineColor(ROOT.TColor.GetColor((COLORBLIND_HEX_DICT['purple']))))
+composite.plotOn(frame, ROOT.RooFit.Components("double_gaus"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor((COLORBLIND_HEX_DICT['red']))))
+composite.plotOn(frame, ROOT.RooFit.Components("gaus_1"), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['blue'])))
+composite.plotOn(frame, ROOT.RooFit.Components("gaus_2"), ROOT.RooFit.LineStyle(ROOT.kDashDotted), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['cyan'])))
 
 c1 = ROOT.TCanvas("c1", "c1", 800, 600)
 c1.cd()
