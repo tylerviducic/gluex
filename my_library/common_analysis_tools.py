@@ -1695,7 +1695,13 @@ def remove_zero_datapoints(og_hist: ROOT.TH1):
     hist = og_hist.Clone()
     for i in range(hist.GetNbinsX()):
         if hist.GetBinContent(i) == 0:
-            hist.SetBinContent(i, 1e-10)
+            hist_above = hist.GetBinContent(i+1)
+            hist_below = hist.GetBinContent(i-1)
+            error_above = hist.GetBinError(i+1)
+            error_below = hist.GetBinError(i-1)
+            hist_avg = (hist_above + hist_below)/2
+            hist.SetBinContent(i, hist_avg)
+            hist.SetBinError(i, (error_above + error_below)/2)
     hist.SetDirectory(0)
     return hist
     
