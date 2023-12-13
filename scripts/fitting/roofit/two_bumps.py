@@ -49,7 +49,7 @@ voight_sigma.setConstant(True)
 # voight_m.setConstant(True)
 # voight_width.setConstant(True)
 
-gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.37, 1.35, 1.43)
+gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.36, 1.35, 1.43)
 gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.034, 0.025, 0.05)
 gaus = ROOT.RooGaussian("gaus", "gaus", m_kkpi, gaus_m, gaus_width)
 # gaus_m.setConstant(True)
@@ -101,11 +101,11 @@ combined_pdf.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(
 
 frame.Draw()
 
-legend = ROOT.TLegend(0.6, 0.2, 0.9, 0.5)
+legend = ROOT.TLegend(0.7, 0.2, 0.95, 0.5)
 legend.AddEntry(frame.findObject("full_fit"), "Total Fit", "lpf")
-legend.AddEntry(frame.findObject("f1_signal"), "Signal", "lpf")
+legend.AddEntry(frame.findObject("f1_signal"), "f_{1}(1285) Signal", "lpf")
 legend.AddEntry(frame.findObject("1420_tail"), "f_{1}(1420) Tail", "lpf")
-legend.AddEntry(frame.findObject("bkg"), "Linear Background", "l")
+legend.AddEntry(frame.findObject("bkg"), "Background", "l")
 legend.Draw()
 
 # fit_params = ROOT.TPaveText(0.6, 0.5, 0.9, 0.8, "NDC")
@@ -115,10 +115,14 @@ legend.Draw()
 # fit_params.Draw()
 
 fit_params = ROOT.TLatex()
-fit_params.SetTextSize(0.06)
+fit_params.SetTextSize(0.055)
 # fit_params.DrawLatexNDC(0.425, 0.875, f"Mean = {voight_m.getVal() * 1000:.2f} #pm {voight_m.getError() * 1000:.2f} MeV")
 # fit_params.DrawLatexNDC(0.425, 0.825, f"Width = {voight_width.getVal() * 1000:.2f} #pm {voight_width.getError() * 1000:.2f} MeV")
-fit_params.DrawLatexNDC(0.5, 0.775, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
+fit_params.DrawLatexNDC(0.45, 0.8, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
+fit_params.DrawLatexNDC(0.45, 0.85, 'Width = ' + '{:.2f}'.format(voight_width.getVal() * 1000) + ' #pm ' + '{:.2f}'.format(voight_width.getError() * 1000) + ' MeV')
+fit_params.DrawLatexNDC(0.45, 0.9, 'Mass = ' + '{:.2f}'.format(voight_m.getVal() * 1000) + ' #pm ' + '{:.2f}'.format(voight_m.getError() * 1000) + ' MeV')
+
+
 
 
 c1.Update()
