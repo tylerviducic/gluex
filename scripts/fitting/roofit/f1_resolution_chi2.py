@@ -5,8 +5,8 @@ import my_library.common_analysis_tools as ct
 import my_library.constants as constants
 
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 
@@ -34,7 +34,7 @@ width = ROOT.RooRealVar('width', 'width', 0.022, 0.001, 0.1)
 sigma = ROOT.RooRealVar('sigma', 'sigma', 0.025, 0.001, 0.1)
 
 width.setConstant(ROOT.kTRUE)
-# mean.setConstant(ROOT.kTRUE)
+mean.setConstant(ROOT.kTRUE)
 
 
 dh = ROOT.RooDataHist('dh', 'dh', ROOT.RooArgList(m_kkpi), signal_mc)
@@ -52,6 +52,9 @@ chi2_per_ndf = chi2_val / ndf
 
 
 frame = m_kkpi.frame()
+frame.SetTitle('')
+frame.GetXaxis().SetTitle('M(KK#pi) [GeV]')
+frame.GetYaxis().SetTitle('Counts')
 dh.plotOn(frame)
 func.plotOn(frame, ROOT.RooFit.Range("fit_range"))
 # func.plotOn(frame)
