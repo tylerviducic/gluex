@@ -87,8 +87,8 @@ for e in range(8, 12):
 
         voight = ROOT.RooVoigtian(f"voight_{e}_{t}", f"voight_{e}_{t}", m_kkpi, voight_mean, voight_width, voight_sigma)
 
-        gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.37, 1.325, 1.5)
-        gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.034, 0.025, 0.05)
+        gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.37, 1.3, 1.5)
+        gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.037, 0.02, 0.075)
         gaus = ROOT.RooGaussian("gaus", "gaus", m_kkpi, gaus_m, gaus_width)
         # gaus_m.setConstant(True)
         # gaus_width.setConstant(True)
@@ -108,9 +108,18 @@ for e in range(8, 12):
         n_bkg = ROOT.RooRealVar(f"n_bkg_{e}_{t}", f"n_bkg_{e}_{t}", 100000, 0, 10000000)
 
         combined_pdf = ROOT.RooAddPdf(f'combined_pdf_{e}_{t}', f'combined_pdf_{e}_{t}', ROOT.RooArgList(voight, gaus, bkg), ROOT.RooArgList(n_signal, n_gaus, n_bkg))
-        chi2 = combined_pdf.createChi2(dh, ROOT.RooFit.Range("fit_range"))
+        chi2_var = combined_pdf.createChi2(dh)
+        c2 = ROOT.RooChi2Var(f"c2_{e}_{t}", f"c2_{e}_{t}", combined_pdf, dh, ROOT.RooFit.Extended(True), ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2), ROOT.RooFit.Range("fit_range"))
+        minuit = ROOT.RooMinuit(c2)
+        minuit.migrad()
+        # minuit.minos()
+        minuit.hesse()
+        fit_result = minuit.save()
 
-        fit_result = combined_pdf.fitTo(dh, ROOT.RooFit.Range("fit_range"), ROOT.RooFit.Save())
+        bkg_par1_guess = bkg_par1.getVal()
+        bkg_par2_guess = bkg_par2.getVal()
+        bkg_par3_guess = bkg_par3.getVal()
+        bkg_par4_guess = bkg_par4.getVal()
 
         data_yield = n_signal.getVal()
         data_yield_error = n_signal.getError()
@@ -119,7 +128,7 @@ for e in range(8, 12):
         cross_section = ct.calculate_crosssection(data_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
         cross_section_error = ct.propogate_error_multiplication(cross_section, [data_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [data_yield_error, acceptance_error, luminosity * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
 
-        chi2_val = chi2.getVal()
+        chi2_val = c2.getVal()
 
         frame = m_kkpi.frame()
         # title = get_title_for_plots(channel, e, t)

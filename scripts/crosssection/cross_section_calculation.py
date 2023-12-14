@@ -9,19 +9,29 @@ from ctypes import c_double
 
 def get_title_for_plots(e, t):
     e_gamma = 'E_{#gamma}'
-    tbin = f'{constants.T_CUT_DICT[t][0]} < t < {constants.T_CUT_DICT[t][1]} GeV^{2}'
+    tbin = f'{constants.T_CUT_DICT[t][0]} < t < {constants.T_CUT_DICT[t][1]} ' + 'GeV^{2}'
     return f'{e_gamma} = {e} GeV, {tbin}'    
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
     v_mean = constants.F1_PIPKMKS_VOIGHT_MEAN
+    # v_width = constants.F1_PIPKMKS_VOIGHT_WIDTH
     v_width = constants.F1_PIPKMKS_VOIGHT_SIGMA
+    total_fit_color = ROOT.kViolet
+    f1_color = ROOT.kBlue
+    # background_color = ROOT.kOrange
+    background_color = total_fit_color
 elif channel == 'pimkpks' :
     v_mean = constants.F1_PIMKPKS_VOIGHT_MEAN
+    # v_width = constants.F1_PIMKPKS_VOIGHT_WIDTH
     v_width = constants.F1_PIMKPKS_VOIGHT_SIGMA
+    total_fit_color = ROOT.kViolet +8
+    f1_color = ROOT.kRed
+    # background_color = ROOT.kTeal-5
+    background_color = total_fit_color
 
 df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
 
@@ -41,12 +51,19 @@ cross_section_error_list = []
 t_bin_list = []
 t_bin_width_list = []
 energy_bin_list = []
+luminosity_list = []
+
+bkg_par1_guess = 1.0
+bkg_par2_guess = -1.0
+bkg_par3_guess = 1.0
+bkg_par4_guess = 1.0
+
 
 
 hist_range_low = 1.15
 hist_range_high = 1.5
 
-c = ROOT.TCanvas()
+c = ROOT.TCanvas('c', 'c', 1000, 1000)
 c.Divide(4, 2)
 
 
@@ -54,6 +71,7 @@ for e in range(8, 12):
     hist_uncor_list = []
     hist_cor_list = []
     luminosity = ct.get_luminosity_gluex_1(e-0.5, e+0.5)/1000
+    luminosity_list.append(luminosity)
     for t in range(1, 8):
         c.cd(t)
         
@@ -70,7 +88,9 @@ for e in range(8, 12):
         dh = ROOT.RooDataHist("dh", "dh", ROOT.RooArgList(m_kkpi), hist)
 
         voight_mean = ROOT.RooRealVar(f"voight_mean_{e}_{t}", f"voight_mean_{e}_{t}", v_mean, 1.26, 1.3)
-        voight_width = ROOT.RooRealVar(f"voight_width_{e}_{t}", f"voight_width_{e}_{t}", v_width, 0.01, 0.05)
+        # voight_mean = ROOT.RooRealVar(f"voight_mean_{e}_{t}", f"voight_mean_{e}_{t}", 1.281, 1.26, 1.3)
+        voight_width = ROOT.RooRealVar(f"voight_width_{e}_{t}", f"voight_width_{e}_{t}", 0.2, 0.005, 0.05)
+        # voight_width = ROOT.RooRealVar(f"voight_width_{e}_{t}", f"voight_width_{e}_{t}", v_width, 0.005, 0.05)
         e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==t)]['sigma'].values[0]
         voight_sigma = ROOT.RooRealVar(f"voight_sigma_{e}_{t}", f"voight_sigma_{e}_{t}", e_t_sigma, 0.001, 0.1)
 
@@ -82,6 +102,10 @@ for e in range(8, 12):
 
         ## CHEBYCHEV ##
 
+        # bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", bkg_par1_guess, -2.0, 2.0)
+        # bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", bkg_par2_guess, -2.0, 2.0)
+        # bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", bkg_par3_guess, -2.0, 2.0)
+        # bkg_par4 = ROOT.RooRealVar(f"bkg_par4_{e}_{t}", f"bkg_par4_{e}_{t}", bkg_par4_guess, -2.0, 2.0)
         bkg_par1 = ROOT.RooRealVar(f"bkg_par1_{e}_{t}", f"bkg_par1_{e}_{t}", 0.0, 2.0)
         bkg_par2 = ROOT.RooRealVar(f"bkg_par2_{e}_{t}", f"bkg_par2_{e}_{t}", 0.0, 2.0)
         bkg_par3 = ROOT.RooRealVar(f"bkg_par3_{e}_{t}", f"bkg_par3_{e}_{t}", 0.0, 2.0)
@@ -102,6 +126,11 @@ for e in range(8, 12):
         minuit.hesse()
         fit_result = minuit.save()
 
+        bkg_par1_guess = bkg_par1.getVal()
+        bkg_par2_guess = bkg_par2.getVal()
+        bkg_par3_guess = bkg_par3.getVal()
+        bkg_par4_guess = bkg_par4.getVal()
+
         data_yield = n_signal.getVal()
         data_yield_error = n_signal.getError()
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
@@ -114,18 +143,20 @@ for e in range(8, 12):
         frame = m_kkpi.frame()
         title = get_title_for_plots(e, t)
         frame.SetTitle(title)
-        frame.GetXaxis().SetTitle(title.split(" ")[0] + 'GeV')
+        frame.SetTitleSize(0.07)
+        frame.GetXaxis().SetTitle('M(KK#pi) GeV')
+        frame.GetXaxis().SetTitleSize(0.06)
+        frame.GetXaxis().SetTitleOffset(0.9)
         frame.GetYaxis().SetTitle(f'Event/10 MeV')
 
         n_bins = (hist_range_high-hist_range_low)*100
         ndf = n_bins - (fit_result.floatParsFinal().getSize() - fit_result.constPars().getSize())
         chi2ndf = chi2_val / ndf
 
-        dh.plotOn(frame)
-        combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['red'])))
-        # pullHist = frame.pullHist()
-        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"bkg_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['green'])), ROOT.RooFit.LineStyle(ROOT.kDashed))
-        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"voight_{e}_{t}"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(constants.COLORBLIND_HEX_DICT['blue'])))
+        dh.plotOn(frame, ROOT.RooFit.DataError(ROOT.RooAbsData.SumW2))
+        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"voight_{e}_{t}"), ROOT.RooFit.LineColor(f1_color), ROOT.RooFit.DrawOption("F"), ROOT.RooFit.FillColor(f1_color), ROOT.RooFit.LineWidth(5), ROOT.RooFit.Name("f1_signal"))
+        combined_pdf.plotOn(frame, ROOT.RooFit.LineColor(total_fit_color), ROOT.RooFit.Name("full_fit"))
+        combined_pdf.plotOn(frame, ROOT.RooFit.Components(f"bkg_{e}_{t}"), ROOT.RooFit.LineColor(background_color), ROOT.RooFit.MarkerColor(background_color), ROOT.RooFit.LineWidth(4), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.Name("bkg"))
 
         ks_test_func = combined_pdf.createHistogram(f"ks_test_func_{e}_{t}", m_kkpi, ROOT.RooFit.Binning(1000))
         ks_test_data = dh.createHistogram(f"ks_test_data_{e}_{t}", m_kkpi, ROOT.RooFit.Binning(1000))
