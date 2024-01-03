@@ -157,3 +157,8 @@ mc/generator/pimkpks/f1_1285_a0pi_debug/42507_0/BHgen_thread_1.astate
 mc/generator/pimkpks/f1_1285_a0pi_debug/42507_0/BHgen_thread_2.astate
 mc/generator/pimkpks/f1_1285_a0pi_debug/42507_0/BHgen_thread_3.astate
 mc/generator/pimkpks/f1_1285_a0pi_debug/42507_0/BHgen_thread_4.astate
+my_library/__pycache__/__init__.cpython-39.pyc
+my_library/__pycache__/common_analysis_tools.cpython-39.pyc
+my_library/__pycache__/constants.cpython-39.pyc
+my_library/__pycache__/gluex_style.cpython-39.pyc
+my_library/__pycache__/kinematic_cuts.cpython-39.pyc
