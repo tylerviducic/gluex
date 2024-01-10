@@ -12,7 +12,7 @@ import my_library.kinematic_cuts as cuts
 baseline_pipkmks, baseline_pimkpks = 35865, 41281
 
 # convention is (loose, tight)
-cuts_dict_pipkmks = {
+varied_cuts_dict_pipkmks = {
             'kinfit_cl': ('kinfit_cl > 1e-6', 'kinfit_cl > 1e-4'),
             'pathlength': ('pathlength_sig > 4', 'pathlength_sig > 6'),
             'ks_m': (f'abs(ks_m - {constants.KSHORT_FIT_MEAN}) < 2.5 * {constants.KSHORT_FIT_WIDTH}', f'abs(ks_m - {constants.KSHORT_FIT_MEAN}) < 1.5 * {constants.KSHORT_FIT_WIDTH}'),
@@ -23,3 +23,25 @@ cuts_dict_pipkmks = {
             'neutral_kstar': '(kmpip_m > 0.75 && kmpip_m < 1.05)',
             'charged_kstar': '(kspip_m > 0.75 && kspip_m < 1.05)'
              }
+
+nominal_cuts_dict_pipkmks = {
+            'kinfit_cl': cuts.KINFIT_CL_CUT,
+            'pathlength': cuts.KS_PATHLENGTH_CUT,
+            'ks_m': cuts.KS_MASS_CUT,
+            'ppi': cuts.PPIP_MASS_CUT,
+            'kp': cuts.KMP_MASS_CUT,
+            'ksp': cuts.KSP_MASS_CUT,
+            'pp': cuts.P_P_CUT,
+            'neutral_kstar': cuts.KSTAR_ZERO_CUT_PIPKMKS,
+            'charged_kstar': cuts.KSTAR_PLUS_CUT
+            }
+
+df_pipkmks = tools.get_dataframe('pipkmks', 'gluex1', 'data', filtered=False)
+
+for varied_cut in varied_cuts_dict_pipkmks:
+    varied_df = df_pipkmks.Filter("true")
+    for nominal_cut in nominal_cuts_dict_pipkmks:
+        if varied_cut == nominal_cut:
+            continue
+        else:
+            varied_df = varied_df.Filter(nominal_cuts_dict_pipkmks[nominal_cut])
