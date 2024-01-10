@@ -6,8 +6,11 @@ import my_library.constants as constants
 import my_library.gluex_style as gluex_style
 import my_library.kinematic_cuts as cuts
 
-# TODO: define pipeline
+
 # TODO: make sure variation in cut does not change statistics by > 10% 
+# TODO: change variations > 10% to be within statistical bounds
+
+ROOT.EnableImplicitMT()
 
 baseline_pipkmks, baseline_pimkpks = 35865, 41281
 
@@ -20,8 +23,9 @@ varied_cuts_dict_pipkmks = {
             'kp': ('kmp_m > 1.9', 'kmp_m > 2.1'),
             'ksp': ('ksp_m > 1.9', 'ksp_m > 2.1'),
             'pp': ('p_p > 0.3', 'p_p > 0.5'),
-            'neutral_kstar': '(kmpip_m > 0.75 && kmpip_m < 1.05)',
-            'charged_kstar': '(kspip_m > 0.75 && kspip_m < 1.05)'
+            'neutral_kstar': ('kmpip_m < 0.85 || kmpip_m > 0.95', 'kmpip_m < 0.75 || kmpip_m > 1.05'),
+            'charged_kstar': ('kspip_m < 0.85 || kspip_m > 0.95', 'kmpip_m < 0.75 || kmpip_m > 1.05'),
+            'mx2_all': ('abs(mx2_ppipkmks) < 0.015', 'abs(mx2_ppipkmks) < 0.005')
              }
 
 nominal_cuts_dict_pipkmks = {
@@ -33,19 +37,25 @@ nominal_cuts_dict_pipkmks = {
             'ksp': cuts.KSP_MASS_CUT,
             'pp': cuts.P_P_CUT,
             'neutral_kstar': cuts.KSTAR_ZERO_CUT_PIPKMKS,
-            'charged_kstar': cuts.KSTAR_PLUS_CUT
+            'charged_kstar': cuts.KSTAR_PLUS_CUT,
+            'mx2_all': cuts.MX2_PPIPKMKS_CUT
             }
 
 df_pipkmks = tools.get_dataframe('pipkmks', 'gluex1', 'data', filtered=False)
 
+variation_stats_dict_pipkmks = {}
+
 for varied_cut in varied_cuts_dict_pipkmks:
+    # print(varied_cut)
     varied_df = df_pipkmks.Filter("true")
     for nominal_cut in nominal_cuts_dict_pipkmks:
         if varied_cut == nominal_cut:
             continue
         else:
             varied_df = varied_df.Filter(nominal_cuts_dict_pipkmks[nominal_cut])
-    df_low = varied_df.Filter(varied_cuts_dict_pipkmks[varied_cut][0])
-    df_high = varied_df.Filter(varied_cuts_dict_pipkmks[varied_cut][1])
-
-    # for e in 
+    df_loose = varied_df.Filter(varied_cuts_dict_pipkmks[varied_cut][0])
+    df_tight = varied_df.Filter(varied_cuts_dict_pipkmks[varied_cut][1])
+    variation_stats_dict_pipkmks[varied_cut] = (df_loose.Filter(cuts.F1_SIGNAL_REGION_PIPKMKS).Count(), df_tight.Filter(cuts.F1_SIGNAL_REGION_PIPKMKS).Count())
+    
+for variation in variation_stats_dict_pipkmks:
+    print(f'{variation}: loose -- {variation_stats_dict_pipkmks[variation][0].GetValue()/baseline_pipkmks} || tight -- {variation_stats_dict_pipkmks[variation][1].GetValue()/baseline_pipkmks}')
