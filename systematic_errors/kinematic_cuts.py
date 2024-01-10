@@ -45,3 +45,7 @@ for varied_cut in varied_cuts_dict_pipkmks:
             continue
         else:
             varied_df = varied_df.Filter(nominal_cuts_dict_pipkmks[nominal_cut])
+    df_low = varied_df.Filter(varied_cuts_dict_pipkmks[varied_cut][0])
+    df_high = varied_df.Filter(varied_cuts_dict_pipkmks[varied_cut][1])
+
+    # for e in 
