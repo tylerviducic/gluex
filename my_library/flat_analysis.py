@@ -7,6 +7,8 @@ import my_library.constants as constants
 import my_library.kinematic_cuts as kcuts
 import sys
 
+# TODO: it's too late to matter but htis is inefficient. 1 loop makes more sense as opposed to re-creating dataframes. That *should* speed up the event loop but i'm not sure
+
 def run_analysis(channel, run_period, data_type, thrown=False, nstar_mass=None, kstar_charge=None):
     """
     Function to run analysis over a given channel, run period, and data type.
@@ -42,8 +44,9 @@ def run_analysis(channel, run_period, data_type, thrown=False, nstar_mass=None, 
         output_filename = ct.get_filtered_file_output_name(channel, run_period, data_type, nstar_mass=nstar_mass, kstar_charge=kstar_charge)
         output_treename = ct.get_filtered_tree_output_name(channel, data_type)
         snapshotOptions = ROOT.RDF.RSnapshotOptions()
-        snapshotOptions.fLazy = True
+        snapshotOptions.fLazy = False
         df.Snapshot(output_treename, f'{output_path}/{output_filename}', "",  snapshotOptions)
+        # trigger = df.Count().GetValue()
         print(f'filtered file written to: {output_path}/{output_filename}')
 
         ## FILTER BEAM AND T RANGE TO FIT WITHIN THE INDEX SET EARLIER ##
