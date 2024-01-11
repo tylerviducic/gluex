@@ -32,7 +32,7 @@ if __name__ == '__main__':
                     run_analysis(channel, run_period, data_type, thrown=True)
                     thrown_end = time.time()
                     prGreen(f'Thrown analysis for {channel} {data_type} {run_period} took {thrown_end-thrown_start} seconds')
-                print("")
+                print("", flush=True)
 
     overall_end = time.time()
     prGreen(f'Overall analysis took {(overall_end-overall_start)/60} minutes'.upper())
