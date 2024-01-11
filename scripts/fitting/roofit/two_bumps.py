@@ -51,6 +51,8 @@ voight_sigma.setConstant(True)
 
 gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.36, 1.35, 1.43)
 gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.034, 0.025, 0.05)
+# gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.38, 1.35, 1.43)
+# gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.038, 0.025, 0.05)
 gaus = ROOT.RooGaussian("gaus", "gaus", m_kkpi, gaus_m, gaus_width)
 # gaus_m.setConstant(True)
 # gaus_width.setConstant(True)
