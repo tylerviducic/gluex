@@ -13,7 +13,7 @@ def main():
     with open('tempSlurm.txt', 'w') as slurmOut:
         slurmOut.write("#!/bin/csh \n")
         slurmOut.write("#SBATCH --nodes=1 \n")
-        slurmOut.write("#SBATCH --ntasks=32 \n")
+        slurmOut.write("#SBATCH --ntasks=24 \n")
         slurmOut.write("#SBATCH --ntasks-per-core=1 \n")
         slurmOut.write("#SBATCH --threads-per-core=1 \n")
         slurmOut.write(f"#SBATCH --partition={PARTITION} \n")
