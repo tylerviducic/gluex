@@ -4,20 +4,20 @@ import pwd
 
 
 def main():
-    PARTITION = "priority"
+    PARTITION = "production"
     TIMELIMIT = "3:00:00"
     ENVIRONMENT = '/work/halld/home/viducic/scripts/file_utils/analysis_jobs_env.csh'
     LOG_DIR = '/farm_out/viducic/'
-    NCORES=16
+    NCORES=24
 
     with open('tempSlurm.txt', 'w') as slurmOut:
         slurmOut.write("#!/bin/csh \n")
         slurmOut.write("#SBATCH --nodes=1 \n")
-        slurmOut.write("#SBATCH --ntasks=24 \n")
+        slurmOut.write(f"#SBATCH --ntasks={NCORES} \n")
         slurmOut.write("#SBATCH --ntasks-per-core=1 \n")
         slurmOut.write("#SBATCH --threads-per-core=1 \n")
         slurmOut.write(f"#SBATCH --partition={PARTITION} \n")
-        slurmOut.write(f"#SBATCH --mem=16GB \n")
+        slurmOut.write(f"#SBATCH --mem=32GB \n")
         slurmOut.write(f"#SBATCH --time={TIMELIMIT} \n")
         slurmOut.write(f"#SBATCH --error={LOG_DIR}/analysis.err \n")
         slurmOut.write(f"#SBATCH --output={LOG_DIR}/analysis.out \n")
