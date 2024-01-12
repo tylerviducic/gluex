@@ -8,11 +8,12 @@ import my_library.kinematic_cuts as cuts
 
 
 # TODO: make sure variation in cut does not change statistics by > 10% 
-# TODO: change variations > 10% to be within statistical bounds
+# TODO: tune pp loose and tight, neutral kstar tight, charged kstar loose and tight
 
 ROOT.EnableImplicitMT()
 
-baseline_pipkmks, baseline_pimkpks = 35865, 41281
+# baseline_pipkmks, baseline_pimkpks = 35865, 41281
+baseline_pipkmks, baseline_pimkpks = 34898, 40114
 
 # convention is (loose, tight)
 varied_cuts_dict_pipkmks = {
@@ -58,4 +59,4 @@ for varied_cut in varied_cuts_dict_pipkmks:
     variation_stats_dict_pipkmks[varied_cut] = (df_loose.Filter(cuts.F1_SIGNAL_REGION_PIPKMKS).Count(), df_tight.Filter(cuts.F1_SIGNAL_REGION_PIPKMKS).Count())
     
 for variation in variation_stats_dict_pipkmks:
-    print(f'{variation}: loose -- {variation_stats_dict_pipkmks[variation][0].GetValue()/baseline_pipkmks} || tight -- {variation_stats_dict_pipkmks[variation][1].GetValue()/baseline_pipkmks}')
+    print(f'{variation}: loose -- {abs((variation_stats_dict_pipkmks[variation][0].GetValue()-baseline_pipkmks))/baseline_pipkmks * 100} || tight -- {abs((variation_stats_dict_pipkmks[variation][1].GetValue()-baseline_pipkmks))/baseline_pipkmks * 100}')
