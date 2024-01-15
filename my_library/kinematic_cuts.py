@@ -125,6 +125,10 @@ def kstar_no_cut_pipkmks(kspip_m):
 KSTAR_NO_CUT_PIPKMKS = 'Numba::kstar_no_cut_pipkmks(kspip_m)'
 KSTAR_NO_CUT_PIPKMKS_STRING = 'kspip_m > 0.0'
 
+# M K* +/- = 0.89167
+# GAMMA K* +/- = 0.0514
+# M K* 0 = 0.89555
+# GAMMA K* 0 = 0.0473
 
 @ROOT.Numba.Declare(['float'], 'bool')
 def kstar_plus_cut(kspip_m):
