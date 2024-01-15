@@ -24,7 +24,9 @@ def main():
         slurmOut.write(f'#SBATCH --account=halld \n')
         slurmOut.write(f'source {ENVIRONMENT} \n')
         slurmOut.write(f'python3 /work/halld/home/viducic/scripts/file_utils/run_analysis_chain.py')
-
+    
+    time_estimate_command = 'sbatch --test-only tempSlurm.txt'
+    os.system(time_estimate_command)
     command = 'sbatch tempSlurm.txt'
     os.system(command)
     os.remove('tempSlurm.txt')

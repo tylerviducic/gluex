@@ -145,7 +145,7 @@ KSTAR_PLUS_CUT_STRING = 'abs(kspip_m - 0.89167) > (2 * 0.0514)'
 
 @ROOT.Numba.Declare(['float'], 'bool')
 def kstar_minus_cut(kspim_m):
-    abs(kspim_m - CHARGED_KSTAR_MASS) > (2 * CHARGED_KSTAR_WIDTH)
+    return abs(kspim_m - CHARGED_KSTAR_MASS) > (2 * CHARGED_KSTAR_WIDTH)
 KSTAR_MINUS_CUT = 'Numba::kstar_minus_cut(kspim_m)'
 # KSTAR_MINUS_CUT_STRING = 'kspim_m < 0.8 || kspim_m > 1.0'
 KSTAR_MINUS_CUT_STRING = 'abs(kspim_m - 0.89167) > (2 * 0.0514)'
