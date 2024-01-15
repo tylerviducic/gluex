@@ -130,45 +130,73 @@ KSTAR_NO_CUT_PIPKMKS_STRING = 'kspip_m > 0.0'
 # M K* 0 = 0.89555
 # GAMMA K* 0 = 0.0473
 
+CHARGED_KSTAR_MASS = 0.89167
+CHARGED_KSTAR_WIDTH = 0.0514
+NEUTRAL_KSTAR_MASS = 0.89555
+NEUTRAL_KSTAR_WIDTH = 0.0473
+
 @ROOT.Numba.Declare(['float'], 'bool')
 def kstar_plus_cut(kspip_m):
-    return kspip_m < 0.8 or kspip_m > 1.0
+    return abs(kspip_m - CHARGED_KSTAR_MASS) > (2 * CHARGED_KSTAR_WIDTH)
 KSTAR_PLUS_CUT = 'Numba::kstar_plus_cut(kspip_m)'
-KSTAR_PLUS_CUT_STRING = 'kspip_m < 0.8 || kspip_m > 1.0'
+# KSTAR_PLUS_CUT_STRING = 'kspip_m < 0.8 || kspip_m > 1.0'
+KSTAR_PLUS_CUT_STRING = 'abs(kspip_m - 0.89167) > (2 * 0.0514)'
+
 
 @ROOT.Numba.Declare(['float'], 'bool')
 def kstar_minus_cut(kspim_m):
-    return kspim_m < 0.8 or kspim_m > 1.0
+    abs(kspim_m - CHARGED_KSTAR_MASS) > (2 * CHARGED_KSTAR_WIDTH)
 KSTAR_MINUS_CUT = 'Numba::kstar_minus_cut(kspim_m)'
-KSTAR_MINUS_CUT_STRING = 'kspim_m < 0.8 || kspim_m > 1.0'
+# KSTAR_MINUS_CUT_STRING = 'kspim_m < 0.8 || kspim_m > 1.0'
+KSTAR_MINUS_CUT_STRING = 'abs(kspim_m - 0.89167) > (2 * 0.0514)'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
 def kstar_zero_cut_pipkmks(kmpip_m):
-    return kmpip_m < 0.8 or kmpip_m > 1.0
+    return abs(kmpip_m - NEUTRAL_KSTAR_MASS) > (2 * NEUTRAL_KSTAR_WIDTH)
 KSTAR_ZERO_CUT_PIPKMKS = 'Numba::kstar_zero_cut_pipkmks(kmpip_m)'
-KSTAR_ZERO_CUT_PIPKMKS_STRING = 'kmpip_m < 0.8 || kmpip_m > 1.0'
+# KSTAR_ZERO_CUT_PIPKMKS_STRING = 'kmpip_m < 0.8 || kmpip_m > 1.0'
+KSTAR_ZERO_CUT_PIPKMKS_STRING = 'abs(kmpip_m - 0.89555) > (2 * 0.0473)'
+
+
+@ROOT.Numba.Declare(['float'], 'bool')
+def kstar_zero_cut_pimkpks(kppim_m):
+    return abs(kppim_m - NEUTRAL_KSTAR_MASS) > (2 * NEUTRAL_KSTAR_WIDTH)
+KSTAR_ZERO_CUT_PIMKPKS = 'Numba::kstar_zero_cut_pimkpks(kppim_m)'
+# KSTAR_ZERO_CUT_PIMKPKS_STRING = 'kppim_m < 0.8 || kppim_m > 1.0'
+KSTAR_ZERO_CUT_PIMKPKS_STRING = 'abs(kppim_m - 0.89555) > (2 * 0.0473)'
 
 
 @ROOT.Numba.Declare(['float', 'float'], 'bool')
 def kstar_all_cut_pipkmks(kspip, kmpip):
-    return (kspip < 0.8 or kspip > 1.0) and (kmpip < 0.8 or kmpip > 1.0)
+    return (abs(kspip - CHARGED_KSTAR_MASS) > (2 * CHARGED_KSTAR_WIDTH)) and (abs(kmpip - NEUTRAL_KSTAR_MASS) > (2 * NEUTRAL_KSTAR_WIDTH))
 KSTAR_ALL_CUT_PIPKMKS = 'Numba::kstar_all_cut_pipkmks(kspip_m, kmpip_m)'
-KSTAR_ALL_CUT_PIPKMKS_STRING = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
+# KSTAR_ALL_CUT_PIPKMKS_STRING = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
+KSTAR_ALL_CUT_PIPKMKS_STRING = '(abs(kspip_m - 0.89167) > (2 * 0.0514)) && (abs(kmpip_m - 0.89555) > (2 * 0.0473))'
+
+
+@ROOT.Numba.Declare(['float', 'float'], 'bool')
+def kstar_all_cut_pimkpks(kspim, kppim):
+    return (abs(kspim - CHARGED_KSTAR_MASS) > (2 * CHARGED_KSTAR_WIDTH)) and (abs(kppim - NEUTRAL_KSTAR_MASS) > (2 * NEUTRAL_KSTAR_WIDTH)) 
+KSTAR_ALL_CUT_PIMKPKS = 'Numba::kstar_all_cut_pimkpks(kspim_m, kppim_m)'
+# KSTAR_ALL_CUT_PIMKPKS_STRING = '(kspim_m < 0.8 || kspim_m > 1.0) && (kppim_m < 0.8 || kppim_m > 1.0)'
+KSTAR_ALL_CUT_PIMKPKS_STRING = '(abs(kspim_m - 0.89167) > (2 * 0.0514)) && (abs(kppim_m - 0.89555) > (2 * 0.0473))'
 
 
 @ROOT.Numba.Declare(['float', 'float'], 'bool')
 def keep_neutral_reject_charged_pipkmks(kspip, kmpip):
-    return (kspip < 0.8 or kspip > 1.0) and (kmpip > 0.8 and kmpip < 1.0)
+    return (abs(kspip - CHARGED_KSTAR_MASS) > (2 * CHARGED_KSTAR_WIDTH)) and (abs(kmpip - NEUTRAL_KSTAR_MASS) < (2 * NEUTRAL_KSTAR_WIDTH))
 KEEP_NEUTRAL_REJECT_CHARGED_PIPKMKS = 'Numba::keep_neutral_reject_charged_pipkmks(kspip_m, kmpip_m)'
-KEEP_NEUTRAL_REJECT_CHARGED_PIPKMKS_STRING = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m > 0.8 && kmpip_m < 1.0)'
+# KEEP_NEUTRAL_REJECT_CHARGED_PIPKMKS_STRING = '(kspip_m < 0.8 || kspip_m > 1.0) && (kmpip_m > 0.8 && kmpip_m < 1.0)'
+KEEP_NEUTRAL_REJECT_CHARGED_PIPKMKS_STRING = '(abs(kspip_m - 0.89167)) > (2 * 0.0514) && (abs(kmpip_m - 0.89555) < (2 * 0.0473))'
 
 
 @ROOT.Numba.Declare(['float', 'float'], 'bool')
 def keep_charged_reject_neutral_pipkmks(kspip, kmpip):
-    return (kspip > 0.8 and kspip < 1.0) and (kmpip < 0.8 or kmpip > 1.0)
+    return (abs(kspip - CHARGED_KSTAR_MASS) < (2 * CHARGED_KSTAR_WIDTH)) and (abs(kmpip - NEUTRAL_KSTAR_MASS) > (2 * NEUTRAL_KSTAR_WIDTH))
 KEEP_CHARGED_REJECT_NEUTRAL_PIPKMKS = 'Numba::keep_charged_reject_neutral_pipkmks(kspip_m, kmpip_m)'
-KEEP_CHARGED_REJECT_NEUTRAL_PIPKMKS_STRING = '(kspip_m > 0.8 && kspip_m < 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
+# KEEP_CHARGED_REJECT_NEUTRAL_PIPKMKS_STRING = '(kspip_m > 0.8 && kspip_m < 1.0) && (kmpip_m < 0.8 || kmpip_m > 1.0)'
+KEEP_CHARGED_REJECT_NEUTRAL_PIPKMKS_STRING = '(abs(kspip_m - 0.89167) < (2 * 0.0514)) && (abs(kmpip_m - 0.89555) > (2 * 0.0473))'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
@@ -178,32 +206,20 @@ KSTAR_NO_CUT_PIMKPKS = 'Numba::kstar_no_cut_pimkpks(kspim_m)'
 KSTAR_NO_CUT_PIMKPKS_STRING = 'kspim_m > 0.0'
 
 
-@ROOT.Numba.Declare(['float'], 'bool')
-def kstar_zero_cut_pimkpks(kppim_m):
-    return kppim_m < 0.8 or kppim_m > 1.0
-KSTAR_ZERO_CUT_PIMKPKS = 'Numba::kstar_zero_cut_pimkpks(kppim_m)'
-KSTAR_ZERO_CUT_PIMKPKS_STRING = 'kppim_m < 0.8 || kppim_m > 1.0'
-
-
-@ROOT.Numba.Declare(['float', 'float'], 'bool')
-def kstar_all_cut_pimkpks(kspim, kppim):
-    return (kspim < 0.8 or kspim > 1.0) and (kppim < 0.8 or kppim > 1.0)
-KSTAR_ALL_CUT_PIMKPKS = 'Numba::kstar_all_cut_pimkpks(kspim_m, kppim_m)'
-KSTAR_ALL_CUT_PIMKPKS_STRING = '(kspim_m < 0.8 || kspim_m > 1.0) && (kppim_m < 0.8 || kppim_m > 1.0)'
-
-
 @ROOT.Numba.Declare(['float', 'float'], 'bool')
 def keep_neutral_reject_charged_pimkpks(kspim, kppim):
-    return (kspim < 0.8 or kspim > 1.0) and (kppim > 0.8 and kppim < 1.0)
+    return (abs(kspim - CHARGED_KSTAR_MASS) > (2 * CHARGED_KSTAR_WIDTH)) and (abs(kppim - NEUTRAL_KSTAR_MASS) < (2 * NEUTRAL_KSTAR_WIDTH))
 KEEP_NEUTRAL_REJECT_CHARGED_PIMKPKS = 'Numba::keep_neutral_reject_charged_pimkpks(kspim_m, kppim_m)'
-KEEP_NEUTRAL_REJECT_CHARGED_PIMKPKS_STRING = '(kspim_m < 0.8 || kspim_m > 1.0) && (kppim_m > 0.8 && kppim_m < 1.0)'
+# KEEP_NEUTRAL_REJECT_CHARGED_PIMKPKS_STRING = '(kspim_m < 0.8 || kspim_m > 1.0) && (kppim_m > 0.8 && kppim_m < 1.0)'
+KEEP_NEUTRAL_REJECT_CHARGED_PIMKPKS_STRING = '(abs(kspim_m - 0.89167) > (2 * 0.0514)) && (abs(kppim_m - 0.89555) < (2 * 0.0473))'
 
 
 @ROOT.Numba.Declare(['float', 'float'], 'bool')
 def keep_charged_reject_neutral_pimkpks(kspim, kppim):
-    return (kspim > 0.8 and kspim < 1.0) and (kppim < 0.8 or kppim > 1.0)
+    return (abs(kspim - CHARGED_KSTAR_MASS) < (2 * CHARGED_KSTAR_WIDTH)) and (abs(kppim - NEUTRAL_KSTAR_MASS) > (2 * NEUTRAL_KSTAR_WIDTH))
 KEEP_CHARGED_REJECT_NEUTRAL_PIMKPKS = 'Numba::keep_charged_reject_neutral_pimkpks(kspim_m, kppim_m)'
-KEEP_CHARGED_REJECT_NEUTRAL_PIMKPKS_STRING = '(kspim_m > 0.8 && kspim_m < 1.0) && (kppim_m < 0.8 || kppim_m > 1.0)'
+# KEEP_CHARGED_REJECT_NEUTRAL_PIMKPKS_STRING = '(kspim_m > 0.8 && kspim_m < 1.0) && (kppim_m < 0.8 || kppim_m > 1.0)'
+KEEP_CHARGED_REJECT_NEUTRAL_PIMKPKS_STRING = '(abs(kspim_m - 0.89167) < (2 * 0.0514) && abs(kppim_m - 0.89555) > (2 * 0.0473))'
 
 
 @ROOT.Numba.Declare(['float'], 'int')
