@@ -23,10 +23,10 @@ varied_cuts_dict_pipkmks = {
             'ppi': ('ppip_m > 1.3', 'ppip_m > 1.5'),
             'kp': ('kmp_m > 1.9', 'kmp_m > 2.1'),
             'ksp': ('ksp_m > 1.9', 'ksp_m > 2.1'),
-            'pp': ('p_p > 0.3', 'p_p > 0.5'),
-            'neutral_kstar': ('kmpip_m < 0.85 || kmpip_m > 0.95', 'kmpip_m < 0.75 || kmpip_m > 1.05'),
-            'charged_kstar': ('kspip_m < 0.85 || kspip_m > 0.95', 'kmpip_m < 0.75 || kmpip_m > 1.05'),
-            'mx2_all': ('abs(mx2_ppipkmks) < 0.015', 'abs(mx2_ppipkmks) < 0.005')
+            'pp': ('p_p > 0.35', 'p_p > 0.45'),
+            'neutral_kstar': ('kmpip_m < 0.85 || kmpip_m > 0.95', 'kmpip_m < 0.78 || kmpip_m > 1.02'),
+            'charged_kstar': ('kspip_m < 0.875 || kspip_m > 0.95', 'kmpip_m < 0.775 || kmpip_m > 1.025'),
+            'mx2_all': ('abs(mx2_ppipkmks) < 0.02', 'abs(mx2_ppipkmks) < 0.007')
              }
 
 nominal_cuts_dict_pipkmks = {
