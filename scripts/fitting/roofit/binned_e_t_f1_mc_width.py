@@ -6,8 +6,8 @@ import my_library.constants as constants
 import numpy as np
 import pandas as pd
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks':
