@@ -6,9 +6,6 @@ import my_library.constants as constants
 import my_library.gluex_style as gluex_style
 import my_library.kinematic_cuts as cuts
 
-
-# TODO: make sure variation in cut does not change statistics by > 10% 
-
 ROOT.EnableImplicitMT()
 
 # baseline_pipkmks, baseline_pimkpks = 35865, 41281
