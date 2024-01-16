@@ -8,12 +8,11 @@ import my_library.kinematic_cuts as cuts
 
 
 # TODO: make sure variation in cut does not change statistics by > 10% 
-# TODO: tune pp loose and tight, neutral kstar tight, charged kstar loose and tight
 
 ROOT.EnableImplicitMT()
 
 # baseline_pipkmks, baseline_pimkpks = 35865, 41281
-baseline_pipkmks, baseline_pimkpks = 34898, 40114
+baseline_pipkmks, baseline_pimkpks = 32850, 37448
 
 # convention is (loose, tight)
 varied_cuts_dict_pipkmks = {
@@ -24,8 +23,8 @@ varied_cuts_dict_pipkmks = {
             'kp': ('kmp_m > 1.9', 'kmp_m > 2.1'),
             'ksp': ('ksp_m > 1.9', 'ksp_m > 2.1'),
             'pp': ('p_p > 0.35', 'p_p > 0.45'),
-            'neutral_kstar': ('kmpip_m < 0.85 || kmpip_m > 0.95', 'kmpip_m < 0.78 || kmpip_m > 1.02'),
-            'charged_kstar': ('kspip_m < 0.875 || kspip_m > 0.95', 'kmpip_m < 0.775 || kmpip_m > 1.025'),
+            'neutral_kstar': ('abs(kmpip_m - 0.89555) > (1.5 * 0.0473)', 'abs(kmpip_m - 0.89555) > (2.5 * 0.0473)'),
+            'charged_kstar': ('abs(kspip_m - 0.89167) > (1.75 * 0.0514)', 'abs(kspip_m - 0.89167) > (2.25 * 0.0514)'),
             'mx2_all': ('abs(mx2_ppipkmks) < 0.02', 'abs(mx2_ppipkmks) < 0.007')
              }
 
