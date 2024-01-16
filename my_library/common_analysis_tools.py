@@ -754,7 +754,7 @@ def correct_data_hist_for_kstar_efficiency(hist):
     new_hist = hist.Clone()
     new_hist.Sumw2()
     kstar_efficiency_df = pd.read_csv(
-        '/work/halld/home/viducic/data/ps_dalitz/kstar_cut_efficiency_stepsize_10.csv')
+        '/work/halld/home/viducic/data/ps_dalitz/kstar_cut_efficiency_10.0.csv')
     for i in range(1, hist.GetXaxis().GetNbins()+1):
         bin_ef_df = kstar_efficiency_df.loc[kstar_efficiency_df.mass_bin_center == round(
             hist.GetXaxis().GetBinCenter(i), 3)]
