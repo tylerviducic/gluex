@@ -65,3 +65,51 @@ nominal_cuts_dict_pimkpks = {
 
 df_pipkmks_loose = ROOT.RDataFrame('pipkmks_loose', '/work/halld/home/viducic/data/pipkmks/systematics/pipkmks_loose.root')
 df_pimkpks_loose = ROOT.RDataFrame('pimkpks_loose', '/work/halld/home/viducic/data/pimkpks/systematics/pimkpks_loose.root')
+
+
+# TODO: loop over loose cuts. apply all nominal cuts except the one being varied. make histogram.
+# TODO: then apply tight cut and make histogram. 
+# TODO: first attempt to add strings together. 
+
+# for nominal_cut in nominal_cuts_dict_pipkmks:
+#     # varied_df_loose_pipkmks = df_pipkmks_loose.Filter('true')
+#     # varied_df_tight_pipkmks = df_pipkmks_loose.Filter('true')
+#     # varied_df_loose_pimkpks = df_pimkpks_loose.Filter('true')
+#     # varied_df_tight_pimkpks = df_pimkpks_loose.Filter('true')
+#     loose_cut_string = ''
+#     for cut in varied_cuts_dict_pipkmks:
+#         if cut == nominal_cut:
+
+hists = []
+
+for cut in varied_cuts_dict_pipkmks:
+    loose_cut_string_pipkmks = f'({varied_cuts_dict_pipkmks[cut][0]})'
+    tight_cut_string_pipkmks = f'({varied_cuts_dict_pipkmks[cut][1]})'
+    for nominal_cut in nominal_cuts_dict_pipkmks:
+        if nominal_cut != cut:
+            loose_cut_string_pipkmks += f' && ({nominal_cuts_dict_pipkmks[nominal_cut]})'
+            tight_cut_string_pipkmks += f' && ({nominal_cuts_dict_pipkmks[nominal_cut]})'
+            nominal_cut_string_pipkmks = f'({nominal_cuts_dict_pipkmks[nominal_cut]})'
+    print(f'loose cut string: {loose_cut_string_pipkmks}')
+    print(f'tight cut string: {tight_cut_string_pipkmks}')
+    print(f'nominal cut string: {nominal_cut_string_pipkmks}')
+
+    hist_loose_pipkmks = df_pipkmks_loose.Filter(loose_cut_string_pipkmks).Histo1D(f'{cut}_loose', f'{cut}_loose')
+    hist_tight_pipkmks = df_pipkmks_loose.Filter(tight_cut_string_pipkmks).Histo1D(f'{cut}_tight', f'{cut}_tight')
+    hist_nominal_pipkmks = df_pipkmks_loose.Filter(nominal_cut_string_pipkmks).Histo1D(f'{cut}_nominal', f'{cut}_nominal')
+
+    hists.append(hist_nominal_pipkmks, hist_loose_pipkmks, hist_tight_pipkmks)
+
+c = ROOT.TCanvas('c', 'c', 1200, 900)
+c.Divide(5, 2)
+for i, hist in enumerate(hists):
+    c.cd(i+1)
+    hist[0].SetLineColor(ROOT.kBlack)
+    hist[1].SetLineColor(ROOT.kRed)
+    hist[2].SetLineColor(ROOT.kBlue)
+    hist[0].Draw()
+    hist[1].Draw('same')
+    hist[2].Draw('same')
+
+input('Press enter to exit.')
+
