@@ -6,6 +6,10 @@ import my_library.kinematic_cuts as cuts
 
 ROOT.EnableImplicitMT()
 
+# TODO: turn into functions such that i can call the methods as needed in the total systematic error script
+# TODO: need nominal/loose/tight histograms for data and signal MC
+# TODO: need to create loose cut signal MC files for each run period. 
+
 # baseline_pipkmks, baseline_pimkpks = 35865, 41281
 baseline_pipkmks, baseline_pimkpks = 32850, 37448
 
