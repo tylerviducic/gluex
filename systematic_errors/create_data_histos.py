@@ -62,23 +62,8 @@ nominal_cuts_dict_pimkpks = {
             'mx2_all': cuts.MX2_PPIMKPKS_CUT
             }
 
-
 df_pipkmks_loose = ROOT.RDataFrame('pipkmks_loose', '/work/halld/home/viducic/data/pipkmks/systematics/pipkmks_loose.root')
 df_pimkpks_loose = ROOT.RDataFrame('pimkpks_loose', '/work/halld/home/viducic/data/pimkpks/systematics/pimkpks_loose.root')
-
-
-# TODO: loop over loose cuts. apply all nominal cuts except the one being varied. make histogram.
-# TODO: then apply tight cut and make histogram. 
-# TODO: first attempt to add strings together. 
-
-# for nominal_cut in nominal_cuts_dict_pipkmks:
-#     # varied_df_loose_pipkmks = df_pipkmks_loose.Filter('true')
-#     # varied_df_tight_pipkmks = df_pipkmks_loose.Filter('true')
-#     # varied_df_loose_pimkpks = df_pimkpks_loose.Filter('true')
-#     # varied_df_tight_pimkpks = df_pimkpks_loose.Filter('true')
-#     loose_cut_string = ''
-#     for cut in varied_cuts_dict_pipkmks:
-#         if cut == nominal_cut:
 
 hists = []
 
