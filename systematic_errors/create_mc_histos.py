@@ -6,8 +6,10 @@ import my_library.kinematic_cuts as cuts
 
 ROOT.EnableImplicitMT()
 
-# baseline_pipkmks, baseline_pimkpks = 35865, 41281
-baseline_pipkmks, baseline_pimkpks = 32850, 37448
+flux_spring = tools.get_luminosity('spring')
+flux_fall = tools.get_luminosity('fall')
+flux_2017 = tools.get_luminosity('2017')
+flux_total = flux_spring + flux_fall + flux_2017
 
 # convention is (loose, tight)
 varied_cuts_dict_pipkmks = {
@@ -62,8 +64,15 @@ nominal_cuts_dict_pimkpks = {
             'mx2_all': cuts.MX2_PPIMKPKS_CUT
             }
 
-df_pipkmks_loose = ROOT.RDataFrame('pipkmks_loose', '/work/halld/home/viducic/data/pipkmks/systematics/pipkmks_loose.root')
-df_pimkpks_loose = ROOT.RDataFrame('pimkpks_loose', '/work/halld/home/viducic/data/pimkpks/systematics/pimkpks_loose.root')
+output_path_pipkmks = '/work/halld/home/viducic/data/pipkmks/systematics'
+output_path_pimkpks = '/work/halld/home/viducic/data/pimkpks/systematics'
+
+df_pipkmks_spring = ROOT.RDataFrame('pipkmks_loose', f'{output_path_pipkmks}/pipkmks_loose_spring.root')
+df_pimkpks_spring = ROOT.RDataFrame('pimkpks_loose', f'{output_path_pimkpks}/pimkpks_loose_spring.root')
+df_pipkmks_fall = ROOT.RDataFrame('pipkmks_loose', f'{output_path_pipkmks}/pipkmks_loose_fall.root')
+df_pimkpks_fall = ROOT.RDataFrame('pimkpks_loose', f'{output_path_pimkpks}/pimkpks_loose_fall.root')
+df_pipkmks_2017 = ROOT.RDataFrame('pipkmks_loose', f'{output_path_pipkmks}/pipkmks_loose_2017.root')
+df_pimkpks_2017 = ROOT.RDataFrame('pimkpks_loose', f'{output_path_pimkpks}/pimkpks_loose_2017.root')
 
 hists = []
 
@@ -81,9 +90,30 @@ for cut in varied_cuts_dict_pipkmks:
     print(f'nominal cut string: {nominal_cut_string_pipkmks}')
     print('\n ============== \n')
 
-    hist_loose_pipkmks = df_pipkmks_loose.Filter(loose_cut_string_pipkmks).Histo1D((f'{cut}_loose', f'{cut}_loose', 40, 1.1, 1.5), 'pipkmks_m')
-    hist_tight_pipkmks = df_pipkmks_loose.Filter(tight_cut_string_pipkmks).Histo1D((f'{cut}_tight', f'{cut}_tight', 40, 1.1, 1.5), 'pipkmks_m')
-    hist_nominal_pipkmks = df_pipkmks_loose.Filter(nominal_cut_string_pipkmks).Histo1D((f'{cut}_nominal', f'{cut}_nominal', 40, 1.1, 1.5), 'pipkmks_m')
+    hist_loose_pipkmks_spring = df_pipkmks_spring.Filter(loose_cut_string_pipkmks).Histo1D((f'{cut}_loose', f'{cut}_loose', 40, 1.1, 1.5), 'pipkmks_m').GetValue()
+    hist_tight_pipkmks_spring = df_pipkmks_spring.Filter(tight_cut_string_pipkmks).Histo1D((f'{cut}_tight', f'{cut}_tight', 40, 1.1, 1.5), 'pipkmks_m').GetValue()
+    hist_nominal_pipkmks_spring = df_pipkmks_spring.Filter(nominal_cut_string_pipkmks).Histo1D((f'{cut}_nominal', f'{cut}_nominal', 40, 1.1, 1.5), 'pipkmks_m').GetValue()
+    hist_loose_pipkmks_fall = df_pipkmks_fall.Filter(loose_cut_string_pipkmks).Histo1D((f'{cut}_loose', f'{cut}_loose', 40, 1.1, 1.5), 'pipkmks_m').GetValue()
+    hist_tight_pipkmks_fall = df_pipkmks_fall.Filter(tight_cut_string_pipkmks).Histo1D((f'{cut}_tight', f'{cut}_tight', 40, 1.1, 1.5), 'pipkmks_m').GetValue()
+    hist_nominal_pipkmks_fall = df_pipkmks_fall.Filter(nominal_cut_string_pipkmks).Histo1D((f'{cut}_nominal', f'{cut}_nominal', 40, 1.1, 1.5), 'pipkmks_m').GetValue()
+    hist_loose_pipkmks_2017 = df_pipkmks_2017.Filter(loose_cut_string_pipkmks).Histo1D((f'{cut}_loose', f'{cut}_loose', 40, 1.1, 1.5), 'pipkmks_m').GetValue()
+    hist_tight_pipkmks_2017 = df_pipkmks_2017.Filter(tight_cut_string_pipkmks).Histo1D((f'{cut}_tight', f'{cut}_tight', 40, 1.1, 1.5), 'pipkmks_m').GetValue()
+    hist_nominal_pipkmks_2017 = df_pipkmks_2017.Filter(nominal_cut_string_pipkmks).Histo1D((f'{cut}_nominal', f'{cut}_nominal', 40, 1.1, 1.5), 'pipkmks_m') .GetValue()
+
+    hist_loose_pipkmks = hist_loose_pipkmks_spring.Clone()
+    hist_loose_pipkmks.Scale(flux_spring / flux_total)
+    hist_loose_pipkmks.Add(hist_loose_pipkmks_fall, flux_fall / flux_total)
+    hist_loose_pipkmks.Add(hist_loose_pipkmks_2017, flux_2017 / flux_total)
+
+    hist_tight_pipkmks = hist_tight_pipkmks_spring.Clone()
+    hist_tight_pipkmks.Scale(flux_spring / flux_total)
+    hist_tight_pipkmks.Add(hist_tight_pipkmks_fall, flux_fall / flux_total)
+    hist_tight_pipkmks.Add(hist_tight_pipkmks_2017, flux_2017 / flux_total)
+
+    hist_nominal_pipkmks = hist_nominal_pipkmks_spring.Clone()
+    hist_nominal_pipkmks.Scale(flux_spring / flux_total)
+    hist_nominal_pipkmks.Add(hist_nominal_pipkmks_fall, flux_fall / flux_total)
+    hist_nominal_pipkmks.Add(hist_nominal_pipkmks_2017, flux_2017 / flux_total)
 
     hists.append((hist_nominal_pipkmks, hist_loose_pipkmks, hist_tight_pipkmks))
 
