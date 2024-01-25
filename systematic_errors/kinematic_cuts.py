@@ -3,10 +3,11 @@ import my_library.common_analysis_tools as tools
 import my_library.constants as constants
 import my_library.gluex_style as gluex_style
 import my_library.kinematic_cuts as cuts
+import os
 
 """this code is awful im sorry im in a rush i need to graduate"""
 
-ROOT.EnableImplicitMT()
+ROOT.EnableImplicitMT(12)
 
 flux_spring = tools.get_luminosity('spring')
 flux_fall = tools.get_luminosity('fall')
@@ -173,20 +174,85 @@ df_pipkmks_spring.Count().GetValue()
 df_pipkmks_fall.Count().GetValue()
 df_pipkmks_2017.Count().GetValue()
 
-c = ROOT.TCanvas('c', 'c', 900, 900)
-c.Divide(5, 2)
-for i, hist in enumerate(integrated_data_hists_pipkmks):
-    hist[0].SetLineColor(ROOT.kBlack)
-    hist[1].SetLineColor(ROOT.kRed)
-    hist[2].SetLineColor(ROOT.kBlue)
-    hist[1].GetXaxis().SetTitle(hist[0].GetName())
-    c.cd(i + 1)
-    hist[1].Draw()
-    hist[0].Draw('same')
-    hist[2].Draw('same')
-    c.Update()
-c.Draw()
+# c = ROOT.TCanvas('c', 'c', 900, 900)
+# c.Divide(5, 2)
+# for i, hist in enumerate(integrated_data_hists_pipkmks):
+#     hist[0].SetLineColor(ROOT.kBlack)
+#     hist[1].SetLineColor(ROOT.kRed)
+#     hist[2].SetLineColor(ROOT.kBlue)
+#     hist[1].GetXaxis().SetTitle(hist[0].GetName())
+#     c.cd(i + 1)
+#     hist[1].Draw()
+#     hist[0].Draw('same')
+#     hist[2].Draw('same')
+#     c.Update()
+# c.Draw()
 
-input('press enter to continue')
+# input('press enter to continue')
 
-# TODO: write out histograms to a file. 
+path_to_output_pipkmks = '/work/halld/home/viducic/data/pipkmks/systematics/hists'
+path_to_output_pimkpks = '/work/halld/home/viducic/data/pimkpks/systematics/hists'
+
+print('writing out histograms to file')
+
+output_file_data_pipkmks = ROOT.TFile(f'{path_to_output_pipkmks}/pipkmks_data.root', 'RECREATE')
+
+for hist_tuple in integrated_data_hists_pipkmks:
+    for hist in hist_tuple:
+        hist.Write()
+
+for hist_tuple in binned_data_hists_pipkmks:
+    for hist in hist_tuple:
+        for h in hist:
+            h.Write()
+
+output_file_data_pipkmks.Close()
+
+# output_file_data_pimkpks = ROOT.TFile(f'{path_to_output_pimkpks}/pimkpks_data.root', 'RECREATE')
+
+output_file_mc_pipkmks_spring = ROOT.TFile(f'{path_to_output_pipkmks}/pipkmks_mc_spring.root', 'RECREATE')
+
+for hist_tuple in integrated_mc_hists_pipkmks_spring:
+    for hist in hist_tuple:
+        hist.Write()
+
+for hist_tuple in binned_mc_hists_pipkmks_spring:
+    for hist in hist_tuple:
+        for h in hist:
+            h.Write()
+
+output_file_mc_pipkmks_spring.Close()
+
+# output_file_mc_pimkpks_spring = ROOT.TFile(f'{path_to_output_pimkpks}/pimkpks_mc_spring.root', 'RECREATE')
+
+output_file_mc_pipkmks_fall = ROOT.TFile(f'{path_to_output_pipkmks}/pipkmks_mc_fall.root', 'RECREATE')
+
+for hist_tuple in integrated_mc_hists_pipkmks_fall:
+    for hist in hist_tuple:
+        hist.Write()
+
+for hist_tuple in binned_mc_hists_pipkmks_fall:
+    for hist in hist_tuple:
+        for h in hist:
+            h.Write()
+
+output_file_mc_pipkmks_fall.Close()
+
+# output_file_mc_pimkpks_fall = ROOT.TFile(f'{path_to_output_pimkpks}/pimkpks_mc_fall.root', 'RECREATE')
+
+output_file_mc_pipkmks_2017 = ROOT.TFile(f'{path_to_output_pipkmks}/pipkmks_mc_2017.root', 'RECREATE')
+
+for hist_tuple in integrated_mc_hists_pipkmks_2017:
+    for hist in hist_tuple:
+        hist.Write()
+
+for hist_tuple in binned_mc_hists_pipkmks_2017:
+    for hist in hist_tuple:
+        for h in hist:
+            h.Write()
+
+output_file_mc_pipkmks_2017.Close()
+# output_file_mc_pimkpks_2017 = ROOT.TFile(f'{path_to_output_pimkpks}/pimkpks_mc_2017.root', 'RECREATE')
+
+
+print('done')
