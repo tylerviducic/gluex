@@ -9,11 +9,6 @@ import os
 
 ROOT.EnableImplicitMT(12)
 
-flux_spring = tools.get_luminosity('spring')
-flux_fall = tools.get_luminosity('fall')
-flux_2017 = tools.get_luminosity('2017')
-flux_total = flux_spring + flux_fall + flux_2017
-
 nbins, xlow, xhigh = 40, 1.1, 1.5
 
 # convention is (loose, tight)
