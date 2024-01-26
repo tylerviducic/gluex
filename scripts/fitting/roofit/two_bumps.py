@@ -14,8 +14,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -50,16 +50,16 @@ voight_sigma.setConstant(True)
 # voight_width.setConstant(True)
 
 gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.36, 1.35, 1.43)
-gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.034, 0.025, 0.05)
+gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.0333, 0.025, 0.05)
 # gaus_m = ROOT.RooRealVar("gaus_m", "gaus_m", 1.38, 1.35, 1.43)
 # gaus_width = ROOT.RooRealVar("gaus_width", "gaus_width", 0.038, 0.025, 0.05)
 gaus = ROOT.RooGaussian("gaus", "gaus", m_kkpi, gaus_m, gaus_width)
 # gaus_m.setConstant(True)
-# gaus_width.setConstant(True)
+gaus_width.setConstant(True)
 
 ## CHEBYCHEV ##
 bkg_par1 = ROOT.RooRealVar("bkg_par1", "bkg_par1", -1.0, 1.0)
-bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -1.0, 0.0)
+bkg_par2 = ROOT.RooRealVar("bkg_par2", "bkg_par2", -1.0, 1.0)
 bkg_par3 = ROOT.RooRealVar("bkg_par3", "bkg_par3", 0.0, 2.0)
 bkg_par4 = ROOT.RooRealVar("bkg_par4", "bkg_par4", 0.0, 2.0)
 
@@ -181,6 +181,7 @@ print(f"f1 width = {voight_width.getVal() * 1000} +/- {voight_width.getError() *
 print(f'gaus mean = {gaus_m.getVal() * 1000} +/- {gaus_m.getError() * 1000}')
 print(f'gaus width = {gaus_width.getVal() * 1000} +/- {gaus_width.getError() * 1000}')
 print(f'bkg par1 = {bkg_par1.getVal()} +/- {bkg_par1.getError()}')
+print(f'bkg par2 = {bkg_par2.getVal()} +/- {bkg_par2.getError()}')
 print("chi2 = " + str(c2.getVal()))
 print("ndf = " + str(ndf))
 print("chi2/ndf (manual calculation) = " + str(chi2_per_ndf))
