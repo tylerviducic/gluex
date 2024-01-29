@@ -19,6 +19,10 @@ channel = 'pipkmks'
 # channel = 'pimkpks'
 cut = 'all'
 
+ROOT.TF1.InitStandardFunctions()
+f = ROOT.gROOT.GetListOfFunctions()
+print(f.FindObject('chebyshev2'))
+
 if channel == 'pipkmks' :
     voight_resoltion = constants.F1_PIPKMKS_VOIGHT_SIGMA
     voight_resolution_error = constants.F1_PIPKMKS_VOIGHT_SIGMA_ERROR
@@ -35,49 +39,54 @@ elif channel == 'pimkpks' :
     gaus_color = 887
     background_color = 618
 
-parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
+parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg norm', 'bkg const', 'bkg first order', 'bkg second order']
 initial_guesses = {
     0: 100,
     1: 1.28, 
     3: 0.023,
-    4: 100,
+    4: 10,
     5: 1.37,
     6: 0.033,
-    7: 1000,
-    8: 1000,
-    9: 1000
+    7: 500,
+    9: 0.8245578384246324,
+    10: -3.273095947542437e-05
 }
 
 
 data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
-data_hist.GetXaxis().SetRangeUser(1.15, 1.55)
+data_hist.GetXaxis().SetRangeUser(1.2, 1.5)
 data_hist.GetYaxis().SetRangeUser(0, data_hist.GetMaximum()*1.1)
 
-func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + cheb2(7)', 1.2, 1.5)
+func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + [7]*cheb2(8)', 1.2, 1.5)
 
 func.SetParameter(0, initial_guesses[0])
-func.SetParLimits(0, 1, 1000000)
+# func.SetParLimits(0, 1, 1000000)
 func.SetParameter(1, initial_guesses[1])
 func.SetParLimits(1, 1.26, 1.3)
 func.FixParameter(2, voight_resoltion)
 func.SetParameter(3, initial_guesses[3])
 func.SetParLimits(3, 0.005, 0.05)
 func.SetParameter(4, initial_guesses[4])
-func.SetParLimits(4, 0, 1000000)
-func.SetParameter(5, initial_guesses[5])
-# func.FixParameter(5, initial_guesses[5])
-func.SetParLimits(5, 1.35, 1.4)
-# func.FixParameter(6, initial_guesses[6])
-func.SetParameter(6, initial_guesses[6])
-func.SetParLimits(6, 0.025, 0.05)
-func.SetParameter(7, initial_guesses[4])
-func.SetParLimits(7, 0, 100000)
-func.SetParameter(8, initial_guesses[5])
-# func.SetParLimits(8, 0, 100000)
-func.SetParameter(9, initial_guesses[6])
-# func.SetParLimits(9, -100000, 100000)
+# func.SetParLimits(4, 0, 1000000)
+func.FixParameter(5, initial_guesses[5])
+# func.SetParameter(5, initial_guesses[5])
+# func.SetParLimits(5, 1.35, 1.4)
+func.FixParameter(6, initial_guesses[6])
+# func.SetParameter(6, initial_guesses[6])
+# func.SetParLimits(6, 0.025, 0.05)
+# func.SetParameter(7, initial_guesses[4])
+func.FixParameter(7, initial_guesses[7])
+# func.SetParLimits(7, 0, 1000000)
+func.FixParameter(8, 1)
+# func.SetParameter(9, initial_guesses[9])
+func.FixParameter(10, initial_guesses[9])
+# func.SetParLimits(9, 0.0, 1)
+# func.SetParameter(10, initial_guesses[10])
+func.FixParameter(9, initial_guesses[10])
+# func.FixParameter(10, 0.000000000001)
+# func.SetParLimits(10, -1, 1)
 
-func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
+func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9], parameter_names[10])
 
 result = data_hist.Fit(func, 'SRB0M')
 func.SetLineColor(total_fit_color)
@@ -89,16 +98,9 @@ voight.SetFillStyle(1001)
 gaus = ROOT.TF1('gaus', 'gaus(0)', 1.18, 1.51)
 gaus.SetLineColor(background_color)
 gaus.SetLineStyle(3)
-bkg = ROOT.TF1('bkg', 'cheb2(0)', 1.18, 1.51)
+bkg = ROOT.TF1('bkg', '[0]*cheb2(1)', 1.18, 1.51)
 bkg.SetLineColor(background_color)
 bkg.SetLineStyle(2)
-
-initial_guesses[4] = func.GetParameter(4)
-initial_guesses[5] = func.GetParameter(5)
-initial_guesses[6] = func.GetParameter(6)
-initial_guesses[7] = func.GetParameter(7)
-initial_guesses[8] = func.GetParameter(8)
-initial_guesses[9] = func.GetParameter(9)
 
 voight.SetParameter(0, func.GetParameter(0))
 voight.SetParError(0, func.GetParError(0))
@@ -120,6 +122,8 @@ bkg.SetParameter(1, func.GetParameter(8))
 bkg.SetParError(1, func.GetParError(8))
 bkg.SetParameter(2, func.GetParameter(9))
 bkg.SetParError(2, func.GetParError(9))
+bkg.SetParameter(3, func.GetParameter(10))
+bkg.SetParError(3, func.GetParError(10))
 
 print(f'Voight Mass: {voight.GetParameter(1)} +/- {voight.GetParError(1)}')
 print(f'Voight Width: {voight.GetParameter(3)} +/- {voight.GetParError(3)}')
