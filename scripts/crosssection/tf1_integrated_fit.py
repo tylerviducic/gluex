@@ -15,8 +15,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -40,20 +40,20 @@ initial_guesses = {
     0: 100,
     1: 1.28, 
     3: 0.023,
-    4: 1,
+    4: 100,
     5: 1.37,
     6: 0.033,
     7: 1000,
     8: 1000,
-    9: -1000
+    9: 1000
 }
 
 
 data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
-data_hist.GetXaxis().SetRangeUser(1.19, 1.51)
+data_hist.GetXaxis().SetRangeUser(1.1, 1.52)
 data_hist.GetYaxis().SetRangeUser(0, data_hist.GetMaximum()*1.1)
 
-func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.2, 1.5)
+func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + cheb2(7)', 1.18, 1.51)
 
 func.SetParameter(0, initial_guesses[0])
 func.SetParLimits(0, 1, 1000000)
@@ -72,23 +72,23 @@ func.SetParameter(6, initial_guesses[6])
 func.SetParLimits(6, 0.025, 0.05)
 func.SetParameter(7, initial_guesses[4])
 func.SetParameter(8, initial_guesses[5])
-func.SetParLimits(8, 0, 100000)
+# func.SetParLimits(8, 0, 100000)
 func.SetParameter(9, initial_guesses[6])
-func.SetParLimits(9, -100000, 100000)
+# func.SetParLimits(9, -100000, 100000)
 
 func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
 
-result = data_hist.Fit(func, 'SRBOM')
+result = data_hist.Fit(func, 'SRB0M')
 func.SetLineColor(total_fit_color)
 
-voight = ROOT.TF1(f'voight', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.19, 1.51)
+voight = ROOT.TF1(f'voight', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.18, 1.51)
 voight.SetLineColor(ROOT.kBlack)
 voight.SetFillColor(f1_color)
 voight.SetFillStyle(1001)
-gaus = ROOT.TF1('gaus', 'gaus(0)', 1.19, 1.51)
+gaus = ROOT.TF1('gaus', 'gaus(0)', 1.18, 1.51)
 gaus.SetLineColor(background_color)
 gaus.SetLineStyle(3)
-bkg = ROOT.TF1('bkg', 'pol2(0)', 1.19, 1.51)
+bkg = ROOT.TF1('bkg', 'cheb2(0)', 1.18, 1.51)
 bkg.SetLineColor(background_color)
 bkg.SetLineStyle(2)
 
