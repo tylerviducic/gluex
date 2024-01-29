@@ -72,7 +72,7 @@ for e in range(8, 12):
         6: gaus_width,
         7: 1000,
         8: 1000,
-        9: -1000
+        9: 1000
     }
     
     for t in range(1, 8):
@@ -93,7 +93,7 @@ for e in range(8, 12):
         hists.append(hist)
 
 
-        func = ROOT.TF1(f'func_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.2, 1.5)
+        func = ROOT.TF1(f'func_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + cheb2(7)', 1.2, 1.5)
         
         e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==t)]['sigma'].values[0]
 
@@ -106,17 +106,17 @@ for e in range(8, 12):
         # func.SetParLimits(3, 0.005, 0.05)
         func.SetParameter(4, initial_guesses[4])
         func.SetParLimits(4, 0, 100)
-        # func.SetParameter(5, initial_guesses[5])
+        func.SetParameter(5, initial_guesses[5])
         func.FixParameter(5, initial_guesses[5])
-        # func.SetParLimits(5, 1.35, 1.4)
+        # func.SetParLimits(5, 1.34, 1.4)
         func.FixParameter(6, initial_guesses[6])
         # func.SetParameter(6, initial_guesses[6])
-        # func.SetParLimits(6, 0.025, 0.05)
+        func.SetParLimits(6, 0.025, 0.05)
         func.SetParameter(7, initial_guesses[4])
         func.SetParameter(8, initial_guesses[5])
         func.SetParLimits(8, 0, 100000)
         func.SetParameter(9, initial_guesses[6])
-        func.SetParLimits(9, -100000, 100000)
+        # func.SetParLimits(9, -100000, 100000)
 
         func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
 
@@ -130,7 +130,7 @@ for e in range(8, 12):
         gaus = ROOT.TF1('gaus', 'gaus(0)', 1.2, 1.5)
         gaus.SetLineColor(background_color)
         gaus.SetLineStyle(3)
-        bkg = ROOT.TF1('bkg', 'pol2(0)', 1.2, 1.5)
+        bkg = ROOT.TF1('bkg', 'cheb2(0)', 1.2, 1.5)
         bkg.SetLineColor(background_color)
         bkg.SetLineStyle(2)
 
@@ -190,7 +190,7 @@ for e in range(8, 12):
 
         c.Update()
 
-    c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/pol2_gaus_{channel}_e{e}_t{t}_fit.png')
+    c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/cheb2_gaus_{channel}_e{e}_t{t}_fit.png')
 
 value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'yield': data_yield_list, 'yield_error': yield_error_list, 'acceptance': acceptance_list, 'acceptance_error': acceptance_error_list,'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list, 'luminosity': luminosity_list})
 value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/tf1_gaus_cross_section_values.csv', index=False)
