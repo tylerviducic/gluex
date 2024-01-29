@@ -49,7 +49,7 @@ t_bin_width_list = []
 energy_bin_list = []
 luminosity_list = []
 
-parameter_names = ['voight amplitude', 'voight mean', 'voight width', 'voight sigma', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
+parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
 
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
 
