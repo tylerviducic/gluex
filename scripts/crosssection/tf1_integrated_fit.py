@@ -15,8 +15,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -50,10 +50,10 @@ initial_guesses = {
 
 
 data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
-data_hist.GetXaxis().SetRangeUser(1.1, 1.52)
+data_hist.GetXaxis().SetRangeUser(1.15, 1.55)
 data_hist.GetYaxis().SetRangeUser(0, data_hist.GetMaximum()*1.1)
 
-func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + cheb2(7)', 1.18, 1.51)
+func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + cheb2(7)', 1.2, 1.5)
 
 func.SetParameter(0, initial_guesses[0])
 func.SetParLimits(0, 1, 1000000)
