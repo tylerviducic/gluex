@@ -41,64 +41,70 @@ elif channel == 'pimkpks' :
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg norm', 'bkg const', 'bkg first order', 'bkg second order']
 initial_guesses = {
-    0: 100,
-    1: 1.28, 
-    3: 0.023,
-    4: 10,
-    5: 1.37,
-    6: 0.033,
-    7: 500,
-    9: 0.8245578384246324,
-    10: -3.273095947542437e-05
+    0: 170, # voight amplitude
+    1: 1.28, # voight mean
+    3: 0.029, # voight width
+    4: 495, # gaus amplitude
+    5: 1.37, # gaus mean
+    6: 0.033, # gaus width
+    7: -1500, # bkg norm
+    9: -0.8, # bkg first order
+    10: 0.3
+      # bkg second order
 }
 
 
 data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
-data_hist.GetXaxis().SetRangeUser(1.2, 1.5)
+data_hist.GetXaxis().SetRangeUser(1.15, 1.55)
 data_hist.GetYaxis().SetRangeUser(0, data_hist.GetMaximum()*1.1)
 
-func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + [7]*cheb2(8)', 1.2, 1.5)
+func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + [7]*cheb2(8)', 1.16, 1.54)
 
-func.SetParameter(0, initial_guesses[0])
-# func.SetParLimits(0, 1, 1000000)
-func.SetParameter(1, initial_guesses[1])
-func.SetParLimits(1, 1.26, 1.3)
-func.FixParameter(2, voight_resoltion)
-func.SetParameter(3, initial_guesses[3])
-func.SetParLimits(3, 0.005, 0.05)
-func.SetParameter(4, initial_guesses[4])
-# func.SetParLimits(4, 0, 1000000)
-func.FixParameter(5, initial_guesses[5])
-# func.SetParameter(5, initial_guesses[5])
+func.FixParameter(2, voight_resoltion) # voight sigma
+func.FixParameter(8, 1) # bkg const
+
+func.SetParameter(0, initial_guesses[0]) # voight amplitude
+func.SetParLimits(0, 1, 1000000)
+func.SetParameter(1, initial_guesses[1]) # voight mean
+# func.SetParLimits(1, 1.26, 1.3)
+func.SetParameter(3, initial_guesses[3]) # voight width
+# func.SetParLimits(3, 0.005, 0.05)
+func.SetParameter(4, initial_guesses[4]) # gaus amplitude
+func.SetParLimits(4, 1, 1000000)
+func.SetParameter(5, initial_guesses[5]) # gaus mean 
 # func.SetParLimits(5, 1.35, 1.4)
-func.FixParameter(6, initial_guesses[6])
-# func.SetParameter(6, initial_guesses[6])
-# func.SetParLimits(6, 0.025, 0.05)
-# func.SetParameter(7, initial_guesses[4])
-func.FixParameter(7, initial_guesses[7])
-# func.SetParLimits(7, 0, 1000000)
-func.FixParameter(8, 1)
-# func.SetParameter(9, initial_guesses[9])
-func.FixParameter(10, initial_guesses[9])
-# func.SetParLimits(9, 0.0, 1)
-# func.SetParameter(10, initial_guesses[10])
-func.FixParameter(9, initial_guesses[10])
-# func.FixParameter(10, 0.000000000001)
+func.SetParameter(6, initial_guesses[6]) # gaus width
+func.SetParLimits(6, 0.025, 0.05)
+func.SetParameter(7, initial_guesses[7]) # bkg norm
+func.SetParameter(9, initial_guesses[9]) # bkg first order
+func.SetParLimits(9, -100, 0.0)
+func.SetParameter(10, initial_guesses[10]) # bkg second order
 # func.SetParLimits(10, -1, 1)
 
-func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9], parameter_names[10])
+func.FixParameter(0, 169.6) # voigt amplitude
+func.FixParameter(1, 1.28) # voigt mean
+func.FixParameter(3, 0.028) # voigt width
+func.FixParameter(4, 495.8) # gaus amplitude
+func.FixParameter(5, 1.37) # gaus mean
+func.FixParameter(6, 0.0368) # gaus width
+# func.FixParameter(7, initial_guesses[7]) # bkg norm
+func.FixParameter(9, 0.8) # bkg first order
+# func.FixParameter(10, 0.0) # bkg second order
 
-result = data_hist.Fit(func, 'SRB0M')
+func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], 
+                 parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9], parameter_names[10])
+
+result = data_hist.Fit(func, 'SRB0E')
 func.SetLineColor(total_fit_color)
 
-voight = ROOT.TF1(f'voight', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.18, 1.51)
+voight = ROOT.TF1(f'voight', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.18, 1.55)
 voight.SetLineColor(ROOT.kBlack)
 voight.SetFillColor(f1_color)
 voight.SetFillStyle(1001)
-gaus = ROOT.TF1('gaus', 'gaus(0)', 1.18, 1.51)
+gaus = ROOT.TF1('gaus', 'gaus(0)', 1.18, 1.55)
 gaus.SetLineColor(background_color)
 gaus.SetLineStyle(3)
-bkg = ROOT.TF1('bkg', '[0]*cheb2(1)', 1.18, 1.51)
+bkg = ROOT.TF1('bkg', '[0]*cheb2(1)', 1.18, 1.55)
 bkg.SetLineColor(background_color)
 bkg.SetLineStyle(2)
 

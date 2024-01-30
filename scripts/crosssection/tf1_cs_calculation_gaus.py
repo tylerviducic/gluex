@@ -15,8 +15,8 @@ if channel == 'pipkmks' :
     # background_color = ROOT.kOrange
     background_color = total_fit_color
     hist_title = 'K^{-}K_{s}#pi^{+}'
-    gaus_mean = 1.371
-    gaus_width = 0.0333
+    gaus_mean = constants.F1_PIPKMKS_GAUS_MEAN
+    gaus_width = constants.F1_PIPKMKS_GAUS_WIDTH
 elif channel == 'pimkpks' :
     v_mean = constants.F1_PIMKPKS_VOIGHT_MEAN
     v_width = constants.F1_PIMKPKS_VOIGHT_WIDTH
@@ -25,9 +25,8 @@ elif channel == 'pimkpks' :
     # background_color = ROOT.kTeal-5
     background_color = total_fit_color
     hist_title = 'K^{+}K_{s}#pi^{-}'
-    gaus_mean = 1.360
-    # gaus_width = 0.0463
-    gaus_width = 0.0333
+    gaus_mean = constants.F1_PIMKPKS_GAUS_MEAN
+    gaus_width = constants.F1_PIMKPKS_GAUS_WIDTH
 
 df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
 
@@ -51,6 +50,8 @@ luminosity_list = []
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
 
+fit_low, fit_high = 1.15, 1.51
+
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
 
 for e in range(8, 12):
@@ -64,15 +65,15 @@ for e in range(8, 12):
     gauses = []
 
     initial_guesses = {
-        0: 10,
-        1: v_mean, 
-        3: v_width,
-        4: 1,
-        5: gaus_mean,
-        6: gaus_width,
-        7: 1000,
-        8: 1000,
-        9: 1000
+        0: 5, # voight amplitude
+        1: v_mean, # voight mean
+        3: v_width, # voight width
+        4: 15, # gaus amplitude
+        5: gaus_mean, # gaus mean
+        6: gaus_width, # gaus width
+        7: -100, # bkg par1
+        8: 100, # bkg par2
+        9: 1 # bkg par3
     }
     
     for t in range(1, 8):
@@ -80,7 +81,7 @@ for e in range(8, 12):
         cor_hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
         hist = ct.remove_zero_datapoints(cor_hist)
 
-        hist.GetXaxis().SetRangeUser(1.18, 1.52)
+        hist.GetXaxis().SetRangeUser(1.15, 1.52)
         hist.GetYaxis().SetRangeUser(0, hist.GetMaximum()*1.2)
 
         hist.GetXaxis().SetTitle(hist_title + ' (GeV)')
@@ -93,44 +94,43 @@ for e in range(8, 12):
         hists.append(hist)
 
 
-        func = ROOT.TF1(f'func_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + cheb2(7)', 1.2, 1.5)
+        func = ROOT.TF1(f'func_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', fit_low, fit_high)
         
         e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==t)]['sigma'].values[0]
 
-        func.SetParameter(0, initial_guesses[0])
-        func.SetParLimits(0, 1, 10000)
-        func.FixParameter(1, initial_guesses[1])
-        # func.SetParLimits(1, 1.26, 1.3)
+        func.SetParameter(0, initial_guesses[0]) # voight amplitude
+        func.SetParLimits(0, 0.1, 100000)
+        func.FixParameter(1, initial_guesses[1]) # voight mean
         func.FixParameter(2, e_t_sigma)
-        func.FixParameter(3, initial_guesses[3])
-        # func.SetParLimits(3, 0.005, 0.05)
-        func.SetParameter(4, initial_guesses[4])
-        func.SetParLimits(4, 0, 100)
-        func.SetParameter(5, initial_guesses[5])
+        func.FixParameter(3, initial_guesses[3]) # voight width
+        func.SetParameter(4, initial_guesses[4]) # gaus amplitude
+        func.SetParLimits(4, 0.1, 10000)
+        func.SetParameter(5, initial_guesses[5])# gaus mean
         func.FixParameter(5, initial_guesses[5])
         # func.SetParLimits(5, 1.34, 1.4)
-        func.FixParameter(6, initial_guesses[6])
+        func.FixParameter(6, initial_guesses[6]) # gaus width
         # func.SetParameter(6, initial_guesses[6])
-        func.SetParLimits(6, 0.025, 0.05)
-        func.SetParameter(7, initial_guesses[4])
-        func.SetParameter(8, initial_guesses[5])
-        func.SetParLimits(8, 0, 100000)
-        func.SetParameter(9, initial_guesses[6])
+        # func.SetParLimits(6, 0.025, 0.05)
+        func.SetParameter(7, initial_guesses[7]) # bkg par1
+        func.SetParLimits(7, -100000, 0.0)
+        func.SetParameter(8, initial_guesses[8]) # bkg par2
+        # func.SetParLimits(8, 0, 1000000)
+        func.SetParameter(9, initial_guesses[9]) # bkg par3
         # func.SetParLimits(9, -100000, 100000)
 
         func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
 
-        result = hist.Fit(func, 'SRB')
+        result = hist.Fit(func, 'SRBE')
         func.SetLineColor(total_fit_color)
 
-        voight = ROOT.TF1(f'voight_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.2, 1.5)
+        voight = ROOT.TF1(f'voight_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', fit_low, fit_high)
         voight.SetLineColor(ROOT.kBlack)
         voight.SetFillColor(f1_color)
         voight.SetFillStyle(1001)
-        gaus = ROOT.TF1('gaus', 'gaus(0)', 1.2, 1.5)
+        gaus = ROOT.TF1('gaus', 'gaus(0)', fit_low, fit_high)
         gaus.SetLineColor(background_color)
         gaus.SetLineStyle(3)
-        bkg = ROOT.TF1('bkg', 'cheb2(0)', 1.2, 1.5)
+        bkg = ROOT.TF1('bkg', 'pol2(0)', fit_low, fit_high)
         bkg.SetLineColor(background_color)
         bkg.SetLineStyle(2)
 
@@ -190,7 +190,7 @@ for e in range(8, 12):
 
         c.Update()
 
-    c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/cheb2_gaus_{channel}_e{e}_t{t}_fit.png')
+    c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/pol2_gaus_{channel}_e{e}_t{t}_fit.png')
 
 value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'yield': data_yield_list, 'yield_error': yield_error_list, 'acceptance': acceptance_list, 'acceptance_error': acceptance_error_list,'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list, 'luminosity': luminosity_list})
 value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/tf1_gaus_cross_section_values.csv', index=False)
