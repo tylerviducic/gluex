@@ -1704,6 +1704,13 @@ def remove_zero_datapoints(og_hist: ROOT.TH1):
             hist.SetBinError(i, (error_above + error_below)/2)
     hist.SetDirectory(0)
     return hist
+
+
+def get_binned_resolution(channel, e, tbin):
+    df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
+    e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==tbin)]['sigma'].values[0]
+    return e_t_sigma
+
     
 
 ############################
