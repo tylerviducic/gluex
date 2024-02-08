@@ -20,10 +20,7 @@ def get_binned_data_hist(channel, cut, e, t_bin_index, ltn):
     data_filename = f'/work/halld/home/viducic/data/{channel}/systematics/hists/{channel}_data.root'
     data_file = ROOT.TFile(data_filename, 'READ')
     hist_name = f'{channel}_data_{cut}_{ltn}_e{e}_t{t_bin_index}'
-    print(data_filename)
-    print(hist_name)
     hist = data_file.Get(hist_name)
-    print(type(hist))
     hist.SetDirectory(0)
     data_file.Close()
     return hist
