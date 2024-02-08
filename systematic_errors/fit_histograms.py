@@ -127,6 +127,7 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
         func.SetParameter(par_name, param_guesses[par_name])
 
     func.SetParameter('voigt_amplitude', param_guesses['voigt_amplitude']) # voigt amplitude
+    # FIXME: set par limits takes int as first argument, not string
     func.SetParLimits('voigt_amplitude', 0.1, 100000)
     func.FixParameter('voigt_mean', param_guesses['voigt_mean']) # voigt mean
     func.FixParameter('voigt_sigma', param_guesses['voigt_sigma']) # voigt sigma/resolution 
@@ -232,6 +233,7 @@ if __name__ == '__main__':
                 param_guesses = {
                     'voigt_amplitude': 5, # voigt amplitude
                     'voigt_mean': v_mean, # voigt mean
+                    'voigt_sigma': 0.11,
                     'voigt_width': v_width, # voigt width
                     'gaus_amplitude': 15, # gaus amplitude
                     'gaus_mean': gaus_mean, # gaus mean
@@ -244,14 +246,17 @@ if __name__ == '__main__':
                 e_flux = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
 
                 for t in range(1, 8):
+
+                    param_guesses['voigt_sigma'] = tools.get_binned_resolution(channel, e, t)
+
                     nominal_data_hist = get_binned_data_hist(channel, cut, e, t, 'nominal')
                     loose_data_hist = get_binned_data_hist(channel, cut, e, t, 'loose')
                     tight_data_hist = get_binned_data_hist(channel, cut, e, t, 'tight')
 
                     nominal_cor_hist = tools.correct_data_hist_for_kstar_efficiency(nominal_data_hist)
                     if cut not in ['neutral_kstar', 'charged_kstar']:
-                        eff_cor_hist_loose = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'loose')
-                        eff_cor_hist_tight = correct_data_hist_for_varied_kstar_efficiency(tight_data_hist, cut, 'tight')
+                        eff_cor_hist_loose = tools.correct_data_hist_for_kstar_efficiency(loose_data_hist)
+                        eff_cor_hist_tight = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
                     else: 
                         eff_cor_hist_loose = tools.correct_data_hist_for_kstar_efficiency(loose_data_hist)
                         eff_cor_hist_tight = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
@@ -312,6 +317,8 @@ if __name__ == '__main__':
 
                     c.Update()
                     c.SaveAs(f'/work/halld/home/viducic/systematic_errors/kstar_eff/plots/{channel}_{cut}_e{e}_t{t}_fit.png')
+
+                    param_guesses = update_guesses(func_nominal)
 
                     nominal_yield, nominal_yield_error = get_yield_and_error(voigt_nominal)
                     nominal_acceptance = get_gluex1_acceptance(channel, cut, e, t, 'nominal')
