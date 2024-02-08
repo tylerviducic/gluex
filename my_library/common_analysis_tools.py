@@ -7,6 +7,8 @@ contains common analysis tools/code snippets that i use
 """
 
 import math
+
+from numpy.core.umath import sqrt
 import ROOT
 import pandas as pd
 import numpy as np
@@ -869,8 +871,8 @@ def get_acceptance(nrecon, nthrown, error=True):
     if not error:
         return nrecon/nthrown
     else:
-        error_recon = 0.0
-        error_thrown = 0.0
+        error_recon = sqrt(nrecon)
+        error_thrown = sqrt(nthrown)
         acceptance = nrecon/nthrown
         error = propogate_error_multiplication(
             acceptance, [nrecon, nthrown], [error_recon, error_thrown])

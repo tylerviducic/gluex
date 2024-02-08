@@ -5,7 +5,7 @@ import my_library.gluex_style as gluex_style
 import my_library.kinematic_cuts as cuts
 import os
 
-# TODO: fitting procedure
+# TODO: Make sure histograms are being written out correctly
 
 """this code is awful im sorry im in a rush i need to graduate"""
 
@@ -68,6 +68,8 @@ nominal_cuts_dict_pimkpks = {
 
 filepath_pipkmks = '/work/halld/home/viducic/data/pipkmks/systematics'
 filepath_pimkpks = '/work/halld/home/viducic/data/pimkpks/systematics'
+
+print('starting loop')
 
 df_pipkmks_spring = ROOT.RDataFrame('pipkmks_loose', f'{filepath_pipkmks}/pipkmks_loose_spring.root')
 df_pimkpks_spring = ROOT.RDataFrame('pimkpks_loose', f'{filepath_pimkpks}/pimkpks_loose_spring.root')
@@ -162,6 +164,7 @@ for cut in varied_cuts_dict_pipkmks:
         e_t_binned_mc_hists_pimkpks_2017 = []
 
         e_t_filter_string = f'(e_beam > {e - 0.5}) && (e_beam < {e + 0.5})'
+        print(f'e: {e}, t: {t}')
         for t in range(1, 8):
             t_filter_string = cuts.SELECT_T_BIN.format(t)
         
@@ -250,6 +253,7 @@ for hist_tuple in integrated_data_hists_pipkmks:
 for hist_tuple in binned_data_hists_pipkmks:
     for hist in hist_tuple:
         for h in hist:
+            print(h.GetName())
             h.Write()
 
 output_file_data_pipkmks.Close()

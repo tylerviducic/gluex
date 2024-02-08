@@ -20,7 +20,10 @@ def get_binned_data_hist(channel, cut, e, t_bin_index, ltn):
     data_filename = f'/work/halld/home/viducic/data/{channel}/systematics/hists/{channel}_data.root'
     data_file = ROOT.TFile(data_filename, 'READ')
     hist_name = f'{channel}_data_{cut}_{ltn}_e{e}_t{t_bin_index}'
+    print(data_filename)
+    print(hist_name)
     hist = data_file.Get(hist_name)
+    print(type(hist))
     hist.SetDirectory(0)
     data_file.Close()
     return hist
@@ -63,7 +66,8 @@ def get_gluex1_mc_hist(channel, cut, e, t_bin_index, ltn):
 def get_acceptance_per_run_period(channel, run_period, cut, e, t_bin_index, ltn):
     signal_hist = get_binned_mc_hist(channel, run_period, cut, e, t_bin_index, ltn)
     thrown_hist = tools.get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index)
-    acceptance = signal_hist.Integral()/thrown_hist.Integral()
+    acceptance, error = tools.get_acceptance(signal_hist.Integral(), thrown_hist.Integral(), error=True)
+    print(f'channel: {channel}, run_period: {run_period}, cut: {cut}, e: {e}, t_bin_index: {t_bin_index}, ltn: {ltn}, %error: {error/acceptance*100}')
     return acceptance
     
 
@@ -164,6 +168,7 @@ def get_func_components(func, e, t, cut, ltn):
     bkg = ROOT.TF1(f'bkg_{cut}_{e}_{t}', 'pol2(0)', 1.15, 1.51)
 
     voigt.SetParameter(0, func.GetParameter(0))
+    voigt.SetParError(0, func.GetParError(0))
     voigt.SetParameter(1, func.GetParameter(1))
     voigt.SetParameter(2, func.GetParameter(2))
     voigt.SetParameter(3, func.GetParameter(3))
@@ -182,8 +187,16 @@ def get_func_components(func, e, t, cut, ltn):
 
     return voigt, gaus, bkg
 
+
+def get_yield_and_error(voigt_func):
+    f1_yield = voigt_func.Integral(1.2, 1.5)
+    f1_error = voigt_func.GetParError(0)/voigt_func.GetParameter(0) * f1_yield
+    return f1_yield, f1_error
+
+
 # TODO: write function to store fit results in CSV file
-def store_dataframe_info(func_total, func_voigt, luminosity, e, t, cut, ltn):
+def store_dataframe_info(voigt_loose, voigt_nominal, voigt_tight, luminosity, e, t, cut):
+
     return
 
 if __name__ == '__main__':
@@ -196,8 +209,8 @@ if __name__ == '__main__':
     for channel in channels:
 
         if channel == 'pipkmks' :
-            v_mean = constants.F1_PIPKMKS_voigt_MEAN
-            v_width = constants.F1_PIPKMKS_voigt_WIDTH
+            v_mean = constants.F1_PIPKMKS_VOIGHT_MEAN
+            v_width = constants.F1_PIPKMKS_VOIGHT_WIDTH
             total_fit_color = ROOT.kViolet
             f1_color = ROOT.kBlue
             # background_color = ROOT.kOrange
@@ -206,8 +219,8 @@ if __name__ == '__main__':
             gaus_mean = constants.F1_PIPKMKS_GAUS_MEAN
             gaus_width = constants.F1_PIPKMKS_GAUS_WIDTH
         elif channel == 'pimkpks' :
-            v_mean = constants.F1_PIMKPKS_voigt_MEAN
-            v_width = constants.F1_PIMKPKS_voigt_WIDTH
+            v_mean = constants.F1_PIMKPKS_VOIGHT_MEAN
+            v_width = constants.F1_PIMKPKS_VOIGHT_WIDTH
             total_fit_color = ROOT.kViolet +9
             f1_color = ROOT.kRed
             # background_color = ROOT.kTeal-5
@@ -302,6 +315,9 @@ if __name__ == '__main__':
 
                     c.Update()
                     c.SaveAs(f'/work/halld/home/viducic/systematic_errors/kstar_eff/plots/{channel}_{cut}_e{e}_t{t}_fit.png')
+
+                    nominal_yield, nominal_yield_error = get_yield_and_error(voigt_nominal)
+                    nominal_acceptance = get_gluex1_acceptance(channel, cut, e, t, 'nominal')
 
 
 
