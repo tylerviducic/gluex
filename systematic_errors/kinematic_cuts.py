@@ -5,7 +5,6 @@ import my_library.gluex_style as gluex_style
 import my_library.kinematic_cuts as cuts
 import os
 
-# TODO: Make sure histograms are being written out correctly
 
 """this code is awful im sorry im in a rush i need to graduate"""
 
