@@ -9,7 +9,7 @@ import os
 
 """this code is awful im sorry im in a rush i need to graduate"""
 
-ROOT.EnableImplicitMT(12)
+ROOT.EnableImplicitMT()
 
 nbins, xlow, xhigh = 40, 1.1, 1.5
 
@@ -80,22 +80,15 @@ df_pimkpks_2017 = ROOT.RDataFrame('pimkpks_loose', f'{filepath_pimkpks}/pimkpks_
 df_pipkmks_data = ROOT.RDataFrame('pipkmks_loose', f'{filepath_pipkmks}/pipkmks_loose.root')
 df_pimkpks_data = ROOT.RDataFrame('pimkpks_loose', f'{filepath_pimkpks}/pimkpks_loose.root')
 
-binned_data_hists_pipkmks = []
-binned_data_hists_pimkpks = []
-binned_mc_hists_pipkmks_spring = []
-binned_mc_hists_pimkpks_spring = []
-binned_mc_hists_pipkmks_fall = []
-binned_mc_hists_pimkpks_fall = []
-binned_mc_hists_pipkmks_2017 = []
-binned_mc_hists_pimkpks_2017 = []
-integrated_data_hists_pipkmks = []
-integrated_data_hists_pimkpks = []
-integrated_mc_hists_pipkmks_spring = []
-integrated_mc_hists_pimkpks_spring = []
-integrated_mc_hists_pipkmks_fall = []
-integrated_mc_hists_pimkpks_fall = []
-integrated_mc_hists_pipkmks_2017 = []
-integrated_mc_hists_pimkpks_2017 = []
+data_hists_pipkmks = []
+data_hists_pimkpks = []
+mc_hists_pipkmks_spring = []
+mc_hists_pimkpks_spring = []
+mc_hists_pipkmks_fall = []
+mc_hists_pimkpks_fall = []
+mc_hists_pipkmks_2017 = []
+mc_hists_pimkpks_2017 = []
+
 
 for cut in varied_cuts_dict_pipkmks:
 
@@ -143,75 +136,59 @@ for cut in varied_cuts_dict_pipkmks:
     signal_hist_integrated_pimkpks_tight_fall = df_pimkpks_fall.Filter(tight_cut_string_pimkpks).Histo1D((f'pimkpks_signal_integrated_{cut}_tight_fall', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
     signal_hist_integrated_pimkpks_tight_2017 = df_pimkpks_2017.Filter(tight_cut_string_pimkpks).Histo1D((f'pimkpks_signal_integrated_{cut}_tight_2017', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
     
-    integrated_data_hists_pipkmks.append((data_hist_integrated_pipkmks_nominal, data_hist_integrated_pipkmks_loose, data_hist_integrated_pipkmks_tight))
-    integrated_mc_hists_pipkmks_spring.append((signal_hist_integrated_pipkmks_nominal_spring, signal_hist_integrated_pipkmks_loose_spring, signal_hist_integrated_pipkmks_tight_spring))
-    integrated_mc_hists_pipkmks_fall.append((signal_hist_integrated_pipkmks_nominal_fall, signal_hist_integrated_pipkmks_loose_fall, signal_hist_integrated_pipkmks_tight_fall))
-    integrated_mc_hists_pipkmks_2017.append((signal_hist_integrated_pipkmks_nominal_2017, signal_hist_integrated_pipkmks_loose_2017, signal_hist_integrated_pipkmks_tight_2017))
-    integrated_data_hists_pimkpks.append((data_hist_integrated_pimkpks_nominal, data_hist_integrated_pimkpks_loose, data_hist_integrated_pimkpks_tight))
-    integrated_mc_hists_pimkpks_spring.append((signal_hist_integrated_pimkpks_nominal_spring, signal_hist_integrated_pimkpks_loose_spring, signal_hist_integrated_pimkpks_tight_spring))
-    integrated_mc_hists_pimkpks_fall.append((signal_hist_integrated_pimkpks_nominal_fall, signal_hist_integrated_pimkpks_loose_fall, signal_hist_integrated_pimkpks_tight_fall))
-    integrated_mc_hists_pimkpks_2017.append((signal_hist_integrated_pimkpks_nominal_2017, signal_hist_integrated_pimkpks_loose_2017, signal_hist_integrated_pimkpks_tight_2017))
+    data_hists_pipkmks.extend([data_hist_integrated_pipkmks_nominal, data_hist_integrated_pipkmks_loose, data_hist_integrated_pipkmks_tight])
+    mc_hists_pipkmks_spring.extend([signal_hist_integrated_pipkmks_nominal_spring, signal_hist_integrated_pipkmks_loose_spring, signal_hist_integrated_pipkmks_tight_spring])
+    mc_hists_pipkmks_fall.extend([signal_hist_integrated_pipkmks_nominal_fall, signal_hist_integrated_pipkmks_loose_fall, signal_hist_integrated_pipkmks_tight_fall])
+    mc_hists_pipkmks_2017.extend([signal_hist_integrated_pipkmks_nominal_2017, signal_hist_integrated_pipkmks_loose_2017, signal_hist_integrated_pipkmks_tight_2017])
+    data_hists_pimkpks.extend([data_hist_integrated_pimkpks_nominal, data_hist_integrated_pimkpks_loose, data_hist_integrated_pimkpks_tight])
+    mc_hists_pimkpks_spring.extend([signal_hist_integrated_pimkpks_nominal_spring, signal_hist_integrated_pimkpks_loose_spring, signal_hist_integrated_pimkpks_tight_spring])
+    mc_hists_pimkpks_fall.extend([signal_hist_integrated_pimkpks_nominal_fall, signal_hist_integrated_pimkpks_loose_fall, signal_hist_integrated_pimkpks_tight_fall])
+    mc_hists_pimkpks_2017.extend([signal_hist_integrated_pimkpks_nominal_2017, signal_hist_integrated_pimkpks_loose_2017, signal_hist_integrated_pimkpks_tight_2017])
 
 
     for e in range(8, 12):
-        e_t_binned_data_hists_pipkmks = []
-        e_t_binned_mc_hists_pipkmks_spring = []
-        e_t_binned_mc_hists_pipkmks_fall = []
-        e_t_binned_mc_hists_pipkmks_2017 = []
-        e_t_binned_data_hists_pimkpks = []
-        e_t_binned_mc_hists_pimkpks_spring = []
-        e_t_binned_mc_hists_pimkpks_fall = []
-        e_t_binned_mc_hists_pimkpks_2017 = []
 
-        e_t_filter_string = f'(e_beam > {e - 0.5}) && (e_beam < {e + 0.5})'
-        print(f'e: {e}, t: {t}')
+        e_filter_string = f'(e_beam > {e - 0.5}) && (e_beam < {e + 0.5})'
         for t in range(1, 8):
+            print(f'e: {e}, t: {t}')
             t_filter_string = cuts.SELECT_T_BIN.format(t)
         
-            data_hist_pipkmks_nominal = df_pipkmks_data.Filter(nominal_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_data_{cut}_nominal_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_nominal_spring = df_pipkmks_spring.Filter(nominal_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_nominal_spring_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_nominal_fall = df_pipkmks_fall.Filter(nominal_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_nominal_fall_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_nominal_2017 = df_pipkmks_2017.Filter(nominal_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_nominal_2017_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
-            data_hist_pimkpks_nominal = df_pimkpks_data.Filter(nominal_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_data_{cut}_nominal_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_nominal_spring = df_pimkpks_spring.Filter(nominal_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_nominal_spring_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_nominal_fall = df_pimkpks_fall.Filter(nominal_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_nominal_fall_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_nominal_2017 = df_pimkpks_2017.Filter(nominal_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_nominal_2017_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pimkpks_m')
+            data_hist_pipkmks_nominal = df_pipkmks_data.Filter(nominal_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_data_{cut}_nominal_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_nominal_spring = df_pipkmks_spring.Filter(nominal_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_nominal_spring_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_nominal_fall = df_pipkmks_fall.Filter(nominal_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_nominal_fall_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_nominal_2017 = df_pipkmks_2017.Filter(nominal_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_nominal_2017_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
+            data_hist_pimkpks_nominal = df_pimkpks_data.Filter(nominal_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_data_{cut}_nominal_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_nominal_spring = df_pimkpks_spring.Filter(nominal_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_nominal_spring_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_nominal_fall = df_pimkpks_fall.Filter(nominal_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_nominal_fall_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_nominal_2017 = df_pimkpks_2017.Filter(nominal_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_nominal_2017_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pimkpks_m')
 
-            data_hist_pipkmks_loose = df_pipkmks_data.Filter(loose_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_data_{cut}_loose_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_loose_spring = df_pipkmks_spring.Filter(loose_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_loose_spring_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_loose_fall = df_pipkmks_fall.Filter(loose_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_loose_fall_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_loose_2017 = df_pipkmks_2017.Filter(loose_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_loose_2017_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pipkmks_m')
-            data_hist_pimkpks_loose = df_pimkpks_data.Filter(loose_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_data_{cut}_loose_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_loose_spring = df_pimkpks_spring.Filter(loose_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_loose_spring_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_loose_fall = df_pimkpks_fall.Filter(loose_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_loose_fall_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_loose_2017 = df_pimkpks_2017.Filter(loose_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_loose_2017_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pimkpks_m')
+            data_hist_pipkmks_loose = df_pipkmks_data.Filter(loose_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_data_{cut}_loose_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_loose_spring = df_pipkmks_spring.Filter(loose_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_loose_spring_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_loose_fall = df_pipkmks_fall.Filter(loose_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_loose_fall_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_loose_2017 = df_pipkmks_2017.Filter(loose_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_loose_2017_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pipkmks_m')
+            data_hist_pimkpks_loose = df_pimkpks_data.Filter(loose_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_data_{cut}_loose_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_loose_spring = df_pimkpks_spring.Filter(loose_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_loose_spring_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_loose_fall = df_pimkpks_fall.Filter(loose_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_loose_fall_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_loose_2017 = df_pimkpks_2017.Filter(loose_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_loose_2017_e{e}_t{t}', f'{cut}_loose', nbins, xlow, xhigh), 'pimkpks_m')
 
-            data_hist_pipkmks_tight = df_pipkmks_data.Filter(tight_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_data_{cut}_tight_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_tight_spring = df_pipkmks_spring.Filter(tight_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_tight_spring_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_tight_fall = df_pipkmks_fall.Filter(tight_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_tight_fall_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pipkmks_m')
-            signal_hist_pipkmks_tight_2017 = df_pipkmks_2017.Filter(tight_cut_string_pipkmks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_tight_2017_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pipkmks_m')
-            data_hist_pimkpks_tight = df_pimkpks_data.Filter(tight_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_data_{cut}_tight_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_tight_spring = df_pimkpks_spring.Filter(tight_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_tight_spring_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_tight_fall = df_pimkpks_fall.Filter(tight_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_tight_fall_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
-            signal_hist_pimkpks_tight_2017 = df_pimkpks_2017.Filter(tight_cut_string_pimkpks).Filter(e_t_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_tight_2017_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
+            data_hist_pipkmks_tight = df_pipkmks_data.Filter(tight_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_data_{cut}_tight_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_tight_spring = df_pipkmks_spring.Filter(tight_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_tight_spring_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_tight_fall = df_pipkmks_fall.Filter(tight_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_tight_fall_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pipkmks_m')
+            signal_hist_pipkmks_tight_2017 = df_pipkmks_2017.Filter(tight_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_tight_2017_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pipkmks_m')
+            data_hist_pimkpks_tight = df_pimkpks_data.Filter(tight_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_data_{cut}_tight_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_tight_spring = df_pimkpks_spring.Filter(tight_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_tight_spring_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_tight_fall = df_pimkpks_fall.Filter(tight_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_tight_fall_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
+            signal_hist_pimkpks_tight_2017 = df_pimkpks_2017.Filter(tight_cut_string_pimkpks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pimkpks_signal_{cut}_tight_2017_e{e}_t{t}', f'{cut}_tight', nbins, xlow, xhigh), 'pimkpks_m')
 
-            e_t_binned_data_hists_pipkmks.append((data_hist_pipkmks_nominal, data_hist_pipkmks_loose, data_hist_pipkmks_tight))
-            e_t_binned_mc_hists_pipkmks_spring.append((signal_hist_pipkmks_nominal_spring, signal_hist_pipkmks_loose_spring, signal_hist_pipkmks_tight_spring))
-            e_t_binned_mc_hists_pipkmks_fall.append((signal_hist_pipkmks_nominal_fall, signal_hist_pipkmks_loose_fall, signal_hist_pipkmks_tight_fall))
-            e_t_binned_mc_hists_pipkmks_2017.append((signal_hist_pipkmks_nominal_2017, signal_hist_pipkmks_loose_2017, signal_hist_pipkmks_tight_2017))
-            e_t_binned_data_hists_pimkpks.append((data_hist_pimkpks_nominal, data_hist_pimkpks_loose, data_hist_pimkpks_tight))
-            e_t_binned_mc_hists_pimkpks_spring.append((signal_hist_pimkpks_nominal_spring, signal_hist_pimkpks_loose_spring, signal_hist_pimkpks_tight_spring))
-            e_t_binned_mc_hists_pimkpks_fall.append((signal_hist_pimkpks_nominal_fall, signal_hist_pimkpks_loose_fall, signal_hist_pimkpks_tight_fall))
-            e_t_binned_mc_hists_pimkpks_2017.append((signal_hist_pimkpks_nominal_2017, signal_hist_pimkpks_loose_2017, signal_hist_pimkpks_tight_2017))
-    
-    binned_data_hists_pipkmks.append(e_t_binned_data_hists_pipkmks)
-    binned_mc_hists_pipkmks_spring.append(e_t_binned_mc_hists_pipkmks_spring)
-    binned_mc_hists_pipkmks_fall.append(e_t_binned_mc_hists_pipkmks_fall)
-    binned_mc_hists_pipkmks_2017.append(e_t_binned_mc_hists_pipkmks_2017)
-    binned_data_hists_pimkpks.append(e_t_binned_data_hists_pimkpks)
-    binned_mc_hists_pimkpks_spring.append(e_t_binned_mc_hists_pimkpks_spring)
-    binned_mc_hists_pimkpks_fall.append(e_t_binned_mc_hists_pimkpks_fall)
-    binned_mc_hists_pimkpks_2017.append(e_t_binned_mc_hists_pimkpks_2017)
+            data_hists_pipkmks.extend([data_hist_pipkmks_nominal, data_hist_pipkmks_loose, data_hist_pipkmks_tight])
+            mc_hists_pipkmks_spring.extend([signal_hist_pipkmks_nominal_spring, signal_hist_pipkmks_loose_spring, signal_hist_pipkmks_tight_spring])
+            mc_hists_pipkmks_fall.extend([signal_hist_pipkmks_nominal_fall, signal_hist_pipkmks_loose_fall, signal_hist_pipkmks_tight_fall])
+            mc_hists_pipkmks_2017.extend([signal_hist_pipkmks_nominal_2017, signal_hist_pipkmks_loose_2017, signal_hist_pipkmks_tight_2017])
+            data_hists_pimkpks.extend([data_hist_pimkpks_nominal, data_hist_pimkpks_loose, data_hist_pimkpks_tight])
+            mc_hists_pimkpks_spring.extend([signal_hist_pimkpks_nominal_spring, signal_hist_pimkpks_loose_spring, signal_hist_pimkpks_tight_spring])
+            mc_hists_pimkpks_fall.extend([signal_hist_pimkpks_nominal_fall, signal_hist_pimkpks_loose_fall, signal_hist_pimkpks_tight_fall])
+            mc_hists_pimkpks_2017.extend([signal_hist_pimkpks_nominal_2017, signal_hist_pimkpks_loose_2017, signal_hist_pimkpks_tight_2017])
+
 
 
 df_pipkmks_data.Count().GetValue()
@@ -245,108 +222,44 @@ path_to_output_pimkpks = '/work/halld/home/viducic/data/pimkpks/systematics/hist
 print('writing out histograms to file')
 
 output_file_data_pipkmks = ROOT.TFile(f'{path_to_output_pipkmks}/pipkmks_data.root', 'RECREATE')
-
-for hist_tuple in integrated_data_hists_pipkmks:
-    for hist in hist_tuple:
-        hist.Write()
-
-for hist_tuple in binned_data_hists_pipkmks:
-    for hist in hist_tuple:
-        for h in hist:
-            print(h.GetName())
-            h.Write()
-
+for hist in data_hists_pipkmks:
+    print(hist.GetName())
+    hist.Write()
 output_file_data_pipkmks.Close()
 
 output_file_data_pimkpks = ROOT.TFile(f'{path_to_output_pimkpks}/pimkpks_data.root', 'RECREATE')
-
-for hist_tuple in integrated_data_hists_pimkpks:
-    for hist in hist_tuple:
-        hist.Write()
-
-for hist_tuple in binned_data_hists_pimkpks:
-    for hist in hist_tuple:
-        for h in hist:
-            h.Write()
-
+for hist in data_hists_pimkpks:
+    hist.Write()
 output_file_data_pimkpks.Close()
 
 output_file_mc_pipkmks_spring = ROOT.TFile(f'{path_to_output_pipkmks}/pipkmks_mc_spring.root', 'RECREATE')
-
-for hist_tuple in integrated_mc_hists_pipkmks_spring:
-    for hist in hist_tuple:
-        hist.Write()
-
-for hist_tuple in binned_mc_hists_pipkmks_spring:
-    for hist in hist_tuple:
-        for h in hist:
-            h.Write()
-
+for hist in mc_hists_pipkmks_spring:
+    hist.Write()
 output_file_mc_pipkmks_spring.Close()
 
 output_file_mc_pimkpks_spring = ROOT.TFile(f'{path_to_output_pimkpks}/pimkpks_mc_spring.root', 'RECREATE')
-
-for hist_tuple in integrated_mc_hists_pimkpks_spring:
-    for hist in hist_tuple:
-        hist.Write()
-
-for hist_tuple in binned_mc_hists_pimkpks_spring:
-    for hist in hist_tuple:
-        for h in hist:
-            h.Write()
-
+for hist in mc_hists_pimkpks_spring:
+    hist.Write()
 output_file_mc_pimkpks_spring.Close()
 
 output_file_mc_pipkmks_fall = ROOT.TFile(f'{path_to_output_pipkmks}/pipkmks_mc_fall.root', 'RECREATE')
-
-for hist_tuple in integrated_mc_hists_pipkmks_fall:
-    for hist in hist_tuple:
-        hist.Write()
-
-for hist_tuple in binned_mc_hists_pipkmks_fall:
-    for hist in hist_tuple:
-        for h in hist:
-            h.Write()
-
+for hist in mc_hists_pipkmks_fall:
+    hist.Write()
 output_file_mc_pipkmks_fall.Close()
 
 output_file_mc_pimkpks_fall = ROOT.TFile(f'{path_to_output_pimkpks}/pimkpks_mc_fall.root', 'RECREATE')
-
-for hist_tuple in integrated_mc_hists_pimkpks_fall:
-    for hist in hist_tuple:
-        hist.Write()
-
-for hist_tuple in binned_mc_hists_pimkpks_fall:
-    for hist in hist_tuple:
-        for h in hist:
-            h.Write()
-
+for hist in mc_hists_pimkpks_fall:
+    hist.Write()
 output_file_mc_pimkpks_fall.Close()
 
 output_file_mc_pipkmks_2017 = ROOT.TFile(f'{path_to_output_pipkmks}/pipkmks_mc_2017.root', 'RECREATE')
-
-for hist_tuple in integrated_mc_hists_pipkmks_2017:
-    for hist in hist_tuple:
-        hist.Write()
-
-for hist_tuple in binned_mc_hists_pipkmks_2017:
-    for hist in hist_tuple:
-        for h in hist:
-            h.Write()
-
+for hist in mc_hists_pipkmks_2017:
+    hist.Write()
 output_file_mc_pipkmks_2017.Close()
 
 output_file_mc_pimkpks_2017 = ROOT.TFile(f'{path_to_output_pimkpks}/pimkpks_mc_2017.root', 'RECREATE')
-
-for hist_tuple in integrated_mc_hists_pimkpks_2017:
-    for hist in hist_tuple:
-        hist.Write()
-
-for hist_tuple in binned_mc_hists_pimkpks_2017:
-    for hist in hist_tuple:
-        for h in hist:
-            h.Write()
-
+for hist in mc_hists_pimkpks_2017:
+    hist.Write()
 output_file_mc_pimkpks_2017.Close()
 
 print('done')
