@@ -65,7 +65,7 @@ def get_acceptance_per_run_period(channel, run_period, cut, e, t_bin_index, ltn)
     thrown_hist = tools.get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index)
     acceptance, error = tools.get_acceptance(signal_hist.Integral(), thrown_hist.Integral(), error=True)
     # TODO: comment this out when done testing
-    print(f'channel: {channel}, run_period: {run_period}, cut: {cut}, e: {e}, t_bin_index: {t_bin_index}, ltn: {ltn}, %error: {error/acceptance*100}')
+    # print(f'channel: {channel}, run_period: {run_period}, cut: {cut}, e: {e}, t_bin_index: {t_bin_index}, ltn: {ltn}, %error: {error/acceptance*100}')
     return acceptance
     
 
@@ -106,7 +106,6 @@ def correct_data_hist_for_varied_kstar_efficiency(hist, cut, lt):
 
 
 def check_param_guess_structure(param_guesses: dict):
-    print(len(param_guesses))
     if len(param_guesses) != 10:
         raise ValueError('Invalid number of parameter guesses. Must be 10')
     return True
@@ -134,7 +133,7 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
     func.SetParameter(8, param_guesses[8]) # bkg par2
     func.SetParameter(9, param_guesses[9]) # bkg par3
 
-    result = hist.Fit(func, 'SRBE0')
+    result = hist.Fit(func, 'SRBEQ0')
     return result, func
 
 
@@ -180,7 +179,6 @@ def get_yield_and_error(voigt_func):
     return f1_yield, f1_error
 
 
-# TODO: write function to store fit results in CSV file
 def calculate_dataframe_info(voigt_func, e, t, cut):
     e_lumi = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
     f1_yield, f1_yield_error = get_yield_and_error(voigt_func)
@@ -201,7 +199,7 @@ if __name__ == '__main__':
 
     print('Running')
 
-
+    df = pd.DataFrame(columns=['channel', 'ltn', 'e', 't', 'cut', 'f1_yield', 'f1_yield_error', 'f1_acceptance', 'f1_acceptance_error', 'cross_section', 'cross_section_error'])
 
     channels = ['pipkmks', 'pimkpks']
 
@@ -323,7 +321,7 @@ if __name__ == '__main__':
                     gaus_tight.Draw('same')
                     bkg_tight.Draw('same')
 
-                    c.Update()
+                    # c.Update()
                     c.SaveAs(f'/work/halld/home/viducic/systematic_errors/kstar_eff/plots/{channel}_{cut}_e{e}_t{t}_fit.png')
 
                     param_guesses = update_guesses(func_nominal)
@@ -332,7 +330,12 @@ if __name__ == '__main__':
                     row_loose = get_row_for_df(channel, func_loose, e, t, cut, 'loose')
                     row_tight = get_row_for_df(channel, func_tight, e, t, cut, 'tight')
 
-                    # print(f'{channel}, {cut}, e{e}, t{t}, %error: {nominal_yield_error/nominal_yield*100}')
+                    df = df.append(pd.Series(row_nominal, index=df.columns), ignore_index=True)
+                    df = df.append(pd.Series(row_loose, index=df.columns), ignore_index=True)
+                    df = df.append(pd.Series(row_tight, index=df.columns), ignore_index=True)
+
+    df.to_csv('/work/halld/home/viducic/systematic_errors/cs_systematics_results.csv', index=False)
+
 
 
 
