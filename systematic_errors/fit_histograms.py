@@ -123,22 +123,19 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
     
     func = ROOT.TF1(f'func_{cut}_{e}_{t}_{ltn}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.15, 1.51)
 
-    for par_name in param_guesses.keys():
-        func.SetParameter(par_name, param_guesses[par_name])
-
-    func.SetParameter('voigt_amplitude', param_guesses['voigt_amplitude']) # voigt amplitude
+    func.SetParameter(0, param_guesses[0]) # voigt amplitude
     func.SetParLimits(0, 0.1, 100000)
-    func.FixParameter('voigt_mean', param_guesses['voigt_mean']) # voigt mean
-    func.FixParameter('voigt_sigma', param_guesses['voigt_sigma']) # voigt sigma/resolution 
-    func.FixParameter('voigt_width', param_guesses['voigt_width']) # voigt width
-    func.SetParameter('gaus_amplitude', param_guesses['gaus_amplitude']) # gaus amplitude
+    func.FixParameter(1, param_guesses[1]) # voigt mean
+    func.FixParameter(2, param_guesses[2]) # voigt sigma/resolution 
+    func.FixParameter(3, param_guesses[3]) # voigt width
+    func.SetParameter(4, param_guesses[4]) # gaus amplitude
     func.SetParLimits(4, 0.1, 10000)
-    func.FixParameter('gaus_mean', param_guesses['gaus_mean'])
-    func.FixParameter('gaus_width', param_guesses['gaus_width']) # gaus width
-    func.SetParameter('bkg_par1', param_guesses['bkg_par1']) # bkg par1
+    func.FixParameter(5, param_guesses[5])
+    func.FixParameter(6, param_guesses[6]) # gaus width
+    func.SetParameter(7, param_guesses[7]) # bkg par1
     func.SetParLimits(7, -100000, 0.0)
-    func.SetParameter('bkg_par2', param_guesses['bkg_par2']) # bkg par2
-    func.SetParameter('bkg_par3', param_guesses['bkg_par3']) # bkg par3
+    func.SetParameter(8, param_guesses[8]) # bkg par2
+    func.SetParameter(9, param_guesses[9]) # bkg par3
 
     result = hist.Fit(func, 'SRBE0')
     func.SetDirectory(0)
@@ -146,23 +143,23 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
 
 
 def update_guesses(func):
-    new_guesses = {'voigt_amplitude': func.GetParameter(0), 
-               'voigt_mean': func.GetParameter(1), 
-               'voigt_sigma': func.GetParameter(2),
-               'voigt_width': func.GetParameter(3), 
-               'gaus_amplitude': func.GetParameter(4), 
-               'gaus_mean': func.GetParameter(5), 
-               'gaus_width': func.GetParameter(6), 
-               'bkg_par1': func.GetParameter(7), 
-               'bkg_par2': func.GetParameter(8), 
-               'bkg_par3': func.GetParameter(9)}
+    new_guesses = {0: func.GetParameter(0), # voigt_amplitude
+               1: func.GetParameter(1), # voigt_mean
+               2: func.GetParameter(2), # voigt_sigma
+               3: func.GetParameter(3), # voigt_width
+               4: func.GetParameter(4), # gaus_amplitude
+               5: func.GetParameter(5), # gaus_mean
+               6: func.GetParameter(6), # gaus_width
+               7: func.GetParameter(7), # bkg_par1
+               8: func.GetParameter(8), # bkg_par2
+               9: func.GetParameter(9)} # bkg_par3
     return new_guesses
 
 
 def get_func_components(func, e, t, cut, ltn):
-    voigt = ROOT.TF1(f'voigt_{cut}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.15, 1.51)
-    gaus = ROOT.TF1(f'gaus_{cut}_{e}_{t}', 'gaus(0)', 1.15, 1.51)
-    bkg = ROOT.TF1(f'bkg_{cut}_{e}_{t}', 'pol2(0)', 1.15, 1.51)
+    voigt = ROOT.TF1(f'voigt_{cut}_{ltn}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.15, 1.51)
+    gaus = ROOT.TF1(f'gaus_{cut}_{ltn}_{e}_{t}', 'gaus(0)', 1.15, 1.51)
+    bkg = ROOT.TF1(f'bkg_{cut}_{ltn}_{e}_{t}', 'pol2(0)', 1.15, 1.51)
 
     voigt.SetParameter(0, func.GetParameter(0))
     voigt.SetParError(0, func.GetParError(0))
