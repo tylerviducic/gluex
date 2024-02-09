@@ -31,7 +31,7 @@ def get_binned_mc_hist(channel, run_period, cut, e, t_bin_index, ltn):
         raise ValueError(f'Invalid ltn value: {ltn}. Must be one of "loose", "tight", "nominal"')
     mc_filename = f'/work/halld/home/viducic/data/{channel}/systematics/hists/{channel}_mc_{run_period}.root'
     mc_file = ROOT.TFile(mc_filename, 'READ')
-    hist_name = f'{channel}_signal_{cut}_{ltn}_e{e}_t{t_bin_index}'
+    hist_name = f'{channel}_signal_{cut}_{ltn}_{run_period}_e{e}_t{t_bin_index}'
     hist = mc_file.Get(hist_name)
     hist.SetDirectory(0)
     mc_file.Close()
@@ -64,6 +64,7 @@ def get_acceptance_per_run_period(channel, run_period, cut, e, t_bin_index, ltn)
     signal_hist = get_binned_mc_hist(channel, run_period, cut, e, t_bin_index, ltn)
     thrown_hist = tools.get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index)
     acceptance, error = tools.get_acceptance(signal_hist.Integral(), thrown_hist.Integral(), error=True)
+    # TODO: comment this out when done testing
     print(f'channel: {channel}, run_period: {run_period}, cut: {cut}, e: {e}, t_bin_index: {t_bin_index}, ltn: {ltn}, %error: {error/acceptance*100}')
     return acceptance
     
@@ -105,16 +106,12 @@ def correct_data_hist_for_varied_kstar_efficiency(hist, cut, lt):
 
 
 def check_param_guess_structure(param_guesses: dict):
-    param_keys = ['voigt_amplitude', 'voigt_mean', 'voigt_sigma', 'voigt_width', 'gaus_amplitude', 'gaus_mean', 'gaus_width', 'bkg_par1', 'bkg_par2', 'bkg_par3']
+    print(len(param_guesses))
     if len(param_guesses) != 10:
         raise ValueError('Invalid number of parameter guesses. Must be 10')
-    for guess_key, correct_key in zip(param_guesses.keys(), param_keys):
-        if guess_key != correct_key:
-            raise ValueError(f'Invalid parameter guess key: {guess_key}. was expecting {correct_key}')
     return True
 
 
-# TODO: write function to fit histograms
 def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
     if ltn not in ['loose', 'tight', 'nominal']:
         raise ValueError(f'Invalid ltn value: {ltn}. Must be one of "loose", "tight", "nominal"')
@@ -138,7 +135,6 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
     func.SetParameter(9, param_guesses[9]) # bkg par3
 
     result = hist.Fit(func, 'SRBE0')
-    func.SetDirectory(0)
     return result, func
 
 
@@ -175,10 +171,6 @@ def get_func_components(func, e, t, cut, ltn):
     bkg.SetParameter(1, func.GetParameter(8))
     bkg.SetParameter(2, func.GetParameter(9))
 
-    voigt.SetDirectory(0)
-    gaus.SetDirectory(0)
-    bkg.SetDirectory(0)
-
     return voigt, gaus, bkg
 
 
@@ -189,13 +181,28 @@ def get_yield_and_error(voigt_func):
 
 
 # TODO: write function to store fit results in CSV file
-def store_dataframe_info(voigt_loose, voigt_nominal, voigt_tight, luminosity, e, t, cut):
+def calculate_dataframe_info(voigt_func, e, t, cut):
+    e_lumi = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
+    f1_yield, f1_yield_error = get_yield_and_error(voigt_func)
+    f1_acceptance = get_gluex1_acceptance(channel, cut, e, t, 'nominal')
+    f1_acceptance_error = 0 # TODO: figure out acceptance error. Binomial error, maybe?
+    cross_section = tools.calculate_crosssection(f1_yield, f1_acceptance, e_lumi, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
+    cross_section_error = tools.propogate_error_multiplication(cross_section, [f1_yield, f1_acceptance, e_lumi, constants.F1_KKPI_BRANCHING_FRACTION], [f1_yield_error, f1_acceptance_error, e_lumi * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
+    return f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error
 
-    return
+
+def get_row_for_df(channel, voight_func, e, t, cut, ltn):
+    f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error = calculate_dataframe_info(voight_func, e, t, cut)
+    row = [channel, ltn, e, t, cut, f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error]
+    return row
+
 
 if __name__ == '__main__':
 
     print('Running')
+
+
+
     channels = ['pipkmks', 'pimkpks']
 
     c = ROOT.TCanvas('c', 'c', 1000, 1000)
@@ -227,23 +234,21 @@ if __name__ == '__main__':
             for e in range(8, 12):
 
                 param_guesses = {
-                    'voigt_amplitude': 5, # voigt amplitude
-                    'voigt_mean': v_mean, # voigt mean
-                    'voigt_sigma': 0.11,
-                    'voigt_width': v_width, # voigt width
-                    'gaus_amplitude': 15, # gaus amplitude
-                    'gaus_mean': gaus_mean, # gaus mean
-                    'gaus_width': gaus_width, # gaus width
-                    'bkg_par1': -100, # bkg par1
-                    'bkg_par2': 100, # bkg par2
-                    'bkg_par3': 1 # bkg par3
+                    0: 5, # voigt amplitude
+                    1: v_mean, # voigt mean
+                    2: 0.11, # voigt sigma
+                    3: v_width, # voigt width
+                    4: 15, # gaus amplitude
+                    5: gaus_mean, # gaus mean
+                    6: gaus_width, # gaus width
+                    7: -100, # bkg par1
+                    8: 100, # bkg par2
+                    9: 1 # bkg par3
                 }
-
-                e_flux = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
 
                 for t in range(1, 8):
 
-                    param_guesses['voigt_sigma'] = tools.get_binned_resolution(channel, e, t)
+                    param_guesses[2] = tools.get_binned_resolution(channel, e, t)
 
                     nominal_data_hist = get_binned_data_hist(channel, cut, e, t, 'nominal')
                     loose_data_hist = get_binned_data_hist(channel, cut, e, t, 'loose')
@@ -276,6 +281,10 @@ if __name__ == '__main__':
                     voigt_nominal.SetFillColor(f1_color)
                     voigt_loose.SetFillColor(f1_color)
                     voigt_tight.SetFillColor(f1_color)
+                    
+                    voigt_nominal.SetFillStyle(1001)
+                    voigt_loose.SetFillStyle(1001)
+                    voigt_tight.SetFillStyle(1001)
 
                     gaus_nominal.SetLineColor(background_color)
                     gaus_loose.SetLineColor(background_color)
@@ -296,17 +305,20 @@ if __name__ == '__main__':
                     c.Clear()
                     c.Divide(1, 3)
                     c.cd(1)
-                    func_loose.Draw()
+                    eff_cor_hist_loose.Draw()
+                    func_loose.Draw('same')
                     voigt_loose.Draw('same')
                     gaus_loose.Draw('same')
                     bkg_loose.Draw('same')
                     c.cd(2)
-                    func_nominal.Draw()
+                    nominal_cor_hist.Draw()
+                    func_nominal.Draw('same')
                     voigt_nominal.Draw('same')
                     gaus_nominal.Draw('same')
                     bkg_nominal.Draw('same')
                     c.cd(3)
-                    func_tight.Draw()
+                    eff_cor_hist_tight.Draw()
+                    func_tight.Draw('same')
                     voigt_tight.Draw('same')
                     gaus_tight.Draw('same')
                     bkg_tight.Draw('same')
@@ -316,8 +328,11 @@ if __name__ == '__main__':
 
                     param_guesses = update_guesses(func_nominal)
 
-                    nominal_yield, nominal_yield_error = get_yield_and_error(voigt_nominal)
-                    nominal_acceptance = get_gluex1_acceptance(channel, cut, e, t, 'nominal')
+                    row_nominal = get_row_for_df(channel, func_nominal, e, t, cut, 'nominal')
+                    row_loose = get_row_for_df(channel, func_loose, e, t, cut, 'loose')
+                    row_tight = get_row_for_df(channel, func_tight, e, t, cut, 'tight')
+
+                    # print(f'{channel}, {cut}, e{e}, t{t}, %error: {nominal_yield_error/nominal_yield*100}')
 
 
 
