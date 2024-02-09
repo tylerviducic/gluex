@@ -11,8 +11,6 @@ import pandas as pd
 
 ROOT.EnableImplicitMT(12)
 
-# TODO: write fitting pipeline. calculate cross section for each energy and t bin
-
 def get_binned_data_hist(channel, cut, e, t_bin_index, ltn):
     if ltn not in ['loose', 'tight', 'nominal']:
         raise ValueError(f'Invalid ltn value: {ltn}. Must be one of "loose", "tight", "nominal"')
@@ -64,7 +62,6 @@ def get_acceptance_per_run_period(channel, run_period, cut, e, t_bin_index, ltn)
     signal_hist = get_binned_mc_hist(channel, run_period, cut, e, t_bin_index, ltn)
     thrown_hist = tools.get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index)
     acceptance, error = tools.get_acceptance(signal_hist.Integral(), thrown_hist.Integral(), error=True)
-    # TODO: comment this out when done testing
     # print(f'channel: {channel}, run_period: {run_period}, cut: {cut}, e: {e}, t_bin_index: {t_bin_index}, ltn: {ltn}, %error: {error/acceptance*100}')
     return acceptance
     
@@ -335,7 +332,7 @@ if __name__ == '__main__':
                     df = df.append(pd.Series(row_tight, index=df.columns), ignore_index=True)
 
     df.to_csv('/work/halld/home/viducic/systematic_errors/cs_systematics_results.csv', index=False)
-
+    print('done')
 
 
 
