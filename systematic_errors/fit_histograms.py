@@ -197,6 +197,7 @@ def get_row_for_df(channel, voight_func, e, t, cut, ltn):
 
 if __name__ == '__main__':
 
+    ROOT.gROOT.SetBatch(True)
     print('Running')
 
     df = pd.DataFrame(columns=['channel', 'ltn', 'e', 't', 'cut', 'f1_yield', 'f1_yield_error', 'f1_acceptance', 'f1_acceptance_error', 'cross_section', 'cross_section_error'])
@@ -300,7 +301,6 @@ if __name__ == '__main__':
                     bkg_loose.SetLineStyle(2)
                     bkg_tight.SetLineStyle(2)
 
-                    c.Clear()
                     c.Divide(1, 3)
                     c.cd(1)
                     eff_cor_hist_loose.Draw()
