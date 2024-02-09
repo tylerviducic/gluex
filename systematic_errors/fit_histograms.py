@@ -127,17 +127,16 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
         func.SetParameter(par_name, param_guesses[par_name])
 
     func.SetParameter('voigt_amplitude', param_guesses['voigt_amplitude']) # voigt amplitude
-    # FIXME: set par limits takes int as first argument, not string
-    func.SetParLimits('voigt_amplitude', 0.1, 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter('voigt_mean', param_guesses['voigt_mean']) # voigt mean
     func.FixParameter('voigt_sigma', param_guesses['voigt_sigma']) # voigt sigma/resolution 
     func.FixParameter('voigt_width', param_guesses['voigt_width']) # voigt width
-    func.SetParameter('voigt_amplitude', param_guesses['gaus_amplitude']) # gaus amplitude
-    func.SetParLimits('voigt_amplitude', 0.1, 10000)
+    func.SetParameter('gaus_amplitude', param_guesses['gaus_amplitude']) # gaus amplitude
+    func.SetParLimits(4, 0.1, 10000)
     func.FixParameter('gaus_mean', param_guesses['gaus_mean'])
     func.FixParameter('gaus_width', param_guesses['gaus_width']) # gaus width
     func.SetParameter('bkg_par1', param_guesses['bkg_par1']) # bkg par1
-    func.SetParLimits('bkg_par1', -100000, 0.0)
+    func.SetParLimits(7, -100000, 0.0)
     func.SetParameter('bkg_par2', param_guesses['bkg_par2']) # bkg par2
     func.SetParameter('bkg_par3', param_guesses['bkg_par3']) # bkg par3
 
