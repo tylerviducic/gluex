@@ -23,13 +23,15 @@ def main():
     df['barlow_loose'] = np.where(True, barlow_test(df['cross_section_loose'], df['cross_section_nominal'], df['cross_section_error_loose'], df['cross_section_error_nominal']), np.nan)
     df['barlow_tight'] = np.where(True, barlow_test(df['cross_section_tight'], df['cross_section_nominal'], df['cross_section_error_tight'], df['cross_section_error_nominal']), np.nan)
 
+    sig_cuts = df.loc[(abs(df['barlow_loose']) > 1.0) | (abs(df['barlow_tight']) > 1.0)]
+    sig_cuts.to_csv('/work/halld/home/viducic/systematic_errors/signifigant_cut_systematics.csv')
 
     #make seaborn relplot
     sns.relplot(data=df, x='t', y='barlow_loose', hue='e', style='cut', kind='scatter', row='channel')
     plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_loose.png')
     sns.relplot(data=df, x='t', y='barlow_tight', hue='e', style='cut', kind='scatter', row='channel')
     plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_tight.png')
-    # input('Press enter to continue')
+    # # input('Press enter to continue')
     
     fig, ax = plt.subplots()
     
