@@ -202,7 +202,10 @@ if __name__ == '__main__':
     ROOT.gROOT.SetBatch(True)
     print('Running')
 
-    df = pd.DataFrame(columns=['channel', 'ltn', 'e', 't', 'cut', 'f1_yield', 'f1_yield_error', 'f1_acceptance', 'f1_acceptance_error', 'cross_section', 'cross_section_error'])
+    df = pd.DataFrame(columns=['channel', 'e', 't', 'cut',
+                               'f1_yield_nominal', 'f1_yield_error_nominal', 'f1_acceptance_nominal', 'f1_acceptance_error_nominal', 'cross_section_nominal', 'cross_section_error_nominal',
+                               'f1_yield_loose', 'f1_yield_error_loose', 'f1_acceptance_loose', 'f1_acceptance_error_loose', 'cross_section_loose', 'cross_section_error_loose',
+                               'f1_yield_tight', 'f1_yield_error_tight', 'f1_acceptance_tight', 'f1_acceptance_error_tight', 'cross_section_tight', 'cross_section_error_tight'])
 
     channels = ['pipkmks', 'pimkpks']
 
@@ -328,6 +331,7 @@ if __name__ == '__main__':
 
                     param_guesses = update_guesses(func_nominal)
                     row = get_row_for_df(channel, voigt_nominal, voigt_loose, voigt_tight, e, t, cut)
+                    df = df.append(pd.Series(row, index=df.columns), ignore_index=True)
 
     df.to_csv('/work/halld/home/viducic/systematic_errors/cs_systematics_results.csv', index=False)
     print('done')
