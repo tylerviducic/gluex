@@ -25,18 +25,17 @@ def main():
 
 
     #make seaborn relplot
-    sns.relplot(data=df, x='t', y='barlow_loose', hue='e', style='cut', kind='scatter', row='channel')
-    plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_loose.png')
-    sns.relplot(data=df, x='t', y='barlow_tight', hue='e', style='cut', kind='scatter', row='channel')
-    plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_tight.png')
-    input('Press enter to continue')
+    # sns.relplot(data=df, x='t', y='barlow_loose', hue='e', style='cut', kind='scatter', row='channel')
+    # plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_loose.png')
+    # sns.relplot(data=df, x='t', y='barlow_tight', hue='e', style='cut', kind='scatter', row='channel')
+    # plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_tight.png')
+    # input('Press enter to continue')
     
     fig, ax = plt.subplots()
     
     grouped = df.groupby(['channel', 'cut', 'e'])
     for name, group in grouped:
         # print(name)
-        # print(group)
         ax.scatter(group['t'], group['barlow_loose'], label='loose', color='blue')
         ax.scatter(group['t'], group['barlow_tight'], label='tight', color='red')
         ax.set_title(f'Barlow test for channel: {name[0]}, cut: {name[1]}, e: {name[2]}')
@@ -45,6 +44,8 @@ def main():
         ax.legend()
         fig.savefig(f'/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_{name[0]}_{name[1]}_{name[2]}.png')
         ax.clear()
+
+# TODO: iterate over rows and print yield differences for each row
 
 
 
