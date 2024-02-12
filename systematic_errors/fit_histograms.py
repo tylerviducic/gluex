@@ -186,9 +186,14 @@ def calculate_dataframe_info(voigt_func, e, t, cut):
     return f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error
 
 
-def get_row_for_df(channel, voight_func, e, t, cut, ltn):
-    f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error = calculate_dataframe_info(voight_func, e, t, cut)
-    row = [channel, ltn, e, t, cut, f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error]
+def get_row_for_df(channel, voigt_nominal, voigt_loose, voigt_tight, e, t, cut):
+    f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal = calculate_dataframe_info(voigt_nominal, e, t, cut)
+    f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose = calculate_dataframe_info(voigt_loose, e, t, cut)
+    f1_yield_tight, f1_yield_error_tight, f1_acceptance_tight, f1_acceptance_error_tight, cross_section_tight, cross_section_error_tight = calculate_dataframe_info(voigt_tight, e, t, cut)
+    row = [channel, e, t, cut, 
+           f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal,
+           f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose,
+           f1_yield_tight, f1_yield_error_tight, f1_acceptance_tight, f1_acceptance_error_tight, cross_section_tight, cross_section_error_tight]
     return row
 
 
@@ -322,14 +327,7 @@ if __name__ == '__main__':
                     c.SaveAs(f'/work/halld/home/viducic/systematic_errors/kstar_eff/plots/{channel}_{cut}_e{e}_t{t}_fit.png')
 
                     param_guesses = update_guesses(func_nominal)
-
-                    row_nominal = get_row_for_df(channel, func_nominal, e, t, cut, 'nominal')
-                    row_loose = get_row_for_df(channel, func_loose, e, t, cut, 'loose')
-                    row_tight = get_row_for_df(channel, func_tight, e, t, cut, 'tight')
-
-                    df = df.append(pd.Series(row_nominal, index=df.columns), ignore_index=True)
-                    df = df.append(pd.Series(row_loose, index=df.columns), ignore_index=True)
-                    df = df.append(pd.Series(row_tight, index=df.columns), ignore_index=True)
+                    row = get_row_for_df(channel, voigt_nominal, voigt_loose, voigt_tight, e, t, cut)
 
     df.to_csv('/work/halld/home/viducic/systematic_errors/cs_systematics_results.csv', index=False)
     print('done')
