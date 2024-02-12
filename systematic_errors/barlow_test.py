@@ -25,10 +25,10 @@ def main():
 
 
     #make seaborn relplot
-    # sns.relplot(data=df, x='t', y='barlow_loose', hue='e', style='cut', kind='scatter', row='channel')
-    # plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_loose.png')
-    # sns.relplot(data=df, x='t', y='barlow_tight', hue='e', style='cut', kind='scatter', row='channel')
-    # plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_tight.png')
+    sns.relplot(data=df, x='t', y='barlow_loose', hue='e', style='cut', kind='scatter', row='channel')
+    plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_loose.png')
+    sns.relplot(data=df, x='t', y='barlow_tight', hue='e', style='cut', kind='scatter', row='channel')
+    plt.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_tight.png')
     # input('Press enter to continue')
     
     fig, ax = plt.subplots()
@@ -45,7 +45,9 @@ def main():
         fig.savefig(f'/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_{name[0]}_{name[1]}_{name[2]}.png')
         ax.clear()
 
-# TODO: iterate over rows and print yield differences for each row
+        # for index, row in df.iterrows():
+        #     print(f"cut: {row['cut']}, E: {row['e']}, t: {row['t']} :: loose: {row['f1_yield_loose']} +/- {row['f1_yield_error_loose']}, nominal: {row['f1_yield_nominal']} +/- {row['f1_yield_error_nominal']}, tight: {row['f1_yield_tight']} +/- {row['f1_yield_error_tight']}")
+
 
 
 
