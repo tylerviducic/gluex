@@ -11,6 +11,7 @@ import pandas as pd
 
 ROOT.EnableImplicitMT(12)
 
+
 def get_binned_data_hist(channel, cut, e, t_bin_index, ltn):
     if ltn not in ['loose', 'tight', 'nominal']:
         raise ValueError(f'Invalid ltn value: {ltn}. Must be one of "loose", "tight", "nominal"')

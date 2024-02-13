@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
+# TODO: make title and legend more descriptive
 def barlow_test(nominal, variation, sigma_nominal, sigma_variation):
     """
     Barlow test for systematic errors
