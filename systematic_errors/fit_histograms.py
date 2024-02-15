@@ -177,7 +177,7 @@ def get_yield_and_error(voigt_func):
     return f1_yield, f1_error
 
 
-def calculate_dataframe_info(voigt_func, e, t, cut):
+def calculate_dataframe_info(voigt_func, channel, e, t, cut):
     e_lumi = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
     f1_yield, f1_yield_error = get_yield_and_error(voigt_func)
     f1_acceptance = get_gluex1_acceptance(channel, cut, e, t, 'nominal')
@@ -188,9 +188,9 @@ def calculate_dataframe_info(voigt_func, e, t, cut):
 
 
 def get_row_for_df(channel, voigt_nominal, voigt_loose, voigt_tight, e, t, cut):
-    f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal = calculate_dataframe_info(voigt_nominal, e, t, cut)
-    f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose = calculate_dataframe_info(voigt_loose, e, t, cut)
-    f1_yield_tight, f1_yield_error_tight, f1_acceptance_tight, f1_acceptance_error_tight, cross_section_tight, cross_section_error_tight = calculate_dataframe_info(voigt_tight, e, t, cut)
+    f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal = calculate_dataframe_info(voigt_nominal, channel, e, t, cut)
+    f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose = calculate_dataframe_info(voigt_loose, channel, e, t, cut)
+    f1_yield_tight, f1_yield_error_tight, f1_acceptance_tight, f1_acceptance_error_tight, cross_section_tight, cross_section_error_tight = calculate_dataframe_info(voigt_tight, channel, e, t, cut)
     row = [channel, e, t, cut, 
            f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal,
            f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose,
