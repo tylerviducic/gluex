@@ -60,12 +60,14 @@ def get_gluex1_mc_hist(channel, cut, e, t_bin_index, ltn):
 
 
 def get_acceptance_per_run_period(channel, run_period, cut, e, t_bin_index, ltn):
+    if cut == 'neutral_kstar' or cut == 'charged_kstar':
+        return tools.get_binned_signal_acceptance(channel, run_period, e, t_bin_index, error=False)
     signal_hist = get_binned_mc_hist(channel, run_period, cut, e, t_bin_index, ltn)
     thrown_hist = tools.get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index)
     acceptance, error = tools.get_acceptance(signal_hist.Integral(), thrown_hist.Integral(), error=True)
     # print(f'channel: {channel}, run_period: {run_period}, cut: {cut}, e: {e}, t_bin_index: {t_bin_index}, ltn: {ltn}, %error: {error/acceptance*100}')
     return acceptance
-    
+
 
 def get_gluex1_acceptance(channel, cut, e, t_bin_index, ltn):
     acceptance_spring = get_acceptance_per_run_period(channel, 'spring', cut, e, t_bin_index, ltn)
@@ -264,8 +266,8 @@ if __name__ == '__main__':
                         eff_cor_hist_loose = tools.correct_data_hist_for_kstar_efficiency(loose_data_hist)
                         eff_cor_hist_tight = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
                     else: 
-                        eff_cor_hist_loose = tools.correct_data_hist_for_kstar_efficiency(loose_data_hist)
-                        eff_cor_hist_tight = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
+                        eff_cor_hist_loose = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'loose')
+                        eff_cor_hist_tight = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'tight')
 
                     result_nominal, func_nominal = fit_hist(nominal_cor_hist, param_guesses, cut, e, t, 'nominal')
                     result_loose, func_loose = fit_hist(eff_cor_hist_loose, param_guesses, cut, e, t, 'loose')
