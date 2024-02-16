@@ -267,7 +267,7 @@ if __name__ == '__main__':
                         eff_cor_hist_tight = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
                     else: 
                         eff_cor_hist_loose = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'loose')
-                        eff_cor_hist_tight = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'tight')
+                        eff_cor_hist_tight = correct_data_hist_for_varied_kstar_efficiency(tight_data_hist, cut, 'tight')
 
                     result_nominal, func_nominal = fit_hist(nominal_cor_hist, param_guesses, cut, e, t, 'nominal')
                     result_loose, func_loose = fit_hist(eff_cor_hist_loose, param_guesses, cut, e, t, 'loose')
