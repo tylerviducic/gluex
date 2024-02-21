@@ -1248,4 +1248,22 @@ def main():
 
 if __name__ == '__main__':
     # TODO: go through all fits and write down problems
+
+    """problems
+    pimkpks exp 8, 9, 10, 11 (params probably)
+    pimkpks float gaus mean 9, 11
+    pimkpks float gaus width 8, 10, 
+    pimkpks float voigt width 8, 9, 10, 11
+    pimkpks no gaus 8, 9, 10, 11
+    pimkpks pol1 11
+
+    pipkmks exp 8, 9, 10, 11 (params probably)
+    pipkmks float gaus mean 11 
+    pipkmks float gaus width 8, 9
+    pipkmks float voigt mean 11
+    pipkmks float voigt width 8, 9, 10, 11
+    pipkmks no gaus 8, 9, 10, 11
+    pipkmks pol3 fit range might be wrong
+
+    """
     main()
