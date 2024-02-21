@@ -8,6 +8,7 @@ import my_library.common_analysis_tools as tools
 import my_library.constants as constants
 import pandas as pd
 
+
 def get_data(channel, e, t):
     if channel == 'pipkmks':
         hist_title = 'K^{-}K_{s}#pi^{+}'
@@ -28,7 +29,7 @@ def get_data(channel, e, t):
     hist.SetDirectory(0)
     return hist
 
-# TODO: draw functions with correct colors
+
 def get_properties(channel):
     if channel == 'pipkmks':
         properties = {
@@ -102,6 +103,8 @@ def get_nominal_components(func):
     channel = name_root[2]
     e = name_root[3]
     t = name_root[4]
+    properties = get_properties(channel)
+
     voigt = ROOT.TF1(f'voigt_nominal_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', func.GetXmin(), func.GetXmax())
     voigt.SetParameter(0, func.GetParameter(0))
     voigt.SetParameter(1, func.GetParameter(1))
@@ -133,6 +136,13 @@ def get_nominal_components(func):
     bkg.SetParError(2, func.GetParError(9))
 
 
+    voigt.SetLineColor(ROOT.kBlack)
+    voigt.SetFillColor(properties['f1_color'])
+    voigt.SetFillStyle(1001)
+    gaus.SetLineColor(properties['background_color'])
+    gaus.SetLineStyle(3)
+    bkg.SetLineColor(properties['background_color'])
+    bkg.SetLineStyle(2)
     return voigt, gaus, bkg
 
 
@@ -200,6 +210,15 @@ def get_pol1_components(func):
 
     bkg.SetParError(0, func.GetParError(7))
     bkg.SetParError(1, func.GetParError(8))
+
+    properties = get_properties(channel)
+    voigt.SetLineColor(ROOT.kBlack)
+    voigt.SetFillColor(properties['f1_color'])
+    voigt.SetFillStyle(1001)
+    gaus.SetLineColor(properties['background_color'])
+    gaus.SetLineStyle(3)
+    bkg.SetLineColor(properties['background_color'])
+    bkg.SetLineStyle(2)
 
     return voigt, gaus, bkg
 
@@ -277,6 +296,15 @@ def get_pol3_components(func):
     bkg.SetParError(2, func.GetParError(9))
     bkg.SetParError(3, func.GetParError(10))
 
+    properties = get_properties(channel)
+    voigt.SetLineColor(ROOT.kBlack)
+    voigt.SetFillColor(properties['f1_color'])
+    voigt.SetFillStyle(1001)
+    gaus.SetLineColor(properties['background_color'])
+    gaus.SetLineStyle(3)
+    bkg.SetLineColor(properties['background_color'])
+    bkg.SetLineStyle(2)
+
     return voigt, gaus, bkg
 
 
@@ -334,6 +362,13 @@ def get_no_gaus_components(func):
     bkg.SetParError(0, func.GetParError(4))
     bkg.SetParError(1, func.GetParError(5))
     bkg.SetParError(2, func.GetParError(6))
+
+    properties = get_properties(channel)
+    voigt.SetLineColor(ROOT.kBlack)
+    voigt.SetFillColor(properties['f1_color'])
+    voigt.SetFillStyle(1001)
+    bkg.SetLineColor(properties['background_color'])
+    bkg.SetLineStyle(2)
 
     return voigt, bkg
 
@@ -408,6 +443,15 @@ def get_exp_pol2_components(func):
     bkg.SetParError(1, func.GetParError(8))
     bkg.SetParError(2, func.GetParError(9))
 
+    properties = get_properties(channel)
+    voigt.SetLineColor(ROOT.kBlack)
+    voigt.SetFillColor(properties['f1_color'])
+    voigt.SetFillStyle(1001)
+    gaus.SetLineColor(properties['background_color'])
+    gaus.SetLineStyle(3)
+    bkg.SetLineColor(properties['background_color'])
+    bkg.SetLineStyle(2)
+
     return voigt, gaus, bkg
 
 
@@ -480,6 +524,15 @@ def get_chebyshev_components(func):
     bkg.SetParError(0, func.GetParError(7))
     bkg.SetParError(1, func.GetParError(8))
     bkg.SetParError(2, func.GetParError(9))
+
+    properties = get_properties(channel)
+    voigt.SetLineColor(ROOT.kBlack)
+    voigt.SetFillColor(properties['f1_color'])
+    voigt.SetFillStyle(1001)
+    gaus.SetLineColor(properties['background_color'])
+    gaus.SetLineStyle(3)
+    bkg.SetLineColor(properties['background_color'])
+    bkg.SetLineStyle(2)
 
     return voigt, gaus, bkg
 
@@ -1137,4 +1190,5 @@ def main():
 
 
 if __name__ == '__main__':
+    # TODO: run this and fix errors. hopefully it is done by friday :)
     main()
