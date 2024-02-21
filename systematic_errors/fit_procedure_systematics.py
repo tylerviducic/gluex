@@ -1121,16 +1121,16 @@ def main():
 
                 c_nogaus.cd(t)
                 hists[-1].Draw()
-                funcs_nominal[-1][0].Draw('SAME')
-                funcs_nominal[-1][1].Draw('SAME')
-                funcs_nominal[-1][2].Draw('SAME')
-
-                c_exppol2.cd(t)
-                hists[-1].Draw()
                 funcs_nogaus[-1][0].Draw('SAME')
                 funcs_nogaus[-1][1].Draw('SAME')
                 funcs_nogaus[-1][2].Draw('SAME')
-                funcs_nogaus[-1][3].Draw('SAME')
+
+                c_exppol2.cd(t)
+                hists[-1].Draw()
+                funcs_exppol2[-1][0].Draw('SAME')
+                funcs_exppol2[-1][1].Draw('SAME')
+                funcs_exppol2[-1][2].Draw('SAME')
+                funcs_exppol2[-1][3].Draw('SAME')
 
                 c_chebyshev.cd(t)
                 hists[-1].Draw()
