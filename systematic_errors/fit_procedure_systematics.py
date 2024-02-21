@@ -900,7 +900,6 @@ def main():
     c_floatgausmean = ROOT.TCanvas('c_floatgausmean', 'c_floatgausmean', 800, 600)
     c_floatgauswidth = ROOT.TCanvas('c_floatgauswidth', 'c_floatgauswidth', 800, 600)
 
-    # TODO: append to list and draw from there
     funcs_nominal = []
     funcs_pol1 = []
     funcs_pol3 = []
@@ -1248,5 +1247,5 @@ def main():
 
 
 if __name__ == '__main__':
-    # TODO: run this and fix errors. hopefully it is done by friday :)
+    # TODO: go through all fits and write down problems
     main()
