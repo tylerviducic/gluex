@@ -31,6 +31,7 @@ if channel == 'pipkmks' :
     f1_color = 860-6
     gaus_color = 880
     background_color = 616
+    hist_title = 'M(K^{-}K_{s}#pi^{+}) [GeV]'
 elif channel == 'pimkpks' :
     voight_resoltion = constants.F1_PIMKPKS_VOIGHT_SIGMA
     voight_resolution_error = constants.F1_PIMKPKS_VOIGHT_SIGMA_ERROR
@@ -38,6 +39,7 @@ elif channel == 'pimkpks' :
     f1_color = 634
     gaus_color = 887
     background_color = 618
+    hist_title = 'M(K^{+}K_{s}#pi^{-}) [GeV]'
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg const', 'bkg first order', 'bkg second order']
 initial_guesses = {
@@ -56,6 +58,8 @@ initial_guesses = {
 data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
 data_hist.GetXaxis().SetRangeUser(1.15, 1.51)
 data_hist.GetYaxis().SetRangeUser(0, data_hist.GetMaximum()*1.1)
+data_hist.GetXaxis().SetTitle(hist_title)
+data_hist.GetYaxis().SetTitle('Events / 10 MeV')
 
 fit_low, fit_high = 1.17, 1.5
 # fit_low, fit_high = 1.16, 1.49 
@@ -130,12 +134,17 @@ bkg.SetParError(1, func.GetParError(8))
 bkg.SetParameter(2, func.GetParameter('bkg second order'))
 bkg.SetParError(2, func.GetParError(9))
 
+chi2_per_ndf = func.GetChisquare()/func.GetNDF()
+voigt_mass = voight.GetParameter(1)
+voigt_width = voight.GetParameter(3)
+voigt_mass_err = voight.GetParError(1)
+voigt_width_err = voight.GetParError(3)
 
-print(f'Voight Mass: {voight.GetParameter(1)} +/- {voight.GetParError(1)}')
-print(f'Voight Width: {voight.GetParameter(3)} +/- {voight.GetParError(3)}')
+print(f'Voight Mass: {voigt_mass} +/- {voigt_mass_err}')
+print(f'Voight Width: {voigt_width} +/- {voigt_width_err}')
 print(f'Gaus mean: {gaus.GetParameter(1)} +/- {gaus.GetParError(1)}')
 print(f'Gaus width: {gaus.GetParameter(2)} +/- {gaus.GetParError(2)}')
-print(f'chi^2/ndf = {func.GetChisquare()/func.GetNDF()}')
+print(f'chi^2/ndf = {chi2_per_ndf}')
 
 
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
@@ -144,6 +153,20 @@ func.Draw('same')
 voight.Draw('same')
 gaus.Draw('same')
 bkg.Draw('same')
+
+legend = ROOT.TLegend(0.725, 0.2, 0.945, 0.5)
+legend.AddEntry(func, "Total Fit", "lpf")
+legend.AddEntry(voight, "f_{1}(1285) Signal", "lpf")
+legend.AddEntry(gaus, "f_{1}(1420) Tail", "lpf")
+legend.AddEntry(bkg, "Background", "l")
+legend.Draw()
+
+fit_params = ROOT.TLatex()
+fit_params.SetTextSize(0.0425)
+fit_params.DrawLatexNDC(0.5, 0.75, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
+fit_params.DrawLatexNDC(0.5, 0.8, 'Width = ' + '{:.2f}'.format(voigt_width * 1000) + ' #pm ' + '{:.2f}'.format(voigt_width_err * 1000) + ' MeV')
+fit_params.DrawLatexNDC(0.5, 0.85, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000) + ' #pm ' + '{:.2f}'.format(voigt_mass_err * 1000) + ' MeV')
+
 c.Update()
 
 input('press enter to continue')
