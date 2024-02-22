@@ -15,8 +15,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 ROOT.TF1.InitStandardFunctions()
@@ -60,6 +60,7 @@ data_hist.GetXaxis().SetRangeUser(1.15, 1.51)
 data_hist.GetYaxis().SetRangeUser(0, data_hist.GetMaximum()*1.1)
 data_hist.GetXaxis().SetTitle(hist_title)
 data_hist.GetYaxis().SetTitle('Events / 10 MeV')
+data_hist.SetMarkerStyle(20)
 
 fit_low, fit_high = 1.17, 1.5
 # fit_low, fit_high = 1.16, 1.49 
@@ -148,7 +149,7 @@ print(f'chi^2/ndf = {chi2_per_ndf}')
 
 
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
-data_hist.Draw()
+data_hist.Draw("E1")
 func.Draw('same')
 voight.Draw('same')
 gaus.Draw('same')
