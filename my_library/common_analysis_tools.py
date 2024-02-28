@@ -1695,7 +1695,7 @@ def sort_hists_by_max(hists: list):
 
 def remove_zero_datapoints(og_hist: ROOT.TH1):
     hist = og_hist.Clone()
-    for i in range(hist.GetNbinsX()):
+    for i in reversed(range(hist.GetNbinsX())):
         if hist.GetBinContent(i) == 0:
             hist_above = hist.GetBinContent(i+1)
             hist_below = hist.GetBinContent(i-1)

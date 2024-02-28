@@ -95,6 +95,7 @@ for e in range(8, 12):
 
 
         func = ROOT.TF1(f'func_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', fit_low, fit_high)
+        # func = ROOT.TF1(f'func_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + [7] + [8]*(x+1.15) + [9]*(x-1.15)*(x-1.15)', fit_low, fit_high)
         
         e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==t)]['sigma'].values[0]
 
@@ -112,10 +113,23 @@ for e in range(8, 12):
         # func.SetParameter(6, initial_guesses[6])
         # func.SetParLimits(6, 0.025, 0.05)
         func.SetParameter(7, initial_guesses[7]) # bkg par1
-        # func.SetParLimits(7, -100000, 50.0)
         func.SetParameter(8, initial_guesses[8]) # bkg par2
-        # func.SetParLimits(8, 0, 1000000)
         func.SetParameter(9, initial_guesses[9]) # bkg par3
+        # if t != 7:
+        #     # func.SetParameter(7, 0) # bkg par1
+        #     func.SetParameter(7, initial_guesses[7]) # bkg par1
+        #     func.SetParameter(8, initial_guesses[8]) # bkg par2
+        #     func.SetParameter(9, initial_guesses[9]) # bkg par3
+        # else:
+        #     func.SetParameter(7, -100)
+        #     # func.SetParLimits(7, -100000, .0)
+        #     # func.SetParLimits(7, -100000, 0)
+        #     func.SetParameter(8, 100)
+        #     # func.SetParLimits(8, 0, 1000000)
+        #     func.SetParameter(9, 1)
+            # func.SetParLimits(9, -100000, 0)
+        # func.SetParLimits(7, -100000, 50.0)
+        # func.SetParLimits(8, 0, 1000000)
         # func.SetParLimits(9, -100000, 100000)
 
         func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
@@ -131,6 +145,7 @@ for e in range(8, 12):
         gaus.SetLineColor(background_color)
         gaus.SetLineStyle(3)
         bkg = ROOT.TF1('bkg', 'pol2(0)', fit_low, fit_high)
+        # bkg = ROOT.TF1('bkg', '[0] + [1]*(x+1.15) + [2]*(x-1.15)*(x-1.15)', fit_low, fit_high)
         bkg.SetLineColor(background_color)
         bkg.SetLineStyle(2)
 
