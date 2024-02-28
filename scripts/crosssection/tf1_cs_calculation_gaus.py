@@ -3,8 +3,8 @@ import my_library.common_analysis_tools as ct
 import my_library.constants as constants
 import pandas as pd
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -112,7 +112,7 @@ for e in range(8, 12):
         # func.SetParameter(6, initial_guesses[6])
         # func.SetParLimits(6, 0.025, 0.05)
         func.SetParameter(7, initial_guesses[7]) # bkg par1
-        func.SetParLimits(7, -100000, 0.0)
+        # func.SetParLimits(7, -100000, 50.0)
         func.SetParameter(8, initial_guesses[8]) # bkg par2
         # func.SetParLimits(8, 0, 1000000)
         func.SetParameter(9, initial_guesses[9]) # bkg par3
