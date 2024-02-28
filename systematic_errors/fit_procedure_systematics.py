@@ -317,14 +317,14 @@ def get_nogaus_guesses(properties):
         3: properties['v_width'], # voight width
         4: -100, # bkg par1
         5: 100, # bkg par2
-        6: -1 # bkg par3
+        6: -100 # bkg par3
     }
     return initial_guesses
 
 
 def get_nogaus_func(channel, guesses, e, t):
     properties = get_properties(channel)
-    func = ROOT.TF1(f'func_nominal_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + pol2(4)', properties['range_low'], properties['range_high'])
+    func = ROOT.TF1(f'func_nogaus_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + pol2(4)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
     func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
@@ -332,8 +332,8 @@ def get_nogaus_func(channel, guesses, e, t):
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # bkg par1
     # func.SetParLimits(4, -100000, 0.0)
-    func.FixParameter(5, guesses[5])# bkg par2
-    func.FixParameter(6, guesses[6]) # bkg par3
+    func.SetParameter(5, guesses[5])# bkg par2
+    func.SetParameter(6, guesses[6]) # bkg par3
     return func
 
 
@@ -576,8 +576,8 @@ def get_voigt_width_float_func(channel, guesses, e, t):
     func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
-    func.SetParameter(2, guesses[3]) # voight width
-    func.SetParLimits(3, 0.01, 0.05)
+    func.SetParameter(3, guesses[3]) # voight width
+    func.SetParLimits(3, 0.01, 0.045)
     func.SetParameter(4, guesses[4]) # gaus amplitude
     func.SetParLimits(4, 0.1, 10000)
     func.FixParameter(5, guesses[5])# gaus mean
@@ -1254,17 +1254,17 @@ if __name__ == '__main__':
     [DONE] pimkpks exp 8, 9, 10, 11 (params probably)
     [DONE] pimkpks float gaus mean 9, 11
     [DONE] pimkpks float gaus width 8, 10, 
-    pimkpks float voigt width 8, 9, 10, 11
-    pimkpks no gaus 8, 9, 10, 11
-    pimkpks pol1 11
+    [DONE] pimkpks float voigt width 8, 9, 10, 11
+    [DONE] pimkpks no gaus 8, 9, 10, 11
+    [ALL GOOD] pimkpks pol1 11
 
     [DONE] pipkmks exp 8, 9, 10, 11 (params probably)
     [DONE] pipkmks float gaus mean 11 
     [DONE] pipkmks float gaus width 8, 9
     [DONE] pipkmks float voigt mean 11
-    pipkmks float voigt width 8, 9, 10, 11
-    pipkmks no gaus 8, 9, 10, 11
-    pipkmks pol3 fit range might be wrong
+    [DONE] pipkmks float voigt width 8, 9, 10, 11
+    [DONE] pipkmks no gaus 8, 9, 10, 11
+    [ALL GOOD] pipkmks pol3 fit range might be wrong
 
     """
     main()
