@@ -269,6 +269,10 @@ if __name__ == '__main__':
                         eff_cor_hist_loose = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'loose')
                         eff_cor_hist_tight = correct_data_hist_for_varied_kstar_efficiency(tight_data_hist, cut, 'tight')
 
+                    nominal_cor_hist = tools.remove_zero_datapoints(nominal_cor_hist)
+                    eff_cor_hist_loose = tools.remove_zero_datapoints(eff_cor_hist_loose)
+                    eff_cor_hist_tight = tools.remove_zero_datapoints(eff_cor_hist_tight)
+
                     result_nominal, func_nominal = fit_hist(nominal_cor_hist, param_guesses, cut, e, t, 'nominal')
                     result_loose, func_loose = fit_hist(eff_cor_hist_loose, param_guesses, cut, e, t, 'loose')
                     result_tight, func_tight = fit_hist(eff_cor_hist_tight, param_guesses, cut, e, t, 'tight')
@@ -329,7 +333,7 @@ if __name__ == '__main__':
                     gaus_tight.Draw('same')
                     bkg_tight.Draw('same')
 
-                    # c.Update()
+                    c.Update()
                     c.SaveAs(f'/work/halld/home/viducic/systematic_errors/kstar_eff/plots/{channel}_{cut}_e{e}_t{t}_fit.png')
 
                     param_guesses = update_guesses(func_nominal)
