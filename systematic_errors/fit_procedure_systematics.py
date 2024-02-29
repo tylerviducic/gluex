@@ -885,22 +885,23 @@ def main():
     column_headers = [
                     'channel', 'e', 't', 
                     'nominal_yield', 'nominal_yield_error', 'nominal_acceptance', 'nominal_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'pol1_yield', 'pol1_yield_error', 'pol1_acceptance', 'pol1_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'pol3_yield', 'pol3_yield_error', 'pol3_acceptance', 'pol3_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'nogaus_yield', 'nogaus_yield_error', 'nogaus_acceptance', 'nogaus_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'exppol2_yield', 'exppol2_yield_error', 'exppol2_acceptance', 'exppol2_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'chebyshev_yield', 'chebyshev_yield_error', 'chebyshev_acceptance', 'chebyshev_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'wideleft_yield', 'wideleft_yield_error', 'wideleft_acceptance', 'wideleft_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'wideright_yield', 'wideright_yield_error', 'wideright_acceptance', 'wideright_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'wideboth_yield', 'wideboth_yield_error', 'wideboth_acceptance', 'wideboth_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'narrowleft_yield', 'narrowleft_yield_error', 'narrowleft_acceptance', 'narrowleft_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'narrowright_yield', 'narrowright_yield_error', 'narrowright_acceptance', 'narrowright_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'narrowboth_yield', 'narrowboth_yield_error', 'narrowboth_acceptance', 'narrowboth_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'floatvoigtmean_yield', 'floatvoigtmean_yield_error', 'floatvoigtmean_acceptance', 'floatvoigtmean_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'floatvoigtwidth_yield', 'floatvoigtwidth_yield_error', 'floatvoigtwidth_acceptance', 'floatvoigtwidth_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'floatgausmean_yield', 'floatgausmean_yield_error', 'floatgausmean_acceptance', 'floatgausmean_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
-                    'floatgauswidth_yield', 'floatgauswidth_yield_error', 'floatgauswidth_acceptance', 'floatgauswidth_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error' 
+                    'pol1_yield', 'pol1_yield_error', 'pol1_acceptance', 'pol1_acceptance_error', 'pol1_cross_section', 'pol1_cross_section_error',
+                    'pol3_yield', 'pol3_yield_error', 'pol3_acceptance', 'pol3_acceptance_error', 'pol3_cross_section', 'pol3_cross_section_error',
+                    'nogaus_yield', 'nogaus_yield_error', 'nogaus_acceptance', 'nogaus_acceptance_error', 'nogaus_cross_section', 'nogaus_cross_section_error',
+                    'exppol2_yield', 'exppol2_yield_error', 'exppol2_acceptance', 'exppol2_acceptance_error', 'exppol2_cross_section', 'exppol2_cross_section_error',
+                    'chebyshev_yield', 'chebyshev_yield_error', 'chebyshev_acceptance', 'chebyshev_acceptance_error', 'chebyshev_cross_section', 'chebyshev_cross_section_error',
+                    'wideleft_yield', 'wideleft_yield_error', 'wideleft_acceptance', 'wideleft_acceptance_error', 'wideleft_cross_section', 'wideleft_cross_section_error',
+                    'wideright_yield', 'wideright_yield_error', 'wideright_acceptance', 'wideright_acceptance_error', 'wideright_cross_section', 'wideright_cross_section_error',
+                    'wideboth_yield', 'wideboth_yield_error', 'wideboth_acceptance', 'wideboth_acceptance_error', 'wideboth_cross_section', 'wideboth_cross_section_error',
+                    'narrowleft_yield', 'narrowleft_yield_error', 'narrowleft_acceptance', 'narrowleft_acceptance_error', 'narrowleft_cross_section', 'narrowleft_cross_section_error',
+                    'narrowright_yield', 'narrowright_yield_error', 'narrowright_acceptance', 'narrowright_acceptance_error', 'narrowright_cross_section', 'narrowright_cross_section_error',
+                    'narrowboth_yield', 'narrowboth_yield_error', 'narrowboth_acceptance', 'narrowboth_acceptance_error', 'narrowboth_cross_section', 'narrowboth_cross_section_error',
+                    'floatvoigtmean_yield', 'floatvoigtmean_yield_error', 'floatvoigtmean_acceptance', 'floatvoigtmean_acceptance_error', 'floatvoigtmean_cross_section', 'floatvoigtmean_cross_section_error',
+                    'floatvoigtwidth_yield', 'floatvoigtwidth_yield_error', 'floatvoigtwidth_acceptance', 'floatvoigtwidth_acceptance_error', 'floatvoigtwidth_cross_section', 'floatvoigtwidth_cross_section_error',
+                    'floatgausmean_yield', 'floatgausmean_yield_error', 'floatgausmean_acceptance', 'floatgausmean_acceptance_error', 'floatgausmean_cross_section', 'floatgausmean_cross_section_error',
+                    'floatgauswidth_yield', 'floatgauswidth_yield_error', 'floatgauswidth_acceptance', 'floatgauswidth_acceptance_error', 'floatgauswidth_cross_section', 'floatgauswidth_cross_section_error'
                       ]
+    
     df = pd.DataFrame(columns=column_headers)
 
     c_nominal = ROOT.TCanvas('c_nominal', 'c_nominal', 800, 600)
