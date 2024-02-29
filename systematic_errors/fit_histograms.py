@@ -129,7 +129,7 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
     func.FixParameter(5, param_guesses[5])
     func.FixParameter(6, param_guesses[6]) # gaus width
     func.SetParameter(7, param_guesses[7]) # bkg par1
-    func.SetParLimits(7, -100000, 0.0)
+    # func.SetParLimits(7, -100000, 0.0)
     func.SetParameter(8, param_guesses[8]) # bkg par2
     func.SetParameter(9, param_guesses[9]) # bkg par3
 
@@ -261,17 +261,17 @@ if __name__ == '__main__':
                     loose_data_hist = get_binned_data_hist(channel, cut, e, t, 'loose')
                     tight_data_hist = get_binned_data_hist(channel, cut, e, t, 'tight')
 
-                    nominal_cor_hist = tools.correct_data_hist_for_kstar_efficiency(nominal_data_hist)
+                    nominal_cor_hist0 = tools.correct_data_hist_for_kstar_efficiency(nominal_data_hist)
                     if cut not in ['neutral_kstar', 'charged_kstar']:
-                        eff_cor_hist_loose = tools.correct_data_hist_for_kstar_efficiency(loose_data_hist)
-                        eff_cor_hist_tight = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
+                        eff_cor_hist_loose0 = tools.correct_data_hist_for_kstar_efficiency(loose_data_hist)
+                        eff_cor_hist_tight0 = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
                     else: 
-                        eff_cor_hist_loose = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'loose')
-                        eff_cor_hist_tight = correct_data_hist_for_varied_kstar_efficiency(tight_data_hist, cut, 'tight')
+                        eff_cor_hist_loose0 = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'loose')
+                        eff_cor_hist_tight0 = correct_data_hist_for_varied_kstar_efficiency(tight_data_hist, cut, 'tight')
 
-                    nominal_cor_hist = tools.remove_zero_datapoints(nominal_cor_hist)
-                    eff_cor_hist_loose = tools.remove_zero_datapoints(eff_cor_hist_loose)
-                    eff_cor_hist_tight = tools.remove_zero_datapoints(eff_cor_hist_tight)
+                    nominal_cor_hist = tools.remove_zero_datapoints(nominal_cor_hist0)
+                    eff_cor_hist_loose = tools.remove_zero_datapoints(eff_cor_hist_loose0)
+                    eff_cor_hist_tight = tools.remove_zero_datapoints(eff_cor_hist_tight0)
 
                     result_nominal, func_nominal = fit_hist(nominal_cor_hist, param_guesses, cut, e, t, 'nominal')
                     result_loose, func_loose = fit_hist(eff_cor_hist_loose, param_guesses, cut, e, t, 'loose')
@@ -312,7 +312,8 @@ if __name__ == '__main__':
                     bkg_nominal.SetLineStyle(2)
                     bkg_loose.SetLineStyle(2)
                     bkg_tight.SetLineStyle(2)
-
+                    
+                    c.Clear()
                     c.Divide(1, 3)
                     c.cd(1)
                     eff_cor_hist_loose.Draw()
