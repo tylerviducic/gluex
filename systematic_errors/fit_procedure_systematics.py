@@ -871,10 +871,10 @@ def update_guesses(func):
     return guesses
 
 
-def get_dataframe_row(channel, e, t, fit_variation, func_voigt):
+def get_dataframe_row(channel, e, t, func_voigt):
     # get dataframe row info from common_analysis_tools
     f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error = tools.calculate_dataframe_info(func_voigt, channel, e, t)
-    row = [channel, e, t, fit_variation, f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error]
+    row = [f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error]
     return row
 
 
@@ -882,7 +882,26 @@ def main():
     ROOT.gROOT.SetBatch(True)
     print('Running')
 
-    df = pd.DataFrame(columns=['channel', 'e', 't', 'fit_variation', 'f1_yield', 'f1_yield_error', 'f1_acceptance', 'f1_acceptance_error', 'cross_section', 'cross_section_error'])
+    column_headers = [
+                    'channel', 'e', 't', 
+                    'nominal_yield', 'nominal_yield_error', 'nominal_acceptance', 'nominal_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'pol1_yield', 'pol1_yield_error', 'pol1_acceptance', 'pol1_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'pol3_yield', 'pol3_yield_error', 'pol3_acceptance', 'pol3_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'nogaus_yield', 'nogaus_yield_error', 'nogaus_acceptance', 'nogaus_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'exppol2_yield', 'exppol2_yield_error', 'exppol2_acceptance', 'exppol2_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'chebyshev_yield', 'chebyshev_yield_error', 'chebyshev_acceptance', 'chebyshev_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'wideleft_yield', 'wideleft_yield_error', 'wideleft_acceptance', 'wideleft_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'wideright_yield', 'wideright_yield_error', 'wideright_acceptance', 'wideright_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'wideboth_yield', 'wideboth_yield_error', 'wideboth_acceptance', 'wideboth_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'narrowleft_yield', 'narrowleft_yield_error', 'narrowleft_acceptance', 'narrowleft_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'narrowright_yield', 'narrowright_yield_error', 'narrowright_acceptance', 'narrowright_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'narrowboth_yield', 'narrowboth_yield_error', 'narrowboth_acceptance', 'narrowboth_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'floatvoigtmean_yield', 'floatvoigtmean_yield_error', 'floatvoigtmean_acceptance', 'floatvoigtmean_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'floatvoigtwidth_yield', 'floatvoigtwidth_yield_error', 'floatvoigtwidth_acceptance', 'floatvoigtwidth_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'floatgausmean_yield', 'floatgausmean_yield_error', 'floatgausmean_acceptance', 'floatgausmean_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error',
+                    'floatgauswidth_yield', 'floatgauswidth_yield_error', 'floatgauswidth_acceptance', 'floatgauswidth_acceptance_error', 'nominal_cross_section', 'nominal_cross_section_error' 
+                      ]
+    df = pd.DataFrame(columns=column_headers)
 
     c_nominal = ROOT.TCanvas('c_nominal', 'c_nominal', 800, 600)
     c_pol1 = ROOT.TCanvas('c_pol1', 'c_pol1', 800, 600)
@@ -1063,39 +1082,44 @@ def main():
                 guesses_floatgausmean = update_guesses(func_floatgausmean)
                 guesses_floatgauswidth = update_guesses(func_floatgauswidth)
 
-                row_nominal = get_dataframe_row(channel, e, t, 'nominal', func_nominal)
-                row_pol1 = get_dataframe_row(channel, e, t, 'pol1', func_pol1)
-                row_pol3 = get_dataframe_row(channel, e, t, 'pol3', func_pol3)
-                row_nogaus = get_dataframe_row(channel, e, t, 'nogaus', func_nogaus)
-                row_exppol2 = get_dataframe_row(channel, e, t, 'exppol2', func_exppol2)
-                row_chebyshev = get_dataframe_row(channel, e, t, 'chebyshev', func_chebyshev)
-                row_wideleft = get_dataframe_row(channel, e, t, 'wideleft', func_wideleft)
-                row_wideright = get_dataframe_row(channel, e, t, 'wideright', func_wideright)
-                row_wideboth = get_dataframe_row(channel, e, t, 'wideboth', func_wideboth)
-                row_narrowleft = get_dataframe_row(channel, e, t, 'narrowleft', func_narrowleft)
-                row_narrowright = get_dataframe_row(channel, e, t, 'narrowright', func_narrowright)
-                row_narrowboth = get_dataframe_row(channel, e, t, 'narrowboth', func_narrowboth)
-                row_floatvoigtmean = get_dataframe_row(channel, e, t, 'floatvoigtmean', func_floatvoigtmean)
-                row_floatvoigtwidth = get_dataframe_row(channel, e, t, 'floatvoigtwidth', func_floatvoigtwidth)
-                row_floatgausmean = get_dataframe_row(channel, e, t, 'floatgausmean', func_floatgausmean)
-                row_floatgauswidth = get_dataframe_row(channel, e, t, 'floatgauswidth', func_floatgauswidth)
+                row_nominal = get_dataframe_row(channel, e, t, func_nominal)
+                row_pol1 = get_dataframe_row(channel, e, t, func_pol1)
+                row_pol3 = get_dataframe_row(channel, e, t, func_pol3)
+                row_nogaus = get_dataframe_row(channel, e, t, func_nogaus)
+                row_exppol2 = get_dataframe_row(channel, e, t, func_exppol2)
+                row_chebyshev = get_dataframe_row(channel, e, t, func_chebyshev)
+                row_wideleft = get_dataframe_row(channel, e, t, func_wideleft)
+                row_wideright = get_dataframe_row(channel, e, t, func_wideright)
+                row_wideboth = get_dataframe_row(channel, e, t, func_wideboth)
+                row_narrowleft = get_dataframe_row(channel, e, t, func_narrowleft)
+                row_narrowright = get_dataframe_row(channel, e, t, func_narrowright)
+                row_narrowboth = get_dataframe_row(channel, e, t, func_narrowboth)
+                row_floatvoigtmean = get_dataframe_row(channel, e, t, func_floatvoigtmean)
+                row_floatvoigtwidth = get_dataframe_row(channel, e, t, func_floatvoigtwidth)
+                row_floatgausmean = get_dataframe_row(channel, e, t, func_floatgausmean)
+                row_floatgauswidth = get_dataframe_row(channel, e, t, func_floatgauswidth)
 
-                df = df.append(pd.Series(row_nominal, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_pol1, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_pol3, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_nogaus, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_exppol2, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_chebyshev, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_wideleft, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_wideright, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_wideboth, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_narrowleft, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_narrowright, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_narrowboth, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_floatvoigtmean, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_floatvoigtwidth, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_floatgausmean, index=df.columns), ignore_index=True)
-                df = df.append(pd.Series(row_floatgauswidth, index=df.columns), ignore_index=True)
+                row = [channel, e, t]
+                full_row = row + row_nominal + row_pol1 + row_pol3 + row_nogaus + row_exppol2 + row_chebyshev + row_wideleft + row_wideright + row_wideboth + row_narrowleft + row_narrowright + row_narrowboth + row_floatvoigtmean + row_floatvoigtwidth + row_floatgausmean + row_floatgauswidth
+                
+                df = df.append(pd.Series(full_row, index=df.columns), ignore_index=True)
+
+                # df = df.append(pd.Series(row_nominal, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_pol1, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_pol3, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_nogaus, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_exppol2, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_chebyshev, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_wideleft, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_wideright, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_wideboth, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_narrowleft, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_narrowright, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_narrowboth, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_floatvoigtmean, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_floatvoigtwidth, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_floatgausmean, index=df.columns), ignore_index=True)
+                # df = df.append(pd.Series(row_floatgauswidth, index=df.columns), ignore_index=True)
 
                 c_nominal.cd(t)
                 hists[-1].Draw()
