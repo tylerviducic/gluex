@@ -72,7 +72,8 @@ for name, group in max_grouped:
     max_df = max_df.append({'e': name[0], 't': name[1], 'channel': 'pimkpks', 'max_var': var_name_pimkpks, 'max_percent_change': pimkpks_max}, ignore_index=True)
 
 
-print(max_df.to_string())
+# print(max_df.to_string())
+max_df.to_csv('/work/halld/home/viducic/systematic_errors/max_changes.csv', index=False)
 
 fig_max, ax_max = plt.subplots(figsize=(10, 10))
 grouped = max_df.groupby(['e', 'channel'])
