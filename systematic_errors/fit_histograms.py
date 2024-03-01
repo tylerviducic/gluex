@@ -179,10 +179,10 @@ def get_yield_and_error(voigt_func):
     return f1_yield, f1_error
 
 
-def calculate_dataframe_info(voigt_func, channel, e, t, cut):
+def calculate_dataframe_info(voigt_func, channel, e, t, cut, ltn):
     e_lumi = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
     f1_yield, f1_yield_error = get_yield_and_error(voigt_func)
-    f1_acceptance = get_gluex1_acceptance(channel, cut, e, t, 'nominal')
+    f1_acceptance = get_gluex1_acceptance(channel, cut, e, t, ltn)
     f1_acceptance_error = 0 # TODO: figure out acceptance error. Binomial error, maybe?
     cross_section = tools.calculate_crosssection(f1_yield, f1_acceptance, e_lumi, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
     cross_section_error = tools.propogate_error_multiplication(cross_section, [f1_yield, f1_acceptance, e_lumi, constants.F1_KKPI_BRANCHING_FRACTION], [f1_yield_error, f1_acceptance_error, e_lumi * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
@@ -190,9 +190,9 @@ def calculate_dataframe_info(voigt_func, channel, e, t, cut):
 
 
 def get_row_for_df(channel, voigt_nominal, voigt_loose, voigt_tight, e, t, cut):
-    f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal = calculate_dataframe_info(voigt_nominal, channel, e, t, cut)
-    f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose = calculate_dataframe_info(voigt_loose, channel, e, t, cut)
-    f1_yield_tight, f1_yield_error_tight, f1_acceptance_tight, f1_acceptance_error_tight, cross_section_tight, cross_section_error_tight = calculate_dataframe_info(voigt_tight, channel, e, t, cut)
+    f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal = calculate_dataframe_info(voigt_nominal, channel, e, t, cut, 'nominal')
+    f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose = calculate_dataframe_info(voigt_loose, channel, e, t, cut, 'loose')
+    f1_yield_tight, f1_yield_error_tight, f1_acceptance_tight, f1_acceptance_error_tight, cross_section_tight, cross_section_error_tight = calculate_dataframe_info(voigt_tight, channel, e, t, cut, 'tight')
     row = [channel, e, t, cut, 
            f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal,
            f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose,
