@@ -67,5 +67,38 @@ fig.tight_layout()
 fig.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_signifigant_cuts.png')
 # plt.show()
 
+fig2, axs2 = plt.subplots(3, 4, sharex=True, sharey=True, figsize=(20, 20))
+fig2.suptitle('Barlow Test for Cuts with Variations Larger than Fit Systematic', fontsize=16)
+for name, group in grouped:
+    group_pipkmks = group[group['channel'] == 'pipkmks']
+    group_pimkpks = group[group['channel'] == 'pimkpks']
+    if name[1] not in cut:
+        continue
+    # if name[1] in ['charged_kstar', 'neutral_kstar']:
+    #     print(group)
+    index = cut.index(name[1])
+    row_index = index // 4
+    col_index = index % 4
+    ax2 = axs2[row_index, col_index]
+    ax2.scatter(group_pipkmks['t'], group_pipkmks['percent_change'], c=colors_dict[group['e'].values[0]][0], label='$\pi^+K^-K_s$')
+    ax2.scatter(group_pimkpks['t'], group_pimkpks['percent_change'], c=colors_dict[group['e'].values[0]][1], label='$\pi^-K^+K_s$')
+    ax2.set_title(plot_titles[index])
+    ax2.set_xlabel('-t (GeV$^2)$')
+    ax2.set_ylabel('Percent Change')
+    # ax2.axhline(4.0, linestyle='--')
+    # ax2.axhline(-4.0, linestyle='--')
+    ax2.set_xlim(0, 8)
+    # ax2.set_ylim(-20, 20)
+    # draw the legend from the charged K* plot on the empty 11th pad
+    # if index == 10:
+    #     ax.legend()
+    #     lines = make_legend()
+    #     fig.legend(handles=lines, loc='upper right')
+
+lines = make_legend()
+axs2[2, 2].legend(handles=lines, prop={'size': 18})
+fig2.tight_layout()
+
+fig2.savefig('/work/halld/home/viducic/systematic_errors/fit_variation_plots/percent_change_signifigant_cuts.png')
 
 
