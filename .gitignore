@@ -162,3 +162,4 @@ my_library/__pycache__/common_analysis_tools.cpython-39.pyc
 my_library/__pycache__/constants.cpython-39.pyc
 my_library/__pycache__/gluex_style.cpython-39.pyc
 my_library/__pycache__/kinematic_cuts.cpython-39.pyc
+systematic_errors/__pycache__/barlow_test_cuts.cpython-36.pyc
