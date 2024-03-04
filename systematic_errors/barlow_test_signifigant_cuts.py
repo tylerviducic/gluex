@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from barlow_test_cuts import barlow_test
 import matplotlib.lines as mlines
 
+# TODO: make figure look nicer
+
 colors_dict = {
     8: ('lightblue', 'lightcoral'),
     9: ('blue', 'red'),
@@ -60,6 +62,7 @@ for name, group in grouped:
 
 lines = make_legend()
 axs[2, 2].legend(handles=lines, prop={'size': 18})
+fig.tight_layout()
 
 fig.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_signifigant_cuts.png')
 # plt.show()
