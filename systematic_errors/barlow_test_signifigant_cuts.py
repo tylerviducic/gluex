@@ -1,7 +1,9 @@
+import re
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from barlow_test_cuts import barlow_test
+import matplotlib.lines as mlines
 
 colors_dict = {
     8: ('lightblue', 'lightcoral'),
@@ -10,14 +12,21 @@ colors_dict = {
     11: ('darkblue', 'darkred')
 }
 
+def make_legend():
+    blue_lines = [mlines.Line2D([], [], color=colors_dict[e][0], label=f'{e} GeV - $\pi^+K^-K_s$') for e in colors_dict.keys()]
+    red_lines = [mlines.Line2D([], [], color=colors_dict[e][1], label=f'{e} GeV - $\pi^-K^+K_s$') for e in colors_dict.keys()]
+    lines = blue_lines + red_lines
+    return lines
+
+
 df = pd.read_csv('/work/halld/home/viducic/systematic_errors/signifigant_cuts.csv')
 
 df['sigma_barlow'] = np.where(True, barlow_test(df['cs_nom'], df['cs_varied'], df['error_nom'], df['error_varied']), 0)
 
 cut = ['charged_kstar', 'kinfit_cl', 'kp', 'ks_m', 'ksp', 'mx2_all', 'neutral_kstar', 'pathlength', 'pp', 'ppi']
-plot_titles = ['Charged $K^*$', 'Kinematic Fit Confidence Level', '$K^+$', '$K_s$ Mass', '$K_s$ Momentum', '$M_x^2$ All', 'Neutral $K^*$', 'Path Length', '$p$', '$p\pi$']
+plot_titles = ['Charged $K^*$', 'Kinematic Fit Confidence Level', '$M(Kp)$', '$M(\pi^+\pi^-)$', '$M(K_sp)$', '$M_x^2(pKK\pi)$', 'Neutral $K^*$', 'Path Length', '$\\vec{p}$', '$M(p\pi)$']
 
-grouped = df.groupby('cut')
+grouped = df.groupby(['e', 'cut'])
 # print the number of groups
 # print(grouped.groups.keys())
 
@@ -26,7 +35,11 @@ fig.suptitle('Barlow Test for Cuts with Variations Larger than Fit Systematic', 
 for name, group in grouped:
     group_pipkmks = group[group['channel'] == 'pipkmks']
     group_pimkpks = group[group['channel'] == 'pimkpks']
-    index = cut.index(name)
+    if name[1] not in cut:
+        continue
+    if name[1] in ['charged_kstar', 'neutral_kstar']:
+        print(group)
+    index = cut.index(name[1])
     row_index = index // 4
     col_index = index % 4
     ax = axs[row_index, col_index]
@@ -37,9 +50,17 @@ for name, group in grouped:
     ax.set_ylabel('$\sigma_{Barlow}$')
     ax.axhline(4.0, linestyle='--')
     ax.axhline(-4.0, linestyle='--')
-    ax.legend()
     ax.set_xlim(0, 8)
-    ax.set_ylim(-15, 15)
+    ax.set_ylim(-20, 20)
+    # draw the legend from the charged K* plot on the empty 11th pad
+    # if index == 10:
+    #     ax.legend()
+    #     lines = make_legend()
+    #     fig.legend(handles=lines, loc='upper right')
+
+lines = make_legend()
+axs[2, 2].legend(handles=lines, prop={'size': 18})
+
 fig.savefig('/work/halld/home/viducic/systematic_errors/barlow_plots/barlow_test_signifigant_cuts.png')
 # plt.show()
 
