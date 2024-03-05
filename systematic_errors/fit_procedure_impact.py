@@ -18,7 +18,7 @@ variations = ['nominal', 'pol1', 'pol3', 'nogaus', 'exppol2', 'chebyshev', 'wide
             'floatvoigtmean', 'floatvoigtwidth', 'floatgausmean', 'floatgauswidth']
 
 for var in variations:
-    df[f'{var}_percent_change'] = np.where(True, abs((df[f'{var}_cross_section'] - df['nominal_cross_section'])/df['nominal_cross_section']), np.nan)
+    df[f'{var}_percent_change'] = np.where(True, (df[f'{var}_cross_section'] - df['nominal_cross_section'])/df['nominal_cross_section'], np.nan)
 
 fig, ax = plt.subplots(4, 4, sharex=True, sharey=True, figsize=(20, 20))
 
@@ -60,10 +60,10 @@ for name, group in max_grouped:
     pimkpks_max_var = ''
 
     for col in cols:
-        if pipkmks_group[col].max() > pipkmks_max:
+        if np.abs(pipkmks_group[col].max()) > np.abs(pipkmks_max):
             pipkmks_max = pipkmks_group[col].max()
             pipkmks_max_var = col
-        if pimkpks_group[col].max() > pimkpks_max:
+        if np.abs(pimkpks_group[col].max()) > np.abs(pimkpks_max):
             pimkpks_max = pimkpks_group[col].max()
             pimkpks_max_var = col
         var_name_pipkmks = pipkmks_max_var.split('_')[0]

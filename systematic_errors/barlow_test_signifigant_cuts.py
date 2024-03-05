@@ -28,7 +28,7 @@ df['sigma_barlow'] = np.where(True, barlow_test(df['cs_nom'], df['cs_varied'], d
 cut = ['charged_kstar', 'kinfit_cl', 'kp', 'ks_m', 'ksp', 'mx2_all', 'neutral_kstar', 'pathlength', 'pp', 'ppi']
 plot_titles = ['Charged $K^*$', 'Kinematic Fit Confidence Level', '$M(Kp)$', '$M(\pi^+\pi^-)$', '$M(K_sp)$', '$M_x^2(pKK\pi)$', 'Neutral $K^*$', 'Path Length', '$\\vec{p}$', '$M(p\pi)$']
 
-grouped = df.groupby(['e', 'cut'])
+grouped = df.groupby(['e', 'cut', 'loose_tight'])
 # print the number of groups
 # print(grouped.groups.keys())
 
@@ -37,6 +37,10 @@ fig.suptitle('Barlow Test for Cuts with Variations Larger than Fit Systematic', 
 for name, group in grouped:
     group_pipkmks = group[group['channel'] == 'pipkmks']
     group_pimkpks = group[group['channel'] == 'pimkpks']
+    if name[2] == 'tight':
+        marker = 'x'
+    else:
+        marker = 'o'
     if name[1] not in cut:
         continue
     if name[1] in ['charged_kstar', 'neutral_kstar']:
@@ -45,8 +49,8 @@ for name, group in grouped:
     row_index = index // 4
     col_index = index % 4
     ax = axs[row_index, col_index]
-    ax.scatter(group_pipkmks['t'], group_pipkmks['sigma_barlow'], c=colors_dict[group['e'].values[0]][0], label='$\pi^+K^-K_s$')
-    ax.scatter(group_pimkpks['t'], group_pimkpks['sigma_barlow'], c=colors_dict[group['e'].values[0]][1], label='$\pi^-K^+K_s$')
+    ax.scatter(group_pipkmks['t'], group_pipkmks['sigma_barlow'], c=colors_dict[group['e'].values[0]][0], marker=marker, label='$\pi^+K^-K_s$')
+    ax.scatter(group_pimkpks['t'], group_pimkpks['sigma_barlow'], c=colors_dict[group['e'].values[0]][1], marker=marker, label='$\pi^-K^+K_s$')
     ax.set_title(plot_titles[index])
     ax.set_xlabel('-t (GeV$^2)$')
     ax.set_ylabel('$\sigma_{Barlow}$')
@@ -72,6 +76,10 @@ fig2.suptitle('Barlow Test for Cuts with Variations Larger than Fit Systematic',
 for name, group in grouped:
     group_pipkmks = group[group['channel'] == 'pipkmks']
     group_pimkpks = group[group['channel'] == 'pimkpks']
+    if name[2] == 'tight':
+        marker = 'x'
+    else:
+        marker = 'o'
     if name[1] not in cut:
         continue
     # if name[1] in ['charged_kstar', 'neutral_kstar']:
@@ -80,12 +88,12 @@ for name, group in grouped:
     row_index = index // 4
     col_index = index % 4
     ax2 = axs2[row_index, col_index]
-    ax2.scatter(group_pipkmks['t'], group_pipkmks['percent_change'], c=colors_dict[group['e'].values[0]][0], label='$\pi^+K^-K_s$')
-    ax2.scatter(group_pimkpks['t'], group_pimkpks['percent_change'], c=colors_dict[group['e'].values[0]][1], label='$\pi^-K^+K_s$')
+    ax2.scatter(group_pipkmks['t'], group_pipkmks['percent_change'], c=colors_dict[group['e'].values[0]][0], marker=marker, label='$\pi^+K^-K_s$')
+    ax2.scatter(group_pimkpks['t'], group_pimkpks['percent_change'], c=colors_dict[group['e'].values[0]][1], marker=marker, label='$\pi^-K^+K_s$')
     ax2.set_title(plot_titles[index])
     ax2.set_xlabel('-t (GeV$^2)$')
     ax2.set_ylabel('Percent Change')
-    # ax2.axhline(4.0, linestyle='--')
+    ax2.axhline(0.0, linestyle='--')
     # ax2.axhline(-4.0, linestyle='--')
     ax2.set_xlim(0, 8)
     # ax2.set_ylim(-20, 20)
