@@ -49,8 +49,8 @@ initial_guesses = {
     4: 495, # gaus amplitude
     5: 1.37, # gaus mean
     6: 0.033, # gaus width
-    7: -1000, # bkg const
-    8: 1000, # bkg first order
+    7: 1000, # bkg const
+    8: -1000, # bkg first order
     9: 10 # bkg second order
 }
 
@@ -62,8 +62,8 @@ data_hist.GetXaxis().SetTitle(hist_title)
 data_hist.GetYaxis().SetTitle('Events / 10 MeV')
 data_hist.SetMarkerStyle(20)
 
-fit_low, fit_high = 1.17, 1.5
-# fit_low, fit_high = 1.16, 1.49 
+# fit_low, fit_high = 1.18, 1.49
+fit_low, fit_high = 1.17, 1.49
 
 func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', fit_low, fit_high)
 
@@ -82,6 +82,7 @@ func.SetParLimits(5, 1.35, 1.4)
 func.SetParameter(6, initial_guesses[6]) # gaus width
 func.SetParLimits(6, 0.025, 0.05)
 func.SetParameter(7, initial_guesses[7]) # bkg const
+# func.SetParLimits(7, 0, 1000000)
 func.SetParameter(8, initial_guesses[8]) # bkg first order
 # func.SetParLimits(8, 100, 10000)
 func.SetParameter(9, initial_guesses[9]) # bkg second order
