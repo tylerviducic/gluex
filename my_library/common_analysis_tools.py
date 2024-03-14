@@ -290,7 +290,11 @@ def get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index):
     thrown_signal_file_and_tree = get_flat_file_and_tree(
         channel, run_period, 'signal', filtered=False, hist=True, thrown=True)
     thrown_signal_file = ROOT.TFile(thrown_signal_file_and_tree[0])
-    thrown_hist_name = f'{channel}_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
+    # print(thrown_signal_file_and_tree[0])
+    if e == 12:
+        thrown_hist_name = f'{channel}_beam_full_t_{constants.T_BIN_DICT[t_bin_index]};1'
+    else:
+        thrown_hist_name = f'{channel}_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     thrown_hist = thrown_signal_file.Get(thrown_hist_name)
     thrown_hist.SetDirectory(0)
     return thrown_hist
@@ -307,9 +311,14 @@ def get_binned_data_hist(channel, run_period, cut, e, t_bin_index):
 
 
 def get_binned_signal_mc_hist(channel, run_period, cut, e, t_bin_index):
-    hist_name = f'{channel}_kstar_{cut}_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
+    if e == 12:
+        hist_name = f'{channel}_kstar_{cut}_cut_beam_full_t_{constants.T_BIN_DICT[t_bin_index]};1'
+    else:
+        hist_name = f'{channel}_kstar_{cut}_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     signal_mc_file_and_tree = get_flat_file_and_tree(
         channel, run_period, 'signal', filtered=False, hist=True)
+    print(signal_mc_file_and_tree[0])
+    print(hist_name)
     signal_mc_hist_file = ROOT.TFile(signal_mc_file_and_tree[0])
     signal_mc_hist = signal_mc_hist_file.Get(hist_name)
     signal_mc_hist.SetDirectory(0)

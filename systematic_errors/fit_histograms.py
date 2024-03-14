@@ -73,10 +73,19 @@ def get_gluex1_acceptance(channel, cut, e, t_bin_index, ltn):
     acceptance_spring = get_acceptance_per_run_period(channel, 'spring', cut, e, t_bin_index, ltn)
     acceptance_fall = get_acceptance_per_run_period(channel, 'fall', cut, e, t_bin_index, ltn)
     acceptance_2017 = get_acceptance_per_run_period(channel, '2017', cut, e, t_bin_index, ltn)
+    # print(f'spring: {acceptance_spring}, fall: {acceptance_fall}, 2017: {acceptance_2017}')
 
-    flux_spring = tools.get_luminosity('spring', e-0.5, e+0.5)
-    flux_fall = tools.get_luminosity('fall', e-0.5, e+0.5)
-    flux_2017 = tools.get_luminosity('2017', e-0.5, e+0.5)
+    if e == 12:
+        flux_spring = tools.get_luminosity('spring', e-5.5, e-0.5)
+        flux_fall = tools.get_luminosity('fall', e-5.5, e-0.5)
+        flux_2017 = tools.get_luminosity('2017', e-5.5, e-0.5)
+    else:
+        flux_spring = tools.get_luminosity('spring', e-0.5, e+0.5)
+        flux_fall = tools.get_luminosity('fall', e-0.5, e+0.5)
+        flux_2017 = tools.get_luminosity('2017', e-0.5, e+0.5)
+    
+    # print(f'spring: {flux_spring}, fall: {flux_fall}, 2017: {flux_2017}')
+    
     total_flux = flux_spring + flux_fall + flux_2017
 
     acceptance = (acceptance_spring * flux_spring + acceptance_fall * flux_fall + acceptance_2017 * flux_2017) / total_flux
@@ -180,12 +189,15 @@ def get_yield_and_error(voigt_func):
 
 
 def calculate_dataframe_info(voigt_func, channel, e, t, cut, ltn):
-    e_lumi = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
+    if e == 12:
+        e_lumi = tools.get_luminosity_gluex_1(7.5, 11.5)*1000
+    else:
+        e_lumi = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
     f1_yield, f1_yield_error = get_yield_and_error(voigt_func)
     f1_acceptance = get_gluex1_acceptance(channel, cut, e, t, ltn)
-    f1_acceptance_error = 0 # TODO: figure out acceptance error. Binomial error, maybe?
+    f1_acceptance_error = 0 
     cross_section = tools.calculate_crosssection(f1_yield, f1_acceptance, e_lumi, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
-    cross_section_error = tools.propogate_error_multiplication(cross_section, [f1_yield, f1_acceptance, e_lumi, constants.F1_KKPI_BRANCHING_FRACTION], [f1_yield_error, f1_acceptance_error, e_lumi * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
+    cross_section_error = tools.propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
     return f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error
 
 
@@ -238,7 +250,7 @@ if __name__ == '__main__':
             gaus_width = constants.F1_PIMKPKS_GAUS_WIDTH
 
         for cut in VARIED_CUTS_DICT_PIPKMKS:
-            for e in range(8, 12):
+            for e in range(8, 13):
 
                 param_guesses = {
                     0: 5, # voigt amplitude
@@ -255,7 +267,11 @@ if __name__ == '__main__':
 
                 for t in range(1, 8):
 
-                    param_guesses[2] = tools.get_binned_resolution(channel, e, t)
+                    if e != 12:
+                        param_guesses[2] = tools.get_binned_resolution(channel, e, t)
+                    else:
+                        res_int_df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_t_f1_mc_width.csv')
+                        param_guesses[2] = res_int_df.loc[(res_int_df.t_bin == t)].sigma.values[0]
 
                     nominal_data_hist = get_binned_data_hist(channel, cut, e, t, 'nominal')
                     loose_data_hist = get_binned_data_hist(channel, cut, e, t, 'loose')

@@ -5,7 +5,6 @@ import my_library.gluex_style as gluex_style
 import my_library.kinematic_cuts as cuts
 import os
 
-
 """this code is awful im sorry im in a rush i need to graduate"""
 
 ROOT.EnableImplicitMT()
@@ -170,12 +169,14 @@ for cut in varied_cuts_dict_pipkmks:
     mc_hists_pimkpks_2017.extend([signal_hist_integrated_pimkpks_nominal_2017, signal_hist_integrated_pimkpks_loose_2017, signal_hist_integrated_pimkpks_tight_2017])
 
 
-    for e in range(8, 12):
-
-        e_filter_string = f'(e_beam > {e - 0.5}) && (e_beam < {e + 0.5})'
+    for e in range(8, 13):
+        if e != 12:
+            e_filter_string = f'(e_beam > {e - 0.5}) && (e_beam < {e + 0.5})'
+        else:
+            e_filter_string = cuts.BEAM_RANGE
         for t in range(1, 8):
             t_filter_string = cuts.SELECT_T_BIN.format(t)
-        
+
             data_hist_pipkmks_nominal = df_pipkmks_data.Filter(data_nominal_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_data_{cut}_nominal_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
             signal_hist_pipkmks_nominal_spring = df_pipkmks_spring.Filter(data_nominal_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_nominal_spring_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')
             signal_hist_pipkmks_nominal_fall = df_pipkmks_fall.Filter(data_nominal_cut_string_pipkmks).Filter(e_filter_string).Filter(t_filter_string).Histo1D((f'pipkmks_signal_{cut}_nominal_fall_e{e}_t{t}', f'{cut}_nominal', nbins, xlow, xhigh), 'pipkmks_m')

@@ -3,8 +3,8 @@ import my_library.common_analysis_tools as ct
 import my_library.constants as constants
 import pandas as pd
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -183,7 +183,7 @@ for e in range(8, 12):
         f1_yield_error = func.GetParError(0)/func.GetParameter(0) * f1_yield
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
         cross_section = ct.calculate_crosssection(f1_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
-        cross_section_error = ct.propogate_error_multiplication(cross_section, [f1_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [f1_yield_error, acceptance_error, luminosity * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
+        cross_section_error = ct.propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
 
         mean_list.append(func.GetParameter(1))
         mean_error_list.append(func.GetParError(1))

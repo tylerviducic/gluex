@@ -50,7 +50,7 @@ if channel == 'pipkmks' :
     hist_title = 'K^{-}K_{s}#pi^{+}'
     gaus_mean = constants.F1_PIPKMKS_GAUS_MEAN
     gaus_width = constants.F1_PIPKMKS_GAUS_WIDTH
-    
+    kstar_cut = cuts.KSTAR_ALL_CUT_PIPKMKS
 elif channel == 'pimkpks' :
     v_mean = constants.F1_PIMKPKS_VOIGHT_MEAN
     v_width = constants.F1_PIMKPKS_VOIGHT_WIDTH
@@ -60,21 +60,22 @@ elif channel == 'pimkpks' :
     background_color = total_fit_color
     hist_title = 'K^{+}K_{s}#pi^{-}'
     gaus_mean = constants.F1_PIMKPKS_GAUS_MEAN
-    gaus_width = constants.F1_PIMKPKS_GAUS_WIDTH    
+    gaus_width = constants.F1_PIMKPKS_GAUS_WIDTH
+    kstar_cut = cuts.KSTAR_ALL_CUT_PIMKPKS 
 
 guesses = {
-    0: 170, # voight amplitude
+    0: 10000, # voight amplitude
     1: v_mean, # voight mean
     3: v_width, # voight width
-    4: 495, # gaus amplitude
+    4: 10000, # gaus amplitude
     5: gaus_mean, # gaus mean
     6: gaus_width, # gaus width
-    7: 1000, # bkg const
-    8: -1000, # bkg first order
-    9: 10 # bkg second order
+    7: 1, # bkg const
+    8: -1, # bkg first order
+    9: 1 # bkg second order
 }
 
-df_data = tools.get_dataframe(channel, 'gluex1', 'data').Filter(beam_range)
+df_data = tools.get_dataframe(channel, 'gluex1', 'data').Filter(beam_range).Filter(kstar_cut)
 
 df_spring = tools.get_dataframe(channel, 'spring', 'signal').Filter(beam_range)
 df_fall = tools.get_dataframe(channel, 'fall', 'signal').Filter(beam_range)
@@ -95,6 +96,16 @@ for t in range(1, 8):
     counts.append(((df_spring.Filter(cuts.SELECT_T_BIN.format(t)).Count(), df_spring_thrown.Filter(cuts.SELECT_T_BIN.format(t)).Count()), \
                     (df_fall.Filter(cuts.SELECT_T_BIN.format(t)).Count(), df_fall_thrown.Filter(cuts.SELECT_T_BIN.format(t)).Count()), \
                     (df_2017.Filter(cuts.SELECT_T_BIN.format(t)).Count(), df_2017_thrown.Filter(cuts.SELECT_T_BIN.format(t)).Count())))
+
+# for hist in data_hists:
+#     hist.GetValue()
+# for count in counts:
+#     count[0][0].GetValue()
+#     count[0][1].GetValue()
+#     count[1][0].GetValue()
+#     count[1][1].GetValue()
+#     count[2][0].GetValue()
+#     count[2][1].GetValue()
         
 
 voigts = []
@@ -110,18 +121,28 @@ lum_spring = tools.get_luminosity('spring', 7.5, 11.5)*1000
 lum_fall = tools.get_luminosity('fall', 7.5, 11.5)*1000
 lum_2017 = tools.get_luminosity('2017', 7.5, 11.5)*1000
 
+print(df_data.Count().GetValue())
+print(df_spring.Count().GetValue())
+print(df_fall.Count().GetValue())
+print(df_2017.Count().GetValue())
+print(df_spring_thrown.Count().GetValue())
+print(df_fall_thrown.Count().GetValue())
+print(df_2017_thrown.Count().GetValue())
+
 for i, hist in enumerate(data_hists):
     c.cd(i + 1)
-    cor_hist = tools.correct_data_hist_for_kstar_efficiency(hist.GetValue())
+    # cor_hist = tools.correct_data_hist_for_kstar_efficiency(hist.GetValue())
+    cor_hist = tools.correct_data_hist_for_kstar_efficiency(hist)
+    cor_hists.append(cor_hist)
 
     func = ROOT.TF1(f'func_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', fit_low, fit_high)
     func.SetParameter(0, guesses[0])
-    func.SetParLimits(0, 1, 1000000)
+    func.SetParLimits(0, 1, 10000000)
     func.FixParameter(1, guesses[1])
     func.FixParameter(2, e_t_sigma)
     func.FixParameter(3, guesses[3])
     func.SetParameter(4, guesses[4])
-    func.SetParLimits(4, 1, 1000000) 
+    func.SetParLimits(4, 1, 10000000) 
     func.FixParameter(5, guesses[5])
     func.FixParameter(6, guesses[6])
     func.SetParameter(7, guesses[7])
@@ -170,7 +191,7 @@ for i, hist in enumerate(data_hists):
     gauses.append(gaus)
     bkgs.append(bkg)
 
-    data_hists[-1].Draw()
+    cor_hists[-1].Draw()
     funcs[-1].Draw('same')
     voigts[-1].Draw('same')
     bkgs[-1].Draw('same')
@@ -186,7 +207,7 @@ for i, hist in enumerate(data_hists):
     f1_yield_error = func.GetParError(0)/func.GetParameter(0) * f1_yield
     
     cross_section = tools.calculate_crosssection(f1_yield, acceptance, luminosity, constants.T_WIDTH_DICT[i+1], constants.F1_KKPI_BRANCHING_FRACTION)
-    cross_section_error = tools.propogate_error_multiplication(cross_section, [f1_yield, acceptance, luminosity, constants.F1_KKPI_BRANCHING_FRACTION], [f1_yield_error, acceptance_error, luminosity * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
+    cross_section_error = tools.propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
 
     yields.append(f1_yield)
     yield_errors.append(f1_yield_error)
@@ -196,8 +217,11 @@ for i, hist in enumerate(data_hists):
     acceptance_errors.append(acceptance_error)
 
     c.Update()
+    c.Draw()
 
     c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/pol2_gaus_{channel}_all_e_t{i+1}_fit.png')
 value_df = pd.DataFrame({'chi2ndf': chi2s, 'yield': yields, 'yield_error': yield_errors, 'acceptance': acceptances, 'acceptance_error': acceptance_errors,'cross_section': cs_list, 'cross_section_error': cs_errors, 't_bin_middle': t_bin_centers, 't_bin_width': t_bin_widths})
 value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/tf1_all_e_binned_t_values.csv', index=False)
+
+input('Press Enter to continue...')
 
