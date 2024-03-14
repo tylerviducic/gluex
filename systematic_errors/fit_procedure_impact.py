@@ -6,7 +6,8 @@ colors_dict = {
         8: ('lightblue', 'lightcoral'),
         9: ('blue', 'red'),
         10: ('slateblue', 'firebrick'),
-        11: ('darkblue', 'darkred')
+        11: ('darkblue', 'darkred'),
+        12: ('darkslateblue', 'darkred')
     }
 
 

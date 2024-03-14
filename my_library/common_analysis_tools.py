@@ -301,7 +301,10 @@ def get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index):
 
 
 def get_binned_data_hist(channel, run_period, cut, e, t_bin_index):
-    hist_name = f'{channel}_kstar_{cut}_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
+    if e == 12:
+        hist_name = f'{channel}_kstar_{cut}_cut_beam_full_t_{constants.T_BIN_DICT[t_bin_index]};1'
+    else:
+        hist_name = f'{channel}_kstar_{cut}_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     data_file_and_tree = get_flat_file_and_tree(
         channel, run_period, 'data', filtered=False, hist=True)
     data_hist_file = ROOT.TFile(data_file_and_tree[0])
@@ -903,9 +906,15 @@ def get_integrated_signal_acceptance(channel, run_period, cut='no', error=True):
 
 
 def get_binned_gluex1_signal_acceptance(channel, e, t_bin_index, cut='no', error=True):
-    lumi_spring = get_luminosity('spring', e-0.5, e+0.5)
-    lumi_fall = get_luminosity('fall', e-0.5, e+0.5)
-    lumi_2017 = get_luminosity('2017', e-0.5, e+0.5)
+    if e!=12:
+        lumi_spring = get_luminosity('spring', e-0.5, e+0.5)
+        lumi_fall = get_luminosity('fall', e-0.5, e+0.5)
+        lumi_2017 = get_luminosity('2017', e-0.5, e+0.5)
+    else:
+        lumi_spring = get_luminosity('spring', e-5.5, e-0.5)
+        lumi_fall = get_luminosity('fall', e-5.5, e-0.5)
+        lumi_2017 = get_luminosity('2017', e-5.5, e-0.5)
+        
     lumi_total = lumi_spring + lumi_fall + lumi_2017
 
     if not error:
@@ -1718,8 +1727,12 @@ def remove_zero_datapoints(og_hist: ROOT.TH1):
 
 
 def get_binned_resolution(channel, e, tbin):
-    df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
-    e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==tbin)]['sigma'].values[0]
+    if e!= 12:
+        df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
+        e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==tbin)]['sigma'].values[0]
+    else:
+        df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_t_f1_mc_width.csv')
+        e_t_sigma = df.loc[(df['t_bin']==tbin)]['sigma'].values[0]
     return e_t_sigma
 
 
@@ -1730,7 +1743,10 @@ def get_yield_and_error(voigt_func):
 
 
 def calculate_dataframe_info(voigt_func, channel, e, t):
-    e_lumi = get_luminosity_gluex_1(e-0.5, e+0.5)*1000
+    if e!= 12:
+        e_lumi = get_luminosity_gluex_1(e-0.5, e+0.5)*1000
+    else:
+        e_lumi = get_luminosity_gluex_1(7.5, 11.5)*1000
     f1_yield, f1_yield_error = get_yield_and_error(voigt_func)
     f1_acceptance = get_binned_gluex1_signal_acceptance(channel, e, t, error=False)
     f1_acceptance_error = 0 # TODO: figure out acceptance error. Binomial error, maybe?

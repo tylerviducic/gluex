@@ -943,7 +943,7 @@ def main():
 
     for channel in ['pipkmks', 'pimkpks']:
         properties = get_properties(channel)
-        for e in range(8, 12):
+        for e in range(8, 13):
             guesses_nominal = get_nominal_guesses(properties)
             guesses_pol1 = get_pol1_guesses(properties)
             guesses_pol3 = get_pol3_guesses(properties)
