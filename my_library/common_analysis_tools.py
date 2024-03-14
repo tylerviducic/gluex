@@ -1751,7 +1751,7 @@ def calculate_dataframe_info(voigt_func, channel, e, t):
     f1_acceptance = get_binned_gluex1_signal_acceptance(channel, e, t, error=False)
     f1_acceptance_error = 0 # TODO: figure out acceptance error. Binomial error, maybe?
     cross_section = calculate_crosssection(f1_yield, f1_acceptance, e_lumi, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
-    cross_section_error = propogate_error_multiplication(cross_section, [f1_yield, f1_acceptance, e_lumi, constants.F1_KKPI_BRANCHING_FRACTION], [f1_yield_error, f1_acceptance_error, e_lumi * 0.05, constants.F1_KKPI_BRANCHING_FRACTION_ERROR])
+    cross_section_error = propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
     return f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error
     
 
