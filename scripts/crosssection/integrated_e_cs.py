@@ -4,14 +4,11 @@ import my_library.kinematic_cuts as cuts
 import my_library.constants as constants
 import pandas as pd
 import os
-
-# TODO: fix any fit issues
-
 os.nice(18)
 ROOT.EnableImplicitMT()
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 
 x_min, x_max = 1.14, 1.52
 n_bins = int((x_max - x_min) / 0.01)
@@ -87,7 +84,7 @@ df_2017_thrown = tools.get_dataframe(channel, '2017', 'signal', filtered=False, 
 
 for t in range(1, 8):
 
-    t_bin_centers.append((constants.T_CUT_DICT[t][1] - constants.T_CUT_DICT[t][0])/2)
+    t_bin_centers.append((constants.T_CUT_DICT[t][1] - constants.T_WIDTH_DICT[t]/2))
     t_bin_widths.append(constants.T_WIDTH_DICT[t])
 
     e_t_sigma = res_df.loc[(res_df['t_bin']==t)]['sigma'].values[0]
