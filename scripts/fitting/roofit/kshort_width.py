@@ -1,5 +1,4 @@
 # script to test width of kshort
-# TODO: redo this. 
 
 """
 An effective resolution is computed as σ = f σ1 + (1 − f )σ2 where f is the fraction 
