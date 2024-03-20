@@ -3,8 +3,8 @@ import my_library.common_analysis_tools as ct
 import my_library.constants as constants
 import pandas as pd
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -28,7 +28,7 @@ elif channel == 'pimkpks' :
     gaus_mean = constants.F1_PIMKPKS_GAUS_MEAN
     gaus_width = constants.F1_PIMKPKS_GAUS_WIDTH
 
-df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv')
+df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t_f1_mc_width.csv') 
 
 mean_list = []
 mean_error_list = []

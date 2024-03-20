@@ -3,7 +3,6 @@ fit the kkpi corrected distributinos with "two peaks" to describe the bumps for 
 tails of the f1(1420) peak per klaus's suggestoin 
 """
 
-from numpy.lib.npyio import re
 import ROOT
 import my_library.common_analysis_tools as ct
 import my_library.constants as constants
@@ -27,6 +26,7 @@ if channel == 'pipkmks' :
     gaus_color = 880
     background_color = 616
     hist_title = 'M(K^{-}K_{s}#pi^{+}) [GeV]'
+    kstar_cut = kcuts.KSTAR_ALL_CUT_PIPKMKS
 elif channel == 'pimkpks' :
     voight_resoltion = constants.F1_PIMKPKS_VOIGHT_SIGMA
     voight_resolution_error = constants.F1_PIMKPKS_VOIGHT_SIGMA_ERROR
@@ -35,6 +35,7 @@ elif channel == 'pimkpks' :
     gaus_color = 887
     background_color = 618
     hist_title = 'M(K^{+}K_{s}#pi^{-}) [GeV]'
+    kstar_cut = kcuts.KSTAR_ALL_CUT_PIMKPKS
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg const', 'bkg first order', 'bkg second order']
 initial_guesses = {
@@ -49,16 +50,22 @@ initial_guesses = {
     9: 10 # bkg second order
 }
 
+data = ct.get_dataframe(channel, 'gluex1', 'data').Filter('e_beam > 7.5 && e_beam < 11.5').Filter(kcuts.T_RANGE).Filter(kstar_cut)
+uncor_data_hist = data.Histo1D(('uncor_data_hist', hist_title, 60, 1.0, 1.6), f'{channel}_m')
+uncor_data_hist.Sumw2()
+data_hist = ct.correct_data_hist_for_kstar_efficiency(uncor_data_hist)
+data_hist.Sumw2()
 
-data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
-data_hist.GetXaxis().SetRangeUser(1.15, 1.51)
+# data_hist = ct.get_integrated_gluex1_kstar_corrected_data_hist(channel)
+
+data_hist.GetXaxis().SetRangeUser(1.17, 1.5)
 data_hist.GetYaxis().SetRangeUser(0, data_hist.GetMaximum()*1.1)
 data_hist.GetXaxis().SetTitle(hist_title)
 data_hist.GetYaxis().SetTitle('Events / 10 MeV')
 data_hist.SetMarkerStyle(20)
 
 # fit_low, fit_high = 1.18, 1.49
-fit_low, fit_high = 1.17, 1.49
+fit_low, fit_high = 1.17, 1.5
 
 func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', fit_low, fit_high)
 
@@ -165,5 +172,7 @@ fit_params.DrawLatexNDC(0.5, 0.8, 'Width = ' + '{:.2f}'.format(voigt_width * 100
 fit_params.DrawLatexNDC(0.5, 0.85, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000) + ' #pm ' + '{:.2f}'.format(voigt_mass_err * 1000) + ' MeV')
 
 c.Update()
+c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/integrated_{channel}_fit.png')
+
 
 input('press enter to continue')
