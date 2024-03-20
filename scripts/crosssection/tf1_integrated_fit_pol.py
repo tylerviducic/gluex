@@ -174,4 +174,5 @@ fit_params.DrawLatexNDC(0.5, 0.85, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000
 c.Update()
 c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/integrated_{channel}_fit.png')
 
+
 input('press enter to continue')
