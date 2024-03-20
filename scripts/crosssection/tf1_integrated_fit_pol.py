@@ -15,13 +15,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
-cut = 'all'
-
-ROOT.TF1.InitStandardFunctions()
-f = ROOT.gROOT.GetListOfFunctions()
-print(f.FindObject('chebyshev2'))
+channel = 'pipkmks'
+# channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     voight_resoltion = constants.F1_PIPKMKS_VOIGHT_SIGMA
