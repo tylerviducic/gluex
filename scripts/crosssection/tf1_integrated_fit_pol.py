@@ -14,8 +14,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     voight_resoltion = constants.F1_PIPKMKS_VOIGHT_SIGMA
@@ -152,6 +152,7 @@ print(f'chi^2/ndf = {chi2_per_ndf}')
 
 
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
+data_hist.GetYaxis().SetTitleOffset(1.4)
 data_hist.Draw("E1")
 func.Draw('same')
 voight.Draw('same')
@@ -167,9 +168,9 @@ legend.Draw()
 
 fit_params = ROOT.TLatex()
 fit_params.SetTextSize(0.0425)
-fit_params.DrawLatexNDC(0.5, 0.75, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
-fit_params.DrawLatexNDC(0.5, 0.8, 'Width = ' + '{:.2f}'.format(voigt_width * 1000) + ' #pm ' + '{:.2f}'.format(voigt_width_err * 1000) + ' MeV')
-fit_params.DrawLatexNDC(0.5, 0.85, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000) + ' #pm ' + '{:.2f}'.format(voigt_mass_err * 1000) + ' MeV')
+fit_params.DrawLatexNDC(0.475, 0.75, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
+fit_params.DrawLatexNDC(0.475, 0.8, 'Width = ' + '{:.2f}'.format(voigt_width * 1000) + ' #pm ' + '{:.2f}'.format(voigt_width_err * 1000) + ' MeV')
+fit_params.DrawLatexNDC(0.475, 0.85, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000) + ' #pm ' + '{:.2f}'.format(voigt_mass_err * 1000) + ' MeV')
 
 c.Update()
 c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/integrated_{channel}_fit.png')
