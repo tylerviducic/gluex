@@ -7,8 +7,8 @@ import os
 os.nice(18)
 ROOT.EnableImplicitMT()
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 
 x_min, x_max = 1.14, 1.52
 n_bins = int((x_max - x_min) / 0.01)

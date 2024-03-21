@@ -127,7 +127,7 @@ def get_flat_1420_file_and_tree(channel, run_period, kstar_charge, comboloop=Fal
 def get_flat_thrown_file_and_tree(channel, run_period, phasespace=False, hist=True):
     if not phasespace:
         if not hist:
-            return (f'/volatile/halld/home/viducic/selector_output/f1_{channel}/thrown/{channel}_thrown_{constants.RUN_DICT[run_period]}.root', f'{channel}_thrown')
+            return (f'/w/halld-scshelf2101/home/viducic/data/{channel}/mc/thrown/{channel}_thrown_{constants.RUN_DICT[run_period]}.root', f'{channel}_thrown')
         return (f'/work/halld/home/viducic/data/{channel}/mc/thrown/mc_{channel}_thrown_signal_flat_result_{constants.RUN_DICT[run_period]}.root', 'pipkmks_thrown')
     elif phasespace:
         if not hist:

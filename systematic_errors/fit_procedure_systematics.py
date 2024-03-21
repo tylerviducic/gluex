@@ -1275,7 +1275,6 @@ def main():
 
 
 if __name__ == '__main__':
-    # TODO: solve the problems
 
     """problems
     [DONE] pimkpks exp 8, 9, 10, 11 (params probably)
