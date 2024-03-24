@@ -54,6 +54,8 @@ class DSelector_plot_delta_t : public DSelector
 		// EXAMPLES:
 		TH1I* dHist_MissingMassSquared;
 		TH1I* dHist_BeamEnergy;
+		TH1I* dHist_RFTime;
+		TH1I* dHist_RFTimeCut;
 
 	ClassDef(DSelector_plot_delta_t, 0);
 };
