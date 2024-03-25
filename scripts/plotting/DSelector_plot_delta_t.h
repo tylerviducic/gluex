@@ -56,6 +56,7 @@ class DSelector_plot_delta_t : public DSelector
 		TH1I* dHist_BeamEnergy;
 		TH1I* dHist_RFTime;
 		TH1I* dHist_RFTimeCut;
+		TH1I* dHist_RFTimeChi2Cut;
 
 	ClassDef(DSelector_plot_delta_t, 0);
 };

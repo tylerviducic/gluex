@@ -84,6 +84,7 @@ void DSelector_plot_delta_t::Init(TTree *locTree)
 	dHist_BeamEnergy = new TH1I("BeamEnergy", ";Beam Energy (GeV)", 600, 0.0, 12.0);
 	dHist_RFTime = new TH1I("RFTime", ";RF Time - Event Time [ns]", 600, -20.0, 20.0);
 	dHist_RFTimeCut = new TH1I("RFTimeCut", ";RF Time - Event Time [ns]", 600, -20.0, 20.0);
+	dHist_RFTimeChi2Cut = new TH1I("RFTimeChi2Cut", ";RF Time - Event Time [ns]", 600, -20.0, 20.0);
 
 	/************************** EXAMPLE USER INITIALIZATION: CUSTOM OUTPUT BRANCHES - MAIN TREE *************************/
 
@@ -258,6 +259,16 @@ Bool_t DSelector_plot_delta_t::Process(Long64_t locEntry)
 			// Number of out-of-time beam bunches in tree (on a single side, so that total number out-of-time bunches accepted is 2 times this number for left + right bunches) 
 
 		dHist_RFTime->Fill(locDeltaT_RF);
+
+		double chi2 = dComboWrapper->Get_ChiSq_KinFit();
+		double ndf = dComboWrapper->Get_NDF_KinFit();
+
+		if (chi2/ndf > 5){
+			dComboWrapper->Set_IsComboCut(true);
+			continue;
+		}
+
+		dHist_RFTimeChi2Cut->Fill(locDeltaT_RF);
 
 		Bool_t locSkipNearestOutOfTimeBunch = true; // True: skip events from nearest out-of-time bunch on either side (recommended).
 		Int_t locNumOutOfTimeBunchesToUse = locSkipNearestOutOfTimeBunch ? locNumOutOfTimeBunchesInTree-1:locNumOutOfTimeBunchesInTree; 
