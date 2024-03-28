@@ -21,6 +21,8 @@ variations = ['nominal', 'pol1', 'pol3', 'nogaus', 'exppol2', 'chebyshev', 'wide
 for var in variations:
     df[f'{var}_percent_change'] = np.where(True, (df[f'{var}_cross_section'] - df['nominal_cross_section'])/df['nominal_cross_section'], np.nan)
 
+df.to_csv('/work/halld/home/viducic/systematic_errors/fit_variation_data_with_percent_change.csv')
+
 fig, ax = plt.subplots(4, 4, sharex=True, sharey=True, figsize=(20, 20))
 
 grouped = df.groupby(['e'])
