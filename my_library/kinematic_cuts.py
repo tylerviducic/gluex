@@ -70,9 +70,9 @@ F1_SIGNAL_REGION_PIMKPKS_STRING = 'pimkpks_m > 1.24 && pimkpks_m < 1.35'
 
 @ROOT.Numba.Declare(['float'], 'bool')
 def beam_range(e_beam):
-    return e_beam >= 6.5 and e_beam <= 11.5
+    return e_beam >= 7.5 and e_beam <= 11.5
 BEAM_RANGE = 'Numba::beam_range(e_beam)'
-BEAM_RANGE_STRING = 'e_beam >= 6.5 && e_beam <= 11.5'
+BEAM_RANGE_STRING = 'e_beam >= 7.5 && e_beam <= 11.5'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
