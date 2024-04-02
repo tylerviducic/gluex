@@ -25,6 +25,7 @@ def make_legend():
 df = pd.read_csv('/work/halld/home/viducic/systematic_errors/signifigant_cuts.csv')
 
 df['sigma_barlow'] = np.where(True, barlow_test(df['cs_nom'], df['cs_varied'], df['error_nom'], df['error_varied']), 0)
+df[['cut', 'e', 't', 'channel', 'sigma_barlow']].to_csv('/work/halld/home/viducic/systematic_errors/barlow_results_signifigant_cuts.csv')
 
 cut = ['charged_kstar', 'kinfit_cl', 'kp', 'ks_m', 'ksp', 'mx2_all', 'neutral_kstar', 'pathlength', 'pp', 'ppi']
 plot_titles = ['Charged $K^*$', 'Kinematic Fit Confidence Level', '$M(Kp)$', '$M(\pi^+\pi^-)$', '$M(K_sp)$', '$M_x^2(pKK\pi)$', 'Neutral $K^*$', 'Path Length', '$\\vec{p}$', '$M(p\pi)$']
