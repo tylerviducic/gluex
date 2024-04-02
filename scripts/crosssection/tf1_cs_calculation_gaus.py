@@ -3,6 +3,7 @@ import my_library.common_analysis_tools as ct
 import my_library.constants as constants
 import pandas as pd
 
+
 channel = 'pipkmks'
 # channel = 'pimkpks'
 cut = 'all'
@@ -135,6 +136,7 @@ for e in range(8, 12):
         func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
 
         result = hist.Fit(func, 'SRBE')
+        # result = hist.Fit(func, 'SRBEV')
         func.SetLineColor(total_fit_color)
 
         voight = ROOT.TF1(f'voight_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', fit_low, fit_high)
