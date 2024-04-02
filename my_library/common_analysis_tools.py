@@ -320,8 +320,8 @@ def get_binned_signal_mc_hist(channel, run_period, cut, e, t_bin_index):
         hist_name = f'{channel}_kstar_{cut}_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     signal_mc_file_and_tree = get_flat_file_and_tree(
         channel, run_period, 'signal', filtered=False, hist=True)
-    print(signal_mc_file_and_tree[0])
-    print(hist_name)
+    # print(signal_mc_file_and_tree[0])
+    # print(hist_name)
     signal_mc_hist_file = ROOT.TFile(signal_mc_file_and_tree[0])
     signal_mc_hist = signal_mc_hist_file.Get(hist_name)
     signal_mc_hist.SetDirectory(0)
