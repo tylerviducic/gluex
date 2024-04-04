@@ -5,8 +5,8 @@ import my_library.constants as constants
 import pandas as pd
 import numpy as np
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 
 #TODO: move this to contants
 if channel == 'pipkmks' :
@@ -72,12 +72,12 @@ for e in range(8, 12):
 
         f_nominal = ROOT.TF1(f'fnominal_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', fit_low, fit_high)
         f_nominal.SetParameter(0, initial_guesses[0]) # voight amplitude
-        f_nominal.SetParLimits(0, 0.1, 100000)
+        # f_nominal.SetParLimits(0, 0.001, 100000)
         f_nominal.FixParameter(1, initial_guesses[1]) # voight mean
         f_nominal.FixParameter(2, e_t_sigma)
         f_nominal.FixParameter(3, initial_guesses[3]) # voight width
         f_nominal.SetParameter(4, initial_guesses[4]) # gaus amplitude
-        f_nominal.SetParLimits(4, 0.1, 10000)
+        # f_nominal.SetParLimits(4, 0.1, 10000)
         f_nominal.FixParameter(5, initial_guesses[5])# gaus mean
         f_nominal.FixParameter(6, initial_guesses[6]) # gaus width
         f_nominal.SetParameter(7, initial_guesses[7]) # bkg par1
@@ -91,7 +91,7 @@ for e in range(8, 12):
         hists = []
 
         # for i in range(1, 101):
-        for i in range(1, 101):
+        for i in range(1, 1001):
             trial_hist = hist.Clone(f"trial_{i}")
             trial_hist.SetTitle(f"trial_{i}")
             trial_hist.GetXaxis().SetRangeUser(fit_low, fit_high)
