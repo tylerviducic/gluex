@@ -4,8 +4,8 @@ import my_library.constants as constants
 import pandas as pd
 
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -107,8 +107,7 @@ for e in range(8, 12):
         func.FixParameter(3, initial_guesses[3]) # voight width
         func.SetParameter(4, initial_guesses[4]) # gaus amplitude
         func.SetParLimits(4, 0.1, 10000)
-        func.SetParameter(5, initial_guesses[5])# gaus mean
-        func.FixParameter(5, initial_guesses[5])
+        func.FixParameter(5, initial_guesses[5]) # gaus mean 
         # func.SetParLimits(5, 1.34, 1.4)
         func.FixParameter(6, initial_guesses[6]) # gaus width
         # func.SetParameter(6, initial_guesses[6])
@@ -151,6 +150,7 @@ for e in range(8, 12):
         bkg.SetLineColor(background_color)
         bkg.SetLineStyle(2)
 
+        initial_guesses[0] = func.GetParameter(0)
         initial_guesses[4] = func.GetParameter(4)
         initial_guesses[5] = func.GetParameter(5)
         initial_guesses[6] = func.GetParameter(6)
