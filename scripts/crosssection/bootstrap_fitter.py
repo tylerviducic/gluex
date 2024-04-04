@@ -5,8 +5,11 @@ import my_library.constants as constants
 import pandas as pd
 import numpy as np
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+#set batch mode to true
+ROOT.gROOT.SetBatch(True)
+
+# channel = 'pipkmks'
+channel = 'pimkpks'
 
 #TODO: move this to contants
 if channel == 'pipkmks' :
@@ -84,7 +87,7 @@ for e in range(8, 12):
         f_nominal.SetParameter(8, initial_guesses[8]) # bkg par2
         f_nominal.SetParameter(9, initial_guesses[9]) # bkg par3
 
-        r_nom = hist.Fit(f_nominal, 'SRBEQ')
+        r_nom = hist.Fit(f_nominal, 'SRBNQ')
         amp_nom = f_nominal.GetParameter(0)
         snom = f_nominal.GetParError(0)
 
@@ -108,7 +111,7 @@ for e in range(8, 12):
             
             f_trial = f_nominal.Clone(f'ftrial_{i}')
 
-            r = trial_hist.Fit(f_trial, 'SRBEQ')
+            r = trial_hist.Fit(f_trial, 'SRBNQ')
             amp = f_trial.GetParameter(0)
 
             rows['t_bin'].append(t)
