@@ -1737,7 +1737,7 @@ def get_binned_resolution(channel, e, tbin):
 
 
 def get_yield_and_error(voigt_func):
-    f1_yield = voigt_func.Integral(1.2, 1.5)/0.01
+    f1_yield = voigt_func.Integral(1.16, 1.5)/0.01
     f1_error = voigt_func.GetParError(0)/voigt_func.GetParameter(0) * f1_yield
     return f1_yield, f1_error
 

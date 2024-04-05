@@ -3,11 +3,11 @@ import my_library.common_analysis_tools as ct
 import my_library.constants as constants
 import pandas as pd
 
-ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-6)
-ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-6)
+# ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-3)
+# ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-3)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -53,7 +53,7 @@ luminosity_list = []
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
 
-fit_low, fit_high = 1.16, 1.51
+fit_low, fit_high = 1.16, 1.63
 
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
 
@@ -84,7 +84,7 @@ for e in range(8, 12):
         cor_hist = ct.get_binned_gluex1_kstar_corrected_data(channel, e, t)
         hist = ct.remove_zero_datapoints(cor_hist)
 
-        hist.GetXaxis().SetRangeUser(1.15, 1.52)
+        hist.GetXaxis().SetRangeUser(1.1, 1.65)
         hist.GetYaxis().SetRangeUser(0, hist.GetMaximum()*1.2)
 
         hist.GetXaxis().SetTitle(hist_title + ' (GeV)')
@@ -103,12 +103,12 @@ for e in range(8, 12):
         e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==t)]['sigma'].values[0]
 
         func.SetParameter(0, initial_guesses[0]) # voight amplitude
-        func.SetParLimits(0, 0.1, 100000)
+        func.SetParLimits(0, 0., 100000)
         func.FixParameter(1, initial_guesses[1]) # voight mean
         func.FixParameter(2, e_t_sigma)
         func.FixParameter(3, initial_guesses[3]) # voight width
         func.SetParameter(4, initial_guesses[4]) # gaus amplitude
-        func.SetParLimits(4, 0.1, 10000)
+        func.SetParLimits(4, 0., 100000)
         func.FixParameter(5, initial_guesses[5]) # gaus mean 
         # func.SetParLimits(5, 1.34, 1.4)
         func.FixParameter(6, initial_guesses[6]) # gaus width
@@ -136,9 +136,17 @@ for e in range(8, 12):
 
         func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
 
-        result = hist.Fit(func, 'SRB')
+        result = hist.Fit(func, 'SRBNE')
         # result = hist.Fit(func, 'SRBEV')
+        # print("\n")
+        # print("==" * 20)
+        # print("==" * 20)
+        # print("\n")
+        # print(f'V_Amp: {func1.GetParameter(0)}')
+        # print(f'G_Amp: {func1.GetParameter(4)}')
+        
         func.SetLineColor(total_fit_color)
+
 
         voight = ROOT.TF1(f'voight_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', fit_low, fit_high)
         voight.SetLineColor(ROOT.kBlack)
@@ -162,6 +170,7 @@ for e in range(8, 12):
 
 
         voight.SetParameter(0, func.GetParameter(0))
+        voight.SetParError(0, func.GetParError(0))
         voight.SetParameter(1, func.GetParameter(1))
         voight.SetParameter(2, func.GetParameter(2))
         voight.SetParameter(3, func.GetParameter(3))
@@ -183,7 +192,7 @@ for e in range(8, 12):
         bkgs[t-1].Draw('same')
         gauses[t-1].Draw('same')
 
-        f1_yield = voight.Integral(1.2, 1.5)/0.01
+        f1_yield = voight.Integral(1.16, 1.5)/0.01
         f1_yield_error = func.GetParError(0)/func.GetParameter(0) * f1_yield
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
         cross_section = ct.calculate_crosssection(f1_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
@@ -208,6 +217,11 @@ for e in range(8, 12):
         
 
         c.Update()
+        # print("\n")
+        # print("++++++++" * 5)
+        # print("++++++++" * 5)
+        # print("++++++++" * 5)
+        # print("\n")
 
     c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/pol2_gaus_{channel}_e{e}_t{t}_fit.png')
 

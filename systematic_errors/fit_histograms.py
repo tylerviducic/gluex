@@ -123,15 +123,15 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
     
     check_param_guess_structure(param_guesses)
     
-    func = ROOT.TF1(f'func_{cut}_{e}_{t}_{ltn}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.15, 1.51)
+    func = ROOT.TF1(f'func_{cut}_{e}_{t}_{ltn}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.16, 1.63)
 
     func.SetParameter(0, param_guesses[0]) # voigt amplitude
-    func.SetParLimits(0, 0.1, 100000)
+    func.SetParLimits(0, 0., 100000)
     func.FixParameter(1, param_guesses[1]) # voigt mean
     func.FixParameter(2, param_guesses[2]) # voigt sigma/resolution 
     func.FixParameter(3, param_guesses[3]) # voigt width
     func.SetParameter(4, param_guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0.1, 10000)
+    func.SetParLimits(4, 0., 10000)
     func.FixParameter(5, param_guesses[5])
     func.FixParameter(6, param_guesses[6]) # gaus width
     func.SetParameter(7, param_guesses[7]) # bkg par1
@@ -158,9 +158,9 @@ def update_guesses(func):
 
 
 def get_func_components(func, e, t, cut, ltn):
-    voigt = ROOT.TF1(f'voigt_{cut}_{ltn}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.15, 1.51)
-    gaus = ROOT.TF1(f'gaus_{cut}_{ltn}_{e}_{t}', 'gaus(0)', 1.15, 1.51)
-    bkg = ROOT.TF1(f'bkg_{cut}_{ltn}_{e}_{t}', 'pol2(0)', 1.15, 1.51)
+    voigt = ROOT.TF1(f'voigt_{cut}_{ltn}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.16, 1.6)
+    gaus = ROOT.TF1(f'gaus_{cut}_{ltn}_{e}_{t}', 'gaus(0)', 1.16, 1.6)
+    bkg = ROOT.TF1(f'bkg_{cut}_{ltn}_{e}_{t}', 'pol2(0)', 1.16, 1.6)
 
     voigt.SetParameter(0, func.GetParameter(0))
     voigt.SetParError(0, func.GetParError(0))
@@ -180,7 +180,7 @@ def get_func_components(func, e, t, cut, ltn):
 
 
 def get_yield_and_error(voigt_func):
-    f1_yield = voigt_func.Integral(1.2, 1.5)/0.01
+    f1_yield = voigt_func.Integral(1.16, 1.5)/0.01
     f1_error = voigt_func.GetParError(0)/voigt_func.GetParameter(0) * f1_yield
     return f1_yield, f1_error
 
