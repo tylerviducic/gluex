@@ -14,7 +14,7 @@ colors_dict = {
 df = pd.read_csv('/work/halld/home/viducic/systematic_errors/fit_variation_data.csv', index_col=0)
 
 
-variations = ['nominal', 'pol1', 'pol3', 'nogaus', 'exppol2', 'chebyshev', 'wideleft',
+variations = ['nominal', 'pol1', 'pol3', 'nogaus', 'chebyshev', 'wideleft',
             'wideright', 'wideboth', 'narrowleft', 'narrowright', 'narrowboth',
             'floatvoigtmean', 'floatvoigtwidth', 'floatgausmean', 'floatgauswidth']
 
