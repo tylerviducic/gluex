@@ -38,7 +38,7 @@ df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t
 
 # amplitude_df = pd.DataFrame(columns=['t_bin', 'e_bin', 'trial', 'amplitude'])
 
-fit_low, fit_high = 1.15, 1.51
+fit_low, fit_high = 1.16, 1.63
 
 rows = {
     'e_bin': [],
@@ -70,31 +70,31 @@ for e in range(8, 12):
     # for t in range(2, 3):
         cor_hist = tools.get_binned_gluex1_kstar_corrected_data(channel, e, t)
         hist = tools.remove_zero_datapoints(cor_hist)
-        hist.GetXaxis().SetRangeUser(fit_low, fit_high)
+        # hist.GetXaxis().SetRangeUser(fit_low, fit_high)
         e_t_sigma = df.loc[(df['energy']==e) & (df['t_bin']==t)]['sigma'].values[0]
 
         f_nominal = ROOT.TF1(f'fnominal_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', fit_low, fit_high)
         f_nominal.SetParameter(0, initial_guesses[0]) # voight amplitude
-        # f_nominal.SetParLimits(0, 0.001, 100000)
+        f_nominal.SetParLimits(0, 0., 100000)
         f_nominal.FixParameter(1, initial_guesses[1]) # voight mean
         f_nominal.FixParameter(2, e_t_sigma)
         f_nominal.FixParameter(3, initial_guesses[3]) # voight width
         f_nominal.SetParameter(4, initial_guesses[4]) # gaus amplitude
-        # f_nominal.SetParLimits(4, 0.1, 10000)
+        f_nominal.SetParLimits(4, 0., 10000)
         f_nominal.FixParameter(5, initial_guesses[5])# gaus mean
         f_nominal.FixParameter(6, initial_guesses[6]) # gaus width
         f_nominal.SetParameter(7, initial_guesses[7]) # bkg par1
         f_nominal.SetParameter(8, initial_guesses[8]) # bkg par2
         f_nominal.SetParameter(9, initial_guesses[9]) # bkg par3
 
-        r_nom = hist.Fit(f_nominal, 'SRBNQ')
+        r_nom = hist.Fit(f_nominal, 'SRBENQ')
         amp_nom = f_nominal.GetParameter(0)
         snom = f_nominal.GetParError(0)
 
         hists = []
 
         # for i in range(1, 101):
-        for i in range(1, 1001):
+        for i in range(1, 10001):
             trial_hist = hist.Clone(f"trial_{i}")
             trial_hist.SetTitle(f"trial_{i}")
             trial_hist.GetXaxis().SetRangeUser(fit_low, fit_high)
@@ -108,10 +108,10 @@ for e in range(8, 12):
                 new_val = rng.normal(val, std)
                 trial_hist.SetBinContent(bin, new_val)
                 trial_hist.SetBinError(bin, rel_error*new_val)
-            
+            trial_hist_cor = tools.remove_zero_datapoints(trial_hist)
             f_trial = f_nominal.Clone(f'ftrial_{i}')
 
-            r = trial_hist.Fit(f_trial, 'SRBNQ')
+            r = trial_hist_cor.Fit(f_trial, 'SRBENQ')
             amp = f_trial.GetParameter(0)
 
             rows['t_bin'].append(t)
