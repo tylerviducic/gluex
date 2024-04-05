@@ -3,9 +3,11 @@ import my_library.common_analysis_tools as ct
 import my_library.constants as constants
 import pandas as pd
 
+ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-6)
+ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-6)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -51,7 +53,7 @@ luminosity_list = []
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
 
-fit_low, fit_high = 1.15, 1.51
+fit_low, fit_high = 1.16, 1.51
 
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
 
@@ -134,7 +136,7 @@ for e in range(8, 12):
 
         func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
 
-        result = hist.Fit(func, 'SRBE')
+        result = hist.Fit(func, 'SRB')
         # result = hist.Fit(func, 'SRBEV')
         func.SetLineColor(total_fit_color)
 
