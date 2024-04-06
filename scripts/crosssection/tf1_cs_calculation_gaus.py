@@ -6,8 +6,8 @@ import pandas as pd
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-3)
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-3)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 if channel == 'pipkmks' :
@@ -147,6 +147,13 @@ for e in range(8, 12):
         
         func.SetLineColor(total_fit_color)
 
+        print('\n')
+        print(f'++' * 10)
+        print(f'++' * 10)
+        print(f'E = {e} GeV, t = {t} GeV^2, AMP = {func.GetParameter(0)} +/- {func.GetParError(0)}')
+        print(f'++' * 10)
+        print(f'++' * 10)
+        print('\n')
 
         voight = ROOT.TF1(f'voight_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', fit_low, fit_high)
         voight.SetLineColor(ROOT.kBlack)
