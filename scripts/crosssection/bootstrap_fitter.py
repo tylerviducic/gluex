@@ -8,8 +8,8 @@ import numpy as np
 #set batch mode to true
 ROOT.gROOT.SetBatch(True)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 
 #TODO: move this to contants
 if channel == 'pipkmks' :
@@ -40,14 +40,20 @@ df = pd.read_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/binned_e_t
 
 fit_low, fit_high = 1.16, 1.63
 
+# rows = {
+#     'e_bin': [],
+#     't_bin': [],
+#     'trial': [],
+#     'amplitude': []
+# }
+
 rows = {
     'e_bin': [],
     't_bin': [],
-    'trial': [],
-    'amplitude': []
+    'bootstrap_err': []
 }
 
-rng = np.random.default_rng()
+# rng = np.random.default_rng()
 
 for e in range(8, 12):
 # for e in range(8, 9):
@@ -94,30 +100,35 @@ for e in range(8, 12):
         hists = []
 
         # for i in range(1, 101):
-        for i in range(1, 10001):
-            trial_hist = hist.Clone(f"trial_{i}")
-            trial_hist.SetTitle(f"trial_{i}")
-            trial_hist.GetXaxis().SetRangeUser(fit_low, fit_high)
-            for bin in range(1, trial_hist.GetNbinsX()+1):
-                val = trial_hist.GetBinContent(bin)
-                std = trial_hist.GetBinError(bin)
-                if val > 0:
-                    rel_error = std/val
-                else:
-                    rel_error = 0
-                new_val = rng.normal(val, std)
-                trial_hist.SetBinContent(bin, new_val)
-                trial_hist.SetBinError(bin, rel_error*new_val)
-            trial_hist_cor = tools.remove_zero_datapoints(trial_hist)
-            f_trial = f_nominal.Clone(f'ftrial_{i}')
+        # for i in range(1, 10001):
+        #     trial_hist = hist.Clone(f"trial_{i}")
+        #     trial_hist.SetTitle(f"trial_{i}")
+        #     trial_hist.GetXaxis().SetRangeUser(fit_low, fit_high)
+        #     for bin in range(1, trial_hist.GetNbinsX()+1):
+        #         val = trial_hist.GetBinContent(bin)
+        #         std = trial_hist.GetBinError(bin)
+        #         if val > 0:
+        #             rel_error = std/val
+        #         else:
+        #             rel_error = 0
+        #         new_val = rng.normal(val, std)
+        #         trial_hist.SetBinContent(bin, new_val)
+        #         trial_hist.SetBinError(bin, rel_error*new_val)
+        #     trial_hist_cor = tools.remove_zero_datapoints(trial_hist)
+        #     f_trial = f_nominal.Clone(f'ftrial_{i}')
 
-            r = trial_hist_cor.Fit(f_trial, 'SRBENQ')
-            amp = f_trial.GetParameter(0)
+        #     r = trial_hist_cor.Fit(f_trial, 'SRBENQ')
+        #     amp = f_trial.GetParameter(0)
 
-            rows['t_bin'].append(t)
-            rows['e_bin'].append(e)
-            rows['trial'].append(i)
-            rows['amplitude'].append(amp)
+        #     rows['t_bin'].append(t)
+        #     rows['e_bin'].append(e)
+        #     rows['trial'].append(i)
+        #     rows['amplitude'].append(amp)
+
+        err = tools.calculate_rel_bootstrap_error(hist, f_nominal, n_trials=1000)
+        rows['e_bin'].append(e)
+        rows['t_bin'].append(t)
+        rows['bootstrap_err'].append(err)
 
         initial_guesses[0] = f_nominal.GetParameter(0)
         initial_guesses[4] = f_nominal.GetParameter(4)
@@ -126,7 +137,9 @@ for e in range(8, 12):
         initial_guesses[9] = f_nominal.GetParameter(9)
 
 bs_df = pd.DataFrame(rows)
-bs_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/bootstrap_amplitudes.csv', index=False)
+# bs_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/bootstrap_amplitudes.csv', index=False)
+bs_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/bootstrap_err_nominal.csv', index=False)
+print("done!")
 
 
 
