@@ -6,9 +6,11 @@ import pandas as pd
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-3)
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-3)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
+
+ROOT.gROOT.SetBatch(True)
 
 if channel == 'pipkmks' :
     v_mean = constants.F1_PIPKMKS_VOIGHT_MEAN
@@ -200,7 +202,8 @@ for e in range(8, 12):
         gauses[t-1].Draw('same')
 
         f1_yield = voight.Integral(1.16, 1.5)/0.01
-        f1_yield_error = func.GetParError(0)/func.GetParameter(0) * f1_yield
+        # f1_yield_error = func.GetParError(0)/func.GetParameter(0) * f1_yield
+        f1_yield_error = ct.calculate_rel_bootstrap_error(hist, func, n_trials=1000) * f1_yield
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
         cross_section = ct.calculate_crosssection(f1_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
         cross_section_error = ct.propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
