@@ -4,7 +4,7 @@ it is broken down into compiled funcitons and string cuts
 """
 
 import ROOT
-from my_library.constants import KSHORT_FIT_MEAN, KSHORT_FIT_WIDTH
+from my_library.constants import KSHORT_FIT_MEAN, KSHORT_FIT_WIDTH, F1_PIPKMKS_VOIGHT_MEAN, F1_PIMKPKS_VOIGHT_MEAN, F1_PIPKMKS_VOIGHT_WIDTH, F1_PIMKPKS_VOIGHT_WIDTH
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
@@ -56,14 +56,14 @@ KPP_MASS_CUT_STRING = 'kpp_m > 2.0'
 
 @ROOT.Numba.Declare(['float'], 'bool')
 def f1_signal_region_pipkmks(pipkmks_m):
-    return pipkmks_m > 1.24 and pipkmks_m < 1.35
+    return abs(pipkmks_m - F1_PIPKMKS_VOIGHT_MEAN) < 3 * F1_PIPKMKS_VOIGHT_WIDTH
 F1_SIGNAL_REGION_PIPKMKS = 'Numba::f1_signal_region_pipkmks(pipkmks_m)'
 F1_SIGNAL_REGION_PIPKMKS_STRING = 'pipkmks_m > 1.24 && pipkmks_m < 1.35'
 
 
 @ROOT.Numba.Declare(['float'], 'bool')
 def f1_signal_region_pimkpks(pimkpks_m):
-    return pimkpks_m > 1.24 and pimkpks_m < 1.35
+    return abs(pimkpks_m - F1_PIMKPKS_VOIGHT_MEAN) < 3 * F1_PIMKPKS_VOIGHT_WIDTH
 F1_SIGNAL_REGION_PIMKPKS = 'Numba::f1_signal_region_pimkpks(pimkpks_m)'
 F1_SIGNAL_REGION_PIMKPKS_STRING = 'pimkpks_m > 1.24 && pimkpks_m < 1.35'
 
