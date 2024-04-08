@@ -179,18 +179,22 @@ def get_func_components(func, e, t, cut, ltn):
     return voigt, gaus, bkg
 
 
-def get_yield_and_error(voigt_func):
-    f1_yield = voigt_func.Integral(1.16, 1.5)/0.01
-    f1_error = voigt_func.GetParError(0)/voigt_func.GetParameter(0) * f1_yield
+def get_yield_and_error(func, hist):
+    voigt = ROOT.TF1(f'voigt_dummy', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.16, 1.6)
+    for i in range(4):
+        voigt.SetParameter(i, func.GetParameter(i))
+
+    f1_yield = voigt.Integral(1.16, 1.5)/0.01
+    f1_error = tools.calculate_rel_bootstrap_error(hist, func, n_trials=1000)*f1_yield
     return f1_yield, f1_error
 
 
-def calculate_dataframe_info(voigt_func, channel, e, t, cut, ltn):
+def calculate_dataframe_info(func, hist, channel, e, t, cut, ltn):
     if e == 12:
         e_lumi = tools.get_luminosity_gluex_1(7.5, 11.5)*1000
     else:
         e_lumi = tools.get_luminosity_gluex_1(e-0.5, e+0.5)*1000
-    f1_yield, f1_yield_error = get_yield_and_error(voigt_func)
+    f1_yield, f1_yield_error = get_yield_and_error(func, hist)
     f1_acceptance = get_gluex1_acceptance(channel, cut, e, t, ltn)
     f1_acceptance_error = 0 
     cross_section = tools.calculate_crosssection(f1_yield, f1_acceptance, e_lumi, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
@@ -198,10 +202,10 @@ def calculate_dataframe_info(voigt_func, channel, e, t, cut, ltn):
     return f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error
 
 
-def get_row_for_df(channel, voigt_nominal, voigt_loose, voigt_tight, e, t, cut):
-    f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal = calculate_dataframe_info(voigt_nominal, channel, e, t, cut, 'nominal')
-    f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose = calculate_dataframe_info(voigt_loose, channel, e, t, cut, 'loose')
-    f1_yield_tight, f1_yield_error_tight, f1_acceptance_tight, f1_acceptance_error_tight, cross_section_tight, cross_section_error_tight = calculate_dataframe_info(voigt_tight, channel, e, t, cut, 'tight')
+def get_row_for_df(channel, func_nominal, func_loose, func_tight, hist_nominal, hist_loose, hist_tight, e, t, cut):
+    f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal = calculate_dataframe_info(func_nominal, hist_nominal, channel, e, t, cut, 'nominal')
+    f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose = calculate_dataframe_info(func_loose, hist_loose, channel, e, t, cut, 'loose')
+    f1_yield_tight, f1_yield_error_tight, f1_acceptance_tight, f1_acceptance_error_tight, cross_section_tight, cross_section_error_tight = calculate_dataframe_info(func_tight, hist_tight, channel, e, t, cut, 'tight')
     row = [channel, e, t, cut, 
            f1_yield_nominal, f1_yield_error_nominal, f1_acceptance_nominal, f1_acceptance_error_nominal, cross_section_nominal, cross_section_error_nominal,
            f1_yield_loose, f1_yield_error_loose, f1_acceptance_loose, f1_acceptance_error_loose, cross_section_loose, cross_section_error_loose,
@@ -351,7 +355,7 @@ if __name__ == '__main__':
                     c.SaveAs(f'/work/halld/home/viducic/systematic_errors/kstar_eff/plots/{channel}_{cut}_e{e}_t{t}_fit.png')
 
                     param_guesses = update_guesses(func_nominal)
-                    row = get_row_for_df(channel, voigt_nominal, voigt_loose, voigt_tight, e, t, cut)
+                    row = get_row_for_df(channel, func_nominal, func_loose, func_tight, nominal_cor_hist, eff_cor_hist_loose, eff_cor_hist_tight, e, t, cut)
                     df = df.append(pd.Series(row, index=df.columns), ignore_index=True)
 
     df.to_csv('/work/halld/home/viducic/systematic_errors/cs_systematics_results.csv', index=False)
