@@ -1755,6 +1755,36 @@ def calculate_dataframe_info(voigt_func, channel, e, t):
     return f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error
     
 
+def calculate_rel_bootstrap_error(hist: ROOT.TH1, f: ROOT.TF1, n_trials: int = 1000)->float:
+    """
+    Calculates the relative error of the amplitude of the fit function f
+    It is reccomended to set batch mode to true
+    """
+    rng = np.random.default_rng()
+    amps = []
+    for i in range(n_trials):
+        trial_hist = hist.Clone(f"trial_{i}")
+        trial_hist.SetTitle(f"trial_{i}")
+        for bin in range(1, trial_hist.GetNbinsX()+1):
+            val = trial_hist.GetBinContent(bin)
+            std = trial_hist.GetBinError(bin)
+            if val > 0:
+                rel_error = std/val
+            else:
+                rel_error = 0
+            new_val = rng.normal(val, std)
+            trial_hist.SetBinContent(bin, new_val)
+            trial_hist.SetBinError(bin, rel_error*new_val)
+        trial_hist_cor = remove_zero_datapoints(trial_hist)
+        f_trial = f.Clone(f'ftrial_{i}')
+        r = trial_hist_cor.Fit(f_trial, 'SRBENQ')
+        amp = f_trial.GetParameter(0)
+        amps.append(amp)
+    amps = np.array(amps)
+    mean = amps.mean()
+    var = np.where(True, (amps-mean)*(amps-mean), 0).sum()/(n_trials-1)
+    return np.sqrt(var)/mean
+
 ############################
 #### CONDUCT TESTS HERE ####
 ############################
