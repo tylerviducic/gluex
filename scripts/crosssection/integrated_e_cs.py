@@ -201,7 +201,8 @@ for i, hist in enumerate(data_hists):
     acceptance_error = 0
 
     f1_yield = voight.Integral(1.2, 1.5)/0.01
-    f1_yield_error = func.GetParError(0)/func.GetParameter(0) * f1_yield
+    # f1_yield_error = func.GetParError(0)/func.GetParameter(0) * f1_yield
+    f1_yield_error = tools.calculate_rel_bootstrap_error(cor_hist, func, n_trials=1000) * f1_yield
     
     cross_section = tools.calculate_crosssection(f1_yield, acceptance, luminosity, constants.T_WIDTH_DICT[i+1], constants.F1_KKPI_BRANCHING_FRACTION)
     cross_section_error = tools.propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
