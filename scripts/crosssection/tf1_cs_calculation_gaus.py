@@ -6,8 +6,8 @@ import pandas as pd
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-3)
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-3)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 ROOT.gROOT.SetBatch(True)
@@ -52,6 +52,13 @@ t_bin_list = []
 t_bin_width_list = []
 energy_bin_list = []
 luminosity_list = []
+
+yield_rows = {
+    'e':[],
+    't':[],
+    'yield':[],
+    'yield_err':[]
+}
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
 
@@ -138,7 +145,7 @@ for e in range(8, 12):
 
         func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
 
-        result = hist.Fit(func, 'SRBNE')
+        result = hist.Fit(func, 'SRBN')
         # result = hist.Fit(func, 'SRBEV')
         # print("\n")
         # print("==" * 20)
@@ -165,7 +172,6 @@ for e in range(8, 12):
         gaus.SetLineColor(background_color)
         gaus.SetLineStyle(3)
         bkg = ROOT.TF1('bkg', 'pol2(0)', fit_low, fit_high)
-        # bkg = ROOT.TF1('bkg', '[0] + [1]*(x+1.15) + [2]*(x-1.15)*(x-1.15)', fit_low, fit_high)
         bkg.SetLineColor(background_color)
         bkg.SetLineStyle(2)
 
@@ -201,12 +207,16 @@ for e in range(8, 12):
         bkgs[t-1].Draw('same')
         gauses[t-1].Draw('same')
 
-        f1_yield = voight.Integral(1.16, 1.5)/0.01
-        # f1_yield_error = func.GetParError(0)/func.GetParameter(0) * f1_yield
-        f1_yield_error = ct.calculate_rel_bootstrap_error(hist, func, n_trials=1000) * f1_yield
+        f1_yield = voight.Integral(1.16, 1.5, 1e-7)/0.01
+        f1_yield_error = ct.calculate_rel_bootstrap_error(hist, func) * f1_yield
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
         cross_section = ct.calculate_crosssection(f1_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
         cross_section_error = ct.propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
+
+        yield_rows['t'].append(t)
+        yield_rows['e'].append(e)
+        yield_rows['yield'].append(f1_yield)
+        yield_rows['yield_err'].append(f1_yield_error)
 
         mean_list.append(func.GetParameter(1))
         mean_error_list.append(func.GetParError(1))
@@ -233,7 +243,10 @@ for e in range(8, 12):
         # print("++++++++" * 5)
         # print("\n")
 
-    c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/pol2_gaus_{channel}_e{e}_t{t}_fit.png')
+    c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/pol2_gaus_{channel}_e{e}_fit.png')
 
 value_df = pd.DataFrame({'mean': mean_list, 'mean_error': mean_error_list, 'width': width_list, 'width_error': width_error_list, 'chi2ndf': chi2ndf_list, 'yield': data_yield_list, 'yield_error': yield_error_list, 'acceptance': acceptance_list, 'acceptance_error': acceptance_error_list,'cross_section': cross_section_list, 'cross_section_error': cross_section_error_list, 't_bin_middle': t_bin_list, 't_bin_width': t_bin_width_list, 'beam_energy': energy_bin_list, 'luminosity': luminosity_list})
 value_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/tf1_gaus_cross_section_values.csv', index=False)
+
+yield_df = pd.DataFrame(yield_rows)
+yield_df.to_csv(f'/work/halld/home/viducic/data/fit_params/{channel}/tf1_gaus_yield_values.csv', index=False)

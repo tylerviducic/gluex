@@ -1736,9 +1736,12 @@ def get_binned_resolution(channel, e, tbin):
     return e_t_sigma
 
 
-def get_yield_and_error(voigt_func):
-    f1_yield = voigt_func.Integral(1.16, 1.5)/0.01
-    f1_error = voigt_func.GetParError(0)/voigt_func.GetParameter(0) * f1_yield
+def get_yield_and_error(hist: ROOT.TH1, func: ROOT.TF1):
+    voigt = ROOT.TF1(f'voigt', '[0]*TMath::Voigt(x-[1], [2], [3])', func.GetMinimumX(), func.GetMaximumX())
+    for i in range(4):
+        voigt.SetParameter(i, func.GetParameter(i))
+    f1_yield = voigt.Integral(1.16, 1.5, 1e-7)/0.01
+    f1_error = f1_yield * calculate_rel_bootstrap_error(hist, func)
     return f1_yield, f1_error
 
 
@@ -1760,11 +1763,16 @@ def calculate_rel_bootstrap_error(hist: ROOT.TH1, f: ROOT.TF1, n_trials: int = 1
     Calculates the relative error of the amplitude of the fit function f
     It is reccomended to set batch mode to true
     """
+    # print(f"performing {n_trials} boostraps")
     rng = np.random.default_rng()
     amps = []
-    for i in range(n_trials):
-        trial_hist = hist.Clone(f"trial_{i}")
-        trial_hist.SetTitle(f"trial_{i}")
+    f_trial = f.Clone(f'ftrial')
+    initial_pars = [f_trial.GetParameter(i) for i in range(f_trial.GetNpar())]
+    for _ in range(n_trials):
+        trial_hist = hist.Clone(f"trial")
+        trial_hist.SetTitle(f"trial")
+        for p in range(len(initial_pars)):
+            f_trial.SetParameter(p, initial_pars[p])
         for bin in range(1, trial_hist.GetNbinsX()+1):
             val = trial_hist.GetBinContent(bin)
             std = trial_hist.GetBinError(bin)
@@ -1776,8 +1784,7 @@ def calculate_rel_bootstrap_error(hist: ROOT.TH1, f: ROOT.TF1, n_trials: int = 1
             trial_hist.SetBinContent(bin, new_val)
             trial_hist.SetBinError(bin, rel_error*new_val)
         trial_hist_cor = remove_zero_datapoints(trial_hist)
-        f_trial = f.Clone(f'ftrial_{i}')
-        r = trial_hist_cor.Fit(f_trial, 'SRBENQ')
+        r = trial_hist_cor.Fit(f_trial, 'SRBNQ')
         amp = f_trial.GetParameter(0)
         amps.append(amp)
     amps = np.array(amps)

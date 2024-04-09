@@ -6,7 +6,7 @@ import my_library.kinematic_cuts as cuts
 from my_library.systematics_constants import VARIED_CUTS_DICT_PIPKMKS, NOMINAL_CUTS_DICT_PIPKMKS, VARIED_CUTS_DICT_PIMKPKS, NOMINAL_CUTS_DICT_PIMKPKS
 import pandas as pd
 
-ROOT.EnableImplicitMT(12)
+# ROOT.EnableImplicitMT(12)
 
 
 def get_binned_data_hist(channel, cut, e, t_bin_index, ltn):
@@ -123,7 +123,7 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
     
     check_param_guess_structure(param_guesses)
     
-    func = ROOT.TF1(f'func_{cut}_{e}_{t}_{ltn}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.16, 1.63)
+    func = ROOT.TF1(f'func_{ltn}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.16, 1.63)
 
     func.SetParameter(0, param_guesses[0]) # voigt amplitude
     func.SetParLimits(0, 0., 100000)
@@ -139,28 +139,29 @@ def fit_hist(hist, param_guesses: dict, cut, e, t, ltn):
     func.SetParameter(8, param_guesses[8]) # bkg par2
     func.SetParameter(9, param_guesses[9]) # bkg par3
 
-    result = hist.Fit(func, 'SRBEQ0')
+    result = hist.Fit(func, 'SRBQ0')
     return result, func
 
 
 def update_guesses(func):
-    new_guesses = {0: func.GetParameter(0), # voigt_amplitude
-               1: func.GetParameter(1), # voigt_mean
-               2: func.GetParameter(2), # voigt_sigma
-               3: func.GetParameter(3), # voigt_width
-               4: func.GetParameter(4), # gaus_amplitude
-               5: func.GetParameter(5), # gaus_mean
-               6: func.GetParameter(6), # gaus_width
-               7: func.GetParameter(7), # bkg_par1
-               8: func.GetParameter(8), # bkg_par2
-               9: func.GetParameter(9)} # bkg_par3
+    # new_guesses = {0: func.GetParameter(0), # voigt_amplitude
+    #            1: func.GetParameter(1), # voigt_mean
+    #            2: func.GetParameter(2), # voigt_sigma
+    #            3: func.GetParameter(3), # voigt_width
+    #            4: func.GetParameter(4), # gaus_amplitude
+    #            5: func.GetParameter(5), # gaus_mean
+    #            6: func.GetParameter(6), # gaus_width
+    #            7: func.GetParameter(7), # bkg_par1
+    #            8: func.GetParameter(8), # bkg_par2
+    #            9: func.GetParameter(9)} # bkg_par3
+    new_guesses = {i: func.GetParameter(i) for i in range(func.GetNpar())}
     return new_guesses
 
 
-def get_func_components(func, e, t, cut, ltn):
-    voigt = ROOT.TF1(f'voigt_{cut}_{ltn}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.16, 1.6)
-    gaus = ROOT.TF1(f'gaus_{cut}_{ltn}_{e}_{t}', 'gaus(0)', 1.16, 1.6)
-    bkg = ROOT.TF1(f'bkg_{cut}_{ltn}_{e}_{t}', 'pol2(0)', 1.16, 1.6)
+def get_func_components(func, ltn):
+    voigt = ROOT.TF1(f'voigt_{ltn}', '[0]*TMath::Voigt(x-[1], [2], [3])', 1.16, 1.6)
+    gaus = ROOT.TF1(f'gaus_{ltn}', 'gaus(0)', 1.16, 1.6)
+    bkg = ROOT.TF1(f'bkg_{ltn}', 'pol2(0)', 1.16, 1.6)
 
     voigt.SetParameter(0, func.GetParameter(0))
     voigt.SetParError(0, func.GetParError(0))
@@ -184,8 +185,8 @@ def get_yield_and_error(func, hist):
     for i in range(4):
         voigt.SetParameter(i, func.GetParameter(i))
 
-    f1_yield = voigt.Integral(1.16, 1.5)/0.01
-    f1_error = tools.calculate_rel_bootstrap_error(hist, func, n_trials=1000)*f1_yield
+    f1_yield = voigt.Integral(1.16, 1.5, 1e-7)/0.01
+    f1_error = f1_yield*tools.calculate_rel_bootstrap_error(hist, func)
     return f1_yield, f1_error
 
 
@@ -218,10 +219,11 @@ if __name__ == '__main__':
     ROOT.gROOT.SetBatch(True)
     print('Running')
 
-    df = pd.DataFrame(columns=['channel', 'e', 't', 'cut',
-                               'f1_yield_nominal', 'f1_yield_error_nominal', 'f1_acceptance_nominal', 'f1_acceptance_error_nominal', 'cross_section_nominal', 'cross_section_error_nominal',
-                               'f1_yield_loose', 'f1_yield_error_loose', 'f1_acceptance_loose', 'f1_acceptance_error_loose', 'cross_section_loose', 'cross_section_error_loose',
-                               'f1_yield_tight', 'f1_yield_error_tight', 'f1_acceptance_tight', 'f1_acceptance_error_tight', 'cross_section_tight', 'cross_section_error_tight'])
+    rows = {'channel':[], 'e':[], 't':[], 'cut':[],
+            'f1_yield_nominal':[], 'f1_yield_error_nominal':[], 'f1_acceptance_nominal':[], 'f1_acceptance_error_nominal':[], 'cross_section_nominal':[], 'cross_section_error_nominal':[],
+            'f1_yield_loose':[], 'f1_yield_error_loose':[], 'f1_acceptance_loose':[], 'f1_acceptance_error_loose':[], 'cross_section_loose':[], 'cross_section_error_loose':[],
+            'f1_yield_tight':[], 'f1_yield_error_tight':[], 'f1_acceptance_tight':[], 'f1_acceptance_error_tight':[], 'cross_section_tight':[], 'cross_section_error_tight':[]
+    }
 
     channels = ['pipkmks', 'pimkpks']
 
@@ -278,25 +280,25 @@ if __name__ == '__main__':
                     loose_data_hist = get_binned_data_hist(channel, cut, e, t, 'loose')
                     tight_data_hist = get_binned_data_hist(channel, cut, e, t, 'tight')
 
-                    nominal_cor_hist0 = tools.correct_data_hist_for_kstar_efficiency(nominal_data_hist)
+                    nominal_cor_hist = tools.correct_data_hist_for_kstar_efficiency(nominal_data_hist)
                     if cut not in ['neutral_kstar', 'charged_kstar']:
-                        eff_cor_hist_loose0 = tools.correct_data_hist_for_kstar_efficiency(loose_data_hist)
-                        eff_cor_hist_tight0 = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
+                        eff_cor_hist_loose = tools.correct_data_hist_for_kstar_efficiency(loose_data_hist)
+                        eff_cor_hist_tight = tools.correct_data_hist_for_kstar_efficiency(tight_data_hist)
                     else: 
-                        eff_cor_hist_loose0 = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'loose')
-                        eff_cor_hist_tight0 = correct_data_hist_for_varied_kstar_efficiency(tight_data_hist, cut, 'tight')
+                        eff_cor_hist_loose = correct_data_hist_for_varied_kstar_efficiency(loose_data_hist, cut, 'loose')
+                        eff_cor_hist_tight = correct_data_hist_for_varied_kstar_efficiency(tight_data_hist, cut, 'tight')
 
-                    nominal_cor_hist = tools.remove_zero_datapoints(nominal_cor_hist0)
-                    eff_cor_hist_loose = tools.remove_zero_datapoints(eff_cor_hist_loose0)
-                    eff_cor_hist_tight = tools.remove_zero_datapoints(eff_cor_hist_tight0)
+                    nominal_cor_hist = tools.remove_zero_datapoints(nominal_cor_hist)
+                    eff_cor_hist_loose = tools.remove_zero_datapoints(eff_cor_hist_loose)
+                    eff_cor_hist_tight = tools.remove_zero_datapoints(eff_cor_hist_tight)
 
                     result_nominal, func_nominal = fit_hist(nominal_cor_hist, param_guesses, cut, e, t, 'nominal')
                     result_loose, func_loose = fit_hist(eff_cor_hist_loose, param_guesses, cut, e, t, 'loose')
                     result_tight, func_tight = fit_hist(eff_cor_hist_tight, param_guesses, cut, e, t, 'tight')
 
-                    voigt_nominal, gaus_nominal, bkg_nominal = get_func_components(func_nominal, e, t, cut, 'nominal')
-                    voigt_loose, gaus_loose, bkg_loose = get_func_components(func_loose, e, t, cut, 'loose')
-                    voigt_tight, gaus_tight, bkg_tight = get_func_components(func_tight, e, t, cut, 'tight')
+                    voigt_nominal, gaus_nominal, bkg_nominal = get_func_components(func_nominal, 'nominal')
+                    voigt_loose, gaus_loose, bkg_loose = get_func_components(func_loose, 'loose')
+                    voigt_tight, gaus_tight, bkg_tight = get_func_components(func_tight, 'tight')
 
                     func_nominal.SetLineColor(total_fit_color)
                     func_loose.SetLineColor(total_fit_color)
@@ -352,12 +354,14 @@ if __name__ == '__main__':
                     bkg_tight.Draw('same')
 
                     c.Update()
-                    c.SaveAs(f'/work/halld/home/viducic/systematic_errors/kstar_eff/plots/{channel}_{cut}_e{e}_t{t}_fit.png')
+                    c.SaveAs(f'/work/halld/home/viducic/systematic_errors/plots/cut_sys/{channel}_{cut}_e{e}_t{t}_fit.png')
 
                     param_guesses = update_guesses(func_nominal)
                     row = get_row_for_df(channel, func_nominal, func_loose, func_tight, nominal_cor_hist, eff_cor_hist_loose, eff_cor_hist_tight, e, t, cut)
-                    df = df.append(pd.Series(row, index=df.columns), ignore_index=True)
+                    for i, key in enumerate(rows.keys()):
+                        rows[key].append(row[i])                   
 
+    df = pd.DataFrame(rows)
     df.to_csv('/work/halld/home/viducic/systematic_errors/cs_systematics_results.csv', index=False)
     print('done')
 
