@@ -14,8 +14,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     voight_resoltion = constants.F1_PIPKMKS_VOIGHT_SIGMA
@@ -103,7 +103,7 @@ func.SetParameter(9, initial_guesses[9]) # bkg second order
 func.SetParNames(parameter_names[0], parameter_names[1], parameter_names[2], parameter_names[3], parameter_names[4], 
                  parameter_names[5], parameter_names[6], parameter_names[7], parameter_names[8], parameter_names[9])
 
-result = data_hist.Fit(func, 'SRB0E')
+result = data_hist.Fit(func, 'SRB0')
 func.SetLineColor(total_fit_color)
 
 voight = ROOT.TF1(f'voight', '[0]*TMath::Voigt(x-[1], [2], [3])', fit_low, fit_high)
