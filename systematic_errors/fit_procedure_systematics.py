@@ -83,12 +83,12 @@ def get_nominal_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_nominal_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -163,17 +163,17 @@ def get_pol1_guesses(properties):
 
 
 def get_pol1_func(channel, guesses, e, t):
-    range_low, range_high = 1.17, 1.63
+    range_low, range_high = 1.18, 1.5
     properties = get_properties(channel)
     # func = ROOT.TF1(f'func_pol1_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol1(7)', properties['range_low'], properties['range_high'])
     func = ROOT.TF1(f'func_pol1_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol1(7)', range_low, range_high)
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -247,12 +247,12 @@ def get_pol3_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_pol3_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol3(7)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -328,7 +328,7 @@ def get_nogaus_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_nogaus_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + pol2(4)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
@@ -396,12 +396,12 @@ def get_chebyshev_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_chebyshev_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + cheb2(7)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -462,13 +462,13 @@ def get_voigt_mean_float_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_floatvoigtmean_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.SetParameter(1, guesses[1]) # voight mean
     func.SetParLimits(1, 1.25, 1.35)
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -496,13 +496,13 @@ def get_voigt_width_float_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_floatvoigtwidth_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.SetParameter(3, guesses[3]) # voight width
     func.SetParLimits(3, 0.01, 0.045)
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -530,12 +530,12 @@ def get_gaus_mean_float_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_floatgausmean_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.SetParameter(5, guesses[5])# gaus mean
     func.SetParLimits(5, 1.33, 1.4)
     func.FixParameter(6, guesses[6]) # gaus width
@@ -564,12 +564,12 @@ def get_gaus_width_float_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_floatgauswidth_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.SetParameter(6, guesses[6]) # gaus width
     func.SetParLimits(6, 0.03, 0.05)
@@ -598,12 +598,12 @@ def get_wideleft_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_wideleft_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.15, properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -630,12 +630,12 @@ def get_wideright_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_wideright_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', properties['range_low'], 1.64)
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -662,12 +662,12 @@ def get_wideright_components(func):
 def get_wideboth_func(channel, guesses, e, t):
     func = ROOT.TF1(f'func_wideboth_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.15, 1.64)
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -695,12 +695,12 @@ def get_narrowleft_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_narrowleft_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.17, properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -728,12 +728,12 @@ def get_narrowright_func(channel, guesses, e, t):
     properties = get_properties(channel)
     func = ROOT.TF1(f'func_narrowright_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', properties['range_low'], 1.62)
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -760,12 +760,12 @@ def get_narrowright_components(func):
 def get_narrowboth_func(channel, guesses, e, t):
     func = ROOT.TF1(f'func_narrowboth_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', 1.17, 1.62)
     func.SetParameter(0, guesses[0]) # voight amplitude
-    func.SetParLimits(0, 0., 100000)
+    func.SetParLimits(0, 0.1, 100000)
     func.FixParameter(1, guesses[1]) # voight mean
     func.FixParameter(2, tools.get_binned_resolution(channel, e, t)) # voight sigma
     func.FixParameter(3, guesses[3]) # voigt width
     func.SetParameter(4, guesses[4]) # gaus amplitude
-    func.SetParLimits(4, 0., 10000)
+    func.SetParLimits(4, 0.1, 100000)
     func.FixParameter(5, guesses[5])# gaus mean
     func.FixParameter(6, guesses[6]) # gaus width
     func.SetParameter(7, guesses[7]) # bkg par1
@@ -824,8 +824,8 @@ def main():
                     'floatgauswidth_yield', 'floatgauswidth_yield_error', 'floatgauswidth_acceptance', 'floatgauswidth_acceptance_error', 'floatgauswidth_cross_section', 'floatgauswidth_cross_section_error'
                       ]
     
-    # rows = {header: [] for header in column_headers}
-    df = pd.DataFrame(columns=column_headers)
+    rows = {header: [] for header in column_headers}
+    # df = pd.DataFrame(columns=column_headers)
 
     c_nominal = ROOT.TCanvas('c_nominal', 'c_nominal', 800, 600)
     c_pol1 = ROOT.TCanvas('c_pol1', 'c_pol1', 800, 600)
@@ -996,29 +996,29 @@ def main():
                 guesses_floatgausmean = update_guesses(func_floatgausmean)
                 guesses_floatgauswidth = update_guesses(func_floatgauswidth)
 
-                row_nominal = get_dataframe_row(channel, e, t, func_nominal, hist)
-                row_pol1 = get_dataframe_row(channel, e, t, func_pol1, hist)
-                row_pol3 = get_dataframe_row(channel, e, t, func_pol3, hist)
-                row_nogaus = get_dataframe_row(channel, e, t, func_nogaus, hist)
-                row_chebyshev = get_dataframe_row(channel, e, t, func_chebyshev, hist)
-                row_wideleft = get_dataframe_row(channel, e, t, func_wideleft, hist)
-                row_wideright = get_dataframe_row(channel, e, t, func_wideright, hist)
-                row_wideboth = get_dataframe_row(channel, e, t, func_wideboth, hist)
-                row_narrowleft = get_dataframe_row(channel, e, t, func_narrowleft, hist)
-                row_narrowright = get_dataframe_row(channel, e, t, func_narrowright, hist)
-                row_narrowboth = get_dataframe_row(channel, e, t, func_narrowboth, hist)
-                row_floatvoigtmean = get_dataframe_row(channel, e, t, func_floatvoigtmean, hist)
-                row_floatvoigtwidth = get_dataframe_row(channel, e, t, func_floatvoigtwidth, hist)
-                row_floatgausmean = get_dataframe_row(channel, e, t, func_floatgausmean, hist)
-                row_floatgauswidth = get_dataframe_row(channel, e, t, func_floatgauswidth, hist)
+                row_nominal = get_dataframe_row(channel, e, t, func_nominal, hists[-1])
+                row_pol1 = get_dataframe_row(channel, e, t, func_pol1, hists[-1])
+                row_pol3 = get_dataframe_row(channel, e, t, func_pol3, hists[-1])
+                row_nogaus = get_dataframe_row(channel, e, t, func_nogaus, hists[-1])
+                row_chebyshev = get_dataframe_row(channel, e, t, func_chebyshev, hists[-1])
+                row_wideleft = get_dataframe_row(channel, e, t, func_wideleft, hists[-1])
+                row_wideright = get_dataframe_row(channel, e, t, func_wideright, hists[-1])
+                row_wideboth = get_dataframe_row(channel, e, t, func_wideboth, hists[-1])
+                row_narrowleft = get_dataframe_row(channel, e, t, func_narrowleft, hists[-1])
+                row_narrowright = get_dataframe_row(channel, e, t, func_narrowright, hists[-1])
+                row_narrowboth = get_dataframe_row(channel, e, t, func_narrowboth, hists[-1])
+                row_floatvoigtmean = get_dataframe_row(channel, e, t, func_floatvoigtmean, hists[-1])
+                row_floatvoigtwidth = get_dataframe_row(channel, e, t, func_floatvoigtwidth, hists[-1])
+                row_floatgausmean = get_dataframe_row(channel, e, t, func_floatgausmean, hists[-1])
+                row_floatgauswidth = get_dataframe_row(channel, e, t, func_floatgauswidth, hists[-1])
 
                 row = [channel, e, t]
                 full_row = row + row_nominal + row_pol1 + row_pol3 + row_nogaus + row_chebyshev + row_wideleft + row_wideright + row_wideboth + row_narrowleft + row_narrowright + row_narrowboth + row_floatvoigtmean + row_floatvoigtwidth + row_floatgausmean + row_floatgauswidth
-                # for i, header in enumerate(column_headers):
-                #     rows[header].append(full_row[i])
+                for i, header in enumerate(column_headers):
+                    rows[header].append(full_row[i])
                 
-                df = df.append(pd.Series(full_row, index=df.columns), ignore_index=True)
-                # df = pd.DataFrame(rows)
+                # df = df.append(pd.Series(full_row, index=df.columns), ignore_index=True)
+                df = pd.DataFrame(rows)
 
                 # df = df.append(pd.Series(row_nominal, index=df.columns), ignore_index=True)
                 # df = df.append(pd.Series(row_pol1, index=df.columns), ignore_index=True)

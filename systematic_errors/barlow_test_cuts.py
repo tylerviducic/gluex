@@ -26,7 +26,8 @@ def main():
     df['barlow_loose'] = np.where(True, barlow_test(df['cross_section_loose'], df['cross_section_nominal'], df['cross_section_error_loose'], df['cross_section_error_nominal']), np.nan)
     df['barlow_tight'] = np.where(True, barlow_test(df['cross_section_tight'], df['cross_section_nominal'], df['cross_section_error_tight'], df['cross_section_error_nominal']), np.nan)
 
-    barlow_results = df[['cut', 'e', 't', 'channel', 'barlow_loose', 'barlow_tight']]
+    df['sigma_barlow'] = np.where(abs(df['cross_section_loose']-df['cross_section_nominal'])/df['cross_section_nominal'] > abs(df['cross_section_tight']-df['cross_section_nominal'])/df['cross_section_nominal'], barlow_test(df['cross_section_loose'], df['cross_section_nominal'], df['cross_section_error_loose'], df['cross_section_error_nominal']), barlow_test(df['cross_section_tight'], df['cross_section_nominal'], df['cross_section_error_tight'], df['cross_section_error_nominal']))
+    barlow_results = df[['cut', 'e', 't', 'channel', 'barlow_loose', 'barlow_tight', 'sigma_barlow']]
     barlow_results.to_csv('/work/halld/home/viducic/systematic_errors/barlow_results.csv')
     sig_cuts = df.loc[(abs(df['barlow_loose']) > 4.0) | (abs(df['barlow_tight']) > 4.0)]
     sig_cuts.to_csv('/work/halld/home/viducic/systematic_errors/signifigant_cut_systematics.csv')

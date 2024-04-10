@@ -12,13 +12,17 @@ cut_var_df['percent_change_loose'] = np.where(True, (cut_var_df['cross_section_l
 cut_var_df['mag_percent_change_loose'] = np.where(True, np.abs((cut_var_df['cross_section_loose'] - cut_var_df['cross_section_nominal'])/cut_var_df['cross_section_nominal']), 0)
 cut_var_df['percent_change_tight'] = np.where(True, (cut_var_df['cross_section_tight'] - cut_var_df['cross_section_nominal'])/cut_var_df['cross_section_nominal'], 0)
 cut_var_df['mag_percent_change_tight'] = np.where(True, np.abs((cut_var_df['cross_section_tight'] - cut_var_df['cross_section_nominal'])/cut_var_df['cross_section_nominal']), 0)
+cut_var_df['mag_percent_change'] = np.where(cut_var_df['mag_percent_change_tight'] > cut_var_df['mag_percent_change_loose'], cut_var_df['mag_percent_change_tight'], cut_var_df['mag_percent_change_loose'])
 
 print(cut_var_df)
 
 signifigant_cuts = pd.DataFrame(columns = ['e', 't', 'channel', 'cut', 'cs_nom', 'cs_varied', 'error_nom', 'error_varied', 'percent_change', 'loose_tight'])
+cut_sys_df= cut_var_df[['e', 't', 'channel', 'cut', 'mag_percent_change']]
+cut_sys_df.to_csv('/work/halld/home/viducic/systematic_errors/largest_mag_cuts.csv', index = False)
 
 # print(cut_var_df.columns)
 # print(cut_var_df.head())
+
 
 grouped = cut_var_df.groupby(['e', 't', 'channel'])
 for name, group in grouped:

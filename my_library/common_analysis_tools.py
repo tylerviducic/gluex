@@ -1736,21 +1736,24 @@ def get_binned_resolution(channel, e, tbin):
     return e_t_sigma
 
 
-def get_yield_and_error(hist: ROOT.TH1, func: ROOT.TF1):
+def get_yield_and_error(hist: ROOT.TH1, func: ROOT.TF1, fitsys=False):
     voigt = ROOT.TF1(f'voigt', '[0]*TMath::Voigt(x-[1], [2], [3])', func.GetMinimumX(), func.GetMaximumX())
     for i in range(4):
         voigt.SetParameter(i, func.GetParameter(i))
     f1_yield = voigt.Integral(1.16, 1.5, 1e-7)/0.01
-    f1_error = f1_yield * calculate_rel_bootstrap_error(hist, func)
+    if not fitsys:
+        f1_error = f1_yield * calculate_rel_bootstrap_error(hist, func)
+    else:
+        f1_error = func.GetParError(0)
     return f1_yield, f1_error
 
 
-def calculate_dataframe_info(func, hist, channel, e, t):
+def calculate_dataframe_info(func, hist, channel, e, t, fitsys=False):
     if e!= 12:
         e_lumi = get_luminosity_gluex_1(e-0.5, e+0.5)*1000
     else:
         e_lumi = get_luminosity_gluex_1(7.5, 11.5)*1000
-    f1_yield, f1_yield_error = get_yield_and_error(hist, func)
+    f1_yield, f1_yield_error = get_yield_and_error(hist, func, fitsys=fitsys)
     f1_acceptance = get_binned_gluex1_signal_acceptance(channel, e, t, error=False)
     f1_acceptance_error = 0 
     cross_section = calculate_crosssection(f1_yield, f1_acceptance, e_lumi, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
