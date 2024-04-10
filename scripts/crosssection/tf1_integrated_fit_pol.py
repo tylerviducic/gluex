@@ -14,8 +14,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     voight_resoltion = constants.F1_PIPKMKS_VOIGHT_SIGMA
@@ -158,6 +158,8 @@ func.Draw('same')
 voight.Draw('same')
 gaus.Draw('same')
 bkg.Draw('same')
+data_hist.Draw("E1 same")
+
 
 legend = ROOT.TLegend(0.725, 0.2, 0.945, 0.5)
 legend.AddEntry(func, "Total Fit", "lpf")
