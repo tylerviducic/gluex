@@ -796,7 +796,7 @@ def update_guesses(func):
 
 def get_dataframe_row(channel, e, t, func, hist):
     # get dataframe row info from common_analysis_tools
-    f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error = tools.calculate_dataframe_info(func, hist, channel, e, t)
+    f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error = tools.calculate_dataframe_info(func, hist, channel, e, t, fitsys=True)
     row = [f1_yield, f1_yield_error, f1_acceptance, f1_acceptance_error, cross_section, cross_section_error]
     return row
 
@@ -824,7 +824,8 @@ def main():
                     'floatgauswidth_yield', 'floatgauswidth_yield_error', 'floatgauswidth_acceptance', 'floatgauswidth_acceptance_error', 'floatgauswidth_cross_section', 'floatgauswidth_cross_section_error'
                       ]
     
-    rows = {header: [] for header in column_headers}
+    # rows = {header: [] for header in column_headers}
+    df = pd.DataFrame(columns=column_headers)
 
     c_nominal = ROOT.TCanvas('c_nominal', 'c_nominal', 800, 600)
     c_pol1 = ROOT.TCanvas('c_pol1', 'c_pol1', 800, 600)
@@ -930,21 +931,21 @@ def main():
                 func_floatgausmean = get_gaus_mean_float_func(channel, guesses_floatgausmean, e, t)
                 func_floatgauswidth = get_gaus_width_float_func(channel, guesses_floatgauswidth, e, t)
 
-                result_nominal = hist.Fit(func_nominal, 'SRBQ0')
-                result_pol1 = hist.Fit(func_pol1, 'SRBQ0')
-                result_pol3 = hist.Fit(func_pol3, 'SRBQ0')
-                result_nogaus = hist.Fit(func_nogaus, 'SRBQ0')
-                result_chebyshev = hist.Fit(func_chebyshev, 'SRBQ0')
-                result_wideleft = hist.Fit(func_wideleft, 'SRBQ0')
-                result_wideright = hist.Fit(func_wideright, 'SRBQ0')
-                result_wideboth = hist.Fit(func_wideboth, 'SRBQ0')
-                result_narrowleft = hist.Fit(func_narrowleft, 'SRBQ0')
-                result_narrowright = hist.Fit(func_narrowright, 'SRBQ0')
-                result_narrowboth = hist.Fit(func_narrowboth, 'SRBQ0')
-                result_floatvoigtmean = hist.Fit(func_floatvoigtmean, 'SRBQ0')
-                result_floatvoigtwidth = hist.Fit(func_floatvoigtwidth, 'SRBQ0')
-                result_floatgausmean = hist.Fit(func_floatgausmean, 'SRBQ0')
-                result_floatgauswidth = hist.Fit(func_floatgauswidth, 'SRBQ0')
+                result_nominal = hist.Fit(func_nominal, 'SRBEQ0')
+                result_pol1 = hist.Fit(func_pol1, 'SRBEQ0')
+                result_pol3 = hist.Fit(func_pol3, 'SRBEQ0')
+                result_nogaus = hist.Fit(func_nogaus, 'SRBEQ0')
+                result_chebyshev = hist.Fit(func_chebyshev, 'SRBEQ0')
+                result_wideleft = hist.Fit(func_wideleft, 'SRBEQ0')
+                result_wideright = hist.Fit(func_wideright, 'SRBEQ0')
+                result_wideboth = hist.Fit(func_wideboth, 'SRBEQ0')
+                result_narrowleft = hist.Fit(func_narrowleft, 'SRBEQ0')
+                result_narrowright = hist.Fit(func_narrowright, 'SRBEQ0')
+                result_narrowboth = hist.Fit(func_narrowboth, 'SRBEQ0')
+                result_floatvoigtmean = hist.Fit(func_floatvoigtmean, 'SRBEQ0')
+                result_floatvoigtwidth = hist.Fit(func_floatvoigtwidth, 'SRBEQ0')
+                result_floatgausmean = hist.Fit(func_floatgausmean, 'SRBEQ0')
+                result_floatgauswidth = hist.Fit(func_floatgauswidth, 'SRBEQ0')
 
                 voit_nominal, gaus_nominal, bkg_nominal = get_nominal_components(func_nominal)
                 voit_pol1, gaus_pol1, bkg_pol1 = get_pol1_components(func_pol1)
@@ -1013,11 +1014,11 @@ def main():
 
                 row = [channel, e, t]
                 full_row = row + row_nominal + row_pol1 + row_pol3 + row_nogaus + row_chebyshev + row_wideleft + row_wideright + row_wideboth + row_narrowleft + row_narrowright + row_narrowboth + row_floatvoigtmean + row_floatvoigtwidth + row_floatgausmean + row_floatgauswidth
-                for i, header in enumerate(column_headers):
-                    rows[header].append(full_row[i])
+                # for i, header in enumerate(column_headers):
+                #     rows[header].append(full_row[i])
                 
-                # df = df.append(pd.Series(full_row, index=df.columns), ignore_index=True)
-                df = pd.DataFrame(rows)
+                df = df.append(pd.Series(full_row, index=df.columns), ignore_index=True)
+                # df = pd.DataFrame(rows)
 
                 # df = df.append(pd.Series(row_nominal, index=df.columns), ignore_index=True)
                 # df = df.append(pd.Series(row_pol1, index=df.columns), ignore_index=True)
