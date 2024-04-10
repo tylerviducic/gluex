@@ -163,7 +163,7 @@ def get_pol1_guesses(properties):
 
 
 def get_pol1_func(channel, guesses, e, t):
-    range_low, range_high = 1.18, 1.6
+    range_low, range_high = 1.17, 1.63
     properties = get_properties(channel)
     # func = ROOT.TF1(f'func_pol1_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol1(7)', properties['range_low'], properties['range_high'])
     func = ROOT.TF1(f'func_pol1_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol1(7)', range_low, range_high)
