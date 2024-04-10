@@ -7,8 +7,8 @@ import my_library.gluex_style
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-3)
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-3)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 ROOT.gROOT.SetBatch(True)
@@ -83,6 +83,7 @@ for e in range(8, 12):
         hist.SetLineColor(ROOT.kBlack)
 
 
+
         hists.append(hist)
 
 
@@ -155,8 +156,10 @@ for e in range(8, 12):
         voigts[t-1].Draw('same')
         bkgs[t-1].Draw('same')
         gauses[t-1].Draw('same')
+        hists[t-1].Draw("E1 same")
 
-        legend = ROOT.TLegend(0.13, 0.525, 0.3, 0.7)
+
+        legend = ROOT.TLegend(0.15, 0.525, 0.325, 0.7)
         legend.AddEntry(func, "Total Fit", "l")
         legend.AddEntry(voight, "f_{1}(1285) Signal", "lf")
         legend.AddEntry(gaus, "f_{1}(1420) Tail", "l")
