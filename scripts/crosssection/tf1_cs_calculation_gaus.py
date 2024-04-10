@@ -6,8 +6,8 @@ import pandas as pd
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-3)
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-3)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 ROOT.gROOT.SetBatch(True)
@@ -57,7 +57,8 @@ yield_rows = {
     'e':[],
     't':[],
     'yield':[],
-    'yield_err':[]
+    'yield_err':[],
+    'chi2ndf':[]
 }
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
@@ -212,17 +213,19 @@ for e in range(8, 12):
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
         cross_section = ct.calculate_crosssection(f1_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
         cross_section_error = ct.propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
+        chi2ndf = func.GetChisquare()/func.GetNDF()
 
         yield_rows['t'].append(t)
         yield_rows['e'].append(e)
         yield_rows['yield'].append(f1_yield)
         yield_rows['yield_err'].append(f1_yield_error)
+        yield_rows['chi2ndf'].append(chi2ndf)
 
         mean_list.append(func.GetParameter(1))
         mean_error_list.append(func.GetParError(1))
         width_list.append(func.GetParameter(3))
         width_error_list.append(func.GetParError(3))
-        chi2ndf_list.append(func.GetChisquare()/func.GetNDF())
+        chi2ndf_list.append(chi2ndf)
         # ks_test_list.append(func.KolmogorovTest(hist))
         data_yield_list.append(f1_yield)
         yield_error_list.append(f1_yield_error)
