@@ -1745,12 +1745,12 @@ def get_yield_and_error(hist: ROOT.TH1, func: ROOT.TF1):
     return f1_yield, f1_error
 
 
-def calculate_dataframe_info(voigt_func, channel, e, t):
+def calculate_dataframe_info(func, hist, channel, e, t):
     if e!= 12:
         e_lumi = get_luminosity_gluex_1(e-0.5, e+0.5)*1000
     else:
         e_lumi = get_luminosity_gluex_1(7.5, 11.5)*1000
-    f1_yield, f1_yield_error = get_yield_and_error(voigt_func)
+    f1_yield, f1_yield_error = get_yield_and_error(hist, func)
     f1_acceptance = get_binned_gluex1_signal_acceptance(channel, e, t, error=False)
     f1_acceptance_error = 0 
     cross_section = calculate_crosssection(f1_yield, f1_acceptance, e_lumi, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
