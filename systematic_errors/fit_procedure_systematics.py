@@ -465,6 +465,8 @@ def get_voigt_width_float_left_func(channel, guesses, e, t):
     properties = get_properties(channel)
     if channel == 'pipkmks':
         width = constants.F1_PIPKMKS_VOIGHT_WIDTH - constants.F1_PIPKMKS_VOIGHT_WIDTH_ERROR
+    else:
+        width = constants.F1_PIMKPKS_VOIGHT_WIDTH - constants.F1_PIMKPKS_VOIGHT_WIDTH_ERROR
     func = ROOT.TF1(f'func_floatvoigtwidthleft_{channel}_{e}_{t}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', properties['range_low'], properties['range_high'])
     func.SetParameter(0, guesses[0]) # voight amplitude
     func.SetParLimits(0, 0.1, 100000)
@@ -872,7 +874,7 @@ def main():
                     'floatvoigtwidthright_yield', 'floatvoigtwidthright_yield_error', 'floatvoigtwidthright_acceptance', 'floatvoigtwidthright_acceptance_error', 'floatvoigtwidthright_cross_section', 'floatvoigtwidthright_cross_section_error',
                     'floatgausmeanleft_yield', 'floatgausmeanleft_yield_error', 'floatgausmeanleft_acceptance', 'floatgausmeanleft_acceptance_error', 'floatgausmeanleft_cross_section', 'floatgausmeanleft_cross_section_error',
                     'floatgausmeanright_yield', 'floatgausmeanright_yield_error', 'floatgausmeanright_acceptance', 'floatgausmeanright_acceptance_error', 'floatgausmeanright_cross_section', 'floatgausmeanright_cross_section_error',
-                    'floatgauswidthleft_yield', 'floatgauswidthleft_yield_error', 'floatgauswidthleft_acceptance', 'floatgauswidthleft_acceptance_error', 'floatgauswidthleft_cross_section', 'floatgauswidthright_cross_section_error'
+                    'floatgauswidthleft_yield', 'floatgauswidthleft_yield_error', 'floatgauswidthleft_acceptance', 'floatgauswidthleft_acceptance_error', 'floatgauswidthleft_cross_section', 'floatgauswidthleft_cross_section_error',
                     'floatgauswidthright_yield', 'floatgauswidthright_yield_error', 'floatgauswidthright_acceptance', 'floatgauswidthright_acceptance_error', 'floatgauswidthright_cross_section', 'floatgauswidthright_cross_section_error'
                       ]
     
@@ -989,16 +991,16 @@ def main():
                 func_floatgauswidthleft = get_gaus_width_float_left_func(channel, guesses_floatgauswidthleft, e, t)
                 func_floatgauswidthright = get_gaus_width_float_right_func(channel, guesses_floatgauswidthright, e, t)
 
-                result_nominal = hist.Fit(func_nominal, 'SRBEQ0')
-                result_pol1 = hist.Fit(func_pol1, 'SRBEQ0')
-                result_pol3 = hist.Fit(func_pol3, 'SRBEQ0')
-                result_nogaus = hist.Fit(func_nogaus, 'SRBEQ0')
-                result_wideleft = hist.Fit(func_wideleft, 'SRBEQ0')
-                result_wideright = hist.Fit(func_wideright, 'SRBEQ0')
-                result_wideboth = hist.Fit(func_wideboth, 'SRBEQ0')
-                result_narrowleft = hist.Fit(func_narrowleft, 'SRBEQ0')
-                result_narrowright = hist.Fit(func_narrowright, 'SRBEQ0')
-                result_narrowboth = hist.Fit(func_narrowboth, 'SRBEQ0')
+                result_nominal = hist.Fit(func_nominal, 'SRBQ0')
+                result_pol1 = hist.Fit(func_pol1, 'SRBQ0')
+                result_pol3 = hist.Fit(func_pol3, 'SRBQ0')
+                result_nogaus = hist.Fit(func_nogaus, 'SRBQ0')
+                result_wideleft = hist.Fit(func_wideleft, 'SRBQ0')
+                result_wideright = hist.Fit(func_wideright, 'SRBQ0')
+                result_wideboth = hist.Fit(func_wideboth, 'SRBQ0')
+                result_narrowleft = hist.Fit(func_narrowleft, 'SRBQ0')
+                result_narrowright = hist.Fit(func_narrowright, 'SRBQ0')
+                result_narrowboth = hist.Fit(func_narrowboth, 'SRBQ0')
                 result_floatvoigtwidthleft = hist.Fit(func_floatvoigtwidthleft, 'SRBQ0')
                 result_floatvoigtwidthright = hist.Fit(func_floatvoigtwidthright, 'SRBQ0')
                 result_floatgausmeanleft = hist.Fit(func_floatgausmeanleft, 'SRBQ0')
@@ -1076,12 +1078,18 @@ def main():
                 row_floatgauswidthright = get_dataframe_row(channel, e, t, func_floatgauswidthright, hists[-1])
 
                 row = [channel, e, t]
-                full_row = row + row_nominal + row_pol1 + row_pol3 + row_nogaus + row_wideleft + row_wideright + row_wideboth + row_narrowleft + row_narrowright + row_narrowboth + row_floatvoigtwidthleft + row_floatgausmeanleft + row_floatgauswidthleft + row_floatvoigtwidthright + row_floatgausmeanright + row_floatgauswidthright
+                full_row = row + row_nominal + row_pol1 + row_pol3 + row_nogaus + row_wideleft + row_wideright + row_wideboth + row_narrowleft + row_narrowright + row_narrowboth + row_floatvoigtwidthleft + row_floatvoigtwidthright + row_floatgausmeanleft + row_floatgausmeanright + row_floatgauswidthleft  + row_floatgauswidthright
+                # print(len(full_row))
+                # print(len(rows))
+
+                # for r in rows.keys():
+                #     print(r)
+
                 for i, header in enumerate(column_headers):
                     rows[header].append(full_row[i])
-                
-                df = pd.DataFrame(rows)
 
+                # for key, val in rows.items():
+                #     print(key, val)
 
                 c_nominal.cd(t)
                 hists[-1].Draw()
@@ -1228,7 +1236,8 @@ def main():
             c_floatgausmeanright.SaveAs(f'/work/halld/home/viducic/systematic_errors/fit_variation_plots/{channel}_floatgausmeanright_e{e}.pdf')
             c_floatgauswidthleft.SaveAs(f'/work/halld/home/viducic/systematic_errors/fit_variation_plots/{channel}_floatgauswidthleft_e{e}.pdf')
             c_floatgauswidthright.SaveAs(f'/work/halld/home/viducic/systematic_errors/fit_variation_plots/{channel}_floatgauswidthright_e{e}.pdf')
-
+    
+    df = pd.DataFrame(rows)
     df.to_csv('/work/halld/home/viducic/systematic_errors/fit_variation_data.csv')
     return
 

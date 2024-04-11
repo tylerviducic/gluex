@@ -12,11 +12,13 @@ colors_dict = {
 
 
 df = pd.read_csv('/work/halld/home/viducic/systematic_errors/fit_variation_data.csv', index_col=0)
+# print(df.columns)
 
 
-variations = ['nominal', 'pol1', 'pol3', 'nogaus', 'chebyshev', 'wideleft',
+variations = ['nominal', 'pol1', 'pol3', 'nogaus', 'wideleft',
             'wideright', 'wideboth', 'narrowleft', 'narrowright', 'narrowboth',
-            'floatvoigtmean', 'floatvoigtwidth', 'floatgausmean', 'floatgauswidth']
+            'floatvoigtwidthleft', 'floatvoigtwidthright', 'floatgausmeanleft',
+            'floatgausmeanright', 'floatgauswidthleft', 'floatgauswidthright']
 
 for var in variations:
     df[f'{var}_percent_change'] = np.where(True, (df[f'{var}_cross_section'] - df['nominal_cross_section'])/df['nominal_cross_section'], np.nan)
