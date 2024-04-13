@@ -6,8 +6,8 @@ import pandas as pd
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-3)
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-3)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 cut = 'all'
 
 ROOT.gROOT.SetBatch(True)
@@ -58,7 +58,8 @@ yield_rows = {
     't':[],
     'yield':[],
     'yield_err':[],
-    'chi2ndf':[]
+    'chi2ndf':[],
+    'minuit_err': []
 }
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg par1', 'bkg par2', 'bkg par3']
@@ -209,7 +210,7 @@ for e in range(8, 12):
         gauses[t-1].Draw('same')
 
         f1_yield = voight.Integral(1.16, 1.5, 1e-7)/0.01
-        f1_yield_error = ct.calculate_rel_bootstrap_error(hist, func) * f1_yield
+        f1_yield_error = ct.calculate_rel_bootstrap_error(hist, func, n_trials=10000) * f1_yield
         acceptance, acceptance_error = ct.get_binned_gluex1_signal_acceptance(channel, e, t)
         cross_section = ct.calculate_crosssection(f1_yield, acceptance, luminosity, constants.T_WIDTH_DICT[t], constants.F1_KKPI_BRANCHING_FRACTION)
         cross_section_error = ct.propogate_error_multiplication(cross_section, [f1_yield], [f1_yield_error])
@@ -220,6 +221,7 @@ for e in range(8, 12):
         yield_rows['yield'].append(f1_yield)
         yield_rows['yield_err'].append(f1_yield_error)
         yield_rows['chi2ndf'].append(chi2ndf)
+        yield_rows['minuit_err'].append(func.GetParError(0)/func.GetParameter(0))
 
         mean_list.append(func.GetParameter(1))
         mean_error_list.append(func.GetParError(1))
