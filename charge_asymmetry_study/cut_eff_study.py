@@ -7,16 +7,20 @@ import os
 ROOT.EnableImplicitMT()
 os.nice(18)
 
-data_type = 'data'
-# data_type = 'signal'
+# data_type = 'data'
+data_type = 'signal'
 
-cut_dict = {
-}
+cut_dict = {}
 
 df_pipkmks = tools.get_dataframe('pipkmks', 'spring', data_type, filtered=False).Filter(cuts.F1_SIGNAL_REGION_PIPKMKS)
 df_pimkpks = tools.get_dataframe('pimkpks', 'spring', data_type, filtered=False).Filter(cuts.F1_SIGNAL_REGION_PIMKPKS)
 
 cut_dict['f1_region'] = (df_pipkmks.Count(), df_pimkpks.Count())
+
+df_pipkmks = df_pipkmks.Filter(cuts.KINFIT_CL_CUT)
+df_pimkpks = df_pimkpks.Filter(cuts.KINFIT_CL_CUT)
+
+cut_dict['kinfit_cl'] = (df_pipkmks.Count(), df_pimkpks.Count())
 
 df_pipkmks = df_pipkmks.Filter(cuts.MX2_PPIPKMKS_CUT)
 df_pimkpks = df_pimkpks.Filter(cuts.MX2_PPIMKPKS_CUT)
