@@ -12,8 +12,8 @@ data_type = 'signal'
 
 cut_dict = {}
 
-df_pipkmks = tools.get_dataframe('pipkmks', 'spring', data_type, filtered=False).Filter(cuts.F1_SIGNAL_REGION_PIPKMKS)
-df_pimkpks = tools.get_dataframe('pimkpks', 'spring', data_type, filtered=False).Filter(cuts.F1_SIGNAL_REGION_PIMKPKS)
+df_pipkmks = tools.get_dataframe('pipkmks', 'spring', data_type, filtered=False).Filter(cuts.F1_SIGNAL_REGION_PIPKMKS).Filter(cuts.BEAM_RANGE).Filter(cuts.T_RANGE)
+df_pimkpks = tools.get_dataframe('pimkpks', 'spring', data_type, filtered=False).Filter(cuts.F1_SIGNAL_REGION_PIMKPKS).Filter(cuts.BEAM_RANGE).Filter(cuts.T_RANGE)
 
 cut_dict['f1_region'] = (df_pipkmks.Count(), df_pimkpks.Count())
 
@@ -69,6 +69,9 @@ for cut in cut_dict:
     print(f'{cut}: eff_pipkmks = {cut_dict[cut][0].GetValue()/n_pipkmks}, eff_pimkpks =  {cut_dict[cut][1].GetValue()/n_pimkpks}')
     n_pipkmks = cut_dict[cut][0].GetValue()
     n_pimkpks = cut_dict[cut][1].GetValue()
+
+print(f"total: eff_pipkmks = {cut_dict['kstar'][0].GetValue()/cut_dict['f1_region'][0].GetValue()}, eff_pimkpks =  {cut_dict['kstar'][1].GetValue()/cut_dict['f1_region'][1].GetValue()}")
+
 
 
 
