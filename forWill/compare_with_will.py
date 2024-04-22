@@ -9,8 +9,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     voight_resoltion = constants.F1_PIPKMKS_VOIGHT_SIGMA
@@ -24,6 +24,8 @@ if channel == 'pipkmks' :
     kstar_cut = kcuts.KSTAR_ALL_CUT_PIPKMKS
     gaus_mean = constants.F1_PIPKMKS_GAUS_MEAN
     gaus_width = constants.F1_PIPKMKS_GAUS_WIDTH
+    voigt_width = constants.F1_PIPKMKS_VOIGHT_WIDTH
+    voigt_mean = constants.F1_PIPKMKS_VOIGHT_MEAN
 elif channel == 'pimkpks' :
     voight_resoltion = constants.F1_PIMKPKS_VOIGHT_SIGMA
     voight_resolution_error = constants.F1_PIMKPKS_VOIGHT_SIGMA_ERROR
@@ -35,6 +37,8 @@ elif channel == 'pimkpks' :
     kstar_cut = kcuts.KSTAR_ALL_CUT_PIMKPKS
     gaus_mean = constants.F1_PIMKPKS_GAUS_MEAN
     gaus_width = constants.F1_PIMKPKS_GAUS_WIDTH
+    voigt_width = constants.F1_PIMKPKS_VOIGHT_WIDTH
+    voigt_mean = constants.F1_PIMKPKS_VOIGHT_MEAN
 
 parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight width', 'gaus amplitude', 'gaus mean', 'gaus width', 'bkg const', 'bkg first order', 'bkg second order']
 initial_guesses = {
@@ -68,20 +72,20 @@ fit_low, fit_high = 1.17, 1.5
 
 func = ROOT.TF1(f'integrated_{channel}', '[0]*TMath::Voigt(x-[1], [2], [3]) + gaus(4) + pol2(7)', fit_low, fit_high)
 
-func.FixParameter(2, voight_resoltion) # voight sigma
 
 func.SetParameter(0, initial_guesses[0]) # voight amplitude
 func.SetParLimits(0, 1, 1000000)
-func.SetParameter(1, initial_guesses[1]) # voight mean
+func.FixParameter(1, voigt_mean) # voight mean
+func.FixParameter(2, voight_resoltion) # voight sigma
 # func.SetParLimits(1, 1.26, 1.3)
-func.SetParameter(3, initial_guesses[3]) # voight width
+func.FixParameter(3, voigt_width) # voight width
 # func.SetParLimits(3, 0.005, 0.05)
 func.SetParameter(4, initial_guesses[4]) # gaus amplitude
 func.SetParLimits(4, 1, 1000000)
-func.SetParameter(5, initial_guesses[5]) # gaus mean 
-func.SetParLimits(5, 1.35, 1.4)
-func.SetParameter(6, initial_guesses[6]) # gaus width
-func.SetParLimits(6, 0.025, 0.05)
+func.FixParameter(5, gaus_mean) # gaus mean 
+# func.SetParLimits(5, 1.35, 1.4)
+func.FixParameter(6, gaus_width) # gaus width
+# func.SetParLimits(6, 0.025, 0.05)
 func.SetParameter(7, initial_guesses[7]) # bkg const
 # func.SetParLimits(7, 0, 1000000)
 func.SetParameter(8, initial_guesses[8]) # bkg first order
@@ -170,11 +174,9 @@ legend.Draw()
 fit_params = ROOT.TLatex()
 fit_params.SetTextSize(0.0425)
 fit_params.DrawLatexNDC(0.475, 0.75, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
-fit_params.DrawLatexNDC(0.475, 0.8, 'Width = ' + '{:.2f}'.format(voigt_width * 1000) + ' #pm ' + '{:.2f}'.format(voigt_width_err * 1000) + ' MeV')
-fit_params.DrawLatexNDC(0.475, 0.85, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000) + ' #pm ' + '{:.2f}'.format(voigt_mass_err * 1000) + ' MeV')
+# fit_params.DrawLatexNDC(0.475, 0.8, 'Width = ' + '{:.2f}'.format(voigt_width * 1000) + ' #pm ' + '{:.2f}'.format(voigt_width_err * 1000) + ' MeV')
+# fit_params.DrawLatexNDC(0.475, 0.85, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000) + ' #pm ' + '{:.2f}'.format(voigt_mass_err * 1000) + ' MeV')
 
-c.Update()
-c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/will_comparison_{channel}_fit.png')
 
 f1_yield = voight.Integral(fit_low, fit_high)/0.01
 
@@ -195,6 +197,8 @@ for i, run in enumerate(['spring', 'fall', '2017']):
 
 cross_section = ct.calculate_crosssection(f1_yield, acceptance, flux, 0.4, 0.091)
 print(f'Cross section for {channel}: {cross_section} nb/0.4 GeV^2')
-
+fit_params.DrawLatexNDC(0.475, 0.85, "#frac{d#sigma}{dt} = " + '{:.2f}'.format(cross_section) + ' nb/0.4 GeV^{2}')
+c.Update()
+c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/will_comparison_{channel}_fit.png')
 
 input('press enter to continue')
