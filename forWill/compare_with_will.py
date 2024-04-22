@@ -53,7 +53,7 @@ initial_guesses = {
     9: 10 # bkg second order
 }
 
-data = ct.get_dataframe(channel, 'gluex1', 'data').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.2 && mand_t <= 0.4').Filter(kstar_cut)
+data = ct.get_dataframe(channel, 'gluex1', 'data').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5').Filter(kstar_cut)
 uncor_data_hist = data.Histo1D(('uncor_data_hist', hist_title, 60, 1.0, 1.6), f'{channel}_m')
 uncor_data_hist.Sumw2()
 data_hist = ct.correct_data_hist_for_kstar_efficiency(uncor_data_hist)
@@ -190,14 +190,15 @@ lumi = flux_spring + flux_fall + flux_2017
 
 acceptance = 0
 for i, run in enumerate(['spring', 'fall', '2017']):
-    df_recon = ct.get_dataframe(channel, run, 'signal').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.2 && mand_t <= 0.4')
-    df_thrown = ct.get_dataframe(channel, run, 'signal', filtered=False, thrown=True).Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.2 && mand_t <= 0.4')
+    df_recon = ct.get_dataframe(channel, run, 'signal').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
+    df_thrown = ct.get_dataframe(channel, run, 'signal', filtered=False, thrown=True).Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
     acceptance += (df_recon.Count().GetValue()/df_thrown.Count().GetValue())*(lumis[i]/lumi)
 
+print(f'yield: {f1_yield}, acceptance: {acceptance}, flux: {flux}')
 
-cross_section = ct.calculate_crosssection(f1_yield, acceptance, flux, 0.4, 0.091)
+cross_section = ct.calculate_crosssection(f1_yield, acceptance, flux, 1, 0.091)
 print(f'Cross section for {channel}: {cross_section} nb/0.4 GeV^2')
-fit_params.DrawLatexNDC(0.475, 0.85, "#frac{d#sigma}{dt} = " + '{:.2f}'.format(cross_section) + ' nb/0.4 GeV^{2}')
+fit_params.DrawLatexNDC(0.475, 0.85, "#sigma = " + '{:.2f}'.format(cross_section) + ' nb')
 c.Update()
 c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/will_comparison_{channel}_fit.png')
 
