@@ -5,9 +5,9 @@ void RunF1Thrown_KsKmPip(){
     gROOT->ProcessLine("DPROOFLiteManager::Set_SandBox(\"/volatile/halld/home/viducic/PROOF/.proof\")");
     gROOT->ProcessLine("TChain* ch = new TChain(\"Thrown_Tree\")");
     // ggROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_s18_3726/root/thrown/*.root\")"); //spring 2018
-    // ggROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_f18_3727/root/thrown/*.root\")"); //spring 2018
-    gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_s17_3725/root/thrown/*.root\")"); // 2017
-    gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_thrown.C++\", 6)");
+    gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_f18_3727/root/thrown/*.root\")"); //spring 2018
+    // gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_s17_3725/root/thrown/*.root\")"); // 2017
+    gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_thrown.C++\", 8)");
 
 //  PHASSPACE MC
 

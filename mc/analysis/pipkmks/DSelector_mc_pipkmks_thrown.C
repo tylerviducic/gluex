@@ -17,6 +17,7 @@ void DSelector_mc_pipkmks_thrown::Init(TTree *locTree)
 	dFlatTreeFileName = "/work/halld/home/viducic/data/pipkmks/mc/thrown/pipkmks_thrown.root"; //output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = "pipkmks_thrown"; //if blank, default name will be chosen
 	dSaveDefaultFlatBranches = false; // False: don't save default branches, reduce disk footprint.
+	dSkipNoTriggerEvents = false;
 
 	//Because this function gets called for each TTree in the TChain, we must be careful:
 		//We need to re-initialize the tree interface & branch wrappers, but don't want to recreate histograms
@@ -151,8 +152,9 @@ Bool_t DSelector_mc_pipkmks_thrown::Process(Long64_t locEntry)
 	// The return value is currently not used.
 
 	//CALL THIS FIRST
+	// cout<<"STARTING";
 	DSelector::Process(locEntry); //Gets the data from the tree for the entry
-	//cout << "RUN " << Get_RunNumber() << ", EVENT " << Get_EventNumber() << endl;
+	// cout << "RUN " << Get_RunNumber() << ", EVENT " << Get_EventNumber() << endl;
 
 	/******************************************** GET POLARIZATION ORIENTATION ******************************************/
 
