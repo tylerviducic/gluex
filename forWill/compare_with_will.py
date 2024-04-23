@@ -53,7 +53,7 @@ initial_guesses = {
     9: 10 # bkg second order
 }
 
-data = ct.get_dataframe(channel, 'gluex1', 'data').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5').Filter(kstar_cut)
+data = ct.get_dataframe(channel, 'fall', 'data').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5').Filter(kstar_cut)
 uncor_data_hist = data.Histo1D(('uncor_data_hist', hist_title, 60, 1.0, 1.6), f'{channel}_m')
 uncor_data_hist.Sumw2()
 data_hist = ct.correct_data_hist_for_kstar_efficiency(uncor_data_hist)
@@ -189,10 +189,13 @@ lumis = [flux_spring, flux_fall, flux_2017]
 lumi = flux_spring + flux_fall + flux_2017
 
 acceptance = 0
-for i, run in enumerate(['spring', 'fall', '2017']):
-    df_recon = ct.get_dataframe(channel, run, 'signal').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
-    df_thrown = ct.get_dataframe(channel, run, 'signal', filtered=False, thrown=True).Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
-    acceptance += (df_recon.Count().GetValue()/df_thrown.Count().GetValue())*(lumis[i]/lumi)
+# for i, run in enumerate(['spring', 'fall', '2017']):
+#     df_recon = ct.get_dataframe(channel, run, 'signal').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
+#     df_thrown = ct.get_dataframe(channel, run, 'signal', filtered=False, thrown=True).Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
+#     acceptance += (df_recon.Count().GetValue()/df_thrown.Count().GetValue())*(lumis[i]/lumi)
+df_recon = ct.get_dataframe(channel, 'fall', 'signal').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
+df_thrown = ct.get_dataframe(channel, 'fall', 'signal', filtered=False, thrown=True).Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
+
 
 print(f'yield: {f1_yield}, acceptance: {acceptance}, flux: {flux}')
 
