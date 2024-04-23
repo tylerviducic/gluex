@@ -8,8 +8,9 @@ void RunF1MC_KsKmPip(){
     gEnv->SetValue("ProofLite.Sandbox", "/volatile/halld/home/viducic/PROOF/.proof/");
     gROOT->ProcessLine("DPROOFLiteManager::Set_SandBox(\"/volatile/halld/home/viducic/PROOF/.proof\")");
     TChain* ch = new TChain("pipkmks__ks_pippim__B4_M16_Tree");
-    ch->Add("/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_s17_3725/root/trees/*.root");
+    // ch->Add("/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_s17_3725/root/trees/*.root");
     // ch->Add("/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_s18_3726/root/trees/*.root");
+    ch->Add("/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_f18_3727/root/trees/*.root");
     DPROOFLiteManager *dproof = new DPROOFLiteManager();
     dproof->Process_Chain(ch, "/work/halld/home/viducic/mc/analysis/pipkmks/DSelector_mc_pipkmks_flat.C++", 8); //, "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfilehist.root", "/work/halld/home/viducic/data/pipkmks/mc/signal/dselector_outfiles/outfiletree.root");
 

@@ -3,10 +3,10 @@ void RunF1Thrown_KsKmPip(){
     gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
     gEnv->SetValue("ProofLite.Sandbox", "/volatile/halld/home/viducic/PROOF/.proof/");
     gROOT->ProcessLine("DPROOFLiteManager::Set_SandBox(\"/volatile/halld/home/viducic/PROOF/.proof\")");
-    gROOT->ProcessLine("TChain* ch = new TChain(\"Thrown_Tree\")"); 
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_s18_100m_v16_rt_t29_3237/root/thrown/*.root\")"); //spring 2018
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_f18_100m_v16_rt_t29_3238/root/thrown/*.root\")"); //fall 2018
-    gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pipkmks_f18_100m_v16_rt_t29_3239/root/thrown/*.root\")"); // THIS IS 2017 THERE WAS A NAMING ERROR
+    gROOT->ProcessLine("TChain* ch = new TChain(\"Thrown_Tree\")");
+    // ggROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_s18_3726/root/thrown/*.root\")"); //spring 2018
+    // ggROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_f18_3727/root/thrown/*.root\")"); //spring 2018
+    gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pipkmks_s17_3725/root/thrown/*.root\")"); // 2017
     gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pipkmks_thrown.C++\", 6)");
 
 //  PHASSPACE MC
