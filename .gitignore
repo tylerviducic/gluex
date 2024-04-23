@@ -165,3 +165,7 @@ my_library/__pycache__/kinematic_cuts.cpython-39.pyc
 systematic_errors/__pycache__/barlow_test_cuts.cpython-36.pyc
 scripts/plotting/DSelector_plot_delta_t_C.d
 scripts/plotting/DSelector_plot_delta_t_C.so
+mc/analysis/pipkmks/DSelector
+mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C_ACLiC_dict_rdict.pcm
+mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C.d
+mc/analysis/pipkmks/DSelector_mc_pipkmks_flat_C.so
