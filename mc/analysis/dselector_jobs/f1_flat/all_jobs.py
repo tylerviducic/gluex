@@ -37,7 +37,7 @@ os.system(create_command)
 # 2.) loop over all run periods for both charge conjugations and add them to a workflow
 for channel in channels:
     for run in run_num_dict:
-        add_job_command = f'./launch_one_job_per_run.py {path_to_configs}/{channel}/jobs_root_analysis_{file_suffix_dict[run]}.config {run_num_dict[run][0]} {run_num_dict[run][1]}'
+        add_job_command = f'./launch.py {path_to_configs}/{channel}/jobs_root_analysis_{file_suffix_dict[run]}.config {run_num_dict[run][0]} {run_num_dict[run][1]}'
         print(add_job_command)
         os.system(add_job_command)
 
