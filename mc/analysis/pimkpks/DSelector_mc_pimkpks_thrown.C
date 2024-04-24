@@ -14,7 +14,7 @@ void DSelector_mc_pimkpks_thrown::Init(TTree *locTree)
 	//dOutputTreeFileNameMap["Bin1"] = "mcgen_bin1.root"; //key is user-defined, value is output file name
 	//dOutputTreeFileNameMap["Bin2"] = "mcgen_bin2.root"; //key is user-defined, value is output file name
 	//dOutputTreeFileNameMap["Bin3"] = "mcgen_bin3.root"; //key is user-defined, value is output file name
-	dFlatTreeFileName = "/volatile/halld/home/viducic/selector_output/f1_pimkpks/thrown/pimkpks_thrown.root"; //output flat tree (one combo per tree entry), "" for none
+	dFlatTreeFileName = "/work/halld/home/viducic/data/pimkpks/mc/thrown/pimkpks_thrown.root"; // output flat tree (one combo per tree entry), "" for none
 	dFlatTreeName = "pimkpks_thrown"; //if blank, default name will be chosen
 	dSaveDefaultFlatBranches = false; // False: don't save default branches, reduce disk footprint.
 	dSkipNoTriggerEvents = false;
