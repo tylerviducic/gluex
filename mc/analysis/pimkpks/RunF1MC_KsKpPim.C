@@ -2,11 +2,11 @@
 void RunF1MC_KsKpPim(){
 
     gROOT->ProcessLine("TChain* ch = new TChain(\"pimkpks__ks_pippim__B4_M16_Tree\")");
-    gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pimkpks_s17_100m_v50_rt_t29_3248/root/trees/tree_pipkmks__ks_pippim__B4_M16_gen_amp/*.root\")"); // 2017
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pimkpks_s18_100m_v50_rt_t29_3249/root/trees/tree_pipkmks__ks_pippim__B4_M16_gen_amp/*.root\")"); // 2018 spring
-    // gROOT->ProcessLine("ch->Add(\"/lustre19/expphy/cache/halld/gluex_simulations/REQUESTED_MC/pimkpks_f18_100m_v50_rt_t29_3250/root/trees/tree_pipkmks__ks_pippim__B4_M16_gen_amp/*.root\")"); // 2018 fall
+    // gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pimkpks_s17_3728/root/trees/*.root\")"); // 2017
+    gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pimkpks_s18_3729/root/trees/*.root\")"); // 2018 spring
+    // gROOT->ProcessLine("ch->Add(\"/w/halld-scshelf2101/halld3/home/viducic/new_mc/f1_pimkpks_f18_3730/root/trees/*.root\")"); // 2018 fall
     gROOT->ProcessLine(".x $ROOT_ANALYSIS_HOME/scripts/Load_DSelector.C");
-    gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pimkpks_flat.C++\", 8)");
+    gROOT->ProcessLine("DPROOFLiteManager::Process_Chain(ch, \"DSelector_mc_pimkpks_flat_correct_rf.C++\", 8)");
 
 } 
 
