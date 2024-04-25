@@ -188,18 +188,18 @@ flux_2017 = ct.get_luminosity('2017', 8, 10)
 lumis = [flux_spring, flux_fall, flux_2017]
 lumi = flux_spring + flux_fall + flux_2017
 
-acceptance = 0
+# acceptance = 0
 # for i, run in enumerate(['spring', 'fall', '2017']):
 #     df_recon = ct.get_dataframe(channel, run, 'signal').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
 #     df_thrown = ct.get_dataframe(channel, run, 'signal', filtered=False, thrown=True).Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
 #     acceptance += (df_recon.Count().GetValue()/df_thrown.Count().GetValue())*(lumis[i]/lumi)
 df_recon = ct.get_dataframe(channel, 'fall', 'signal').Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
 df_thrown = ct.get_dataframe(channel, 'fall', 'signal', filtered=False, thrown=True).Filter('e_beam > 8.0 && e_beam < 10.0').Filter('mand_t >= 0.1 && mand_t <= 0.5')
+acceptance = (df_recon.Count().GetValue()/df_thrown.Count().GetValue())
 
+print(f'yield: {f1_yield}, acceptance: {acceptance}, flux: {flux_fall * 1000}')
 
-print(f'yield: {f1_yield}, acceptance: {acceptance}, flux: {flux}')
-
-cross_section = ct.calculate_crosssection(f1_yield, acceptance, flux, 1, 0.091)
+cross_section = ct.calculate_crosssection(f1_yield, acceptance, flux_fall*1000, 1, 0.091)
 print(f'Cross section for {channel}: {cross_section} nb/0.4 GeV^2')
 fit_params.DrawLatexNDC(0.475, 0.85, "#sigma = " + '{:.2f}'.format(cross_section) + ' nb')
 c.Update()
