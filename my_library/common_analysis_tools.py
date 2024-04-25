@@ -292,7 +292,7 @@ def get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index):
     thrown_signal_file = ROOT.TFile(thrown_signal_file_and_tree[0])
     # print(thrown_signal_file_and_tree[0])
     if e == 12:
-        thrown_hist_name = f'{channel}_beam_full_t_{constants.T_BIN_DICT[t_bin_index]};1'
+        thrown_hist_name = f'{channel}_kstar_None_cut_beam_full_t_{constants.T_BIN_DICT[t_bin_index]};1'
     else:
         thrown_hist_name = f'{channel}_kstar_None_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
     # print(thrown_hist_name)
