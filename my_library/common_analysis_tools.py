@@ -294,7 +294,8 @@ def get_binned_signal_thrown_hist(channel, run_period, e, t_bin_index):
     if e == 12:
         thrown_hist_name = f'{channel}_beam_full_t_{constants.T_BIN_DICT[t_bin_index]};1'
     else:
-        thrown_hist_name = f'{channel}_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
+        thrown_hist_name = f'{channel}_kstar_None_cut_beam_{constants.BEAM_DICT[e]}_t_{constants.T_BIN_DICT[t_bin_index]};1'
+    # print(thrown_hist_name)
     thrown_hist = thrown_signal_file.Get(thrown_hist_name)
     thrown_hist.SetDirectory(0)
     return thrown_hist
