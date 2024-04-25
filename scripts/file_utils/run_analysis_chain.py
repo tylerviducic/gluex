@@ -13,10 +13,11 @@ if __name__ == '__main__':
     overall_start = time.time()
     channels = ['pipkmks', 'pimkpks']
     run_periods = ['spring', 'fall', '2017']
-    recon_data_types = ['data', 'signal', 'phasespace']
+    # recon_data_types = ['data', 'signal', 'phasespace']
+    recon_data_types = ['data', 'signal']
     # recon_data_types = ['data']
     # recon_data_types = ['signal', 'phasespace']
-    thrown_data_types = ['signal', 'phasespace']
+    thrown_data_types = ['signal']
 
     for channel in channels:
         for data_type in recon_data_types:

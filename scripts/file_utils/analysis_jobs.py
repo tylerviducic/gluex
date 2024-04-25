@@ -4,7 +4,7 @@ import pwd
 
 
 def main():
-    PARTITION = "production"
+    PARTITION = "priority"
     TIMELIMIT = "3:00:00"
     ENVIRONMENT = '/work/halld/home/viducic/scripts/file_utils/analysis_jobs_env.csh'
     LOG_DIR = '/farm_out/viducic/'
