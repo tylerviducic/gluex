@@ -6,8 +6,8 @@ import pandas as pd
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultAbsTolerance(1.E-3)
 # ROOT.Math.IntegratorOneDimOptions.SetDefaultRelTolerance(1.E-3)
 
-channel = 'pipkmks'
-# channel = 'pimkpks'
+# channel = 'pipkmks'
+channel = 'pimkpks'
 cut = 'all'
 
 ROOT.gROOT.SetBatch(True)
