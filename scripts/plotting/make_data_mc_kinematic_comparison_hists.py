@@ -70,7 +70,7 @@ def main(channel, data_type):
         scale_frac = 3
 
     df = tools.get_dataframe(channel, run_period, data_type)
-    df = df.Filter(kstar_cut).Filter(signal_region).Filter(kcuts.BEAM_RANGE).Filter(kcuts.T_RANGE)
+    df = df.Filter(signal_region).Filter(kcuts.BEAM_RANGE).Filter(kcuts.T_RANGE)
 
 
     hists = []
