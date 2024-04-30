@@ -9,16 +9,28 @@ of the first Gaussian contribution. The resulting effective resolutions for the 
 
 import ROOT
 import my_library.common_analysis_tools as ct
-import my_library.thesis_plotter_library as plotter
-from my_library.kinematic_cuts import KS_PATHLENGTH_CUT, MX2_PPIPKMKS_CUT, P_P_CUT
+from my_library.kinematic_cuts import KS_PATHLENGTH_CUT, MX2_PPIPKMKS_CUT, P_P_CUT, KS_MASS_CUT
 from my_library.constants import KSHORT_FIT_MEAN, KSHORT_FIT_WIDTH, COLORBLIND_HEX_DICT
 
-df = ct.get_dataframe('pipkmks', 'spring', 'data')
+ROOT.EnableImplicitMT(8)
+# remove stat box
+ROOT.gStyle.SetOptStat(0)
+
+df = ct.get_dataframe('pipkmks', 'spring', 'data', filtered=False)
 df = df.Filter(KS_PATHLENGTH_CUT).Filter(MX2_PPIPKMKS_CUT).Filter(P_P_CUT)
 
+
 nbins, xlow, xhigh = 1000, 0.35, 0.65
+cut_hist = df.Filter(KS_MASS_CUT).Histo1D(('ks_m', 'ks_m', nbins, xlow, xhigh), 'ks_m')
 data_hist = df.Histo1D(('ks_m', 'ks_m', nbins, xlow, xhigh), 'ks_m').GetValue()
 
+cut_hist.SetFillColorAlpha(ROOT.kGray, 0.7)
+cut_hist.SetTitle("")
+cut_hist.GetXaxis().SetTitle('M(#pi^{+}#pi^{-}) [GeV]')
+cut_hist.GetXaxis().SetTitleSize(0.04)
+cut_hist.GetYaxis().SetTitle(f'Events / {(1000*(xhigh-xlow)/nbins):.2f} MeV')
+cut_hist.GetYaxis().SetTitleOffset(1.6)
+cut_hist.GetYaxis().SetTitleSize(0.04)
 
 signal_yield = ROOT.RooRealVar("signal_yield", "Signal Yield", 0, 10000000)
 background_yield = ROOT.RooRealVar("background_yield", "Background Yield", 0, 10000000)
@@ -73,30 +85,44 @@ signal_to_background = signal_integral.getVal() / background_integral.getVal()
 frame = m_pipi.frame()
 dh.plotOn(frame)
 composite.plotOn(frame)
-composite.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.LineColor(ROOT.TColor.GetColor((COLORBLIND_HEX_DICT['purple']))))
-composite.plotOn(frame, ROOT.RooFit.Components("double_gaus"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor((COLORBLIND_HEX_DICT['red']))))
-composite.plotOn(frame, ROOT.RooFit.Components("gaus_1"), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['blue'])))
-composite.plotOn(frame, ROOT.RooFit.Components("gaus_2"), ROOT.RooFit.LineStyle(ROOT.kDashDotted), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['cyan'])))
-
-c1 = ROOT.TCanvas("c1", "c1", 800, 600)
-c1.cd()
-frame.Draw()
-title = 'Fit of M(#pi^{+}#pi^{-})'
-frame.SetTitle(title)
-frame.GetXaxis().SetTitle('M(#pi^{+}#pi^{-}) [GeV]')
-frame.GetYaxis().SetTitle(f'Events / {(1000*(xhigh-xlow)/nbins):.2f} MeV')
-frame.GetYaxis().SetTitleOffset(1.5)
-c1.SaveAs('/w/halld-scshelf2101/home/viducic/plots/thesis/ks_width.png')
+composite.plotOn(frame, ROOT.RooFit.Components("bkg"), ROOT.RooFit.LineColor(ROOT.kRed))
+# composite.plotOn(frame, ROOT.RooFit.Components("double_gaus"), ROOT.RooFit.LineColor(ROOT.TColor.GetColor(COLORBLIND_HEX_DICT['blue'])))
+composite.plotOn(frame, ROOT.RooFit.Components("gaus_1"), ROOT.RooFit.LineStyle(ROOT.kDashed), ROOT.RooFit.LineColor(ROOT.kBlue))
+composite.plotOn(frame, ROOT.RooFit.Components("gaus_2"), ROOT.RooFit.LineStyle(ROOT.kDashDotted), ROOT.RooFit.LineColor(ROOT.kBlue))
 
 def get_composite_width(sig1, sig2, frac):
     return sig1 * frac + sig2 * (1.0 - frac)
 
 def get_composite_mean(mean1, mean2, frac):
     return mean1 * frac + mean2 * (1.0 - frac)
-    
+
 composite_width = get_composite_width(ks_sigma_1.getVal(), ks_sigma_2.getVal(), gaus_frac.getVal())
 composite_width_error = get_composite_width(ks_sigma_1.getError(), ks_sigma_2.getError(), gaus_frac.getVal())
 composite_mean = get_composite_mean(ks_mean_1.getVal(), ks_mean_2.getVal(), gaus_frac.getVal())
+
+c1 = ROOT.TCanvas("c1", "c1", 800, 600)
+pad = c1.cd()
+pad.SetLeftMargin(0.13)
+cut_hist.Draw()
+frame.Draw("same")
+# title = 'Fit of M(#pi^{+}#pi^{-})'
+# frame.SetTitle(title)
+frame.SetTitle("")
+frame.GetXaxis().SetTitle('M(#pi^{+}#pi^{-}) [GeV]')
+frame.GetXaxis().SetTitleSize(0.04)
+frame.GetYaxis().SetTitle(f'Events / {(1000*(xhigh-xlow)/nbins):.2f} MeV')
+frame.GetYaxis().SetTitleOffset(1.6)
+frame.GetYaxis().SetTitleSize(0.04)
+
+fit_params = ROOT.TLatex()
+fit_params.SetTextSize(0.0425)
+fit_params.DrawLatexNDC(0.65, 0.8, "#sigma_{1} = " + '{:.2f}'.format(ks_sigma_1.getVal() * 1000) + ' MeV')
+fit_params.DrawLatexNDC(0.65, 0.75, "#sigma_{2} = " + '{:.2f}'.format(ks_sigma_2.getVal() * 1000) + ' MeV')
+fit_params.DrawLatexNDC(0.65, 0.7, "#sigma_{total} = " + '{:.2f}'.format(composite_width * 1000) + ' MeV')
+
+c1.SaveAs('/w/halld-scshelf2101/home/viducic/plots/thesis/ks_width.png')
+
+    
 print(f'Width of first gaussian is: {ks_sigma_1.getVal()} +/- {ks_sigma_1.getError()}')
 print(f'Width of second gaussian is: {ks_sigma_2.getVal()} +/- {ks_sigma_2.getError()}')
 print(f'Fraction of first gaussian is: {gaus_frac.getVal()}')
