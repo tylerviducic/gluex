@@ -66,8 +66,8 @@ def main(channel, data_type):
         run_period = 'fall'
         marker = 21
         line_color = ROOT.kBlack
-        marker_size = 0.75
-        scale_frac = 10
+        marker_size = 1.0
+        scale_frac = 3
 
     df = tools.get_dataframe(channel, run_period, data_type)
     df = df.Filter(kstar_cut).Filter(signal_region).Filter(kcuts.BEAM_RANGE).Filter(kcuts.T_RANGE)
@@ -89,9 +89,9 @@ def main(channel, data_type):
                     n_bins = 100
             else:
                 if kin == 'phi':
-                    n_bins = 900
+                    n_bins = 270
                 else:
-                    n_bins = 1000
+                    n_bins = 300
 
             # print(f'particle: {particle}, kinmatic: {kin}, x_low: {xlow}, x_high: {xhigh}, n_bins: {n_bins}, column: {part}_{kin}')
             hist = df.Histo1D((f'{channel}_{particle}_{kin}_{data_type}', f'{channel}_{particle}_{kin}_{data_type}', n_bins, xlow, xhigh), f'{part}_{kin}')
