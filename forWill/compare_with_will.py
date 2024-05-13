@@ -203,6 +203,6 @@ cross_section = ct.calculate_crosssection(f1_yield, acceptance, flux_fall*1000, 
 print(f'Cross section for {channel}: {cross_section} nb/0.4 GeV^2')
 fit_params.DrawLatexNDC(0.475, 0.85, "#sigma = " + '{:.2f}'.format(cross_section) + ' nb')
 c.Update()
-c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/will_comparison_{channel}_fit.png')
+c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/will_comparison_{channel}_fit.pdf')
 
 input('press enter to continue')
