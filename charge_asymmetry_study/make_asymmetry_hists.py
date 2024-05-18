@@ -15,14 +15,14 @@ df_pimkpks = tools.get_dataframe('pimkpks', 'gluex1', 'data', filtered=False).Fi
 df_pipkmks = df_pipkmks.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIPKMKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.P_P_CUT)
 df_pimkpks = df_pimkpks.Filter(kcuts.KINFIT_CL_CUT).Filter(kcuts.MX2_PPIMKPKS_CUT).Filter(kcuts.KS_PATHLENGTH_CUT).Filter(kcuts.KS_MASS_CUT).Filter(kcuts.P_P_CUT)
 
-df_pipkmks_kstar_cut = df_pipkmks.Filter(kcuts.KSTAR_ALL_CUT_PIPKMKS).Filter(kcuts.F1_SIGNAL_REGION_PIPKMKS)
-df_pimkpks_kstar_cut = df_pimkpks.Filter(kcuts.KSTAR_ALL_CUT_PIMKPKS).Filter(kcuts.F1_SIGNAL_REGION_PIMKPKS)
+df_pipkmks_kstar_cut = df_pipkmks.Filter(kcuts.KSTAR_ALL_CUT_PIPKMKS)
+df_pimkpks_kstar_cut = df_pimkpks.Filter(kcuts.KSTAR_ALL_CUT_PIMKPKS)
 
 df_pipkmks_all_cuts = df_pipkmks.Filter(kcuts.PPIP_MASS_CUT).Filter(kcuts.KMP_MASS_CUT).Filter(kcuts.KSP_MASS_CUT)
 df_pimkpks_all_cuts = df_pimkpks.Filter(kcuts.PPIM_MASS_CUT).Filter(kcuts.KPP_MASS_CUT).Filter(kcuts.KSP_MASS_CUT)
 
-df_pipkmks_all_cuts_kstar_cut = df_pipkmks_all_cuts.Filter(kcuts.KSTAR_ALL_CUT_PIPKMKS).Filter(kcuts.F1_SIGNAL_REGION_PIPKMKS)
-df_pimkpks_all_cuts_kstar_cut = df_pimkpks_all_cuts.Filter(kcuts.KSTAR_ALL_CUT_PIMKPKS).Filter(kcuts.F1_SIGNAL_REGION_PIMKPKS)
+df_pipkmks_all_cuts_kstar_cut = df_pipkmks_all_cuts.Filter(kcuts.KSTAR_ALL_CUT_PIPKMKS)
+df_pimkpks_all_cuts_kstar_cut = df_pimkpks_all_cuts.Filter(kcuts.KSTAR_ALL_CUT_PIMKPKS)
 
 hist_file = ROOT.TFile('asym_hists.root', 'RECREATE')
 
