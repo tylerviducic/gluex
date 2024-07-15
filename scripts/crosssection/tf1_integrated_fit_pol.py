@@ -14,8 +14,8 @@ os.nice(18)
 ROOT.EnableImplicitMT(8)
 ROOT.gStyle.SetOptStat(0)
 
-# channel = 'pipkmks'
-channel = 'pimkpks'
+channel = 'pipkmks'
+# channel = 'pimkpks'
 
 if channel == 'pipkmks' :
     voight_resoltion = constants.F1_PIPKMKS_VOIGHT_SIGMA
@@ -112,7 +112,7 @@ voight.SetFillColor(f1_color)
 voight.SetFillStyle(1001)
 gaus = ROOT.TF1('gaus', 'gaus(0)', fit_low, fit_high)
 gaus.SetLineColor(background_color)
-gaus.SetLineStyle(3)
+# gaus.SetLineStyle(3)
 bkg = ROOT.TF1('bkg', 'pol2(0)', fit_low, fit_high)
 bkg.SetLineColor(background_color)
 bkg.SetLineStyle(2)
@@ -152,13 +152,23 @@ print(f'chi^2/ndf = {chi2_per_ndf}')
 
 
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
-data_hist.GetYaxis().SetTitleOffset(1.4)
+c.SetLeftMargin(0.16)
+c.SetBottomMargin(0.15)
+data_hist.GetYaxis().SetTitleOffset(1.7)
+data_hist.GetXaxis().SetTitleOffset(1.15)
+data_hist.GetYaxis().SetTitleSize(0.05)
+data_hist.GetYaxis().SetLabelSize(0.05)
+data_hist.GetXaxis().SetLabelSize(0.05)
+data_hist.GetXaxis().SetTitleSize(0.05)
+
 data_hist.Draw("E1")
 func.Draw('same')
 voight.Draw('same')
 gaus.Draw('same')
 bkg.Draw('same')
 data_hist.Draw("E1 same")
+ROOT.gPad.RedrawAxis()
+
 
 
 legend = ROOT.TLegend(0.725, 0.2, 0.945, 0.5)
@@ -169,10 +179,10 @@ legend.AddEntry(bkg, "Background", "l")
 legend.Draw()
 
 fit_params = ROOT.TLatex()
-fit_params.SetTextSize(0.0425)
-fit_params.DrawLatexNDC(0.475, 0.75, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
-fit_params.DrawLatexNDC(0.475, 0.8, 'Width = ' + '{:.2f}'.format(voigt_width * 1000) + ' #pm ' + '{:.2f}'.format(voigt_width_err * 1000) + ' MeV')
-fit_params.DrawLatexNDC(0.475, 0.85, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000) + ' #pm ' + '{:.2f}'.format(voigt_mass_err * 1000) + ' MeV')
+fit_params.SetTextSize(0.04)
+fit_params.DrawLatexNDC(0.46, 0.8, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
+fit_params.DrawLatexNDC(0.45, 0.85, 'Width = ' + '{:.2f}'.format(voigt_width * 1000) + ' #pm ' + '{:.2f}'.format(voigt_width_err * 1000) + ' MeV')
+fit_params.DrawLatexNDC(0.45, 0.9, 'Mass = ' + '{:.2f}'.format(voigt_mass * 1000) + ' #pm ' + '{:.2f}'.format(voigt_mass_err * 1000) + ' MeV')
 
 c.Update()
 c.SaveAs(f'/work/halld/home/viducic/plots/thesis/cross_section_fits/integrated_{channel}_fit.png')

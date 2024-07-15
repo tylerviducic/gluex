@@ -45,6 +45,7 @@ parameter_names = ['voight amplitude', 'voight mean', 'voight sigma', 'voight wi
 fit_low, fit_high = 1.16, 1.63
 
 c = ROOT.TCanvas('c', 'c', 1000, 1000)
+c.SetLeftMargin(0.15)
 
 for e in range(8, 12):
     c.Clear()
@@ -151,6 +152,11 @@ for e in range(8, 12):
         gauses.append(gaus)
         bkgs.append(bkg)
 
+        hists[t-1].GetXaxis().SetTitleSize(0.05)
+        hists[t-1].GetXaxis().SetLabelSize(0.05)
+        hists[t-1].GetYaxis().SetTitleSize(0.05)
+        hists[t-1].GetYaxis().SetLabelSize(0.05)
+
         hists[t-1].Draw("E1")
         funcs[t-1].Draw('same')
         voigts[t-1].Draw('same')
@@ -159,7 +165,7 @@ for e in range(8, 12):
         hists[t-1].Draw("E1 same")
 
 
-        legend = ROOT.TLegend(0.15, 0.525, 0.325, 0.7)
+        legend = ROOT.TLegend(0.2, 0.525, 0.375, 0.7)
         legend.AddEntry(func, "Total Fit", "l")
         legend.AddEntry(voight, "f_{1}(1285) Signal", "lf")
         legend.AddEntry(gaus, "f_{1}(1420) Tail", "l")
@@ -174,9 +180,12 @@ for e in range(8, 12):
 
         fit_params = ROOT.TLatex()
         fit_params.SetTextSize(0.04)
-        fit_params.DrawLatexNDC(0.15, 0.9, "E_{#gamma} = " + str(e) + " GeV")
-        fit_params.DrawLatexNDC(0.15, 0.85, f"|t| = {t_middle:0.3f}" + " GeV^{2}")
-        fit_params.DrawLatexNDC(0.15, 0.8, "Yield = " + '{:.2f}'.format(f1_yield) + " #pm " + '{:.2f}'.format(f1_yield_err) + " Events")
-        fit_params.DrawLatexNDC(0.15, 0.75, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
+        fit_params.DrawLatexNDC(0.2, 0.9, "E_{#gamma} = " + str(e) + " GeV")
+        fit_params.DrawLatexNDC(0.2, 0.85, f"|t| = {t_middle:0.3f}" + " GeV^{2}")
+        fit_params.DrawLatexNDC(0.2, 0.8, "Yield = " + '{:.2f}'.format(f1_yield) + " #pm " + '{:.2f}'.format(f1_yield_err) + " Events")
+        fit_params.DrawLatexNDC(0.2, 0.75, "#chi^{2}/ndf = " + '{:.2f}'.format(chi2_per_ndf))
+
+        ROOT.gPad.RedrawAxis()
+
 
         c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/pol2_gaus_{channel}_e{e}_t{t}_fit.png')

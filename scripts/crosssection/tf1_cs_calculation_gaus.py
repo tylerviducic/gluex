@@ -203,6 +203,12 @@ for e in range(8, 12):
         gauses.append(gaus)
         bkgs.append(bkg)
 
+        hists[t-1].GetXaxis().SetTitleSize(0.06)
+        hists[t-1].GetXaxis().SetLabelSize(0.06)
+        hists[t-1].GetYaxis().SetTitleSize(0.06)
+        hists[t-1].GetYaxis().SetLabelSize(0.06)
+
+
         hists[t-1].Draw()
         funcs[t-1].Draw('same')
         voigts[t-1].Draw('same')
@@ -247,6 +253,7 @@ for e in range(8, 12):
         # print("++++++++" * 5)
         # print("++++++++" * 5)
         # print("\n")
+    ROOT.gPad.RedrawAxis()
 
     c.SaveAs(f'/work/halld/home/viducic/scripts/crosssection/plots/pol2_gaus_{channel}_e{e}_fit.png')
 
